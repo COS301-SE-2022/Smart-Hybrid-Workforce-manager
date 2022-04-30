@@ -1,0 +1,59 @@
+version: '3.9'
+services:
+  arche-db:
+    image: postgres:14
+    hostname: arche-db
+    container_name: arche-db
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
+      POSTGRES_DB: "arche"
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/postgres-data:/var/lib/postgresql/data
+      - ./db/sql:/docker-entrypoint-initdb.d
+    networks:
+      - arche-network
+
+  arche-api:
+    build:
+      context: ./go
+      dockerfile: api/Dockerfile
+    container_name: arche-api
+    env_file: .env
+    restart: unless-stopped
+    volumes:
+      - ./go/api/config.json:/run/secrets/config.json
+    ports:
+      - 8100:8080
+    networks:
+      - arche-network
+    depends_on:
+      - arche-db
+
+  arche-web:
+      build:
+        context: ./client/web/example
+        dockerfile: Dockerfile
+      hostname: arche-web
+      restart: unless-stopped
+      container_name: arche-web
+      volumes:
+      - './client/web/example:/app'
+      - '/app/node_modules'
+      ports:
+        - 80:3000   
+      # Cannot get hot reloading to work, the following environmental variables have been tested
+      # environment:
+      #  - CHOKIDAR_USEPOLLING=true
+      #  - FAST_REFRESH=false
+      #  - WDS_SOCKET_PATH=ws
+      depends_on:
+        - arche-api
+      networks:
+        - arche-network
+
+networks:
+    arche-network:
