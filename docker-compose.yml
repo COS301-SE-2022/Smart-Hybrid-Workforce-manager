@@ -4,6 +4,7 @@ services:
     image: postgres:14
     hostname: arche-db
     container_name: arche-db
+    env_file: .env
     environment:
       POSTGRES_HOST_AUTH_METHOD: "trust"
       POSTGRES_USER: "admin"
