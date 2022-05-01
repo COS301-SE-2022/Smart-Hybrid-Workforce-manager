@@ -66,6 +66,10 @@ Please note that the first time `docker-compose up` is run it will error out and
 
 # API
 
+## Documentation
+
+Documentation in the form of a postman collection for the api is located in `documentation/api`
+
 ## Restarting the API
 
 - Windows
