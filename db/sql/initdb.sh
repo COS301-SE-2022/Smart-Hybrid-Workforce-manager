@@ -18,3 +18,13 @@ for file in ${DIR}/example/*.function.*sql
 do
   psql "$CONFIG" -f "$file"
 done
+
+for file in ${DIR}/user/*.schema.*sql
+do
+  psql "$CONFIG" -f "$file"
+done
+
+for file in ${DIR}/user/*.function.*sql
+do
+  psql "$CONFIG" -f "$file"
+done
