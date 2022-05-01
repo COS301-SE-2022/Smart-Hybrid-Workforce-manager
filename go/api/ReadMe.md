@@ -8,7 +8,11 @@ This image and its corresponding container need to be restarted in order to comp
 
 ## Endpoints
 
-All api endpoints are stored in `endpoints`
+All api endpoints are stored in `endpoints`. The endpoints are routed from main.go
+
+## Database conenction
+
+The functions managing database conenctions are stored in `db`
 
 ## Data access
 
