@@ -1,15 +1,15 @@
 CREATE SCHEMA IF NOT EXISTS "user";
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE TABLE IF NOT EXISTS "user".identifier (
-    id uuid DEFAULT uuid_generate_v4 (),
+    identifier VARCHAR(256),
     first_name VARCHAR(256) CHECK(first_name <> ''),
     last_name VARCHAR(256) CHECK(last_name <> ''),
-    email VARCHAR(256) NOT NULL UNIQUE,
-    picture VARCHAR(256) CHECK(last_name <> ''),
+    email VARCHAR(256) CHECK(email <> ''),
+    picture VARCHAR(256) CHECK(picture <> ''),
     date_created TIMESTAMP WITHOUT TIME ZONE DEFAULT(now() AT TIME ZONE 'uct'),
 	
-    PRIMARY KEY (id)
+    PRIMARY KEY (identifier)
 );
 
 CREATE TYPE "user".credential_type AS ENUM ('federated', 'local');
