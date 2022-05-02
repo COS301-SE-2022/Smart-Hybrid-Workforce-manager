@@ -29,9 +29,13 @@ Documentation in the form of a postman collection for the api is located in `doc
 # Restarting the API
 
 - Windows <br>
-  ```docker-compose down; cls; docker-compose up --build```
+  ```
+  docker-compose down; cls; docker-compose up --build
+  ```
 - Linux <br>
-  ```docker-compose down; reset; docker-compose up --build```
+  ```
+  docker-compose down; reset; docker-compose up --build
+  ```
 
 # Postgres
 
@@ -54,9 +58,13 @@ Please note that the first time `docker-compose up` is run it will error out and
 ## Restarting Postgres
 
 - Windows
+  ```
   docker-compose down; cls; docker-compose up --build
+  ```
 - Linux
+  ```
   docker-compose down; reset; docker-compose up --build
+  ```
 
 ## Removing the volume
 
