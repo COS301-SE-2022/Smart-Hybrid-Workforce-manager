@@ -5,7 +5,7 @@
   <!-- Light Mode -->
   <img src="https://user-images.githubusercontent.com/84448921/166212088-a73ac593-98ed-40d4-a266-33cc1448a366.svg#gh-light-mode-only" height=470/>
   <!-- Dark Mode -->
-  <img src="https://user-images.githubusercontent.com/84448921/166212088-a73ac593-98ed-40d4-a266-33cc1448a366.svg#gh-dark-mode-only" height=470/>
+  <img src="https://user-images.githubusercontent.com/84448921/166219030-4eece490-8184-4cff-bbcb-8d23512ffe20.png#gh-dark-mode-only" height=470/>
   
 </p>
 
