@@ -23,6 +23,24 @@ Smart Hybrid Workforce Manager is a system that aims to provide companies an eas
 # Functional Requirements
 
 ---
+# General
+
+## Starting up development environment
+
+Please note that the first time `docker-compose up` is run it will error out and have to be re-run this is because the database has to be created and the api depends on the db creation to finish.
+
+## Building docker containers
+
+    docker-compose build
+
+## Running docker containers
+
+    docker-compose up
+
+## Stopping docker containers
+
+    docker-compose down
+
 # API
 
 
@@ -43,22 +61,6 @@ Documentation in the form of a postman collection for the api is located in `doc
   ```
 
 # Postgres
-
-## Starting up development environment
-
-Please note that the first time `docker-compose up` is run it will error out and have to be re-run this is because the database has to be created and the api depends on the db creation to finish.
-
-## Building docker containers
-
-    docker-compose build
-
-## Running docker containers
-
-    docker-compose up
-
-## Stopping docker containers
-
-    docker-compose down
 
 ## Restarting Postgres
 
