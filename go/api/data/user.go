@@ -9,8 +9,9 @@ import (
 //////////////////////////////////////////////////
 // Structures and Variables
 
-// Identifier identifies a user via common attributes
-type Identifier struct {
+// User identifies a user via common attributes
+type User struct {
+	Id          string    `json:"id,omitempty"`
 	Identifier  string    `json:"identifier,omitempty"`
 	FirstName   *string   `json:"first_name,omitempty"`
 	LastName    *string   `json:"last_name,omitempty"`
@@ -44,9 +45,10 @@ func NewUserDA(access *db.Access) *UserDA {
 //////////////////////////////////////////////////
 // Mappers
 
-func mapIdentifier(rows *sql.Rows) (interface{}, error) {
-	var identifier Identifier
+func mapUser(rows *sql.Rows) (interface{}, error) {
+	var identifier User
 	err := rows.Scan(
+		&identifier.Id,
 		&identifier.Identifier,
 		&identifier.FirstName,
 		&identifier.LastName,
@@ -80,7 +82,7 @@ func mapCredential(rows *sql.Rows) (interface{}, error) {
 // Functions
 
 //StoreIdentifier stores an identifier
-func (da *UserDA) StoreIdentifier(identifier *Identifier) error {
+func (da *UserDA) StoreIdentifier(identifier *User) error {
 	_, err := da.access.Query(
 		`SELECT 1 FROM "user".identifier_store($1, $2, $3, $4, $5)`, nil,
 		identifier.Identifier, identifier.FirstName, identifier.LastName, identifier.Email, identifier.Picture)
@@ -91,14 +93,14 @@ func (da *UserDA) StoreIdentifier(identifier *Identifier) error {
 }
 
 //Find finds an identifier
-func (access *UserDA) FindIdentifier(id string) (*Identifier, error) {
+func (access *UserDA) FindIdentifier(id string) (*User, error) {
 	results, err := access.access.Query(
-		`SELECT * FROM "user".identifier_find($1)`, mapIdentifier, id)
+		`SELECT * FROM "user".identifier_find($1)`, mapUser, id)
 	if err != nil {
 		return nil, err
 	}
 	for _, result := range results {
-		if identifier, ok := result.(Identifier); ok {
+		if identifier, ok := result.(User); ok {
 			return &identifier, nil
 		}
 	}

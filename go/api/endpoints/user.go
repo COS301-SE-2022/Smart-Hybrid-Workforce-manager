@@ -71,7 +71,7 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	user = &data.Identifier{
+	user = &data.User{
 		Identifier: registerUserStruct.Email,
 		Email:      &registerUserStruct.Email,
 		FirstName:  registerUserStruct.FirstName,
