@@ -19,7 +19,7 @@ CREATE TYPE "user".credential_type AS ENUM ('federated', 'local');
 CREATE TABLE IF NOT EXISTS "user".credential (
     id VARCHAR(256),
     secret VARCHAR(256),
-    identifier VARCHAR(256) NOT NULL,
+    identifier VARCHAR(256) NOT NULL REFERENCES "user".identifier(identifier) ON DELETE CASCADE,
     "type"  "user".credential_type generated always as (
         CASE
         WHEN secret IS NULL AND id NOT ILIKE 'local.%' THEN 'federated'::"user".credential_type

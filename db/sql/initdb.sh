@@ -9,7 +9,7 @@ echo "Using database $DBNAME"
 
 CONFIG=" dbname=$DBNAME user=$USER"
 
-# example
+######### example
 for file in ${DIR}/example/*.schema.*sql
 do
   psql "$CONFIG" -f "$file"
@@ -20,7 +20,7 @@ do
   psql "$CONFIG" -f "$file"
 done
 
-# user
+######### user
 for file in ${DIR}/user/*.schema.*sql
 do
   psql "$CONFIG" -f "$file"
@@ -31,7 +31,7 @@ do
   psql "$CONFIG" -f "$file"
 done
 
-# team
+######### team
 for file in ${DIR}/team/*.schema.*sql
 do
   psql "$CONFIG" -f "$file"
@@ -41,3 +41,9 @@ for file in ${DIR}/team/*.function.*sql
 do
   psql "$CONFIG" -f "$file"
 done
+
+######### permissions
+
+######### bookings
+
+######### resources
