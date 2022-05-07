@@ -11,3 +11,18 @@ CREATE TABLE IF NOT EXISTS team.identifier (
 	
     PRIMARY KEY (id)
 );
+
+CREATE TABLE IF NOT EXISTS team.user (
+    team_id uuid NOT NULL REFERENCES team.identifier(id) ON DELETE CASCADE,
+    user_id uuid NOT NULL REFERENCES "user".identifier(id) ON DELETE CASCADE,
+    date_added TIMESTAMP WITHOUT TIME ZONE DEFAULT(now() AT TIME ZONE 'uct'),
+	
+    PRIMARY KEY (team_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS team.association (
+    team_id uuid NOT NULL REFERENCES team.identifier(id) ON DELETE CASCADE,
+    team_id_association uuid NOT NULL REFERENCES team.identifier(id) ON DELETE CASCADE,
+	
+    PRIMARY KEY (team_id, team_id_association)
+);
