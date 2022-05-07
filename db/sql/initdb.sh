@@ -74,3 +74,9 @@ for file in ${DIR}/booking/*.function.*sql
 do
   psql "$CONFIG" -f "$file"
 done
+
+######### mock
+for file in ${DIR}/mock/*.sql
+do
+  psql "$CONFIG" -f "$file"
+done
