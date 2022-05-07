@@ -42,7 +42,27 @@ do
   psql "$CONFIG" -f "$file"
 done
 
-######### permissions
+######### role
+for file in ${DIR}/role/*.schema.*sql
+do
+  psql "$CONFIG" -f "$file"
+done
+
+for file in ${DIR}/role/*.function.*sql
+do
+  psql "$CONFIG" -f "$file"
+done
+
+######### permission
+for file in ${DIR}/permission/*.schema.*sql
+do
+  psql "$CONFIG" -f "$file"
+done
+
+for file in ${DIR}/permission/*.function.*sql
+do
+  psql "$CONFIG" -f "$file"
+done
 
 ######### bookings
 
