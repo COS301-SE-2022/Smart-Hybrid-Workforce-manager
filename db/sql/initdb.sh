@@ -53,10 +53,24 @@ do
   psql "$CONFIG" -f "$file"
 done
 
-######### resources
+######### resource
+for file in ${DIR}/resource/*.schema.*sql
+do
+  psql "$CONFIG" -f "$file"
+done
 
-######### bookings
+for file in ${DIR}/resource/*.function.*sql
+do
+  psql "$CONFIG" -f "$file"
+done
+
+######### booking
 for file in ${DIR}/booking/*.schema.*sql
+do
+  psql "$CONFIG" -f "$file"
+done
+
+for file in ${DIR}/booking/*.function.*sql
 do
   psql "$CONFIG" -f "$file"
 done
