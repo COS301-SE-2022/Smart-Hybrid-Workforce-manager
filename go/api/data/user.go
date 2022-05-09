@@ -11,8 +11,8 @@ import (
 
 // User identifies a user via common attributes
 type User struct {
-	Id          string    `json:"id,omitempty"`
-	Identifier  string    `json:"identifier,omitempty"`
+	Id          *string   `json:"id,omitempty"`
+	Identifier  *string   `json:"identifier,omitempty"`
 	FirstName   *string   `json:"first_name,omitempty"`
 	LastName    *string   `json:"last_name,omitempty"`
 	Email       *string   `json:"email,omitempty"`
@@ -22,7 +22,7 @@ type User struct {
 
 // Credential identifies a login (not a user)
 type Credential struct {
-	ID             string    `json:"id,omitempty"`
+	Id             string    `json:"id,omitempty"`
 	Secret         string    `json:"secret,omitempty"`
 	Active         bool      `json:"active,omitempty"`
 	Identifier     string    `json:"identifier,omitempty"`
@@ -65,7 +65,7 @@ func mapUser(rows *sql.Rows) (interface{}, error) {
 func mapCredential(rows *sql.Rows) (interface{}, error) {
 	var cred Credential
 	err := rows.Scan(
-		&cred.ID,
+		&cred.Id,
 		&cred.Secret,
 		&cred.Active,
 		&cred.FailedAttempts,
@@ -84,8 +84,8 @@ func mapCredential(rows *sql.Rows) (interface{}, error) {
 //StoreIdentifier stores an identifier
 func (da *UserDA) StoreIdentifier(identifier *User) error {
 	_, err := da.access.Query(
-		`SELECT 1 FROM "user".identifier_store($1, $2, $3, $4, $5)`, nil,
-		identifier.Identifier, identifier.FirstName, identifier.LastName, identifier.Email, identifier.Picture)
+		`SELECT 1 FROM "user".identifier_store($1, $2, $3, $4, $5, $6)`, nil,
+		identifier.Id, identifier.Identifier, identifier.FirstName, identifier.LastName, identifier.Email, identifier.Picture)
 	if err != nil {
 		return err
 	}
