@@ -1,84 +1,59 @@
+<!-- Logo  -->
 <p align="center">
-  
-<!--   <img src="https://user-images.githubusercontent.com/84448921/166217408-e736f36b-6524-4f23-96bd-8bc20f18441c.png" height=470/> 
-                https://user-images.githubusercontent.com/84448921/166212088-a73ac593-98ed-40d4-a266-33cc1448a366.svg#gh-light-mode-only
-                ![Arche](https://user-images.githubusercontent.com/84448921/166220712-adc6088e-7907-4689-8925-305a949aeee9.png)
--->
-
-
   <!-- Light Mode -->
   <img src="https://user-images.githubusercontent.com/84448921/166220712-adc6088e-7907-4689-8925-305a949aeee9.png#gh-light-mode-only" height=470/>
   <!-- Dark Mode -->
   <img src="https://user-images.githubusercontent.com/84448921/166219030-4eece490-8184-4cff-bbcb-8d23512ffe20.png#gh-dark-mode-only" height=470/>
-  
 </p>
 
-# Description
+<!-- Description  -->
+<!-- Light Mode -->
+<img src="https://user-images.githubusercontent.com/53088824/167407018-12453be2-203a-445e-9c3d-0f50c2fa6293.png#gh-light-mode-only" height=35/>
+<!-- Dark Mode -->
+<img src="https://user-images.githubusercontent.com/53088824/167407001-1c69efc3-2f7e-449d-9952-03e34aef579f.png#gh-dark-mode-only" height=35/>
+
 Smart Hybrid Workforce Manager is a system that aims to provide companies an easy to use system for managing company resources by allowing employees to book company space and resources.
 
----
-# Project Board
+* Project Board
+* Requirements
 
----
-# Functional Requirements
+<br>
 
----
-# General
+<!-- General  -->
+<!-- Light Mode -->
+<img src="https://user-images.githubusercontent.com/53088824/167407476-7f988fa6-74d2-47c0-a5e0-d7f59b1ffb89.png#gh-light-mode-only" height=35/>
+<!-- Dark Mode -->
+<img src="https://user-images.githubusercontent.com/53088824/167407489-c3937a87-4451-4d5b-aa6a-afeeb0f89037.png#gh-dark-mode-only" height=35/>
 
 ## Starting up development environment
 
-Please note that the first time `docker-compose up` is run it will error out and have to be re-run this is because the database has to be created and the api depends on the db creation to finish.
+Please note that the first time `docker-compose up` is run the api will error out continiously until the database generation has been completed.
 
-## Building docker containers
+### Building docker containers
 
     docker-compose build
 
-## Running docker containers
+### Running docker containers
 
     docker-compose up
 
-## Stopping docker containers
+### Stopping docker containers
 
     docker-compose down
 
-# API
+## Documentation
 
-
-# Documentation
+### API
 
 Documentation in the form of a postman collection for the api is located in `documentation/api`
 
-# Restarting the API
+<br>
 
-- Windows
-  ```
-  docker-compose down; cls; docker-compose up --build
-  ```
-  
-- Linux
-  ```
-  docker-compose down; reset; docker-compose up --build
-  ```
-
-# Postgres
-
-## Restarting Postgres
-
-- Windows
-  ```
-  docker-compose down; cls; docker-compose up --build
-  ```
-- Linux
-  ```
-  docker-compose down; reset; docker-compose up --build
-  ```
-
-## Removing the volume
-
-    rm -r db/postgres-data/
-
----
-# The team
+<!-- The Team  -->
+<!-- Light Mode -->
+<img src="https://user-images.githubusercontent.com/53088824/167410792-04241b41-8c78-424c-8b64-413b23cec3d3.png#gh-light-mode-only" height=35/>
+<!-- Dark Mode -->
+<img src="https://user-images.githubusercontent.com/53088824/167410777-8bc10082-b4d1-40b3-9754-79fa28aac685.png#gh-dark-mode-only" height=35/>
 
 ## Kaylee Posthumus (Team Lead) - u19061359
 
