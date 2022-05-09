@@ -3,10 +3,10 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE IF NOT EXISTS team.identifier (
     id uuid DEFAULT uuid_generate_v4(),
-    name VARCHAR(256) CHECK(name <> ''),
-    description VARCHAR(256) CHECK(description <> ''),
+    name VARCHAR(256),
+    description VARCHAR(256),
     capacity INT,
-    picture VARCHAR(256) CHECK(picture <> ''),
+    picture VARCHAR(256),
     date_created TIMESTAMP WITHOUT TIME ZONE DEFAULT(now() AT TIME ZONE 'uct'),
 	
     PRIMARY KEY (id)
