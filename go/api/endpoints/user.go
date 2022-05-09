@@ -72,7 +72,7 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	user = &data.User{
-		Identifier: registerUserStruct.Email,
+		Identifier: &registerUserStruct.Email,
 		Email:      &registerUserStruct.Email,
 		FirstName:  registerUserStruct.FirstName,
 		LastName:   registerUserStruct.LastName,
@@ -85,8 +85,8 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	clientID := "local." + user.Identifier
-	err = da.StoreCredential(clientID, registerUserStruct.Password, user.Identifier)
+	clientID := "local." + *user.Identifier
+	err = da.StoreCredential(clientID, registerUserStruct.Password, *user.Identifier)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
