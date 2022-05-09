@@ -11,7 +11,7 @@ import (
 
 // Identifier identifies a user via common attributes
 type Team struct {
-	Id          string    `json:"id,omitempty"`
+	Id          *string   `json:"id,omitempty"`
 	Name        *string   `json:"name,omitempty"`
 	Description *string   `json:"description,omitempty"`
 	Capacity    *int      `json:"capacity,omitempty"`
@@ -56,8 +56,8 @@ func mapTeam(rows *sql.Rows) (interface{}, error) {
 //CreateTeam creates a team
 func (da *TeamDA) CreateTeam(identifier *Team) error {
 	_, err := da.access.Query(
-		`SELECT 1 FROM team.identifier_create($1, $2, $3, $4)`, nil,
-		identifier.Name, identifier.Description, identifier.Capacity, identifier.Picture)
+		`SELECT 1 FROM team.identifier_store($1, $2, $3, $4, $5)`, nil,
+		identifier.Id, identifier.Name, identifier.Description, identifier.Capacity, identifier.Picture)
 	if err != nil {
 		return err
 	}
