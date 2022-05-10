@@ -21,8 +21,17 @@ func main() {
 	// Route endpoints
 	router := mux.NewRouter().StrictSlash(true)
 
+	// User endpoints
 	userRouter := router.PathPrefix("/api/user").Subrouter()
-	err = endpoints.RegisterUserHandlers(userRouter) // registers endpoints/user.go
+	err = endpoints.RegisterUserHandlers(userRouter)
+	if err != nil {
+		logger.Error.Fatal(err)
+		os.Exit(-1)
+	}
+
+	// Team endpoints
+	teamRouter := router.PathPrefix("/api/team").Subrouter()
+	err = endpoints.TeamHandlers(teamRouter)
 	if err != nil {
 		logger.Error.Fatal(err)
 		os.Exit(-1)

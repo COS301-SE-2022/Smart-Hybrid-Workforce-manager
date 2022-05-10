@@ -9,9 +9,10 @@ import (
 //////////////////////////////////////////////////
 // Structures and Variables
 
-// Identifier identifies a user via common attributes
-type Identifier struct {
-	Identifier  string    `json:"identifier,omitempty"`
+// User identifies a user via common attributes
+type User struct {
+	Id          *string   `json:"id,omitempty"`
+	Identifier  *string   `json:"identifier,omitempty"`
 	FirstName   *string   `json:"first_name,omitempty"`
 	LastName    *string   `json:"last_name,omitempty"`
 	Email       *string   `json:"email,omitempty"`
@@ -21,7 +22,7 @@ type Identifier struct {
 
 // Credential identifies a login (not a user)
 type Credential struct {
-	ID             string    `json:"id,omitempty"`
+	Id             string    `json:"id,omitempty"`
 	Secret         string    `json:"secret,omitempty"`
 	Active         bool      `json:"active,omitempty"`
 	Identifier     string    `json:"identifier,omitempty"`
@@ -44,9 +45,10 @@ func NewUserDA(access *db.Access) *UserDA {
 //////////////////////////////////////////////////
 // Mappers
 
-func mapIdentifier(rows *sql.Rows) (interface{}, error) {
-	var identifier Identifier
+func mapUser(rows *sql.Rows) (interface{}, error) {
+	var identifier User
 	err := rows.Scan(
+		&identifier.Id,
 		&identifier.Identifier,
 		&identifier.FirstName,
 		&identifier.LastName,
@@ -63,7 +65,7 @@ func mapIdentifier(rows *sql.Rows) (interface{}, error) {
 func mapCredential(rows *sql.Rows) (interface{}, error) {
 	var cred Credential
 	err := rows.Scan(
-		&cred.ID,
+		&cred.Id,
 		&cred.Secret,
 		&cred.Active,
 		&cred.FailedAttempts,
@@ -80,10 +82,10 @@ func mapCredential(rows *sql.Rows) (interface{}, error) {
 // Functions
 
 //StoreIdentifier stores an identifier
-func (da *UserDA) StoreIdentifier(identifier *Identifier) error {
+func (da *UserDA) StoreIdentifier(identifier *User) error {
 	_, err := da.access.Query(
-		`SELECT 1 FROM "user".identifier_store($1, $2, $3, $4, $5)`, nil,
-		identifier.Identifier, identifier.FirstName, identifier.LastName, identifier.Email, identifier.Picture)
+		`SELECT 1 FROM "user".identifier_store($1, $2, $3, $4, $5, $6)`, nil,
+		identifier.Id, identifier.Identifier, identifier.FirstName, identifier.LastName, identifier.Email, identifier.Picture)
 	if err != nil {
 		return err
 	}
@@ -91,14 +93,14 @@ func (da *UserDA) StoreIdentifier(identifier *Identifier) error {
 }
 
 //Find finds an identifier
-func (access *UserDA) FindIdentifier(id string) (*Identifier, error) {
+func (access *UserDA) FindIdentifier(id string) (*User, error) {
 	results, err := access.access.Query(
-		`SELECT * FROM "user".identifier_find($1)`, mapIdentifier, id)
+		`SELECT * FROM "user".identifier_find($1)`, mapUser, id)
 	if err != nil {
 		return nil, err
 	}
 	for _, result := range results {
-		if identifier, ok := result.(Identifier); ok {
+		if identifier, ok := result.(User); ok {
 			return &identifier, nil
 		}
 	}

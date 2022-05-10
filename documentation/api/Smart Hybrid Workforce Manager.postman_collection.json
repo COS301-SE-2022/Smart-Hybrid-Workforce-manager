@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "4809d3d3-4546-41c8-be43-184ccab8d39c",
+		"_postman_id": "1d91887d-2117-413a-892f-67483c9bc67c",
 		"name": "Smart Hybrid Workforce Manager",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"first_name\":\"anonymous\",\r\n    \"last_name\":\"anonymous\",\r\n    \"email\":\"anonymous@test.com\",\r\n    \"password\" : \"password\"\r\n}",
+							"raw": "{\r\n    \"first_name\": \"anonymous\",\r\n    \"last_name\": \"anonymous\",\r\n    \"email\": \"anonymous2@test.com\",\r\n    \"password\" : \"password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -33,6 +33,41 @@
 								"api",
 								"user",
 								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Team",
+			"item": [
+				{
+					"name": "Register Team",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"anonymous\",\r\n    \"description\": \"anonymous\",\r\n    \"capacity\": 5,\r\n    \"picture\": \"example\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8100/api/team/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8100",
+							"path": [
+								"api",
+								"team",
+								"create"
 							]
 						}
 					},
