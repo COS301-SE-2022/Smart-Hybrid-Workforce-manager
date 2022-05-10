@@ -14,8 +14,33 @@
 
 Smart Hybrid Workforce Manager is a system that aims to provide companies an easy to use system for managing company resources by allowing employees to book company space and resources.
 
-* Project Board
-* Requirements
+<a href="https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/projects" target="_blank">
+  ➛ Project Board<br>
+</a> 
+<a href="#" target="_blank">
+  ➛ Requirements<br>
+</a> 
+
+<br>
+
+<!--Demo Information -->
+<!-- Light Mode -->
+<img src="https://user-images.githubusercontent.com/53088824/167414148-c20f5db2-2c61-423a-8611-cf5b39fc5c7a.png#gh-light-mode-only" height=35/>
+<!-- Dark Mode -->
+<img src="https://user-images.githubusercontent.com/53088824/167414102-bf02aafc-c50c-40db-88bf-671a0e7a345d.png#gh-dark-mode-only" height=35/>
+
+<a href="#" target="_blank">
+  ➛ Demo 1<br>
+</a> 
+<a href="#" target="_blank">
+  ➛ Demo 2<br>
+</a> 
+<a href="#" target="_blank">
+  ➛ Demo 3<br>
+</a> 
+<a href="#" target="_blank">
+  ➛ Demo 4<br>
+</a> 
 
 <br>
 
@@ -135,10 +160,4 @@ I am a 3rd year BSc Information and Knowledge systems student, specialising in d
 <br><br><br><br><br><br>
 </details>
 
-<br><br>
-
-<!--Demo Information -->
-<!-- Light Mode -->
-<img src="https://user-images.githubusercontent.com/53088824/167414148-c20f5db2-2c61-423a-8611-cf5b39fc5c7a.png#gh-light-mode-only" height=35/>
-<!-- Dark Mode -->
-<img src="https://user-images.githubusercontent.com/53088824/167414102-bf02aafc-c50c-40db-88bf-671a0e7a345d.png#gh-dark-mode-only" height=35/>
+<br>
