@@ -23,7 +23,7 @@ func main() {
 
 	// User endpoints
 	userRouter := router.PathPrefix("/api/user").Subrouter()
-	err = endpoints.RegisterUserHandlers(userRouter)
+	err = endpoints.UserHandlers(userRouter)
 	if err != nil {
 		logger.Error.Fatal(err)
 		os.Exit(-1)
@@ -32,6 +32,14 @@ func main() {
 	// Team endpoints
 	teamRouter := router.PathPrefix("/api/team").Subrouter()
 	err = endpoints.TeamHandlers(teamRouter)
+	if err != nil {
+		logger.Error.Fatal(err)
+		os.Exit(-1)
+	}
+
+	// Booking endpoints
+	bookingRouter := router.PathPrefix("/api/booking").Subrouter()
+	err = endpoints.BookingHandlers(bookingRouter)
 	if err != nil {
 		logger.Error.Fatal(err)
 		os.Exit(-1)

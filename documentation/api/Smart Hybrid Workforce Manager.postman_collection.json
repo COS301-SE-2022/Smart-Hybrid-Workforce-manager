@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"first_name\": \"anonymous\",\r\n    \"last_name\": \"anonymous\",\r\n    \"email\": \"anonymous2@test.com\",\r\n    \"password\" : \"password\"\r\n}",
+							"raw": "{\r\n    \"id\":\"\"\r\n    \"first_name\": \"anonymous\",\r\n    \"last_name\": \"anonymous\",\r\n    \"email\": \"asd@test.com\",\r\n    \"password\" : \"password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -45,6 +45,41 @@
 			"item": [
 				{
 					"name": "Register Team",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"anonymous\",\r\n    \"description\": \"anonymous\",\r\n    \"capacity\": 5,\r\n    \"picture\": \"example\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8100/api/team/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8100",
+							"path": [
+								"api",
+								"team",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Booking",
+			"item": [
+				{
+					"name": "Create Booking",
 					"request": {
 						"method": "POST",
 						"header": [],

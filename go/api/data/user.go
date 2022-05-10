@@ -42,6 +42,11 @@ func NewUserDA(access *db.Access) *UserDA {
 	}
 }
 
+// Commit commits the current implicit transaction
+func (access *UserDA) Commit() error {
+	return access.access.Commit()
+}
+
 //////////////////////////////////////////////////
 // Mappers
 
@@ -82,8 +87,8 @@ func mapCredential(rows *sql.Rows) (interface{}, error) {
 // Functions
 
 //StoreIdentifier stores an identifier
-func (da *UserDA) StoreIdentifier(identifier *User) error {
-	_, err := da.access.Query(
+func (access *UserDA) StoreIdentifier(identifier *User) error {
+	_, err := access.access.Query(
 		`SELECT 1 FROM "user".identifier_store($1, $2, $3, $4, $5, $6)`, nil,
 		identifier.Id, identifier.Identifier, identifier.FirstName, identifier.LastName, identifier.Email, identifier.Picture)
 	if err != nil {
@@ -92,10 +97,11 @@ func (da *UserDA) StoreIdentifier(identifier *User) error {
 	return nil
 }
 
-//Find finds an identifier
-func (access *UserDA) FindIdentifier(id string) (*User, error) {
+//FindIdentifier finds an identifier
+func (access *UserDA) FindIdentifier(identifier *User) (*User, error) {
 	results, err := access.access.Query(
-		`SELECT * FROM "user".identifier_find($1)`, mapUser, id)
+		`SELECT * FROM "user".identifier_find($1, $2, $3, $4, $5, $6, $7)`, mapUser,
+		identifier.Id, identifier.Identifier, identifier.FirstName, identifier.LastName, identifier.Email, identifier.Picture, identifier.DateCreated)
 	if err != nil {
 		return nil, err
 	}
@@ -114,9 +120,4 @@ func (access *UserDA) StoreCredential(Id string, secret *string, identifier stri
 		return err
 	}
 	return nil
-}
-
-// Commit commits the current implicit transaction
-func (access *UserDA) Commit() error {
-	return access.access.Commit()
 }
