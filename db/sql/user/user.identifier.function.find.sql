@@ -24,8 +24,8 @@ BEGIN
     WHERE (_id IS NULL OR i.id = _id)
     AND (_identifier IS NULL OR i.identifier = _identifier)
     AND (_first_name IS NULL OR i.first_name = _first_name)
-    AND (_last_name IS NULL OR i.last_name >= _last_name)
-    AND (_email IS NULL OR i.email >= _email)
+    AND (_last_name IS NULL OR i.last_name = _last_name)
+    AND (_email IS NULL OR i.email = _email)
     AND (_picture IS NULL OR i.picture = _picture)
     AND (_date_created IS NULL OR i.date_created >= _date_created);
 END

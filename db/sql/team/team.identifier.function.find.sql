@@ -23,7 +23,7 @@ BEGIN
     AND (_name IS NULL OR i.name = _name)
     AND (_description IS NULL OR i.description = _description)
     AND (_capacity IS NULL OR i.capacity = _capacity)
-    AND (_picture IS NULL OR i.picture >= _picture)
+    AND (_picture IS NULL OR i.picture = _picture)
     AND (_date_created IS NULL OR i.date_created >= _date_created);
 END
 $$ LANGUAGE plpgsql;
