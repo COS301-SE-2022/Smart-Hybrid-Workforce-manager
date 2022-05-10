@@ -6,3 +6,76 @@
     margin: 0;
     padding: 0;
 }
+
+.content
+{
+    position: absolute;
+    min-width: 100%;
+    min-height: 90vh;
+    background-color: #252525;
+}
+
+.card-container
+{
+    display: flex;
+
+    margin-left: calc((100vw - 60vw) / 2);
+    margin-top: 10vh;
+}
+
+.card
+{
+    display: grid;
+    grid-template-columns: 25vw;
+    grid-template-rows: 30vh 30vh 10vh;
+    grid-template-areas: "image" "text" "icon";
+
+    width: 25vw;
+    height: 70vh;
+
+    margin-left: 2.5vw;
+    margin-right: 2.5vw;
+  
+    border-radius: 4vh;
+    background: white;
+    box-shadow: 1vh 1vh 4vh rgba(0,0,0,0.9);
+    text-align: center;
+}
+
+.card-image
+{
+    grid-area: image;
+    background: url("https://introducingsa.co.za/wp-content/uploads/sites/142/2022/03/Home-office.png");
+    background-size: cover;
+    border-top-left-radius: 4vh;
+    border-top-right-radius: 4vh;
+}
+
+.card-image2
+{
+    grid-area: image;
+    background: url("https://synivate.com/wp-content/uploads/conference-room-meetings-1-400x249.jpg");
+    background-size: cover;
+    border-top-left-radius: 4vh;
+    border-top-right-radius: 4vh;
+}
+
+.card-text 
+{
+    grid-area: text;
+    margin-top: 6vh;
+    margin-left: 2vw;
+    margin-right: 2vw;
+}
+
+.card-text h2
+{
+    font-size: 3.5vh;
+}
+
+.card-text p
+{
+    margin-top: 1vh;
+    color: grey;
+    font-size: 2vh;
+}
