@@ -4,10 +4,22 @@ import { FaBars } from "react-icons/fa"
 
 export const Nav =  styled.nav`
     background: #21232f;
-    height: 10vh;
+    height: 6vh;
     display: flex;
     justify-content: space-between;
     z-index: 10;
+`
+
+export const NavHeader =  styled.nav`
+    color: #fff;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0 3vh;
+    letter-spacing: 0.5vh;
+    font-size: 1.8vh;
+    border-style: none;
+    height: 100%;
 `
 
 export const NavLink = styled(Link)`
@@ -19,15 +31,17 @@ export const NavLink = styled(Link)`
     cursor: pointer;
     letter-spacing: 0.5vh;
     font-size: 1.8vh;
+    border-style: none;
+    height: 100%;
 
     &.active
     {
-        color: #09A4FB;
+        border-bottom: 0.5vh solid #09A4FB;
     }
 
     &:hover
     {
-        color: #09A4FB;
+        color: #919191;
     }
 `
 

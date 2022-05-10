@@ -1,13 +1,13 @@
 import React from 'react'
-import { Nav, NavLink, Bars, NavMenu, NavBtn, NavBtnLink } from './NavbarElements'
+import { Nav, NavHeader, NavLink, Bars, NavMenu, NavBtn, NavBtnLink } from './NavbarElements'
 
 const Navbar = () => {
   return (
     <div>
         <Nav>
-            <NavLink to="/">
+            <NavHeader to="/">
                 <h1>SMART-HYBRID WORKFORCE MANAGER</h1>
-            </NavLink>
+            </NavHeader>
             <Bars />
             <NavMenu>
                 <NavLink to="/home" activeStyle>
