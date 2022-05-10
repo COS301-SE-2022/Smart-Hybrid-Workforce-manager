@@ -1,10 +1,17 @@
+
 <!-- Logo  -->
 <p align="center">
   <!-- Light Mode -->
   <img src="https://user-images.githubusercontent.com/84448921/166220712-adc6088e-7907-4689-8925-305a949aeee9.png#gh-light-mode-only" height=470/>
   <!-- Dark Mode -->
   <img src="https://user-images.githubusercontent.com/84448921/166219030-4eece490-8184-4cff-bbcb-8d23512ffe20.png#gh-dark-mode-only" height=470/>
+  <br>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="react" width="40" height="40"/>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Docker_%28container_engine%29_logo.svg" alt="docker" height="40"/>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Go_Logo_Blue.svg" alt="go" height="35"/>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Postgresql_elephant.svg" alt="postgres" height="35"/>
 </p>
+<br>
 
 <!-- Description  -->
 <!-- Light Mode -->
