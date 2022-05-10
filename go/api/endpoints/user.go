@@ -27,8 +27,8 @@ type RegisterUserStruct struct {
 /////////////////////////////////////////////
 // Endpoints
 
-//RegisterUserHandlers registers the user
-func RegisterUserHandlers(router *mux.Router) error {
+//UserHandlers registers the user
+func UserHandlers(router *mux.Router) error {
 	router.HandleFunc("/register", RegisterUserHandler).Methods("POST")
 	return nil
 }
@@ -60,7 +60,7 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 
 	da := data.NewUserDA(access)
 
-	user, err := da.FindIdentifier(registerUserStruct.Email)
+	user, err := da.FindIdentifier(&data.User{Email: &registerUserStruct.Email})
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
