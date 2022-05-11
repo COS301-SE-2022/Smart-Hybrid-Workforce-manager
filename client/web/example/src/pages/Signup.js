@@ -5,8 +5,8 @@ import Button from 'react-bootstrap/Button'
 function Signup()
 {
   return (
-    <div>
-      <div className='content'>
+    <div className='page-container'>
+      <div className='content-login'>
         <div className='login-grid'>
           <div className='form-container-signup'>
             <p className='form-header'><h1>CREATE AN ACCOUNT</h1>Please enter your details.</p>

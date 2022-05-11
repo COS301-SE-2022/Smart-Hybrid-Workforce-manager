@@ -5,8 +5,8 @@ import Button from 'react-bootstrap/Button'
 function Login()
 {
   return (
-    <div>
-      <div className='content'>
+    <div className='page-container'>
+      <div className='content-login'>
         <div className='login-grid'>
           <div className='form-container-login'>
             <p className='form-header'><h1>WELCOME BACK</h1>Please enter your details.</p>
