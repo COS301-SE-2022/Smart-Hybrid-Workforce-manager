@@ -10,14 +10,14 @@ RETURNS TABLE (
     id uuid,
 	room_id uuid,
 	location VARCHAR(256),
-	resource_preference_id uuid,
-	resource_type TIMESTAMP,
+	role_id uuid,
+	resource_type resource.type,
     date_created TIMESTAMP
 ) AS 
 $$
 BEGIN
     RETURN QUERY
-    SELECT i.id, i.room_id, i.location, i.resource_preference_id, i.resource_type, i.date_created
+    SELECT i.id, i.room_id, i.location, i.role_id, i.resource_type, i.date_created
     FROM resource.identifier as i
     WHERE (_id IS NULL OR i.id = _id)
     AND (_room_id IS NULL OR i.room_id = _room_id)
