@@ -142,20 +142,36 @@
     grid-template-areas: "form-container" "image-container";
 
     overflow: hidden; 
+
+    animation: fadeIn ease 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
 }
 
-.form-container
+.form-container-login
 {
     grid-area: 'form-container';
     display: grid;
-    grid-template-columns: 35vw;
+    grid-template-columns: 50vw;
     grid-template-rows: 15vh 40vh auto;
     grid-template-areas: "header" "form" "signup";
 
     margin-top: 15vh;
-    margin-left: 15vh;
 
-    width: 35vw;
+    width: 50vw;
+}
+
+.form-container-signup
+{
+    grid-area: 'form-container';
+    display: grid;
+    grid-template-columns: 50vw;
+    grid-template-rows: 15vh 40vh;
+    grid-template-areas: "header" "form";
+
+    margin-top: 10vh;
+
+    width: 50vw;
 }
 
 .form-header
@@ -167,7 +183,13 @@
     text-align: center;
 }
 
-.form-container h1
+.form-container-login h1
+{
+    color: white;
+    font-size: 7vh;
+}
+
+.form-container-signup h1
 {
     color: white;
     font-size: 7vh;
@@ -176,11 +198,11 @@
 .form
 {
     grid-area: form;
+    margin-left: 12.5vw;
 }
 
 .form-group
 {
-    margin-left: 5vw;
     margin-top: 3vh;
 }
 
@@ -209,7 +231,6 @@
 
 .button-submit
 {
-    margin-left: 5vw;
     margin-top: 5vh;
     width: 25vw;
     height: 5.5vh;

@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Login from './pages/Login'
+import Signup from './pages/Signup'
 import Bookings from './pages/Bookings'
 import Teams from './pages/Teams'
 import Meetings from './pages/Meetings'
@@ -12,6 +13,7 @@ function App()
       <Routes>
         <Route path="/" exact element={<Home/>} />
         <Route path="/login" exact element={<Login/>} />
+        <Route path="/signup" exact element={<Signup/>} />
         <Route path="/bookings" exact element={<Bookings/>} />
         <Route path="/bookings-desk" exact element={<Bookings/>} />
         <Route path="/bookings-meeting" exact element={<Bookings/>} />

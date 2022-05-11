@@ -8,7 +8,7 @@ function Login()
     <div>
       <div className='content'>
         <div className='login-grid'>
-          <div className='form-container'>
+          <div className='form-container-login'>
             <p className='form-header'><h1>WELCOME BACK</h1>Please enter your details.</p>
             
             <Form className='form'>
