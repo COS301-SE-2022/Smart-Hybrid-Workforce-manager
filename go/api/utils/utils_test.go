@@ -7,13 +7,12 @@ import (
 	"testing"
 )
 
-type testType struct {
-	StrField   string  `json:"strfield"`
-	FloatField float64 `json:"floatfield"`
-	IntSlice   []int   `json:"intslice"`
-}
-
 func TestUnmarshalJSON(t *testing.T) {
+	type testType struct {
+		StrField   string  `json:"strfield"`
+		FloatField float64 `json:"floatfield"`
+		IntSlice   []int   `json:"intslice"`
+	}
 	type args struct {
 		w *httptest.ResponseRecorder
 		r *http.Request
@@ -104,5 +103,64 @@ func TestUnmarshalJSON(t *testing.T) {
 			}
 		})
 	}
+}
 
+func Test_jsonResponse(t *testing.T) {
+	type testType struct {
+		StrField   string  `json:"strfield"`
+		FloatField float64 `json:"floatfield"`
+		IntSlice   []int   `json:"intslice"`
+	}
+	type args struct {
+		w       *httptest.ResponseRecorder
+		r       *http.Request
+		payload testType
+	}
+
+	type expect struct {
+		statusCode int
+		body       string // change perhaps
+	}
+
+	tests := []struct {
+		name   string
+		args   args
+		expect expect
+	}{
+		{
+			name: "Valid Payload",
+			args: args{
+				w: httptest.NewRecorder(),
+				r: nil,
+				payload: testType{
+					StrField:   "This is a String Field.",
+					FloatField: 12.5,
+					IntSlice:   []int{1, 2, 3},
+				},
+			},
+			expect: expect{
+				statusCode: 200,
+				body:       "not yet a proper body",
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			writer := tt.args.w
+			jsonResponse(writer, tt.args.r, tt.expect.statusCode, tt.args.payload)
+			resp := writer.Result()
+			defer resp.Body.Close()
+			if resp.StatusCode != tt.expect.statusCode {
+				t.Errorf("\033[31mExpected HTTP status code %d, got %d instead\033[0m", resp.StatusCode, tt.expect.statusCode)
+				t.FailNow()
+			}
+			// 'Content-Type' hardcoded since it will always be JSON as per the jsonResponse function
+			if resp.Header.Get("Content-Type") != "application/json" {
+				t.Errorf("\033[31mExpected Content-type of 'application/json', got %s instead\033[0m", resp.Header.Get("Content-type"))
+				t.FailNow()
+			}
+
+		})
+	}
 }
