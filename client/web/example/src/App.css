@@ -134,23 +134,31 @@
     100% { opacity: 1;}
 }
 
+.login-grid
+{
+    display: grid;
+    grid-template-columns: 50vw 50vw;
+    grid-template-rows: 100vh;
+    grid-template-areas: "form-container" "image-container";
+
+    overflow: hidden; 
+}
+
 .form-container
 {
+    grid-area: 'form-container';
     display: grid;
     grid-template-columns: 35vw;
     grid-template-rows: 15vh 40vh auto;
     grid-template-areas: "header" "form" "signup";
 
     margin-top: 15vh;
-    margin-left: 20vh;
-
-    /* border-style: solid;
-    border-color: white; */
+    margin-left: 15vh;
 
     width: 35vw;
 }
 
-.form-container p
+.form-header
 {
     grid-area: header;
     color: rgb(170, 170, 170);
@@ -186,8 +194,8 @@
 {
     margin-top: 1vh;
     padding-left: 1vw;
-    padding-top: 0.5vh;
-    padding-bottom: 0.5vh;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
     width: 25vw;
 
     background-color: #252525;
@@ -196,5 +204,61 @@
     border-style: solid;
     border-radius: 1.5vh;
 
-    font-size: 3vh; 
+    font-size: 2vh; 
+}
+
+.button-submit
+{
+    margin-left: 5vw;
+    margin-top: 5vh;
+    width: 25vw;
+    height: 5.5vh;
+
+    background-color: #09A4FB;
+    color: white;
+
+    border-style: none;
+    border-radius: 1.3vh;
+
+    font-size: 2vh;
+}
+
+.button-submit:hover
+{
+    cursor: pointer;
+    background-color: #03639b;
+}
+
+.signup-prompt
+{
+    grid-area: signup;
+
+    text-align: center;
+    color: rgb(170, 170, 170);
+
+    font-size: 2vh;
+}
+
+.signup-link
+{
+    color: #09A4FB;
+    text-decoration: none;
+}
+
+.signup-link:hover
+{
+    color: #03639b;
+}
+
+.image-container
+{
+    grid-area: "image-container";
+    width: 50vw;
+    height: 110vh;
+}
+
+.login-image
+{
+    width: 100%;
+    height: 100%;
 }
