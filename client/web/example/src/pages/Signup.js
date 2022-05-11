@@ -29,7 +29,7 @@ function Signup()
 
               <Form.Group className='form-group' controlId="formBasicPassword">
                 <Form.Label className='form-label'>Password<br></br></Form.Label>
-                <Form.Control className='form-input' type="text" placeholder="Enter your password" />
+                <Form.Control className='form-input' type="password" placeholder="Enter your password" />
               </Form.Group>
 
               <Button className='button-submit' variant='primary' type='submit'>Create Account</Button>
@@ -37,7 +37,7 @@ function Signup()
           </div>
 
           <div className='image-container'>
-            <img className='login-image' src='https://i.pinimg.com/originals/43/90/d7/4390d72e6a6cb6086c73e570bb6c439d.jpg' alt='office'></img>
+            <img className='login-image' src='https://i.pinimg.com/originals/3b/79/c7/3b79c7a4a275b5ee1dbb76731f9736b8.png' alt='office'></img>
           </div>
         </div>
 

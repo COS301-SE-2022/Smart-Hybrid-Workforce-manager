@@ -1,9 +1,14 @@
 import React from 'react'
+import Navbar from '../components/Navbar'
+import '../App.css'
 
 const Teams = () => {
   return (
     <div>
-        Teams
+      <Navbar />
+      <div className='content'>
+          
+      </div>
     </div>
   )
 }
