@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"lib/testutils"
 	"math"
@@ -302,5 +303,59 @@ func TestBadRequest(t *testing.T) {
 	} else {
 		t.Errorf(testutils.Scolour(testutils.RED, "Message not set, expected message to be '%s'"), message)
 		t.FailNow()
+	}
+}
+
+func TestInternalServerError(t *testing.T) {
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodPost, "/somepath/", strings.NewReader("stringbody"))
+	message := errors.New("Mock Error")
+	InternalServerError(writer, request, message)
+	response := writer.Result()
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusInternalServerError {
+		t.Errorf(testutils.Scolour(testutils.RED, "Expected status code %d, got %d instead"), http.StatusInternalServerError, response.StatusCode)
+		t.FailNow()
+	}
+	dataBytes, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		t.Errorf(testutils.Scolour(testutils.RED, "Expected err to be nil but got %v instead"), err)
+	}
+	var errResponse errorResponse
+	err = json.Unmarshal(dataBytes, &errResponse)
+	if err != nil {
+		t.Errorf(testutils.Scolour(testutils.RED, "Error unmarshalling response body, expected err to nil, got %v instead"), err)
+		t.FailNow()
+	}
+	if status, ok := errResponse.Error["status"]; ok {
+		statusInt := int(status.(float64))
+		if statusInt != http.StatusInternalServerError {
+			t.Errorf(testutils.Scolour(testutils.RED, "Expected status to be %v (%T), got %v (%T) instead"), http.StatusInternalServerError, http.StatusInternalServerError, statusInt, statusInt)
+			t.FailNow()
+		}
+	} else {
+		t.Errorf(testutils.Scolour(testutils.RED, "Status not set, expected status to be %v"), http.StatusInternalServerError)
+		t.FailNow()
+	}
+	if msg, ok := errResponse.Error["message"]; ok {
+		if msg != message {
+			t.Errorf(testutils.Scolour(testutils.RED, "Expected message to be '%v' (%T), got '%v' (%T) instead"), message, message, msg, msg)
+			t.FailNow()
+		}
+	} else {
+		t.Errorf(testutils.Scolour(testutils.RED, "Message not set, expected message to be '%v'"), message)
+		t.FailNow()
+	}
+}
+
+func TestOk(t *testing.T) {
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodGet, "/somepath/", nil)
+	Ok(writer, request)
+	resp := writer.Result()
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf(testutils.Scolour(testutils.RED, "Expected response status code to be %d but got %d instead"), http.StatusOK, resp.StatusCode)
 	}
 }
