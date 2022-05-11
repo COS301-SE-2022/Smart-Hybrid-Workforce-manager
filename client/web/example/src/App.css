@@ -40,12 +40,18 @@
     background: white;
     box-shadow: 1vh 1vh 4vh rgba(0,0,0,0.9);
     text-align: center;
+
+    transition: 0.5s ease-in-out;
+
+    animation: fadeIn ease 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
 }
 
 .card-image
 {
     grid-area: image;
-    background: url("https://introducingsa.co.za/wp-content/uploads/sites/142/2022/03/Home-office.png");
+    background: linear-gradient(#fff0 0%, #fff0 70%, #1d1d1d 100%), url("https://introducingsa.co.za/wp-content/uploads/sites/142/2022/03/Home-office.png");
     background-size: cover;
     border-top-left-radius: 4vh;
     border-top-right-radius: 4vh;
@@ -54,7 +60,7 @@
 .card-image2
 {
     grid-area: image;
-    background: url("https://synivate.com/wp-content/uploads/conference-room-meetings-1-400x249.jpg");
+    background: linear-gradient(#fff0 0%, #fff0 70%, #1d1d1d 100%), url("https://synivate.com/wp-content/uploads/conference-room-meetings-1-400x249.jpg");
     background-size: cover;
     border-top-left-radius: 4vh;
     border-top-right-radius: 4vh;
@@ -78,4 +84,17 @@
     margin-top: 1vh;
     color: grey;
     font-size: 2vh;
+}
+
+.card:hover
+{
+    transform: scale(1.15);
+    cursor: pointer;
+    transition: 0.5s ease-in-out;
+}
+ 
+@keyframes fadeIn
+{
+    0% { opacity: 0;}
+    100% { opacity: 1;}
 }
