@@ -10,16 +10,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-//////////////////////////////////////////////////
-// Structures and Variables
-
-type CreateTeamStruct struct {
-	Name        *string `json:"name,omitempty"`
-	Description *string `json:"description,omitempty"`
-	Capacity    *int    `json:"capacity,omitempty"`
-	Picture     *string `json:"picture,omitempty"`
-}
-
 /////////////////////////////////////////////
 // Endpoints
 
@@ -34,9 +24,9 @@ func TeamHandlers(router *mux.Router) error {
 
 // CreateTeamHandler creates a new team
 func CreateTeamHandler(writer http.ResponseWriter, request *http.Request) {
-	var createTeamStruct CreateTeamStruct
+	var team data.Team
 
-	err := utils.UnmarshalJSON(writer, request, &createTeamStruct)
+	err := utils.UnmarshalJSON(writer, request, &team)
 	if err != nil {
 		utils.BadRequest(writer, request, "invalid_request")
 		return
@@ -51,14 +41,7 @@ func CreateTeamHandler(writer http.ResponseWriter, request *http.Request) {
 
 	da := data.NewTeamDA(access)
 
-	team := &data.Team{
-		Name:        createTeamStruct.Name,
-		Description: createTeamStruct.Description,
-		Capacity:    createTeamStruct.Capacity,
-		Picture:     createTeamStruct.Picture,
-	}
-
-	err = da.CreateTeam(team)
+	err = da.CreateTeam(&team)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
