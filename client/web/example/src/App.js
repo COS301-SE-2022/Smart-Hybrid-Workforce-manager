@@ -13,6 +13,8 @@ function App()
       <Routes>
         <Route path="/" exact element={<Home/>} />
         <Route path="/bookings" exact element={<Bookings/>} />
+        <Route path="/bookings-desk" exact element={<Bookings/>} />
+        <Route path="/bookings-meeting" exact element={<Bookings/>} />
         <Route path="/teams" exact element={<Teams/>} />
         <Route path="/meetings" exact element={<Meetings/>} />
       </Routes>
