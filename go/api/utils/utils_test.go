@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -119,7 +121,6 @@ func Test_jsonResponse(t *testing.T) {
 
 	type expect struct {
 		statusCode int
-		body       string // change perhaps
 	}
 
 	tests := []struct {
@@ -140,7 +141,32 @@ func Test_jsonResponse(t *testing.T) {
 			},
 			expect: expect{
 				statusCode: 200,
-				body:       "not yet a proper body",
+			},
+		},
+		{
+			name: "Empty Payload",
+			args: args{
+				w:       httptest.NewRecorder(),
+				r:       nil,
+				payload: testType{},
+			},
+			expect: expect{
+				statusCode: 200,
+			},
+		},
+		{
+			name: "Status 400",
+			args: args{
+				w: httptest.NewRecorder(),
+				r: nil,
+				payload: testType{
+					StrField:   "This is a String Field.",
+					FloatField: 12.5,
+					IntSlice:   []int{1, 2, 3},
+				},
+			},
+			expect: expect{
+				statusCode: 400,
 			},
 		},
 	}
@@ -160,7 +186,19 @@ func Test_jsonResponse(t *testing.T) {
 				t.Errorf("\033[31mExpected Content-type of 'application/json', got %s instead\033[0m", resp.Header.Get("Content-type"))
 				t.FailNow()
 			}
-
+			// Test contents, use UnmarshallJSON to test correctness
+			bodyBytes, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("\033[31mError reading response body, expected err to be %v, got %v instead\033[0m", nil, err)
+				t.FailNow()
+			}
+			body := string(bodyBytes)
+			expectedBodyBytes, _ := json.Marshal(tt.args.payload)
+			expectedBody := string(expectedBodyBytes) + "\n" // added since json.Encoder delimits with '\n'
+			if body != expectedBody {
+				t.Errorf("\033[31mPayload not marshalled correctly, expected to payload to be %s, got %s instead\033[0m", expectedBody, body)
+				t.FailNow()
+			}
 		})
 	}
 }
