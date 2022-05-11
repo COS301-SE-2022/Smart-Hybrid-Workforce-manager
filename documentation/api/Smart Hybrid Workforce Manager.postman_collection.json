@@ -85,7 +85,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"anonymous\",\r\n    \"description\": \"anonymous\",\r\n    \"capacity\": 5,\r\n    \"picture\": \"example\"\r\n}",
+							"raw": "{\r\n    \"user_id\": \"11111111-dc08-4a06-9983-8b374586e459\",\r\n    \"resource_type\": \"DESK\",\r\n    \"resource_preference_id\": null,\r\n    \"start\": \"2012-04-23T18:25:43.511Z\",\r\n    \"end\": \"2012-04-23T18:25:43.511Z\",\r\n    \"booked\": false\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -93,7 +93,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8100/api/team/create",
+							"raw": "http://localhost:8100/api/booking/create",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -101,7 +101,7 @@
 							"port": "8100",
 							"path": [
 								"api",
-								"team",
+								"booking",
 								"create"
 							]
 						}
