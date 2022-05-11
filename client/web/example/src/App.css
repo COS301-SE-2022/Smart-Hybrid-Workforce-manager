@@ -1,18 +1,62 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
 *{
     font-family: "Poppins";
+    font-weight: 400;
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
+::-webkit-scrollbar
+{
+    width: 12px;
+    background-color: #252525;
+}
+
+::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;
+    background-color: rgb(61, 61, 61);
+}
+
+::-webkit-scrollbar-thumb:hover
+{
+    border-radius: 10px;
+    background-color: rgb(17, 17, 17);
+}
+
+.page-container
+{
+    position: relative;
+    min-height: 100vh;
+}
+
 .content
 {
-    position: absolute;
-    min-width: 100%;
-    min-height: 90vh;
+    padding-bottom: 20vh;
     background-color: #252525;
+}
+
+.content-login
+{
+    background-color: #252525;
+}
+
+.footer
+{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 10vh;
+    background-color: #1b1b1b;
+
+    color: white;
+    text-align: center;
+    padding-top: 2vh;
+
+    font-size: 1.5vh;
+    letter-spacing: 0.3vw;
 }
 
 .card-container
@@ -27,11 +71,11 @@
 {
     display: grid;
     grid-template-columns: 25vw;
-    grid-template-rows: 30vh 30vh 10vh;
+    grid-template-rows: 30vh auto 10vh;
     grid-template-areas: "image" "text" "icon";
 
-    width: 25vw;
-    height: 70vh;
+    min-width: 25vw;
+    min-height: 70vh;
 
     margin-left: 2.5vw;
     margin-right: 2.5vw;
@@ -88,7 +132,7 @@
 
 .card:hover
 {
-    transform: scale(1.15);
+    transform: scale(1.05);
     cursor: pointer;
     transition: 0.5s ease-in-out;
 }
@@ -97,4 +141,205 @@
 {
     0% { opacity: 0;}
     100% { opacity: 1;}
+}
+
+.login-grid
+{
+    display: grid;
+    grid-template-columns: 50vw 50vw;
+    grid-template-rows: 100vh;
+    grid-template-areas: "form-container" "image-container";
+
+    overflow: hidden; 
+}
+
+.form-container-login
+{
+    grid-area: 'form-container';
+    display: grid;
+    grid-template-columns: 50vw;
+    grid-template-rows: 15vh 40vh auto;
+    grid-template-areas: "header" "form" "signup";
+
+    margin-top: 15vh;
+
+    width: 50vw;
+}
+
+.form-container-signup
+{
+    grid-area: 'form-container';
+    display: grid;
+    grid-template-columns: 50vw;
+    grid-template-rows: 15vh 40vh;
+    grid-template-areas: "header" "form";
+
+    margin-top: 10vh;
+
+    width: 50vw;
+}
+
+.form-container-team
+{
+    grid-area: 'form-container';
+    display: grid;
+    grid-template-columns: 50vw;
+    grid-template-rows: 15vh auto;
+    grid-template-areas: "header" "form";
+
+    margin-top: 3vh;
+    margin-left: 25vw;
+
+    width: 50vw;
+}
+
+.form-header
+{
+    grid-area: header;
+    color: rgb(170, 170, 170);
+
+    font-size: 2.5vh;
+    text-align: center;
+}
+
+.form-container-login h1
+{
+    color: white;
+    font-size: 7vh;
+}
+
+.form-container-signup h1
+{
+    color: white;
+    font-size: 7vh;
+}
+
+.form-container-team h1
+{
+    color: white;
+    font-size: 7vh;
+}
+
+.form
+{
+    grid-area: form;
+    margin-left: 12.5vw;
+}
+
+.form-group
+{
+    margin-top: 3vh;
+}
+
+.form-label
+{
+    color: white;
+    font-size: 3vh;
+}
+
+.form-input
+{
+    margin-top: 1vh;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    width: 25vw;
+
+    background-color: #252525;
+    color: rgb(170, 170, 170);
+
+    border-style: solid;
+    border-radius: 1.5vh;
+
+    font-size: 2vh; 
+}
+
+.form-input-textarea
+{
+    resize: vertical;
+
+    margin-top: 1vh;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    width: 25vw;
+
+    background-color: #252525;
+    color: rgb(170, 170, 170);
+
+    border-style: solid;
+    border-radius: 1.5vh;
+
+    font-size: 2vh; 
+}
+
+.form-input-file
+{
+    margin-top: 1vh;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    width: 25vw;
+
+    background-color: #252525;
+    color: rgb(170, 170, 170);
+
+    border-style: none;
+
+    font-size: 2vh;
+}
+
+.button-submit
+{
+    margin-top: 5vh;
+    width: 25vw;
+    height: 5.5vh;
+
+    background-color: #09A4FB;
+    color: white;
+
+    border-style: none;
+    border-radius: 1.3vh;
+
+    font-size: 2vh;
+}
+
+.button-submit:hover
+{
+    cursor: pointer;
+    background-color: #03639b;
+}
+
+.signup-prompt
+{
+    grid-area: signup;
+
+    text-align: center;
+    color: rgb(170, 170, 170);
+
+    font-size: 2vh;
+}
+
+.signup-link
+{
+    color: #09A4FB;
+    text-decoration: none;
+}
+
+.signup-link:hover
+{
+    color: #03639b;
+}
+
+.image-container
+{
+    grid-area: "image-container";
+    width: 50vw;
+    height: 110vh;
+}
+
+.login-image
+{
+    width: 100%;
+    height: 100%;
 }
