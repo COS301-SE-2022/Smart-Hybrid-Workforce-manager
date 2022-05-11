@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"io/ioutil"
+	"lib/testutils"
 	"math"
 	"net/http"
 	"net/http/httptest"
@@ -252,8 +253,54 @@ func Test_jsonResponse(t *testing.T) {
 			respString := string(respBytes)
 			if respString != "" {
 				t.Errorf("Expected response body to be \"\", got %s instead", respString)
+				t.FailNow()
 			}
+			// Update at some point to catch log output
 		})
 	}
+}
 
+func TestBadRequest(t *testing.T) {
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodPost, "/somepath/", strings.NewReader("stringbody"))
+	message := "bad request made"
+	BadRequest(writer, request, message)
+
+	response := writer.Result()
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusBadRequest {
+		t.Errorf(testutils.Scolour(testutils.RED, "Expected status code %d, got %d instead"), http.StatusBadRequest, response.StatusCode)
+		t.FailNow()
+	}
+	dataBytes, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		t.Errorf(testutils.Scolour(testutils.RED, "Expected err to be nil but got %v instead"), err)
+	}
+	var errResponse errorResponse
+	err = json.Unmarshal(dataBytes, &errResponse)
+	if err != nil {
+		t.Errorf(testutils.Scolour(testutils.RED, "Error unmarshalling response body, expected err to nil, got %v instead"), err)
+		t.FailNow()
+	}
+	if status, ok := errResponse.Error["status"]; ok {
+		statusInt := int(status.(float64))
+		if statusInt != http.StatusBadRequest {
+			t.Errorf(testutils.Scolour(testutils.RED, "Expected status to be %v (%T), got %v (%T) instead"), http.StatusBadRequest, http.StatusBadRequest, statusInt, statusInt)
+			t.FailNow()
+		}
+	} else {
+		t.Errorf(testutils.Scolour(testutils.RED, "Status not set, expected status to be %v"), http.StatusBadRequest)
+		t.FailNow()
+	}
+
+	if msg, ok := errResponse.Error["message"]; ok {
+		if msg != message {
+			t.Errorf(testutils.Scolour(testutils.RED, "Expected message to be '%s' (%T), got '%s' (%T) instead"), message, message, msg, msg)
+			t.FailNow()
+		}
+	} else {
+		t.Errorf(testutils.Scolour(testutils.RED, "Message not set, expected message to be '%s'"), message)
+		t.FailNow()
+	}
 }
