@@ -34,7 +34,7 @@
 
 .content
 {
-    padding-bottom: 15vh;
+    padding-bottom: 20vh;
     background-color: #252525;
 }
 
@@ -266,6 +266,22 @@
     border-radius: 1.5vh;
 
     font-size: 2vh; 
+}
+
+.form-input-file
+{
+    margin-top: 1vh;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    width: 25vw;
+
+    background-color: #252525;
+    color: rgb(170, 170, 170);
+
+    border-style: none;
+
+    font-size: 2vh;
 }
 
 .button-submit

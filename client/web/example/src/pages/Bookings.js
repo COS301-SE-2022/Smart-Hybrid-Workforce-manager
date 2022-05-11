@@ -20,9 +20,9 @@ function Bookings()
   }
 
   return (
-    <div>
-      <Navbar />
+    <div className='page-container'>
       <div className='content'>
+        <Navbar />
         <div className='card-container'>
           <div className="card" onClick={routeDesk}>
             <div className="card-image"></div>
@@ -46,9 +46,8 @@ function Bookings()
             </div>
           </div>
         </div>
-
-        <Footer />
       </div>  
+      <Footer />
     </div>
   )
 }

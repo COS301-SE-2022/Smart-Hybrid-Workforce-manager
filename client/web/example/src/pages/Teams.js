@@ -29,9 +29,9 @@ const Teams = () => {
               <Form.Control className='form-input' type="text" placeholder="Enter your email" />
             </Form.Group>
 
-            <Form.Group className='form-group' controlId="formBasicPassword">
+            <Form.Group className='form-group' controlId="formFile">
               <Form.Label className='form-label'>Team Picture<br></br></Form.Label>
-              <Form.Control className='form-input' type="file" placeholder="Enter your password" />
+              <Form.Control className='form-input-file' type="file" />
             </Form.Group>
 
             <Button className='button-submit' variant='primary' type='submit'>Create Team</Button>
