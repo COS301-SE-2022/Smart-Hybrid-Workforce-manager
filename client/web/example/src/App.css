@@ -26,11 +26,15 @@
     background-color: rgb(17, 17, 17);
 }
 
+.page-container
+{
+    position: relative;
+    min-height: 100vh;
+}
+
 .content
 {
-    position: absolute;
-    min-width: 100%;
-    min-height: 100vh;
+    padding-bottom: 15vh;
     background-color: #252525;
 }
 
@@ -170,6 +174,20 @@
     width: 50vw;
 }
 
+.form-container-team
+{
+    grid-area: 'form-container';
+    display: grid;
+    grid-template-columns: 50vw;
+    grid-template-rows: 15vh auto;
+    grid-template-areas: "header" "form";
+
+    margin-top: 3vh;
+    margin-left: 25vw;
+
+    width: 50vw;
+}
+
 .form-header
 {
     grid-area: header;
@@ -186,6 +204,12 @@
 }
 
 .form-container-signup h1
+{
+    color: white;
+    font-size: 7vh;
+}
+
+.form-container-team h1
 {
     color: white;
     font-size: 7vh;
@@ -210,6 +234,25 @@
 
 .form-input
 {
+    margin-top: 1vh;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    width: 25vw;
+
+    background-color: #252525;
+    color: rgb(170, 170, 170);
+
+    border-style: solid;
+    border-radius: 1.5vh;
+
+    font-size: 2vh; 
+}
+
+.form-input-textarea
+{
+    resize: vertical;
+
     margin-top: 1vh;
     padding-left: 1vw;
     padding-top: 1vh;
