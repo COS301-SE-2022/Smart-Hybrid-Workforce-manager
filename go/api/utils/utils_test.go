@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -116,7 +117,7 @@ func Test_jsonResponse(t *testing.T) {
 	type args struct {
 		w       *httptest.ResponseRecorder
 		r       *http.Request
-		payload testType
+		payload interface{}
 	}
 
 	type expect struct {
@@ -132,7 +133,7 @@ func Test_jsonResponse(t *testing.T) {
 			name: "Valid Payload",
 			args: args{
 				w: httptest.NewRecorder(),
-				r: nil,
+				r: httptest.NewRequest(http.MethodGet, "/irrelevant/", nil),
 				payload: testType{
 					StrField:   "This is a String Field.",
 					FloatField: 12.5,
@@ -147,7 +148,7 @@ func Test_jsonResponse(t *testing.T) {
 			name: "Empty Payload",
 			args: args{
 				w:       httptest.NewRecorder(),
-				r:       nil,
+				r:       httptest.NewRequest(http.MethodGet, "/irrelevant/", nil),
 				payload: testType{},
 			},
 			expect: expect{
@@ -158,12 +159,23 @@ func Test_jsonResponse(t *testing.T) {
 			name: "Status 400",
 			args: args{
 				w: httptest.NewRecorder(),
-				r: nil,
+				r: httptest.NewRequest(http.MethodGet, "/irrelevant/", nil),
 				payload: testType{
 					StrField:   "This is a String Field.",
 					FloatField: 12.5,
 					IntSlice:   []int{1, 2, 3},
 				},
+			},
+			expect: expect{
+				statusCode: 400,
+			},
+		},
+		{
+			name: "Single value JSON",
+			args: args{
+				w:       httptest.NewRecorder(),
+				r:       httptest.NewRequest(http.MethodGet, "/irrelevant/", nil),
+				payload: 123,
 			},
 			expect: expect{
 				statusCode: 400,
@@ -201,4 +213,47 @@ func Test_jsonResponse(t *testing.T) {
 			}
 		})
 	}
+
+	badTests := []struct {
+		name   string
+		args   args
+		expect expect
+	}{
+		{
+			name: "Invalid value Payload",
+			args: args{
+				w: httptest.NewRecorder(),
+				r: httptest.NewRequest(http.MethodGet, "/irrelevant/", nil),
+				// payload: math.Inf,
+				payload: math.Inf,
+			},
+			expect: expect{
+				statusCode: 200,
+			},
+		},
+	}
+
+	for _, tt := range badTests {
+		t.Run(tt.name, func(t *testing.T) {
+			writer := tt.args.w
+			jsonResponse(writer, tt.args.r, tt.expect.statusCode, tt.args.payload)
+			resp := writer.Result()
+			defer resp.Body.Close()
+			if resp.StatusCode != tt.expect.statusCode {
+				t.Errorf("\033[31mExpected HTTP status code %d, got %d instead\033[0m", resp.StatusCode, tt.expect.statusCode)
+				t.FailNow()
+			}
+			// 'Content-Type' hardcoded since it will always be JSON as per the jsonResponse function
+			if resp.Header.Get("Content-Type") != "application/json" {
+				t.Errorf("\033[31mExpected Content-type of 'application/json', got %s instead\033[0m", resp.Header.Get("Content-type"))
+				t.FailNow()
+			}
+			respBytes, _ := ioutil.ReadAll(resp.Body)
+			respString := string(respBytes)
+			if respString != "" {
+				t.Errorf("Expected response body to be \"\", got %s instead", respString)
+			}
+		})
+	}
+
 }
