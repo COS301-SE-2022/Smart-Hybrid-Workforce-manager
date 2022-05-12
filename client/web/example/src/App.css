@@ -191,6 +191,10 @@
     margin-left: 25vw;
 
     width: 50vw;
+
+    animation: fadeIn ease 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
 }
 
 .form-header
