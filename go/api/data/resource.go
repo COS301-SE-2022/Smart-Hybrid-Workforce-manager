@@ -2,37 +2,36 @@ package data
 
 import (
 	"api/db"
-	"database/sql"
-	"time"
 )
 
 //////////////////////////////////////////////////
 // Structures and Variables
 type ResourceType int8
+
 const (
-	Parking		ResourceType = iota+1
+	Parking ResourceType = iota + 1
 	Desk
 	MeetingRoom
 )
 
 // ResourceType func to get as string
-func (r ResourceType) toString() string{
-	return [...]string{"Parking","Desk","MeetingRoom"}[r-1]
+func (r ResourceType) toString() string {
+	return [...]string{"Parking", "Desk", "MeetingRoom"}[r-1]
 }
 
 // Building indentifies a Building Resource via common attributes
 type Building struct {
-	Id			*string		`json:"id,omitempty"`
-	location	*string		`json:"location,omitempty"`
-	Dimension	*string		`json:"dimension,omitempty"`
+	Id        *string `json:"id,omitempty"`
+	Location  *string `json:"location,omitempty"`
+	Dimension *string `json:"dimension,omitempty"`
 }
 
 type Room struct {
-	Id				*string		`json:"id,omitempty"`
-	BuildingId		*string		`json: "building_id,omitempty"`
-	location		*string		`json:"location,omitempty"`
-	Dimension		*string		`json:"dimension,omitempty"`
-	RoomAssociates	[]string	`json:"room_associates,omitempty"`
+	Id             *string  `json:"id,omitempty"`
+	BuildingId     *string  `json: "building_id,omitempty"`
+	Location       *string  `json:"location,omitempty"`
+	Dimension      *string  `json:"dimension,omitempty"`
+	RoomAssociates []string `json:"room_associates,omitempty"`
 }
 
 // BookingDA provides access to the database for authentication purposes
@@ -50,9 +49,5 @@ func NewResourceDA(access *db.Access) *ResourcesDA {
 //////////////////////////////////////////////////
 // Mappers
 
-
-
 //////////////////////////////////////////////////
 // Functions
-
-

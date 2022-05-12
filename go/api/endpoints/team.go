@@ -4,8 +4,6 @@ import (
 	"api/data"
 	"api/db"
 	"api/utils"
-	"encoding/json"
-	"fmt"
 	"lib/logger"
 	"net/http"
 
@@ -18,10 +16,11 @@ import (
 //TeamHandlers manages teams
 func TeamHandlers(router *mux.Router) error {
 	router.HandleFunc("/create", CreateTeamHandler).Methods("POST")
-	router.HandleFunc("/profile", LoadTeamHandler).Methods("GET")
-	router.HandleFunc("/profile", UpdateTeamHandler).Methods("POST")
-	router.HandleFunc("/members", AddTeamMemberHandler).Methods("PUT")
-	router.HandleFunc("/members", RemoveTeamMember).Methods("DELETE")
+	router.HandleFunc("/information", InformationTeamHandler).Methods("POST")
+	router.HandleFunc("/update", UpdateTeamHandler).Methods("POST")
+	router.HandleFunc("/add", AddTeamMemberHandler).Methods("POST")
+	router.HandleFunc("/remove", RemoveTeamMember).Methods("POST")
+	router.HandleFunc("/delete", DeleteTeam).Methods("POST")
 	return nil
 }
 
@@ -64,30 +63,47 @@ func CreateTeamHandler(writer http.ResponseWriter, request *http.Request) {
 	utils.Ok(writer, request)
 }
 
-func LoadTeamHandler(writer http.ResponseWriter, request *http.Request) {
+func InformationTeamHandler(writer http.ResponseWriter, request *http.Request) {
+	logger.Info.Println("team information requested")
+	name := "Team#1"
 	t := data.Team{
-		Name: "Team#1",
+		Name: &name,
 	}
-	json.NewEncoder(writer).Encode(t)
+	utils.JSONResponse(writer, request, t)
 }
 
 func UpdateTeamHandler(writer http.ResponseWriter, request *http.Request) {
+	logger.Info.Println("team update requested")
+	name := "Team#1"
 	t := data.Team{
-		Name: "Team#1",
+		Name: &name,
 	}
-	json.NewEncoder(writer).Encode(t)
+	utils.JSONResponse(writer, request, t)
 }
 
 func AddTeamMemberHandler(writer http.ResponseWriter, request *http.Request) {
+	logger.Info.Println("team member addition requested")
+	name := "Team#1"
 	t := data.Team{
-		Name: "Team#1",
+		Name: &name,
 	}
-	json.NewEncoder(writer).Encode(t)
+	utils.JSONResponse(writer, request, t)
 }
 
 func RemoveTeamMember(writer http.ResponseWriter, request *http.Request) {
+	logger.Info.Println("team member remove requested")
+	name := "Team#1"
 	t := data.Team{
-		Name: "Team#1",
+		Name: &name,
 	}
-	json.NewEncoder(writer).Encode(t)
+	utils.JSONResponse(writer, request, t)
+}
+
+func DeleteTeam(writer http.ResponseWriter, request *http.Request) {
+	logger.Info.Println("team delete requested")
+	name := "Team#1"
+	t := data.Team{
+		Name: &name,
+	}
+	utils.JSONResponse(writer, request, t)
 }

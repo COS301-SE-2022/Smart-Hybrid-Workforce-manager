@@ -11,12 +11,12 @@ import (
 
 // Identifier identifies a user via common attributes
 type Team struct {
-	Id          *string   `json:"id,omitempty"`
-	Name        *string   `json:"name,omitempty"`
-	Description *string   `json:"description,omitempty"`
-	Capacity    *int      `json:"capacity,omitempty"`
-	Picture     *string   `json:"picture,omitempty"`
-	DateCreated time.Time `json:"date_created,omitempty"`
+	Id          *string    `json:"id,omitempty"`
+	Name        *string    `json:"name,omitempty"`
+	Description *string    `json:"description,omitempty"`
+	Capacity    *int       `json:"capacity,omitempty"`
+	Picture     *string    `json:"picture,omitempty"`
+	DateCreated *time.Time `json:"date_created,omitempty"`
 }
 
 // TeamDA provides access to the database for team management

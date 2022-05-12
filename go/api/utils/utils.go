@@ -9,8 +9,8 @@ import (
 /////////////////////////////////////////////
 // Structures
 
-type errorResponse struct {					`json:"status"`
-	Error 	map[string]interface{} 	`json:"error"`
+type errorResponse struct {
+	Error map[string]interface{} `json:"error"`
 }
 
 type HandlerFunc func(http.ResponseWriter, *http.Request)
@@ -73,5 +73,11 @@ func InternalServerError(writer http.ResponseWriter, request *http.Request, err 
 func Ok(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Set("Content-Type", "text/plain")
 	writer.WriteHeader(http.StatusOK)
+	logger.HTTP.Printf("INFO %v %v [200]\n", request.RemoteAddr, request.RequestURI)
+}
+
+// JSONResponse the standard ok (200) response with JSON content
+func JSONResponse(writer http.ResponseWriter, request *http.Request, value interface{}) {
+	jsonResponse(writer, request, http.StatusOK, value)
 	logger.HTTP.Printf("INFO %v %v [200]\n", request.RemoteAddr, request.RequestURI)
 }

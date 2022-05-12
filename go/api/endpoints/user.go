@@ -4,8 +4,6 @@ import (
 	"api/data"
 	"api/db"
 	"api/utils"
-	"encoding/json"
-	"fmt"
 	"lib/logger"
 	"net/http"
 	"regexp"
@@ -32,9 +30,9 @@ type RegisterUserStruct struct {
 //UserHandlers registers the user
 func UserHandlers(router *mux.Router) error {
 	router.HandleFunc("/register", RegisterUserHandler).Methods("POST")
-	router.HandleFunc("/profile", LoadUserHandler).Methods("GET")
-	router.HandleFunc("/profile", UpdateUserHandler).Methods("POST")
-	router.HandleFunc("/profile", DeleteUserHandler).Methods("DELETE")
+	router.HandleFunc("/information", InformationUserHandler).Methods("POST")
+	router.HandleFunc("/update", UpdateUserHandler).Methods("POST")
+	router.HandleFunc("/remove", RemoveUserHandler).Methods("POST")
 	return nil
 }
 
@@ -108,22 +106,14 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 	utils.Ok(writer, request)
 }
 
-func LoadUserHandler(writer http.ResponseWriter, request *http.Request) {
-	fmt.Println(writer)
-	fmt.Println(request)
-
+func InformationUserHandler(writer http.ResponseWriter, request *http.Request) {
+	logger.Info.Println("user information requested")
 }
 
 func UpdateUserHandler(writer http.ResponseWriter, request *http.Request) {
-	fmt.Println(writer)
-	fmt.Println(request)
-
+	logger.Info.Println("user update requested")
 }
 
-func DeleteUserHandler(writer http.ResponseWriter, request *http.Request) {
-	writer.Header().Set("Content-Type","application/json")
-	json.NewEncoder(writer).Encode()
-	fmt.Println(writer)
-	fmt.Println(request)
-
+func RemoveUserHandler(writer http.ResponseWriter, request *http.Request) {
+	logger.Info.Println("user remove requested")
 }
