@@ -132,3 +132,4 @@ func (users Users) FindHead() *User {
 	}
 	return users[0]
 }
+

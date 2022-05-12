@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"lib/logger"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -18,6 +19,8 @@ import (
 func BookingHandlers(router *mux.Router) error {
 	router.HandleFunc("/create", CreateBookingHandler).Methods("POST")
 	router.HandleFunc("/information", InformationBookingHandler).Methods("POST")
+	router.HandleFunc("/update", UpdateBookingHandler).Methods("POST")
+	router.HandleFunc("/remove", DeleteBookingHandler).Methods("POST")
 	return nil
 }
 
@@ -98,4 +101,35 @@ func InformationBookingHandler(writer http.ResponseWriter, request *http.Request
 	logger.Access.Printf("%v booking information requested\n", booking.Id)
 
 	utils.JSONResponse(writer, request, bookings)
+}
+
+// UpdateBookingHandler rewrites fields for booking where applicable
+func UpdateBookingHandler(writer http.ResponseWriter, request *http.Request){
+	var booking data.Booking
+
+	err := utils.UnmarshalJSON(writer, request, &booking)
+	if err != nil {
+		fmt.Println(err)
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	time := time.Now() 
+	b := data.Booking{
+		Start: &time,
+	}
+	utils.JSONResponse(writer, request, b)
+}
+
+// DeleteBookingHandler rewrites fields for booking where applicable
+func DeleteBookingHandler(writer http.ResponseWriter, request *http.Request){
+	var booking data.Booking
+
+	err := utils.UnmarshalJSON(writer, request, &booking)
+	if err != nil {
+		fmt.Println(err)
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+	utils.Ok(writer, request)
 }

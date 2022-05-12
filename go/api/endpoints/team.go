@@ -19,9 +19,9 @@ func TeamHandlers(router *mux.Router) error {
 	router.HandleFunc("/create", CreateTeamHandler).Methods("POST")
 	router.HandleFunc("/information", InformationTeamHandler).Methods("POST")
 	router.HandleFunc("/update", UpdateTeamHandler).Methods("POST")
-	router.HandleFunc("/add", AddTeamMemberHandler).Methods("POST")
-	router.HandleFunc("/remove", RemoveTeamMember).Methods("POST")
-	router.HandleFunc("/delete", DeleteTeam).Methods("POST")
+	router.HandleFunc("/members", UpdateTeamMemberHandler).Methods("POST")
+	router.HandleFunc("/list", RemoveTeamMember).Methods("POST")
+	router.HandleFunc("/remove", DeleteTeam).Methods("POST")
 	return nil
 }
 
@@ -109,7 +109,7 @@ func UpdateTeamHandler(writer http.ResponseWriter, request *http.Request) {
 	utils.JSONResponse(writer, request, t)
 }
 
-func AddTeamMemberHandler(writer http.ResponseWriter, request *http.Request) {
+func UpdateTeamMemberHandler(writer http.ResponseWriter, request *http.Request) {
 	logger.Info.Println("team member addition requested")
 	name := "Team#1"
 	t := data.Team{
