@@ -7,41 +7,11 @@ import { useNavigate } from 'react-router-dom'
 function Bookings()
 {
   let navigate = useNavigate();
-  /*const routeDesk = () =>
+  const routeDesk = () =>
   {
     let path = "/bookings-desk";
     navigate(path);
-  }*/
-
-  let handleSubmit = async (e) =>
-  {
-    e.preventDefault();
-    try
-    {
-      let res = await fetch("http://localhost:8100/api/booking/create", 
-      {
-        method: "POST",
-        body: JSON.stringify({
-          id: null,
-          user_id: "11111111-dc08-4a06-9983-8b374586e459",
-          resource_type: "DESK",
-          resource_preference_id: null,
-          start: "2012-04-23T18:25:43.511Z",
-          end: "2012-04-23T18:25:43.511Z",
-          booked: false
-        })
-      });
-
-      if(res.status === 200)
-      {
-        alert("Booking Successfully Created!");
-      }
-    }
-    catch(err)
-    {
-      console.log(err);
-    }
-  };
+  }
 
   const routeMeeting = () =>
   {
@@ -54,7 +24,7 @@ function Bookings()
       <div className='content'>
         <Navbar />
         <div className='card-container'>
-          <div className="card" onClick={handleSubmit}>
+          <div className="card" onClick={routeDesk}>
             <div className="card-image"></div>
             <div className="card-text">
               <h2>Desk</h2>

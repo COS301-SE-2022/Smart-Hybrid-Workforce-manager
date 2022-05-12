@@ -359,9 +359,9 @@
 .booking
 {
     display: grid;
-    grid-template-columns: 25vw;
-    grid-template-rows: 30vh auto 10vh;
-    grid-template-areas: "image" "text" "icon";
+    grid-template-columns: 25vw 25vw;
+    grid-template-rows: 30vh;
+    grid-template-areas: "image" "text";
 
     width: 50vw;
     height: 30vh;
@@ -380,4 +380,45 @@
     animation: fadeIn ease 3s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
+}
+
+.booking-image
+{
+    grid-area: 'image';
+    background: linear-gradient(#fff0 0%, #fff0 70%, #1d1d1d 100%), url("https://media.istockphoto.com/photos/the-setup-for-success-picture-id1165916723?k=20&m=1165916723&s=612x612&w=0&h=ASBd76yDYvooY6s-Bck44cvzRcYOqkQBAzvEnKUUivw=");
+    background-size: cover;
+    border-top-left-radius: 4vh;
+    border-bottom-left-radius: 4vh;
+}
+
+.booking-text
+{
+    grid-area: 'text';
+
+    margin-top: 4vh;
+
+    text-align: center;
+    font-size: 3vh;
+}
+
+.button-booking
+{
+    margin-top: 5vh;
+    margin-left: 37vw;
+    width: 25vw;
+    height: 5.5vh;
+
+    background-color: #09A4FB;
+    color: white;
+
+    border-style: none;
+    border-radius: 1.3vh;
+
+    font-size: 2vh;
+}
+
+.button-booking:hover
+{
+    cursor: pointer;
+    background-color: #03639b;
 }
