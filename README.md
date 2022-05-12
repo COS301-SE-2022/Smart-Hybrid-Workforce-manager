@@ -11,6 +11,15 @@
   <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Go_Logo_Blue.svg" alt="go" height="35"/>
   <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Postgresql_elephant.svg" alt="postgres" height="35"/>
 </p>
+
+<a href = "https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/COS301-SE-2022/Smart-Hybrid-Workforce-manager?style=for-the-badge"></a>
+
+[![COS301-SE-2022](https://circleci.com/gh/COS301-SE-2022/Smart-Hybrid-Workforce-manager.svg?style=svg)](https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/issues)
+
+[![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=svg)](https://circleci.com/gh/circleci/circleci-docs)
+
+![example](https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/workflows/deploy.yml/badge.svg?event=pull_request)
+
 <br>
 
 <!-- Description  -->
