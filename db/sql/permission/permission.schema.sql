@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TYPE permission.type AS ENUM ('CREATE', 'DELETE', 'VIEW', 'EDIT');
 CREATE TYPE permission.category AS ENUM ('USER', 'BOOKING', 'PERMISSION');
-CREATE TYPE permission.tenant AS ENUM ('ROLE', 'USER', 'TEAM');
+CREATE TYPE permission.tenant AS ENUM ('ROLE', 'USER', 'TEAM'); -- If null then it means all
 
 CREATE TABLE IF NOT EXISTS permission.role (
     role_id uuid NOT NULL REFERENCES role.identifier(id) ON DELETE CASCADE,

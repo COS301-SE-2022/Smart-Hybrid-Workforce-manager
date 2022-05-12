@@ -30,6 +30,9 @@ type RegisterUserStruct struct {
 //UserHandlers registers the user
 func UserHandlers(router *mux.Router) error {
 	router.HandleFunc("/register", RegisterUserHandler).Methods("POST")
+	router.HandleFunc("/information", InformationUserHandler).Methods("POST")
+	router.HandleFunc("/update", UpdateUserHandler).Methods("POST")
+	router.HandleFunc("/remove", RemoveUserHandler).Methods("POST")
 	return nil
 }
 
@@ -101,4 +104,16 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 	logger.Access.Printf("%v registered\n", user.Identifier)
 
 	utils.Ok(writer, request)
+}
+
+func InformationUserHandler(writer http.ResponseWriter, request *http.Request) {
+	logger.Info.Println("user information requested")
+}
+
+func UpdateUserHandler(writer http.ResponseWriter, request *http.Request) {
+	logger.Info.Println("user update requested")
+}
+
+func RemoveUserHandler(writer http.ResponseWriter, request *http.Request) {
+	logger.Info.Println("user remove requested")
 }

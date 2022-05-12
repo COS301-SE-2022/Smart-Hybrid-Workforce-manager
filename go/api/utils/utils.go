@@ -75,3 +75,9 @@ func Ok(writer http.ResponseWriter, request *http.Request) {
 	writer.WriteHeader(http.StatusOK)
 	logger.HTTP.Printf("INFO %v %v [200]\n", request.RemoteAddr, request.RequestURI)
 }
+
+// JSONResponse the standard ok (200) response with JSON content
+func JSONResponse(writer http.ResponseWriter, request *http.Request, value interface{}) {
+	jsonResponse(writer, request, http.StatusOK, value)
+	logger.HTTP.Printf("INFO %v %v [200]\n", request.RemoteAddr, request.RequestURI)
+}
