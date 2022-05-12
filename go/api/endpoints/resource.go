@@ -20,3 +20,6 @@ func ResourceHandlers(router *mux.Router) error {
 	//router.HandleFunc("/create", CreateTeamHandler).Methods("POST")
 	return nil
 }
+
+/////////////////////////////////////////////
+// Functions
