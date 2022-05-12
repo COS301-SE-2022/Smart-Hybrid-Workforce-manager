@@ -79,13 +79,108 @@
 			"name": "Booking",
 			"item": [
 				{
+					"name": "Information",
+					"item": [
+						{
+							"name": "All",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/booking/information",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"booking",
+										"information"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Booking Id",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"33333333-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/booking/information",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"booking",
+										"information"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User Id",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": null,\r\n    \"user_id\" : \"11111111-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/booking/information",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"booking",
+										"information"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Create Booking",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"user_id\": \"11111111-dc08-4a06-9983-8b374586e459\",\r\n    \"resource_type\": \"DESK\",\r\n    \"resource_preference_id\": null,\r\n    \"start\": \"2012-04-23T18:25:43.511Z\",\r\n    \"end\": \"2012-04-23T18:25:43.511Z\",\r\n    \"booked\": false\r\n}",
+							"raw": "{\r\n    \"id\": \"33333333-dc08-4a06-9983-8b374586e459\",\r\n    \"user_id\": \"11111111-dc08-4a06-9983-8b374586e459\",\r\n    \"resource_type\": \"DESK\",\r\n    \"resource_preference_id\": null,\r\n    \"start\": \"2012-04-23T18:25:43.511Z\",\r\n    \"end\": \"2012-04-23T18:25:43.511Z\",\r\n    \"booked\": false\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

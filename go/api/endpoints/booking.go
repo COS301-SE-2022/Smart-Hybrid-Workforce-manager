@@ -17,6 +17,7 @@ import (
 //BookingHandlers handles booking requests
 func BookingHandlers(router *mux.Router) error {
 	router.HandleFunc("/create", CreateBookingHandler).Methods("POST")
+	router.HandleFunc("/information", InformationBookingHandler).Methods("POST")
 	return nil
 }
 
@@ -60,4 +61,41 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request) {
 	logger.Access.Printf("%v created\n", booking.Id)
 
 	utils.Ok(writer, request)
+}
+
+// InformationBookingHandler registers a new user
+func InformationBookingHandler(writer http.ResponseWriter, request *http.Request) {
+	var booking data.Booking
+
+	err := utils.UnmarshalJSON(writer, request, &booking)
+	if err != nil {
+		fmt.Println(err)
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	da := data.NewBookingDA(access)
+
+	bookings, err := da.FindIdentifier(&booking)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	logger.Access.Printf("%v booking information requested\n", booking.Id)
+
+	utils.JSONResponse(writer, request, bookings)
 }

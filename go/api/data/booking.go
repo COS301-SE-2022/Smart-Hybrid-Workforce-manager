@@ -21,6 +21,9 @@ type Booking struct {
 	DateCreated          *time.Time `json:"date_created,omitempty"`
 }
 
+// Bookings represent a splice of Booking
+type Bookings []*Booking
+
 // BookingDA provides access to the database for authentication purposes
 type BookingDA struct {
 	access *db.Access
@@ -69,17 +72,18 @@ func (access *BookingDA) StoreIdentifier(identifier *Booking) error {
 }
 
 //FindIdentifier finds an identifier
-func (access *BookingDA) FindIdentifier(identifier *Booking) (*Booking, error) {
+func (access *BookingDA) FindIdentifier(identifier *Booking) (Bookings, error) {
 	results, err := access.access.Query(
-		`SELECT * FROM booking.identifier_find($1, $2, $3, $4, $5, $6, $7, $8)`, mapUser,
+		`SELECT * FROM booking.identifier_find($1, $2, $3, $4, $5, $6, $7, $8)`, mapBooking,
 		identifier.Id, identifier.UserId, identifier.ResourceType, identifier.ResourcePreferenceId, identifier.Start, identifier.End, identifier.Booked, identifier.DateCreated)
 	if err != nil {
 		return nil, err
 	}
-	for _, result := range results {
-		if identifier, ok := result.(Booking); ok {
-			return &identifier, nil
+	tmp := make([]*Booking, 0)
+	for r, _ := range results {
+		if value, ok := results[r].(Booking); ok {
+			tmp = append(tmp, &value)
 		}
 	}
-	return nil, nil
+	return tmp, nil
 }

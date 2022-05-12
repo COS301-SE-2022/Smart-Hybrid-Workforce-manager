@@ -28,7 +28,7 @@ type Building struct {
 
 type Room struct {
 	Id             *string  `json:"id,omitempty"`
-	BuildingId     *string  `json: "building_id,omitempty"`
+	BuildingId     *string  `json:"building_id,omitempty"`
 	Location       *string  `json:"location,omitempty"`
 	Dimension      *string  `json:"dimension,omitempty"`
 	RoomAssociates []string `json:"room_associates,omitempty"`
