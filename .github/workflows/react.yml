@@ -28,5 +28,5 @@ jobs:
         run: npm run build --if-present
 
       - name: Test
-        working-directory: ./go/api
+        working-directory: ./client/web/example
         run: npm test
