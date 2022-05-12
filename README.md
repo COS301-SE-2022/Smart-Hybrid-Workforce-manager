@@ -12,13 +12,11 @@
   <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Postgresql_elephant.svg" alt="postgres" height="35"/>
 </p>
 
-<a href = "https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/COS301-SE-2022/Smart-Hybrid-Workforce-manager?style=for-the-badge"></a>
-
-[![COS301-SE-2022](https://circleci.com/gh/COS301-SE-2022/Smart-Hybrid-Workforce-manager.svg?style=svg)](https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/issues)
-
-[![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=svg)](https://circleci.com/gh/circleci/circleci-docs)
-
-![example](https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/workflows/deploy.yml/badge.svg?event=pull_request)
+<a href = "https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/COS301-SE-2022/Smart-Hybrid-Workforce-manager"></a>
+[![Docker Image CI](https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/actions/workflows/deploy.yml/badge.svg)](https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/actions/workflows/deploy.yml)
+[![codecov](https://codecov.io/gh/COS301-SE-2022/Smart-Hybrid-Workforce-manager/branch/master/graph/badge.svg?token=FP6940JI0D)](https://codecov.io/gh/COS301-SE-2022/Smart-Hybrid-Workforce-manager)
+[![Requirements Status](https://requires.io/github/InThePipeFiveByFive/Smart-Hybrid-Workforce-manager/requirements.svg?branch=master)](https://requires.io/github/InThePipeFiveByFive/Smart-Hybrid-Workforce-manager/requirements/?branch=master) 
+<img alt="Uptime Robot status" src="https://img.shields.io/uptimerobot/status/m791728122-d14beed6408606d9175acebf">
 
 <br>
 
