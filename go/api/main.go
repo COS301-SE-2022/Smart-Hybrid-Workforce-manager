@@ -54,6 +54,22 @@ func main() {
 		os.Exit(-1)
 	}
 
+	// Role endpoints
+	roleRouter := router.PathPrefix("/api/role").Subrouter()
+	err = endpoints.RoleHandlers(roleRouter)
+	if err != nil {
+		logger.Error.Fatal(err)
+		os.Exit(-1)
+	}
+
+	// Permission endpoints
+	permissionRouter := router.PathPrefix("/api/permission").Subrouter()
+	err = endpoints.PermissionHandlers(permissionRouter)
+	if err != nil {
+		logger.Error.Fatal(err)
+		os.Exit(-1)
+	}
+
 	// Start API on port 8080 in its docker container
 	logger.Info.Println("Starting API on 8080")
 	logger.Error.Fatal(http.ListenAndServe(":8080", router))

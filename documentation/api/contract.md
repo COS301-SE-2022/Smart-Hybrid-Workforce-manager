@@ -1,30 +1,119 @@
 
 # User
 
+## User Object
+```
+type User struct {
+	Id
+	Identifier
+	FirstName
+	LastName
+	Email
+	Picture
+	DateCreated
+}
+```
+
+|Name|Path|Request|Response|Descripiton|
+|---|---|---|---|---|
+|createUser|/api/user/register|User|void|Creates a user|
+|loadUser|/api/user/information|User[]|User[]|Load users. Will return all if left blank, else will only return data of specified users|
+|updateUser|/api/user/update|User|void|Update user according to fields|
+|deleteUser|/api/user/remove|User|void|Delete user|
+|loadRoles| /api/user/roles|User|Role[]|Loads all the roles a user has|
+|loadTeams| /api/user/teams|User|Team[]|Loads all the teams a user is in|
+
+# Role
+
+## Role Object
+```
+type Role struct {
+	Id
+	RoleName
+	DateAdded
+}
+```
+
+|Name|Path|Request|Response|Descripiton|
+|---|---|---|---|---|
+|createRole|/api/role/create|Role|void|Creates a role|
+|loadRole|/api/role/information|Role[]|Role[]|Load roles. Will return all if left blank, else will only return data of specified roles|
+|loadUsersWithRole|/api/role/users|Role|User[]|Returns an array of users with role|
+|removeRole|/api/role/remove|Role|void|Deletes a role|
+|updateRole|/api/role/update|Role|void|Updates role values|
+
+# Permission
+ 
+## Permission Object
+```
+type Permission struct {
+	Id
+	PermissionType
+	PermissionCategory
+	PermissionTenant
+	PermissionTenantId
+	DateAdded
+}
+```
+
+|Name|Path|Request|Response|Descripiton|
+|---|---|---|---|---|
+|createPermission|/api/permission/create|Permission|void|Creates a permission|
+|allocatePermission|/api/permission/allocate|Role,Permission|void|Allocates permission to a role|
+|removePermission|/api/permission/remove|Role,Permission|void|Removes a roles permission where permission matches|
+|loadRolePermissions|/api/permission/list|Role|Permission[]|Returns all permissions a role has|
+|updatePermission|/api/permission/update|Permission|void|Updates Permission|
+
+# Team
+
+## Team Object
+
+```
+type Team struct {
+	Id
+	Name
+	Description
+	Capacity
+	Picture
+	DateCreated
+}
+```
+
+|Name|Path|Request|Response|Descripiton|
+|---|---|---|---|---|
+|createTeam|/api/team/create|Team|void|Creates a team|
+|removeTeam|/api/team/remove|Team|void|Removes a team|
+|loadTeam|/api/team/information|Team|Team|Returns all Team data given team_id|
+|loadTeamMembers|/api/team/list|Team|Userp[|Returns all team members in team|
+|updateTeamMembers|/api/team/members|Team,User[]|void|Update members in team|
+|UpdateTeam|/api/team/update|Team|void|Updates a team|
+
+# Resources
+
+## Building
+
+## Room
+
+
 ## createUser
+
+This is used to create a new user 
 
 **PUT** api/user/create <br>
 
-send (application/json)
+request (application/json)
 ```    
 Body
 {
-  *username: string,
-  first: string,
-  surname: string,
-  email: string,
-  picture: string
-  *password: string,
-  *password_key: string     
+  <user_object>   
 }
 ```
-recieve (application/json)
+response (application/json)
 ```   
 {
-  status: integer,
+  status,
   result: {
-    message: string
-    credential
+    message
   }
 }
 ```
@@ -33,51 +122,35 @@ recieve (application/json)
 
 **GET** api/user/validate <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters{
-  username: string
+  user_id
 }  
 ```  
-recieve (application/json)  
+response (application/json)  
 ```
 {
-    status: integer,
-    result:{
-      valid: boolean
-    }
+  status
 }
 ```
 
 ## loadUser
 **GET** api/user/profile <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
-  credential,
-  usernames: [ //if left blank will return all users
-    username: string
-  ] 
+  users: [] 
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
-  status: integer,
+  status,
   result:{
-    users: [
-      username: string,
-      first: string,
-      surname: string,
-      email: string,
-      picture: string,
-      teams: {
-        team_name: string,
-        team_id: string
-      }
-    ]
+    users: []
   }
 }
 ```
@@ -86,33 +159,24 @@ recieve (application/json)
 
 **POST** api/user/profile <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
-  credential,
-  username: string
+  user
 }
 Body
 {
-  username: string,
-  first: string,
-  surname: string,
-  email: string,
-  picture: string
-  password: string,
-  password_key: string
+  <user_object>
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
-  status: integer,
+  status,
   result: {
-      message: string,
-      fields: [ //list of fields updated
-        field: value
-      ]                
+      message,
+      fields: []                
   }
 }
 ```
@@ -120,20 +184,19 @@ recieve (application/json)
 ## deleteUser
 **DELETE** api/user/profile <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
-  credential,
-  username: string
+  user
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
-  status: integer,
+  status,
   result: {
-    message: string
+    message
   }
 }
 ```
@@ -141,13 +204,13 @@ recieve (application/json)
 ## loginUser
 **POST** api/user/login <br>
 
-send (application/json)
+request (application/json)
 ```
 Body
 {
-  user_id: string,
-  username: string,
-  password: string
+  user_id,
+  username,
+  password
 }
 ```
 ---
@@ -156,7 +219,7 @@ Body
 ## createTeam
 **PUT** api/team/create <br>
 
-send (application/json)
+request (application/json)
 ```
 Body
 {
@@ -166,7 +229,7 @@ Body
   picture: string    
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,
@@ -179,7 +242,7 @@ recieve (application/json)
 ## loadTeam
 **GET** api/team/profile <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
@@ -189,7 +252,7 @@ Parameters
   ]
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,
@@ -213,7 +276,7 @@ recieve (application/json)
 ## updateTeam
 **POST** api/team/profile <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
@@ -228,7 +291,7 @@ Body
   capacity: string 
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,
@@ -241,7 +304,7 @@ recieve (application/json)
 ## addTeamMember
 **PUT** api/team/members <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
@@ -253,7 +316,7 @@ Body
   users: [(list of usernames to add)]
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,
@@ -266,7 +329,7 @@ recieve (application/json)
 ## removeTeamMember
 **DELETE** api/team/members <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
@@ -278,7 +341,7 @@ Body
   users: [(list of usernames to add)]
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,
@@ -294,7 +357,7 @@ recieve (application/json)
 ## createRole
 **PUT** api/role/create <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
@@ -305,7 +368,7 @@ Body
   name: string
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,
@@ -321,7 +384,7 @@ recieve (application/json)
 ## createBooking
 **PUT** api/booking/reserve <br>
 
-send (application/json)
+request (application/json)
 ```
 Body        
 {
@@ -334,7 +397,7 @@ Body
   end: Date   
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
     status: integer
@@ -344,7 +407,7 @@ recieve (application/json)
 ## updateBooking
 **POST** api/booking/update <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
@@ -360,7 +423,7 @@ Body
   booked: boolean
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,
@@ -373,7 +436,7 @@ recieve (application/json)
 ## deleteBooking
 **DELETE** api/booking/update <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
@@ -384,7 +447,7 @@ Parameters
   
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,
@@ -401,7 +464,7 @@ recieve (application/json)
 ## createBuilding
 **PUT** api/resources/building/create <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
@@ -414,7 +477,7 @@ Bodyload
   name: string
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,
@@ -427,7 +490,7 @@ recieve (application/json)
 ## loadBuidling
 **GET** api/resources/building <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
@@ -438,7 +501,7 @@ Parameters
 }
 
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,
@@ -462,7 +525,7 @@ recieve (application/json)
 ## updateBuilding
 **POST** api/resources/building/update <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
@@ -477,7 +540,7 @@ Body
   }
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,
@@ -490,7 +553,7 @@ recieve (application/json)
 ## createRoom
 **PUT** api/resources/room/create <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
@@ -504,7 +567,7 @@ Body
   building_id: string
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,
@@ -516,7 +579,7 @@ recieve (application/json)
 ## updateRoom
 **POST** api/resources/room/update <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
@@ -531,7 +594,7 @@ Body
   }
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,
@@ -544,7 +607,7 @@ recieve (application/json)
 ## loadRoom
 **GET** api/resources/room <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
@@ -554,7 +617,7 @@ Parameters
   ]  
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,
@@ -577,7 +640,7 @@ recieve (application/json)
 ## deleteRoom
 **DELETE** api/resources/room/remove <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
@@ -585,7 +648,7 @@ Parameters
   room_id: string
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,
@@ -601,7 +664,7 @@ recieve (application/json)
 ## createWorkspace
 **PUT** api/resources/workspace/create <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
@@ -615,7 +678,7 @@ Body
   building_id: string
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,
@@ -627,7 +690,7 @@ recieve (application/json)
 ## updateWorkspace
 **POST** api/resources/workspace/update <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
@@ -642,7 +705,7 @@ Body
   }
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,
@@ -655,7 +718,7 @@ recieve (application/json)
 ## loadWorkspace
 **GET** api/resources/workspace <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
@@ -665,7 +728,7 @@ Parameters
   ]
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,
@@ -684,7 +747,7 @@ recieve (application/json)
 ## deleteWorkspace
 **DELETE** api/resources/room/remove <br>
 
-send (application/json)
+request (application/json)
 ```
 Parameters
 {
@@ -692,7 +755,7 @@ Parameters
   room_id: string
 }
 ```
-recieve (application/json)
+response (application/json)
 ```
 {
   status: integer,

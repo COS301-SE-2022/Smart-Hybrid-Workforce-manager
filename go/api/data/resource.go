@@ -2,6 +2,7 @@ package data
 
 import (
 	"api/db"
+	// "database/sql"
 )
 
 //////////////////////////////////////////////////
@@ -15,8 +16,8 @@ const (
 )
 
 // ResourceType func to get as string
-func (r ResourceType) toString() string {
-	return [...]string{"Parking", "Desk", "MeetingRoom"}[r-1]
+func (r ResourceType) String() string {
+	return [...]string{"PARKING", "DESK", "MEETINGROOM"}[r-1]
 }
 
 // Building indentifies a Building Resource via common attributes
@@ -48,6 +49,10 @@ func NewResourceDA(access *db.Access) *ResourcesDA {
 
 //////////////////////////////////////////////////
 // Mappers
+// func mapResource(rows *sql.Rows) (interface{}, error){
+	
+// }
+
 
 //////////////////////////////////////////////////
 // Functions

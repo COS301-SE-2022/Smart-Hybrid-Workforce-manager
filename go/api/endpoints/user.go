@@ -40,6 +40,10 @@ func UserHandlers(router *mux.Router) error {
 /////////////////////////////////////////////
 // Functions
 
+func TempUserHandlerfunc(writer http.ResponseWriter, request *http.Request) {
+	utils.Ok(writer, request)
+}
+
 // RegisterUserHandler registers a new user
 func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 	var registerUserStruct RegisterUserStruct
@@ -147,8 +151,10 @@ func InformationUserHandler(writer http.ResponseWriter, request *http.Request) {
 
 func UpdateUserHandler(writer http.ResponseWriter, request *http.Request) {
 	logger.Info.Println("user update requested")
+	utils.Ok(writer, request)
 }
 
 func RemoveUserHandler(writer http.ResponseWriter, request *http.Request) {
 	logger.Info.Println("user remove requested")
+	utils.Ok(writer, request)
 }
