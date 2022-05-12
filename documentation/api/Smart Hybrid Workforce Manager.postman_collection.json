@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":\"\"\r\n    \"first_name\": \"anonymous\",\r\n    \"last_name\": \"anonymous\",\r\n    \"email\": \"asd@test.com\",\r\n    \"password\" : \"password\"\r\n}",
+							"raw": "{\r\n    \"first_name\": \"anonymous\",\r\n    \"last_name\": \"anonymous\",\r\n    \"email\": \"asd@test.com\",\r\n    \"password\" : \"password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -43,6 +43,41 @@
 		{
 			"name": "Team",
 			"item": [
+				{
+					"name": "Information",
+					"item": [
+						{
+							"name": "All",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/team/information",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"team",
+										"information"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
 				{
 					"name": "Register Team",
 					"request": {
