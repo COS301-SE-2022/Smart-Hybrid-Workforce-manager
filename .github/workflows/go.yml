@@ -1,0 +1,23 @@
+name: 'Go API Test'
+
+on: pull_request
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go 1.17
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.17
+
+      - name: Build
+        working-directory: ./go/api
+        run: go build -v ./...
+
+      - name: Test
+        working-directory: ./go/api
+        run: go test -v ./...

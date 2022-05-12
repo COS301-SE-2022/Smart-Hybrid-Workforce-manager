@@ -1,0 +1,45 @@
+name: 'Meta Test for Pull Request'
+
+on: 
+  pull_request:
+    types: [ opened, reopened, labeled ]
+
+jobs:
+  label-check:
+    name: Checks if labels are used
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Has at least one type label
+        uses: mheap/github-action-required-labels@v1
+        with:
+          mode: minimum
+          count: 1
+          labels: 'type:architecture, type:bug, type:documentation, type:feature, type:fix, type:refractor, type:test'
+
+      - name: Has at least one priority label
+        uses: mheap/github-action-required-labels@v1
+        with:
+          mode: minimum
+          count: 1
+          labels: 'priority:high, priority:low, priority:medium'   
+
+      - name: Has at least one scope label
+        uses: mheap/github-action-required-labels@v1
+        with:
+          mode: minimum
+          count: 1
+          labels: 'scope:api, scope:cicd, scope:client, scope:db'
+
+  milestone-check:
+    name: Checks if milestone is used
+    runs-on: ubuntu-latest
+    steps:       
+      - name: Has milestone check
+        if: github.event.pull_request.milestone == null
+        run: |
+          echo "A milestone is required"
+          exit 1

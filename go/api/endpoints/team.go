@@ -10,22 +10,17 @@ import (
 	"github.com/gorilla/mux"
 )
 
-//////////////////////////////////////////////////
-// Structures and Variables
-
-type CreateTeamStruct struct {
-	Name        *string `json:"name,omitempty"`
-	Description *string `json:"description,omitempty"`
-	Capacity    *int    `json:"capacity,omitempty"`
-	Picture     *string `json:"picture,omitempty"`
-}
-
 /////////////////////////////////////////////
 // Endpoints
 
 //TeamHandlers manages teams
 func TeamHandlers(router *mux.Router) error {
 	router.HandleFunc("/create", CreateTeamHandler).Methods("POST")
+	router.HandleFunc("/information", InformationTeamHandler).Methods("POST")
+	router.HandleFunc("/update", UpdateTeamHandler).Methods("POST")
+	router.HandleFunc("/add", AddTeamMemberHandler).Methods("POST")
+	router.HandleFunc("/remove", RemoveTeamMember).Methods("POST")
+	router.HandleFunc("/delete", DeleteTeam).Methods("POST")
 	return nil
 }
 
@@ -34,9 +29,9 @@ func TeamHandlers(router *mux.Router) error {
 
 // CreateTeamHandler creates a new team
 func CreateTeamHandler(writer http.ResponseWriter, request *http.Request) {
-	var createTeamStruct CreateTeamStruct
+	var team data.Team
 
-	err := utils.UnmarshalJSON(writer, request, &createTeamStruct)
+	err := utils.UnmarshalJSON(writer, request, &team)
 	if err != nil {
 		utils.BadRequest(writer, request, "invalid_request")
 		return
@@ -51,14 +46,7 @@ func CreateTeamHandler(writer http.ResponseWriter, request *http.Request) {
 
 	da := data.NewTeamDA(access)
 
-	team := &data.Team{
-		Name:        createTeamStruct.Name,
-		Description: createTeamStruct.Description,
-		Capacity:    createTeamStruct.Capacity,
-		Picture:     createTeamStruct.Picture,
-	}
-
-	err = da.CreateTeam(team)
+	err = da.CreateTeam(&team)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
@@ -73,4 +61,49 @@ func CreateTeamHandler(writer http.ResponseWriter, request *http.Request) {
 	logger.Access.Printf("%v team created\n", team.Name)
 
 	utils.Ok(writer, request)
+}
+
+func InformationTeamHandler(writer http.ResponseWriter, request *http.Request) {
+	logger.Info.Println("team information requested")
+	name := "Team#1"
+	t := data.Team{
+		Name: &name,
+	}
+	utils.JSONResponse(writer, request, t)
+}
+
+func UpdateTeamHandler(writer http.ResponseWriter, request *http.Request) {
+	logger.Info.Println("team update requested")
+	name := "Team#1"
+	t := data.Team{
+		Name: &name,
+	}
+	utils.JSONResponse(writer, request, t)
+}
+
+func AddTeamMemberHandler(writer http.ResponseWriter, request *http.Request) {
+	logger.Info.Println("team member addition requested")
+	name := "Team#1"
+	t := data.Team{
+		Name: &name,
+	}
+	utils.JSONResponse(writer, request, t)
+}
+
+func RemoveTeamMember(writer http.ResponseWriter, request *http.Request) {
+	logger.Info.Println("team member remove requested")
+	name := "Team#1"
+	t := data.Team{
+		Name: &name,
+	}
+	utils.JSONResponse(writer, request, t)
+}
+
+func DeleteTeam(writer http.ResponseWriter, request *http.Request) {
+	logger.Info.Println("team delete requested")
+	name := "Team#1"
+	t := data.Team{
+		Name: &name,
+	}
+	utils.JSONResponse(writer, request, t)
 }

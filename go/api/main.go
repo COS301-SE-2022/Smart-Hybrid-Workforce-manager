@@ -4,6 +4,7 @@ import (
 	"api/db"
 	"api/endpoints"
 	"lib/logger"
+	
 	"net/http"
 	"os"
 
@@ -40,6 +41,14 @@ func main() {
 	// Booking endpoints
 	bookingRouter := router.PathPrefix("/api/booking").Subrouter()
 	err = endpoints.BookingHandlers(bookingRouter)
+	if err != nil {
+		logger.Error.Fatal(err)
+		os.Exit(-1)
+	}
+
+	// Resource endpoints
+	resourceRouter := router.PathPrefix("/api/resource").Subrouter()
+	err = endpoints.ResourceHandlers(resourceRouter)
 	if err != nil {
 		logger.Error.Fatal(err)
 		os.Exit(-1)
