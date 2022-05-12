@@ -347,3 +347,37 @@
     width: 100%;
     height: 100%;
 }
+
+.booking-container
+{
+    display: float;
+
+    margin-left: 22.5vw;
+    margin-top: 10vh;
+}
+
+.booking
+{
+    display: grid;
+    grid-template-columns: 25vw;
+    grid-template-rows: 30vh auto 10vh;
+    grid-template-areas: "image" "text" "icon";
+
+    width: 50vw;
+    height: 30vh;
+
+    margin-left: 2.5vw;
+    margin-right: 2.5vw;
+    margin-top: 10vh;
+  
+    border-radius: 4vh;
+    background: white;
+    box-shadow: 1vh 1vh 4vh rgba(0,0,0,0.9);
+    text-align: center;
+
+    transition: 0.5s ease-in-out;
+
+    animation: fadeIn ease 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
