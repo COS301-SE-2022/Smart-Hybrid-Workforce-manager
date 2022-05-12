@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":\"\"\r\n    \"first_name\": \"anonymous\",\r\n    \"last_name\": \"anonymous\",\r\n    \"email\": \"asd@test.com\",\r\n    \"password\" : \"password\"\r\n}",
+							"raw": "{\r\n    \"first_name\": \"anonymous\",\r\n    \"last_name\": \"anonymous\",\r\n    \"email\": \"asd@test.com\",\r\n    \"password\" : \"password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
