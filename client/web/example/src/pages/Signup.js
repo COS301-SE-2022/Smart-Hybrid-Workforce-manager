@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import Alert from 'react-bootstrap/Alert'
 
 function Signup()
 {
@@ -29,7 +28,8 @@ function Signup()
 
       if(res.status === 200)
       {
-        return <Alert variant='success'>Success!</Alert>;
+        alert("Account Successfully Created!");
+        window.location.assign("./bookings");
       }
     }
     catch(err)
