@@ -1,0 +1,32 @@
+name: 'React Test'
+
+on: pull_request
+
+jobs:
+  build:
+    name: Build Test
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [ 12, 14, 16 ]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js 17.x
+      - uses: actions/setup-node@v3.1.1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: npm ci
+        working-directory: ./client/web/example
+        run: npm ci
+
+      - name: Build
+        working-directory: ./client/web/example
+        run: npm run build --if-present
+
+      - name: Test
+        working-directory: ./go/api
+        run: npm test
