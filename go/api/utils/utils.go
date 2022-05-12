@@ -9,8 +9,8 @@ import (
 /////////////////////////////////////////////
 // Structures
 
-type errorResponse struct {
-	Error map[string]interface{} `json:"error"`
+type errorResponse struct {					`json:"status"`
+	Error 	map[string]interface{} 	`json:"error"`
 }
 
 type HandlerFunc func(http.ResponseWriter, *http.Request)
