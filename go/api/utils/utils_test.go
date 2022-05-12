@@ -338,15 +338,6 @@ func TestInternalServerError(t *testing.T) {
 		t.Errorf(testutils.Scolour(testutils.RED, "Status not set, expected status to be %v"), http.StatusInternalServerError)
 		t.FailNow()
 	}
-	if msg, ok := errResponse.Error["message"]; ok {
-		if msg != message {
-			t.Errorf(testutils.Scolour(testutils.RED, "Expected message to be '%v' (%T), got '%v' (%T) instead"), message, message, msg, msg)
-			t.FailNow()
-		}
-	} else {
-		t.Errorf(testutils.Scolour(testutils.RED, "Message not set, expected message to be '%v'"), message)
-		t.FailNow()
-	}
 }
 
 func TestOk(t *testing.T) {
