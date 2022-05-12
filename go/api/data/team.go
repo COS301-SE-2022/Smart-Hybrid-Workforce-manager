@@ -31,6 +31,11 @@ func NewTeamDA(access *db.Access) *TeamDA {
 	}
 }
 
+// Commit commits the current implicit transaction
+func (access *TeamDA) Commit() error {
+	return access.access.Commit()
+}
+
 //////////////////////////////////////////////////
 // Mappers
 
@@ -54,8 +59,8 @@ func mapTeam(rows *sql.Rows) (interface{}, error) {
 // Functions
 
 //CreateTeam creates a team
-func (da *TeamDA) CreateTeam(identifier *Team) error {
-	_, err := da.access.Query(
+func (access *TeamDA) CreateTeam(identifier *Team) error {
+	_, err := access.access.Query(
 		`SELECT 1 FROM team.identifier_store($1, $2, $3, $4, $5)`, nil,
 		identifier.Id, identifier.Name, identifier.Description, identifier.Capacity, identifier.Picture)
 	if err != nil {
