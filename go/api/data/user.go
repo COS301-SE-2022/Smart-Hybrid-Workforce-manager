@@ -20,6 +20,9 @@ type User struct {
 	DateCreated time.Time `json:"date_created,omitempty"`
 }
 
+// Users represent a splice of User
+type Users []*User
+
 // Credential identifies a login (not a user)
 type Credential struct {
 	Id             string    `json:"id,omitempty"`
@@ -98,19 +101,20 @@ func (access *UserDA) StoreIdentifier(identifier *User) error {
 }
 
 //FindIdentifier finds an identifier
-func (access *UserDA) FindIdentifier(identifier *User) (*User, error) {
+func (access *UserDA) FindIdentifier(identifier *User) (Users, error) {
 	results, err := access.access.Query(
 		`SELECT * FROM "user".identifier_find($1, $2, $3, $4, $5, $6, $7)`, mapUser,
 		identifier.Id, identifier.Identifier, identifier.FirstName, identifier.LastName, identifier.Email, identifier.Picture, identifier.DateCreated)
 	if err != nil {
 		return nil, err
 	}
-	for _, result := range results {
-		if identifier, ok := result.(User); ok {
-			return &identifier, nil
+	tmp := make([]*User, 0)
+	for r, _ := range results {
+		if value, ok := results[r].(User); ok {
+			tmp = append(tmp, &value)
 		}
 	}
-	return nil, nil
+	return tmp, nil
 }
 
 // StoreCredential stores a credential
@@ -120,4 +124,11 @@ func (access *UserDA) StoreCredential(Id string, secret *string, identifier stri
 		return err
 	}
 	return nil
+}
+
+func (users Users) FindHead() *User {
+	if len(users) == 0 {
+		return nil
+	}
+	return users[0]
 }

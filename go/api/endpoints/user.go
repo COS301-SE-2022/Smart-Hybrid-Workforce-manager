@@ -4,6 +4,7 @@ import (
 	"api/data"
 	"api/db"
 	"api/utils"
+	"fmt"
 	"lib/logger"
 	"net/http"
 	"regexp"
@@ -63,11 +64,13 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 
 	da := data.NewUserDA(access)
 
-	user, err := da.FindIdentifier(&data.User{Email: &registerUserStruct.Email})
+	users, err := da.FindIdentifier(&data.User{Email: &registerUserStruct.Email})
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
+
+	user := users.FindHead()
 
 	if user != nil {
 		utils.BadRequest(writer, request, "user_already_exists")
@@ -107,7 +110,39 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 }
 
 func InformationUserHandler(writer http.ResponseWriter, request *http.Request) {
-	logger.Info.Println("user information requested")
+	var user data.User
+
+	err := utils.UnmarshalJSON(writer, request, &user)
+	if err != nil {
+		fmt.Println(err)
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	da := data.NewUserDA(access)
+
+	users, err := da.FindIdentifier(&user)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	logger.Access.Printf("%v user information requested\n", user.Id)
+
+	utils.JSONResponse(writer, request, users)
 }
 
 func UpdateUserHandler(writer http.ResponseWriter, request *http.Request) {

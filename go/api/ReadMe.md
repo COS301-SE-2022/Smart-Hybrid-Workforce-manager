@@ -17,3 +17,9 @@ The functions managing database conenctions are stored in `db`
 ## Data access
 
 All functions relating to data access from the postgres database is stored in `data`
+
+## Testing
+
+`go test` this will just run the tests normally
+`go test -v` this will run the tests in verbose mode
+`go test -cover` this will run the test and include code coverage
