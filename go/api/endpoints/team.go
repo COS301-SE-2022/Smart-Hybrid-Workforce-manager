@@ -4,6 +4,7 @@ import (
 	"api/data"
 	"api/db"
 	"api/utils"
+	"fmt"
 	"lib/logger"
 	"net/http"
 
@@ -64,12 +65,39 @@ func CreateTeamHandler(writer http.ResponseWriter, request *http.Request) {
 }
 
 func InformationTeamHandler(writer http.ResponseWriter, request *http.Request) {
-	logger.Info.Println("team information requested")
-	name := "Team#1"
-	t := data.Team{
-		Name: &name,
+	var team data.Team
+
+	err := utils.UnmarshalJSON(writer, request, &team)
+	if err != nil {
+		fmt.Println(err)
+		utils.BadRequest(writer, request, "invalid_request")
+		return
 	}
-	utils.JSONResponse(writer, request, t)
+
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	da := data.NewTeamDA(access)
+
+	teams, err := da.FindIdentifier(&team)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	logger.Access.Printf("%v team information requested\n", team.Id)
+
+	utils.JSONResponse(writer, request, teams)
 }
 
 func UpdateTeamHandler(writer http.ResponseWriter, request *http.Request) {

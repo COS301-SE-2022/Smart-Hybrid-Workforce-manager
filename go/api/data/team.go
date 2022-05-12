@@ -19,6 +19,9 @@ type Team struct {
 	DateCreated *time.Time `json:"date_created,omitempty"`
 }
 
+// Teams represent a splice of Team
+type Teams []*Team
+
 // TeamDA provides access to the database for team management
 type TeamDA struct {
 	access *db.Access
@@ -67,4 +70,21 @@ func (access *TeamDA) CreateTeam(identifier *Team) error {
 		return err
 	}
 	return nil
+}
+
+//FindIdentifier finds a team
+func (access *TeamDA) FindIdentifier(identifier *Team) (Teams, error) {
+	results, err := access.access.Query(
+		`SELECT * FROM team.identifier_find($1, $2, $3, $4, $5, $6)`, mapTeam,
+		identifier.Id, identifier.Name, identifier.Description, identifier.Capacity, identifier.Picture, identifier.DateCreated)
+	if err != nil {
+		return nil, err
+	}
+	tmp := make([]*Team, 0)
+	for r, _ := range results {
+		if value, ok := results[r].(Team); ok {
+			tmp = append(tmp, &value)
+		}
+	}
+	return tmp, nil
 }
