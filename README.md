@@ -31,7 +31,7 @@ Smart Hybrid Workforce Manager is a system that aims to provide companies an eas
 <a href="https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/projects" target="_blank">
   ➛ Project Board<br>
 </a> 
-<a href="#" target="_blank">
+<a href="https://drive.google.com/file/d/1P8EYnATIvTuzI92zB5p3PX_Cp5whZi45/view?usp=sharing" target="_blank">
   ➛ Requirements<br>
 </a> 
 
