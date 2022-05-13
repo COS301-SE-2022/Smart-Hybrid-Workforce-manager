@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION team.identifier_remove(
+CREATE OR REPLACE FUNCTION "user".credential_remove(
     _id uuid
 )
 RETURNS BOOLEAN AS $$
@@ -6,7 +6,7 @@ BEGIN
 
     IF NOT EXISTS (
         SELECT 1
-        FROM team.identifier as b
+        FROM "user".credential as b
         WHERE b.id = _id
         FOR UPDATE
     ) THEN
@@ -14,7 +14,7 @@ BEGIN
             USING HINT = 'Please check the provided user id parameter';
     END IF;
 
-    DELETE FROM team.identifier WHERE id = _id;
+    DELETE FROM "user".credential WHERE id = _id;
 
     RETURN TRUE;
 
