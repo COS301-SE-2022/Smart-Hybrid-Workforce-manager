@@ -1,5 +1,5 @@
 # General
-
+ 
 The api will be compiled and run through Docker as specified in `DockerFile`
 
 This image and its corresponding container need to be restarted in order to compile changes made to the api
