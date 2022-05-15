@@ -520,6 +520,41 @@
 			"name": "Resource",
 			"item": [
 				{
+					"name": "Information",
+					"item": [
+						{
+							"name": "All",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/resource/information",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"resource",
+										"information"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Building",
 					"item": [
 						{
@@ -830,6 +865,66 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "Delete Resource",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"22222222-dc08-4a06-9983-8b374586e459\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8100/api/resource/remove",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8100",
+							"path": [
+								"api",
+								"resource",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Resource",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"22222222-dc08-4a06-9983-8b374586e459\",\r\n    \"room_id\": \"14141414-dc08-4a06-9983-8b374586e459\",\r\n    \"name\": \"aName\",\r\n    \"location\": \"ALocation\",\r\n    \"role_id\": null,\r\n    \"resource_type\": \"MEETINGROOM\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8100/api/resource/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8100",
+							"path": [
+								"api",
+								"resource",
+								"create"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
