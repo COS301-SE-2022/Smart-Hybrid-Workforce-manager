@@ -724,6 +724,112 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "RoomAssociation",
+					"item": [
+						{
+							"name": "Information",
+							"item": [
+								{
+									"name": "All",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8100/api/resource/room/association/information",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8100",
+											"path": [
+												"api",
+												"resource",
+												"room",
+												"association",
+												"information"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Delete RoomAssociation",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"room_id\": \"15151515-dc08-4a06-9983-8b374586e459\",\r\n    \"room_id_association\": \"14141414-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/resource/room/association/remove",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"resource",
+										"room",
+										"association",
+										"remove"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create RoomAssociation",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"room_id\": \"15151515-dc08-4a06-9983-8b374586e459\",\r\n    \"room_id_association\": \"14141414-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/resource/room/association/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"resource",
+										"room",
+										"association",
+										"create"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		}
