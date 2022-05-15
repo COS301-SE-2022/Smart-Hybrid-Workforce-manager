@@ -114,13 +114,219 @@
 					]
 				},
 				{
-					"name": "Register Team",
+					"name": "User",
+					"item": [
+						{
+							"name": "Information",
+							"item": [
+								{
+									"name": "All",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8100/api/team/user/information",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8100",
+											"path": [
+												"api",
+												"team",
+												"user",
+												"information"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Add User Team",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"team_id\":\"12121212-dc08-4a06-9983-8b374586e459\",\r\n    \"user_id\": \"11111111-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/team/user/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"team",
+										"user",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Remove User Team",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"team_id\":\"12121212-dc08-4a06-9983-8b374586e459\",\r\n    \"user_id\": \"11111111-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/team/user/remove",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"team",
+										"user",
+										"remove"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Association",
+					"item": [
+						{
+							"name": "Information",
+							"item": [
+								{
+									"name": "All",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8100/api/team/association/information",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8100",
+											"path": [
+												"api",
+												"team",
+												"association",
+												"information"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Create Team Association",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"team_id\":\"12121212-dc08-4a06-9983-8b374586e459\",\r\n    \"team_id_association\": \"47474747-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/team/association/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"team",
+										"association",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Remove Team Association",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"team_id\":\"12121212-dc08-4a06-9983-8b374586e459\",\r\n    \"team_id_association\": \"47474747-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/team/association/remove",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"team",
+										"association",
+										"remove"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create Team",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"anonymous\",\r\n    \"description\": \"anonymous\",\r\n    \"capacity\": 5,\r\n    \"picture\": \"example\"\r\n}",
+							"raw": "{\r\n    \"id\":\"12121212-dc08-4a06-9983-8b374586e459\",\r\n    \"name\": \"aTeam\",\r\n    \"description\": \"a description\",\r\n    \"capacity\": 5,\r\n    \"picture\": \"picture\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -138,6 +344,36 @@
 								"api",
 								"team",
 								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Team",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"12121212-dc08-4a06-9983-8b374586e459\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8100/api/team/remove",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8100",
+							"path": [
+								"api",
+								"team",
+								"remove"
 							]
 						}
 					},

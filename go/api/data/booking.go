@@ -37,6 +37,11 @@ func NewBookingDA(access *db.Access) *BookingDA {
 	}
 }
 
+// Commit commits the current implicit transaction
+func (access *BookingDA) Commit() error {
+	return access.access.Commit()
+}
+
 //////////////////////////////////////////////////
 // Mappers
 

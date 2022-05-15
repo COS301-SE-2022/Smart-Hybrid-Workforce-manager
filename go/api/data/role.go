@@ -41,6 +41,11 @@ func NewRoleDA(access *db.Access) *RoleDA {
 	}
 }
 
+// Commit commits the current implicit transaction
+func (access *RoleDA) Commit() error {
+	return access.access.Commit()
+}
+
 //////////////////////////////////////////////////
 // Mappers
 
