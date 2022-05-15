@@ -1,7 +1,16 @@
 CREATE OR REPLACE FUNCTION "user".identifier_remove(
     _id uuid
 )
-RETURNS BOOLEAN AS $$
+RETURNS TABLE (
+    id uuid,
+	identifier VARCHAR(256),
+	first_name VARCHAR(256),
+	last_name VARCHAR(256),
+	email VARCHAR(256),
+	picture VARCHAR(256),
+    date_created TIMESTAMP
+) AS 
+$$
 BEGIN
 
     IF NOT EXISTS (
@@ -14,9 +23,9 @@ BEGIN
             USING HINT = 'Please check the provided user id parameter';
     END IF;
 
-    DELETE FROM "user".identifier WHERE id = _id;
-
-    RETURN TRUE;
+    RETURN QUERY
+    DELETE FROM "user".identifier as a WHERE a.id = _id
+    RETURNING *;
 
 END
 $$ LANGUAGE plpgsql;

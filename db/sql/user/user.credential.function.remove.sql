@@ -1,7 +1,16 @@
 CREATE OR REPLACE FUNCTION "user".credential_remove(
     _id uuid
 )
-RETURNS BOOLEAN AS $$
+RETURNS TABLE (
+    id VARCHAR(256),
+	secret VARCHAR(256),
+	identifier VARCHAR(256),
+	"type"  "user".credential_type,
+	active BOOLEAN,
+	failed_attempts INT,
+    last_accessed TIMESTAMP
+) AS 
+$$
 BEGIN
 
     IF NOT EXISTS (
@@ -14,9 +23,9 @@ BEGIN
             USING HINT = 'Please check the provided user id parameter';
     END IF;
 
-    DELETE FROM "user".credential WHERE id = _id;
-
-    RETURN TRUE;
+    RETURN QUERY
+    DELETE FROM "user".credential as a WHERE a.id = _id
+    RETURNING *;
 
 END
 $$ LANGUAGE plpgsql;

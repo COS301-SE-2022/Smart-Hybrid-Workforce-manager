@@ -2,7 +2,12 @@ CREATE OR REPLACE FUNCTION role.user_remove(
     _role_id uuid,
     _user_id uuid
 )
-RETURNS BOOLEAN AS $$
+RETURNS TABLE (
+    role_id uuid,
+	user_id uuid,
+	date_added TIMESTAMP
+) AS 
+$$
 BEGIN
 
     IF NOT EXISTS (
@@ -16,11 +21,11 @@ BEGIN
             USING HINT = 'Please check the provided role and user parameter';
     END IF;
 
-    DELETE FROM role.user 
-    WHERE role_id = _role_id
-    AND user_id = _user_id;
-
-    RETURN TRUE;
+    RETURN QUERY
+    DELETE FROM role.user as a
+    WHERE a.role_id = _role_id
+    AND a.user_id = _user_id
+    RETURNING *;
 
 END
 $$ LANGUAGE plpgsql;

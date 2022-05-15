@@ -2,7 +2,11 @@ CREATE OR REPLACE FUNCTION team.association_remove(
     _team_id uuid,
     _team_id_association uuid
 )
-RETURNS BOOLEAN AS $$
+RETURNS TABLE (
+    team_id uuid,
+	team_id_association uuid
+) AS 
+$$
 BEGIN
 
     IF NOT EXISTS (
@@ -16,11 +20,11 @@ BEGIN
             USING HINT = 'Please check the provided team and association parameter';
     END IF;
 
-    DELETE FROM team.association 
-    WHERE team_id = _team_id
-    AND team_id_association = _team_id_association;
-
-    RETURN TRUE;
+    RETURN QUERY
+    DELETE FROM team.association as a
+    WHERE a.team_id = _team_id
+    AND a.team_id_association = _team_id_association
+    RETURNING *;
 
 END
 $$ LANGUAGE plpgsql;
