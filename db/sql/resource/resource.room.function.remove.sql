@@ -1,21 +1,19 @@
-CREATE OR REPLACE FUNCTION resource.identifier_remove(
+CREATE OR REPLACE FUNCTION resource.room_remove(
     _id uuid
 )
 RETURNS TABLE (
     id uuid,
-	room_id uuid,
+	building_id uuid,
     name VARCHAR(256),
 	location VARCHAR(256),
-	role_id uuid,
-	resource_type resource.type,
-    date_created TIMESTAMP
+	dimension VARCHAR(256)
 ) AS 
 $$
 BEGIN
 
     IF NOT EXISTS (
         SELECT 1
-        FROM resource.identifier as b
+        FROM resource.room as b
         WHERE b.id = _id
         FOR UPDATE
     ) THEN
@@ -24,7 +22,7 @@ BEGIN
     END IF;
 
     RETURN QUERY
-    DELETE FROM resource.identifier as a WHERE a.id = _id
+    DELETE FROM resource.room as a WHERE a.id = _id
     RETURNING *;
 
 END

@@ -20,7 +20,7 @@ BEGIN
 		RETURNING identifier.id INTO __id;
     ELSE
     	INSERT INTO resource.identifier(id, room_id, location, role_id, resource_type)
-        VALUES (COALESCE(_id, uuid_generate_v4()), COALESCE(_room_id, uuid_generate_v4()), _location, _role_id, _resource_type) -- TODO [KP]: Fix this once room is created
+        VALUES (COALESCE(_id, uuid_generate_v4()), _room_id, _location, _role_id, _resource_type)
 		RETURNING identifier.id INTO __id;
     END IF;
 	RETURN __id;

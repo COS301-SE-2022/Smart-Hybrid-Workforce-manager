@@ -48,10 +48,44 @@ SELECT team.user_store(
 ----------------------------------
 -- Resource
 
--- Resource 01
+-- Building 01
+SELECT resource.building_store(
+	'98989898-dc08-4a06-9983-8b374586e459'::uuid,
+	'aName',
+	'ALocation',
+	'5x5'
+);
+
+-- Room 01
+SELECT resource.room_store(
+	'14141414-dc08-4a06-9983-8b374586e459'::uuid,
+	'98989898-dc08-4a06-9983-8b374586e459'::uuid,
+	'aName',
+	'ALocation',
+	'5x5'
+);
+
+
+-- Room 02
+SELECT resource.room_store(
+	'15151515-dc08-4a06-9983-8b374586e459'::uuid,
+	'98989898-dc08-4a06-9983-8b374586e459'::uuid,
+	'aName',
+	'ALocation',
+	'5x5'
+);
+
+-- Room Association 01
+SELECT resource.room_association_store(
+	'15151515-dc08-4a06-9983-8b374586e459'::uuid, -- Room 02
+	'14141414-dc08-4a06-9983-8b374586e459'::uuid -- Room 01
+
+);
+
+-- Resource Desk 01
 SELECT resource.identifier_store(
 	'22222222-dc08-4a06-9983-8b374586e459'::uuid,
-	null::uuid,
+	'14141414-dc08-4a06-9983-8b374586e459'::uuid, -- Room 01
 	'ALocation', 
 	null::uuid, 
 	'DESK'::resource.type
@@ -65,7 +99,7 @@ SELECT booking.identifier_store(
 	'33333333-dc08-4a06-9983-8b374586e459'::uuid,
 	'11111111-dc08-4a06-9983-8b374586e459'::uuid, -- User 01
 	'DESK'::resource.type,
-	'22222222-dc08-4a06-9983-8b374586e459'::uuid, -- Resource 01
+	'22222222-dc08-4a06-9983-8b374586e459'::uuid, -- Resource Desk 01
 	null::uuid,
 	'2022-05-09 09:54:16.865562'::TIMESTAMP,
 	'2022-05-09 13:54:16.865562'::TIMESTAMP
