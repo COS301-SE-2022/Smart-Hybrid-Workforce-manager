@@ -1,7 +1,16 @@
 CREATE OR REPLACE FUNCTION resource.identifier_remove(
     _id uuid
 )
-RETURNS BOOLEAN AS $$
+RETURNS TABLE (
+    id uuid,
+	room_id uuid,
+    name VARCHAR(256),
+	location VARCHAR(256),
+	role_id uuid,
+	resource_type resource.type,
+    date_created TIMESTAMP
+) AS 
+$$
 BEGIN
 
     IF NOT EXISTS (
@@ -14,9 +23,9 @@ BEGIN
             USING HINT = 'Please check the provided resource id parameter';
     END IF;
 
-    DELETE FROM resource.identifier WHERE id = _id;
-
-    RETURN TRUE;
+    RETURN QUERY
+    DELETE FROM resource.identifier as a WHERE a.id = _id
+    RETURNING *;
 
 END
 $$ LANGUAGE plpgsql;
