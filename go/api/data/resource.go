@@ -3,21 +3,11 @@ package data
 import (
 	"api/db"
 	"database/sql"
-	"strings"
 	// "database/sql"
 )
 
 //////////////////////////////////////////////////
 // Structures and Variables
-
-//ResourceType enum
-type ResourceType int8
-
-const (
-	PARKING ResourceType = iota + 1
-	DESK
-	MEETINGROOM
-)
 
 // Building identifies a Building Resource via common attributes
 type Building struct {
@@ -53,13 +43,13 @@ type RoomAssociations []*RoomAssociation
 
 // Resource identifies a Resource via common attributes
 type Resource struct {
-	Id           *string       `json:"id,omitempty"`
-	RoomId       *string       `json:"room_id,omitempty"`
-	Name         *string       `json:"name,omitempty"`
-	Location     *string       `json:"location,omitempty"`
-	RoleId       *string       `json:"role_id,omitempty"`
-	ResourceType *ResourceType `json:"resource_type,omitempty"`
-	DateCreated  *string       `json:"date_created,omitempty"`
+	Id           *string `json:"id,omitempty"`
+	RoomId       *string `json:"room_id,omitempty"`
+	Name         *string `json:"name,omitempty"`
+	Location     *string `json:"location,omitempty"`
+	RoleId       *string `json:"role_id,omitempty"`
+	ResourceType *string `json:"resource_type,omitempty"`
+	DateCreated  *string `json:"date_created,omitempty"`
 }
 
 // Resources represent a splice of Resource
@@ -121,18 +111,7 @@ func mapRoomAssociation(rows *sql.Rows) (interface{}, error) {
 	return identifier, nil
 }
 
-func ParseStringToResourceType(str string) ResourceType {
-	resourceTypeMap := map[string]ResourceType{ // TODO [KP]: Move this out of the function
-		"DESK":        DESK,
-		"PARKING":     PARKING,
-		"MEETINGROOM": MEETINGROOM,
-	}
-	r, _ := resourceTypeMap[strings.ToLower(str)]
-	return r
-}
-
 func mapResource(rows *sql.Rows) (interface{}, error) {
-	var tmp *string
 	var identifier Resource
 	err := rows.Scan(
 		&identifier.Id,
@@ -140,16 +119,12 @@ func mapResource(rows *sql.Rows) (interface{}, error) {
 		&identifier.Name,
 		&identifier.Location,
 		&identifier.RoleId,
-		&tmp,
+		&identifier.ResourceType,
 		&identifier.DateCreated,
 	)
 	if err != nil {
 		return nil, err
 	}
-
-	temp := ParseStringToResourceType(*tmp)
-	identifier.ResourceType = &temp
-
 	return identifier, nil
 }
 
@@ -325,4 +300,61 @@ func (RoomAssociations RoomAssociations) FindHead() *RoomAssociation {
 		return nil
 	}
 	return RoomAssociations[0]
+}
+
+////////////////
+// Resource
+
+// StoreIdentifier stores a Resource Identifier
+func (access *ResourceDA) StoreIdentifier(identifier *Resource) error {
+	_, err := access.access.Query(
+		`SELECT 1 FROM resource.identifier_store($1, $2, $3, $4, $5)`, nil,
+		identifier.Id, identifier.RoomId, identifier.Location, identifier.RoleId, identifier.ResourceType)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//FindIdentifier finds all Resource Identifiers
+func (access *ResourceDA) FindIdentifier(identifier *Resource) (Resources, error) {
+	results, err := access.access.Query(
+		`SELECT * FROM resource.identifier_find($1, $2, $3, $4, $5, $6)`, mapResource,
+		identifier.Id, identifier.RoomId, identifier.Location, identifier.RoleId, identifier.ResourceType, identifier.DateCreated)
+	if err != nil {
+		return nil, err
+	}
+	tmp := make([]*Resource, 0)
+	for r, _ := range results {
+		if value, ok := results[r].(Resource); ok {
+			tmp = append(tmp, &value)
+		}
+	}
+	return tmp, nil
+}
+
+//DeleteIdentifier finds a Resource Identifier
+func (access *ResourceDA) DeleteIdentifier(identifier *Resource) (*Resource, error) {
+	results, err := access.access.Query(
+		`SELECT * FROM resource.identifier_remove($1)`, mapResource,
+		identifier.Id)
+	if err != nil {
+		return nil, err
+	}
+	var tmp Resources
+	tmp = make([]*Resource, 0)
+	for r, _ := range results {
+		if value, ok := results[r].(Resource); ok {
+			tmp = append(tmp, &value)
+		}
+	}
+	return tmp.FindHead(), nil
+}
+
+//FindHead returns the first Resource Identifier
+func (Resources Resources) FindHead() *Resource {
+	if len(Resources) == 0 {
+		return nil
+	}
+	return Resources[0]
 }

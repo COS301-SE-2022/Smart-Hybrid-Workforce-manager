@@ -26,9 +26,9 @@ type CreateResourceStruct struct {
 
 //ResourceHandlers
 func ResourceHandlers(router *mux.Router) error {
-	router.HandleFunc("/create", TempResourceHandler).Methods("POST")
-	router.HandleFunc("/remove", TempResourceHandler).Methods("POST")
-	router.HandleFunc("/information", TempResourceHandler).Methods("POST")
+	router.HandleFunc("/create", CreateIdentifierHandler).Methods("POST")
+	router.HandleFunc("/remove", DeleteIdentifierHandler).Methods("POST")
+	router.HandleFunc("/information", InformationIdentifiersHandler).Methods("POST")
 
 	router.HandleFunc("/room/create", CreateRoomHandler).Methods("POST")
 	router.HandleFunc("/room/remove", DeleteRoomHandler).Methods("POST")
@@ -396,7 +396,118 @@ func DeleteRoomAssociationHandler(writer http.ResponseWriter, request *http.Requ
 	utils.JSONResponse(writer, request, roomAssociationRemoved)
 }
 
-// DeleteBookingHandler rewrites fields for booking where applicable
-func TempResourceHandler(writer http.ResponseWriter, request *http.Request) {
+////////////////
+// Identifier
+
+// CreateIdentifierHandler creates or updates a Identifier
+func CreateIdentifierHandler(writer http.ResponseWriter, request *http.Request) {
+	var identifier data.Resource
+
+	err := utils.UnmarshalJSON(writer, request, &identifier)
+	if err != nil {
+		fmt.Println(err)
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	da := data.NewResourceDA(access)
+
+	// TODO [KP]: Do more checks like if there exists a Identifier already etc
+
+	err = da.StoreIdentifier(&identifier)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	logger.Access.Printf("%v created\n", identifier.Id)
+
 	utils.Ok(writer, request)
+}
+
+// InformationIdentifiersHandler gets Identifiers
+func InformationIdentifiersHandler(writer http.ResponseWriter, request *http.Request) {
+	var identifier data.Resource
+
+	err := utils.UnmarshalJSON(writer, request, &identifier)
+	if err != nil {
+		fmt.Println(err)
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	da := data.NewResourceDA(access)
+
+	identifiers, err := da.FindIdentifier(&identifier)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	logger.Access.Printf("%v Identifier information requested\n", identifier.RoomId)
+
+	utils.JSONResponse(writer, request, identifiers)
+}
+
+// DeleteIdentifierHandler removes a Identifier
+func DeleteIdentifierHandler(writer http.ResponseWriter, request *http.Request) {
+	var identifier data.Resource
+
+	err := utils.UnmarshalJSON(writer, request, &identifier)
+	if err != nil {
+		fmt.Println(err)
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	da := data.NewResourceDA(access)
+
+	identifierRemoved, err := da.DeleteIdentifier(&identifier)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	logger.Access.Printf("%v Identifier removed\n", identifier.RoomId)
+
+	utils.JSONResponse(writer, request, identifierRemoved)
 }
