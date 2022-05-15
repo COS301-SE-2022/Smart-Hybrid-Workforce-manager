@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS booking.identifier (
     user_id uuid NOT NULL REFERENCES "user".identifier(id) ON DELETE CASCADE,
     resource_type resource.type NOT NULL,
     resource_preference_id uuid REFERENCES resource.identifier(id) ON DELETE SET NULL,
+    resource_id uuid REFERENCES resource.identifier(id) ON DELETE CASCADE,
     start TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     "end" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     booked BOOLEAN DEFAULT(false),
