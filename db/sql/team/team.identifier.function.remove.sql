@@ -18,8 +18,8 @@ BEGIN
         WHERE b.id = _id
         FOR UPDATE
     ) THEN
-        RAISE EXCEPTION 'invalid_user'
-            USING HINT = 'Please check the provided user id parameter';
+        RAISE EXCEPTION 'invalid_team'
+            USING HINT = 'Please check the provided team id parameter';
     END IF;
 
     RETURN QUERY

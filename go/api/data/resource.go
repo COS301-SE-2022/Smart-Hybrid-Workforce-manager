@@ -67,6 +67,11 @@ func NewResourceDA(access *db.Access) *ResourceDA {
 	}
 }
 
+// Commit commits the current implicit transaction
+func (access *ResourceDA) Commit() error {
+	return access.access.Commit()
+}
+
 //////////////////////////////////////////////////
 // Mappers
 

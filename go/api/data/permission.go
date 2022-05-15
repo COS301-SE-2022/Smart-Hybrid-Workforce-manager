@@ -34,6 +34,11 @@ func NewPermissionDA(access *db.Access) *PermissionDA {
 	}
 }
 
+// Commit commits the current implicit transaction
+func (access *PermissionDA) Commit() error {
+	return access.access.Commit()
+}
+
 //////////////////////////////////////////////////
 // Mappers
 
