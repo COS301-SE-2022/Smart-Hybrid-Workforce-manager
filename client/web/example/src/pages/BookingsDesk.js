@@ -25,6 +25,7 @@ function BookingsDesk()
           user_id: "11111111-dc08-4a06-9983-8b374586e459",
           resource_type: "DESK",
           resource_preference_id: null,
+          resource_id: null,
           start: startDate + "T" + startTime + ":43.511Z",
           end: endDate + "T" + endTime + ":43.511Z",
           booked: false
