@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "1d91887d-2117-413a-892f-67483c9bc67c",
+		"_postman_id": "4fb43f5a-5737-413c-80d5-3561c53b1616",
 		"name": "Smart Hybrid Workforce Manager",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -272,6 +272,247 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete Booking",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"33333333-dc08-4a06-9983-8b374586e459\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8100/api/booking/remove",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8100",
+							"path": [
+								"api",
+								"booking",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Permission",
+			"item": [
+				{
+					"name": "Role",
+					"item": [
+						{
+							"name": "Information",
+							"item": [
+								{
+									"name": "All",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8100/api/permission/role/information",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8100",
+											"path": [
+												"api",
+												"permission",
+												"role",
+												"information"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Create Permission",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"45454545-dc08-4a06-9983-8b374586e459\",\r\n    \"permission_type\": \"VIEW\",\r\n    \"permission_category\": \"BOOKING\",\r\n    \"permission_tenant\": \"ROLE\",\r\n    \"permission_tenant_id\": \"45454545-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/permission/role/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"permission",
+										"role",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Remove Permission",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"45454545-dc08-4a06-9983-8b374586e459\",\r\n    \"permission_type\": \"VIEW\",\r\n    \"permission_category\": \"BOOKING\",\r\n    \"permission_tenant\": \"ROLE\",\r\n    \"permission_tenant_id\": \"45454545-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/permission/role/remove",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"permission",
+										"role",
+										"remove"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "Information",
+							"item": [
+								{
+									"name": "All",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8100/api/permission/user/information",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8100",
+											"path": [
+												"api",
+												"permission",
+												"user",
+												"information"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Create Permission",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"11111111-dc08-4a06-9983-8b374586e459\",\r\n    \"permission_type\": \"VIEW\",\r\n    \"permission_category\": \"BOOKING\",\r\n    \"permission_tenant\": \"ROLE\",\r\n    \"permission_tenant_id\": \"45454545-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/permission/user/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"permission",
+										"user",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Remove Permission",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"11111111-dc08-4a06-9983-8b374586e459\",\r\n    \"permission_type\": \"VIEW\",\r\n    \"permission_category\": \"BOOKING\",\r\n    \"permission_tenant\": \"ROLE\",\r\n    \"permission_tenant_id\": \"45454545-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/permission/user/remove",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"permission",
+										"user",
+										"remove"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		}
