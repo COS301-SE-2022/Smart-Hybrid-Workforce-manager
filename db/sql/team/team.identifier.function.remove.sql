@@ -1,7 +1,15 @@
 CREATE OR REPLACE FUNCTION team.identifier_remove(
     _id uuid
 )
-RETURNS BOOLEAN AS $$
+RETURNS TABLE (
+    id uuid,
+	name VARCHAR(256),
+	description VARCHAR(256),
+	capacity INT,
+	picture VARCHAR(256),
+    date_created TIMESTAMP
+) AS 
+$$
 BEGIN
 
     IF NOT EXISTS (
@@ -14,9 +22,9 @@ BEGIN
             USING HINT = 'Please check the provided user id parameter';
     END IF;
 
-    DELETE FROM team.identifier WHERE id = _id;
-
-    RETURN TRUE;
+    RETURN QUERY
+    DELETE FROM team.identifier as a WHERE a.id = _id
+    RETURNING *;
 
 END
 $$ LANGUAGE plpgsql;

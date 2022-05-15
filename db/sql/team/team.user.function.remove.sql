@@ -2,7 +2,12 @@ CREATE OR REPLACE FUNCTION team.user_remove(
     _team_id uuid,
     _user_id uuid
 )
-RETURNS BOOLEAN AS $$
+RETURNS TABLE (
+    team_id uuid,
+	user_id uuid,
+	date_added TIMESTAMP
+) AS 
+$$
 BEGIN
 
     IF NOT EXISTS (
@@ -16,11 +21,11 @@ BEGIN
             USING HINT = 'Please check the provided team and user parameter';
     END IF;
 
-    DELETE FROM team.user 
-    WHERE team_id = _team_id
-    AND user_id = _user_id;
-
-    RETURN TRUE;
+    RETURN QUERY
+    DELETE FROM team.user as a
+    WHERE a.team_id = _team_id
+    AND a.user_id = _user_id
+    RETURNING *;
 
 END
 $$ LANGUAGE plpgsql;

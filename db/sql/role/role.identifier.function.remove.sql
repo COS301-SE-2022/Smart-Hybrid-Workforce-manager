@@ -1,7 +1,12 @@
 CREATE OR REPLACE FUNCTION role.identifier_remove(
     _id uuid
 )
-RETURNS BOOLEAN AS $$
+RETURNS TABLE (
+    id uuid,
+	role_name VarChar(256),
+	date_added TIMESTAMP
+) AS
+$$
 BEGIN
 
     IF NOT EXISTS (
@@ -14,9 +19,9 @@ BEGIN
             USING HINT = 'Please check the provided role id parameter';
     END IF;
 
-    DELETE FROM role.identifier WHERE id = _id;
-
-    RETURN TRUE;
+    RETURN QUERY
+    DELETE FROM role.identifier as a WHERE a.id = _id
+    RETURNING *;
 
 END
 $$ LANGUAGE plpgsql;
