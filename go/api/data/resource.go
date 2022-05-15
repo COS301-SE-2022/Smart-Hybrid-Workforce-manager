@@ -269,3 +269,60 @@ func (Rooms Rooms) FindHead() *Room {
 	}
 	return Rooms[0]
 }
+
+////////////////
+// RoomAssociation
+
+// StoreRoomAssociationResource stores a RoomAssociation
+func (access *ResourceDA) StoreRoomAssociationResource(identifier *RoomAssociation) error {
+	_, err := access.access.Query(
+		`SELECT 1 FROM resource.room_association_store($1, $2)`, nil,
+		identifier.RoomId, identifier.RoomIdAssociation)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//FindRoomAssociationResource finds all RoomAssociations
+func (access *ResourceDA) FindRoomAssociationResource(identifier *RoomAssociation) (RoomAssociations, error) {
+	results, err := access.access.Query(
+		`SELECT * FROM resource.room_association_find($1, $2)`, mapRoomAssociation,
+		identifier.RoomId, identifier.RoomIdAssociation)
+	if err != nil {
+		return nil, err
+	}
+	tmp := make([]*RoomAssociation, 0)
+	for r, _ := range results {
+		if value, ok := results[r].(RoomAssociation); ok {
+			tmp = append(tmp, &value)
+		}
+	}
+	return tmp, nil
+}
+
+//DeleteRoomAssociationResource finds a RoomAssociation
+func (access *ResourceDA) DeleteRoomAssociationResource(identifier *RoomAssociation) (*RoomAssociation, error) {
+	results, err := access.access.Query(
+		`SELECT * FROM resource.room_association_remove($1, $2)`, mapRoomAssociation,
+		identifier.RoomId, identifier.RoomIdAssociation)
+	if err != nil {
+		return nil, err
+	}
+	var tmp RoomAssociations
+	tmp = make([]*RoomAssociation, 0)
+	for r, _ := range results {
+		if value, ok := results[r].(RoomAssociation); ok {
+			tmp = append(tmp, &value)
+		}
+	}
+	return tmp.FindHead(), nil
+}
+
+//FindHead returns the first RoomAssociation
+func (RoomAssociations RoomAssociations) FindHead() *RoomAssociation {
+	if len(RoomAssociations) == 0 {
+		return nil
+	}
+	return RoomAssociations[0]
+}

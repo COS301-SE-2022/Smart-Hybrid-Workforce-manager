@@ -34,9 +34,9 @@ func ResourceHandlers(router *mux.Router) error {
 	router.HandleFunc("/room/remove", DeleteRoomHandler).Methods("POST")
 	router.HandleFunc("/room/information", InformationRoomsHandler).Methods("POST")
 
-	router.HandleFunc("/room/association/create", TempResourceHandler).Methods("POST")
-	router.HandleFunc("/room/association/remove", TempResourceHandler).Methods("POST")
-	router.HandleFunc("/room/association/information", TempResourceHandler).Methods("POST")
+	router.HandleFunc("/room/association/create", CreateRoomAssociationHandler).Methods("POST")
+	router.HandleFunc("/room/association/remove", DeleteRoomAssociationHandler).Methods("POST")
+	router.HandleFunc("/room/association/information", InformationRoomAssociationsHandler).Methods("POST")
 
 	router.HandleFunc("/building/create", CreateBuildingHandler).Methods("POST")
 	router.HandleFunc("/building/remove", DeleteBuildingHandler).Methods("POST")
@@ -278,6 +278,122 @@ func DeleteRoomHandler(writer http.ResponseWriter, request *http.Request) {
 	logger.Access.Printf("%v Room removed\n", room.Id)
 
 	utils.JSONResponse(writer, request, roomRemoved)
+}
+
+////////////////
+// RoomAssociation
+
+// CreateRoomAssociationHandler creates or updates a RoomAssociation
+func CreateRoomAssociationHandler(writer http.ResponseWriter, request *http.Request) {
+	var roomAssociation data.RoomAssociation
+
+	err := utils.UnmarshalJSON(writer, request, &roomAssociation)
+	if err != nil {
+		fmt.Println(err)
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	da := data.NewResourceDA(access)
+
+	// TODO [KP]: Do more checks like if there exists a RoomAssociation already etc
+
+	err = da.StoreRoomAssociationResource(&roomAssociation)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	logger.Access.Printf("%v created\n", roomAssociation.RoomId)
+
+	utils.Ok(writer, request)
+}
+
+// InformationRoomAssociationsHandler gets RoomAssociations
+func InformationRoomAssociationsHandler(writer http.ResponseWriter, request *http.Request) {
+	var roomAssociation data.RoomAssociation
+
+	err := utils.UnmarshalJSON(writer, request, &roomAssociation)
+	if err != nil {
+		fmt.Println(err)
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	da := data.NewResourceDA(access)
+
+	roomAssociations, err := da.FindRoomAssociationResource(&roomAssociation)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	logger.Access.Printf("%v RoomAssociation information requested\n", roomAssociation.RoomId)
+
+	utils.JSONResponse(writer, request, roomAssociations)
+}
+
+// DeleteRoomAssociationHandler removes a RoomAssociation
+func DeleteRoomAssociationHandler(writer http.ResponseWriter, request *http.Request) {
+	var roomAssociation data.RoomAssociation
+
+	err := utils.UnmarshalJSON(writer, request, &roomAssociation)
+	if err != nil {
+		fmt.Println(err)
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	da := data.NewResourceDA(access)
+
+	roomAssociationRemoved, err := da.DeleteRoomAssociationResource(&roomAssociation)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	logger.Access.Printf("%v RoomAssociation removed\n", roomAssociation.RoomId)
+
+	utils.JSONResponse(writer, request, roomAssociationRemoved)
 }
 
 // DeleteBookingHandler rewrites fields for booking where applicable
