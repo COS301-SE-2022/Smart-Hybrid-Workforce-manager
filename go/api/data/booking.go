@@ -89,3 +89,29 @@ func (access *BookingDA) FindIdentifier(identifier *Booking) (Bookings, error) {
 	}
 	return tmp, nil
 }
+
+//DeleteIdentifier finds an identifier
+func (access *BookingDA) DeleteIdentifier(identifier *Booking) (*Booking, error) {
+	results, err := access.access.Query(
+		`SELECT * FROM booking.identifier_remove($1)`, mapBooking,
+		identifier.Id)
+	if err != nil {
+		return nil, err
+	}
+	var tmp Bookings
+	tmp = make([]*Booking, 0)
+	for r, _ := range results {
+		if value, ok := results[r].(Booking); ok {
+			tmp = append(tmp, &value)
+		}
+	}
+	return tmp.FindHead(), nil
+}
+
+//FindHead returns the first Booking
+func (bookings Bookings) FindHead() *Booking {
+	if len(bookings) == 0 {
+		return nil
+	}
+	return bookings[0]
+}

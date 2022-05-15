@@ -1,7 +1,18 @@
 CREATE OR REPLACE FUNCTION booking.identifier_remove(
     _id uuid
 )
-RETURNS BOOLEAN AS $$
+RETURNS TABLE (
+    id uuid,
+	user_id uuid,
+	resource_type resource.type,
+	resource_preference_id uuid,
+	resource_id uuid,
+	start TIMESTAMP,
+	"end" TIMESTAMP,
+    booked BOOLEAN,
+    date_created TIMESTAMP
+) AS 
+$$
 BEGIN
 
     IF NOT EXISTS (
@@ -14,9 +25,9 @@ BEGIN
             USING HINT = 'Please check the provided booking id parameter';
     END IF;
 
-    DELETE FROM booking.identifier WHERE id = _id;
-
-    RETURN TRUE;
+    RETURN QUERY
+    DELETE FROM booking.identifier as a WHERE a.id = _id 
+    RETURNING *;
 
 END
 $$ LANGUAGE plpgsql;
