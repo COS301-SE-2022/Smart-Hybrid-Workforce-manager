@@ -5,7 +5,15 @@ CREATE OR REPLACE FUNCTION permission.role_remove(
     _permission_tenant permission.tenant,
     _permission_tenant_id uuid
 )
-RETURNS BOOLEAN AS $$
+RETURNS TABLE (
+    role_id uuid,
+	permission_type permission.type,
+	permission_category permission.category,
+	permission_tenant permission.tenant,
+	permission_tenant_id uuid,
+	date_added TIMESTAMP
+) AS 
+$$
 BEGIN
 
     IF NOT EXISTS (
@@ -22,14 +30,14 @@ BEGIN
             USING HINT = 'Please check the provided role parameters';
     END IF;
 
-    DELETE FROM permission.role 
-    WHERE role_id = _role_id
-    AND permission_type = _permission_type
-    AND permission_category = _permission_category
-    AND permission_tenant = _permission_tenant
-    AND permission_tenant_id = _permission_tenant_id;
-
-    RETURN TRUE;
+    RETURN QUERY
+    DELETE FROM permission.role as a
+    WHERE a.role_id = _role_id
+    AND a.permission_type = _permission_type
+    AND a.permission_category = _permission_category
+    AND a.permission_tenant = _permission_tenant
+    AND a.permission_tenant_id = _permission_tenant_id
+    RETURNING *;
 
 END
 $$ LANGUAGE plpgsql;
