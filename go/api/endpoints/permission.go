@@ -22,6 +22,7 @@ func PermissionHandlers(router *mux.Router) error {
 	router.HandleFunc("/role/create", CreatePermissionRoleHandler).Methods("POST")
 	router.HandleFunc("/role/information", InformationPermissionRoleHandler).Methods("POST")
 	router.HandleFunc("/role/remove", DeletePermissionRoleHandler).Methods("POST")
+
 	router.HandleFunc("/user/create", CreatePermissionUserHandler).Methods("POST")
 	router.HandleFunc("/user/information", InformationPermissionUserHandler).Methods("POST")
 	router.HandleFunc("/user/remove", DeletePermissionUserHandler).Methods("POST")
@@ -31,7 +32,7 @@ func PermissionHandlers(router *mux.Router) error {
 /////////////////////////////////////////////
 // Functions
 
-// CreatePermissionRoleHandler creates a role premission
+// CreatePermissionRoleHandler creates a role permission
 func CreatePermissionRoleHandler(writer http.ResponseWriter, request *http.Request) {
 	var permission data.Permission
 
@@ -70,7 +71,7 @@ func CreatePermissionRoleHandler(writer http.ResponseWriter, request *http.Reque
 	utils.Ok(writer, request)
 }
 
-// CreatePermissionUserHandler creates a user premission
+// CreatePermissionUserHandler creates a user permission
 func CreatePermissionUserHandler(writer http.ResponseWriter, request *http.Request) {
 	var permission data.Permission
 
@@ -109,7 +110,7 @@ func CreatePermissionUserHandler(writer http.ResponseWriter, request *http.Reque
 	utils.Ok(writer, request)
 }
 
-// InformationPermissionUserHandler gets user premissions
+// InformationPermissionUserHandler gets user permissions
 func InformationPermissionUserHandler(writer http.ResponseWriter, request *http.Request) {
 	var permission data.Permission
 
@@ -146,7 +147,7 @@ func InformationPermissionUserHandler(writer http.ResponseWriter, request *http.
 	utils.JSONResponse(writer, request, permissions)
 }
 
-// InformationPermissionRoleHandler gets role premissions
+// InformationPermissionRoleHandler gets role permissions
 func InformationPermissionRoleHandler(writer http.ResponseWriter, request *http.Request) {
 	var permission data.Permission
 
@@ -255,9 +256,4 @@ func DeletePermissionRoleHandler(writer http.ResponseWriter, request *http.Reque
 	logger.Access.Printf("%v permission removed\n", permission.Id)
 
 	utils.JSONResponse(writer, request, permissionRemoved)
-}
-
-// DeleteBookingHandler rewrites fields for booking where applicable
-func TempHandler(writer http.ResponseWriter, request *http.Request) {
-	utils.Ok(writer, request)
 }
