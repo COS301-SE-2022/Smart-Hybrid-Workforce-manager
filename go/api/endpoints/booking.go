@@ -25,7 +25,7 @@ func BookingHandlers(router *mux.Router) error {
 /////////////////////////////////////////////
 // Functions
 
-// CreateBookingHandler registers a new user
+// CreateBookingHandler creates or updates a booking
 func CreateBookingHandler(writer http.ResponseWriter, request *http.Request) {
 	var booking data.Booking
 
@@ -101,7 +101,7 @@ func InformationBookingHandler(writer http.ResponseWriter, request *http.Request
 	utils.JSONResponse(writer, request, bookings)
 }
 
-// DeleteBookingHandler removes booking
+// DeleteBookingHandler removes a booking
 func DeleteBookingHandler(writer http.ResponseWriter, request *http.Request) {
 	var booking data.Booking
 

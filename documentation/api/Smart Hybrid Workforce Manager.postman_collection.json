@@ -515,6 +515,418 @@
 					]
 				}
 			]
+		},
+		{
+			"name": "Resource",
+			"item": [
+				{
+					"name": "Information",
+					"item": [
+						{
+							"name": "All",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/resource/information",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"resource",
+										"information"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Building",
+					"item": [
+						{
+							"name": "Information",
+							"item": [
+								{
+									"name": "All",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8100/api/resource/building/information",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8100",
+											"path": [
+												"api",
+												"resource",
+												"building",
+												"information"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Delete Building",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"98989898-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/resource/building/remove",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"resource",
+										"building",
+										"remove"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Building",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"98989898-dc08-4a06-9983-8b374586e459\",\r\n    \"name\": \"aName\",\r\n    \"location\": \"ALocation\",\r\n    \"dimension\": \"5x5\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/resource/building/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"resource",
+										"building",
+										"create"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Room",
+					"item": [
+						{
+							"name": "Information",
+							"item": [
+								{
+									"name": "All",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8100/api/resource/room/information",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8100",
+											"path": [
+												"api",
+												"resource",
+												"room",
+												"information"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Delete Room",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"14141414-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/resource/room/remove",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"resource",
+										"room",
+										"remove"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Room",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"14141414-dc08-4a06-9983-8b374586e459\",\r\n    \"building_id\": \"98989898-dc08-4a06-9983-8b374586e459\",\r\n    \"name\": \"aName\",\r\n    \"location\": \"ALocation\",\r\n    \"dimension\": \"5x5\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/resource/room/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"resource",
+										"room",
+										"create"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "RoomAssociation",
+					"item": [
+						{
+							"name": "Information",
+							"item": [
+								{
+									"name": "All",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8100/api/resource/room/association/information",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8100",
+											"path": [
+												"api",
+												"resource",
+												"room",
+												"association",
+												"information"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Delete RoomAssociation",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"room_id\": \"15151515-dc08-4a06-9983-8b374586e459\",\r\n    \"room_id_association\": \"14141414-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/resource/room/association/remove",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"resource",
+										"room",
+										"association",
+										"remove"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create RoomAssociation",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"room_id\": \"15151515-dc08-4a06-9983-8b374586e459\",\r\n    \"room_id_association\": \"14141414-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/resource/room/association/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"resource",
+										"room",
+										"association",
+										"create"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Delete Resource",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"22222222-dc08-4a06-9983-8b374586e459\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8100/api/resource/remove",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8100",
+							"path": [
+								"api",
+								"resource",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Resource",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"22222222-dc08-4a06-9983-8b374586e459\",\r\n    \"room_id\": \"14141414-dc08-4a06-9983-8b374586e459\",\r\n    \"name\": \"aName\",\r\n    \"location\": \"ALocation\",\r\n    \"role_id\": null,\r\n    \"resource_type\": \"MEETINGROOM\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8100/api/resource/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8100",
+							"path": [
+								"api",
+								"resource",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
