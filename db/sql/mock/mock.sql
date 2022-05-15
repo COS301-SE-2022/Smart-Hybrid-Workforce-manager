@@ -66,6 +66,7 @@ SELECT booking.identifier_store(
 	'11111111-dc08-4a06-9983-8b374586e459'::uuid, -- User 01
 	'DESK'::resource.type,
 	'22222222-dc08-4a06-9983-8b374586e459'::uuid, -- Resource 01
+	null::uuid,
 	'2022-05-09 09:54:16.865562'::TIMESTAMP,
 	'2022-05-09 13:54:16.865562'::TIMESTAMP
 );

@@ -3,6 +3,7 @@ CREATE OR REPLACE FUNCTION booking.identifier_store(
 	_user_id uuid,
 	_resource_type resource.type,
 	_resource_preference_id uuid,
+	_resource_id uuid,
 	_start TIMESTAMP WITHOUT TIME ZONE,
 	_end TIMESTAMP WITHOUT TIME ZONE,
 	_booked BOOLEAN DEFAULT NULL -- Defaults to false and is not considered for creation
@@ -17,6 +18,7 @@ BEGIN
         SET user_id = _user_id,
             resource_type = _resource_type,
             resource_preference_id = _resource_preference_id,
+            resource_id = _resource_id,
             start = _start,
             "end" = _end,
             booked = _booked

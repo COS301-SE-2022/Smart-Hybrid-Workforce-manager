@@ -15,6 +15,7 @@ type Booking struct {
 	UserId               *string    `json:"user_id,omitempty"`
 	ResourceType         *string    `json:"resource_type,omitempty"`
 	ResourcePreferenceId *string    `json:"resource_preference_id,omitempty"`
+	ResourceId           *string    `json:"resource_id,omitempty"`
 	Start                *time.Time `json:"start,omitempty"`
 	End                  *time.Time `json:"end,omitempty"`
 	Booked               *bool      `json:"booked,omitempty"`
@@ -46,6 +47,7 @@ func mapBooking(rows *sql.Rows) (interface{}, error) {
 		&identifier.UserId,
 		&identifier.ResourceType,
 		&identifier.ResourcePreferenceId,
+		&identifier.ResourceId,
 		&identifier.Start,
 		&identifier.End,
 		&identifier.Booked,
@@ -63,8 +65,8 @@ func mapBooking(rows *sql.Rows) (interface{}, error) {
 // StoreIdentifier stores an identifier
 func (access *BookingDA) StoreIdentifier(identifier *Booking) error {
 	_, err := access.access.Query(
-		`SELECT 1 FROM booking.identifier_store($1, $2, $3, $4, $5, $6, $7)`, nil,
-		identifier.Id, identifier.UserId, identifier.ResourceType, identifier.ResourcePreferenceId, identifier.Start, identifier.End, identifier.Booked)
+		`SELECT 1 FROM booking.identifier_store($1, $2, $3, $4, $5, $6, $7, $8)`, nil,
+		identifier.Id, identifier.UserId, identifier.ResourceType, identifier.ResourcePreferenceId, identifier.ResourceId, identifier.Start, identifier.End, identifier.Booked)
 	if err != nil {
 		return err
 	}
@@ -74,8 +76,8 @@ func (access *BookingDA) StoreIdentifier(identifier *Booking) error {
 //FindIdentifier finds an identifier
 func (access *BookingDA) FindIdentifier(identifier *Booking) (Bookings, error) {
 	results, err := access.access.Query(
-		`SELECT * FROM booking.identifier_find($1, $2, $3, $4, $5, $6, $7, $8)`, mapBooking,
-		identifier.Id, identifier.UserId, identifier.ResourceType, identifier.ResourcePreferenceId, identifier.Start, identifier.End, identifier.Booked, identifier.DateCreated)
+		`SELECT * FROM booking.identifier_find($1, $2, $3, $4, $5, $6, $7, $8, $9)`, mapBooking,
+		identifier.Id, identifier.UserId, identifier.ResourceType, identifier.ResourcePreferenceId, identifier.ResourceId, identifier.Start, identifier.End, identifier.Booked, identifier.DateCreated)
 	if err != nil {
 		return nil, err
 	}
