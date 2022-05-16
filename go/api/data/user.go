@@ -126,10 +126,10 @@ func (access *UserDA) StoreCredential(Id string, secret *string, identifier stri
 	return nil
 }
 
+//FindHead returns the first User
 func (users Users) FindHead() *User {
 	if len(users) == 0 {
 		return nil
 	}
 	return users[0]
 }
-

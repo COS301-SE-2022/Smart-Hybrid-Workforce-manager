@@ -34,6 +34,11 @@ func NewPermissionDA(access *db.Access) *PermissionDA {
 	}
 }
 
+// Commit commits the current implicit transaction
+func (access *PermissionDA) Commit() error {
+	return access.access.Commit()
+}
+
 //////////////////////////////////////////////////
 // Mappers
 
@@ -56,8 +61,8 @@ func mapPermission(rows *sql.Rows) (interface{}, error) {
 //////////////////////////////////////////////////
 // Functions
 
-// StoreUserIdentifier stores an identifier
-func (access *PermissionDA) StoreUserIdentifier(identifier *Permission) error {
+// StoreUserPermission stores a user identifier
+func (access *PermissionDA) StoreUserPermission(identifier *Permission) error {
 	_, err := access.access.Query(
 		`SELECT 1 FROM permission.user_store($1, $2, $3, $4, $5)`, nil,
 		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId)
@@ -67,8 +72,8 @@ func (access *PermissionDA) StoreUserIdentifier(identifier *Permission) error {
 	return nil
 }
 
-// StoreUserIdentifier stores an identifier
-func (access *PermissionDA) StoreRoleIdentifier(identifier *Permission) error {
+// StoreRolePermission stores a role identifier
+func (access *PermissionDA) StoreRolePermission(identifier *Permission) error {
 	_, err := access.access.Query(
 		`SELECT 1 FROM permission.role_store($1, $2, $3, $4, $5)`, nil,
 		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId)
@@ -76,4 +81,82 @@ func (access *PermissionDA) StoreRoleIdentifier(identifier *Permission) error {
 		return err
 	}
 	return nil
+}
+
+// FindUserPermission finds a user identifier
+func (access *PermissionDA) FindUserPermission(identifier *Permission) (Permissions, error) {
+	results, err := access.access.Query(
+		`SELECT * FROM permission.user_find($1, $2, $3, $4, $5, $6)`, mapPermission,
+		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId, identifier.DateAdded)
+	if err != nil {
+		return nil, err
+	}
+	tmp := make([]*Permission, 0)
+	for r, _ := range results {
+		if value, ok := results[r].(Permission); ok {
+			tmp = append(tmp, &value)
+		}
+	}
+	return tmp, nil
+}
+
+// FindRolePermission finds a role identifier
+func (access *PermissionDA) FindRolePermission(identifier *Permission) (Permissions, error) {
+	results, err := access.access.Query(
+		`SELECT * FROM permission.role_find($1, $2, $3, $4, $5, $6)`, mapPermission,
+		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId, identifier.DateAdded)
+	if err != nil {
+		return nil, err
+	}
+	tmp := make([]*Permission, 0)
+	for r, _ := range results {
+		if value, ok := results[r].(Permission); ok {
+			tmp = append(tmp, &value)
+		}
+	}
+	return tmp, nil
+}
+
+//DeleteUserPermission finds an identifier
+func (access *PermissionDA) DeleteUserPermission(identifier *Permission) (*Permission, error) {
+	results, err := access.access.Query(
+		`SELECT * FROM permission.user_remove($1, $2, $3, $4, $5)`, mapPermission,
+		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId)
+	if err != nil {
+		return nil, err
+	}
+	var tmp Permissions
+	tmp = make([]*Permission, 0)
+	for r, _ := range results {
+		if value, ok := results[r].(Permission); ok {
+			tmp = append(tmp, &value)
+		}
+	}
+	return tmp.FindHead(), nil
+}
+
+//DeleteRolePermission finds an identifier
+func (access *PermissionDA) DeleteRolePermission(identifier *Permission) (*Permission, error) {
+	results, err := access.access.Query(
+		`SELECT * FROM permission.role_remove($1, $2, $3, $4, $5)`, mapPermission,
+		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId)
+	if err != nil {
+		return nil, err
+	}
+	var tmp Permissions
+	tmp = make([]*Permission, 0)
+	for r, _ := range results {
+		if value, ok := results[r].(Permission); ok {
+			tmp = append(tmp, &value)
+		}
+	}
+	return tmp.FindHead(), nil
+}
+
+//FindHead returns the first Booking
+func (permissions Permissions) FindHead() *Permission {
+	if len(permissions) == 0 {
+		return nil
+	}
+	return permissions[0]
 }

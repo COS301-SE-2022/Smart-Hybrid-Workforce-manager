@@ -4,8 +4,6 @@ CREATE OR REPLACE FUNCTION team.association_store(
 )
 RETURNS BOOLEAN AS
 $$
-DECLARE
-	__id uuid;
 BEGIN
 	IF (_team_id IS NOT NULL AND EXISTS(SELECT 1 FROM team.association WHERE team_id = _team_id)) THEN
         UPDATE team.association

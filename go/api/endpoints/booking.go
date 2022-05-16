@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"lib/logger"
 	"net/http"
-	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -19,7 +18,6 @@ import (
 func BookingHandlers(router *mux.Router) error {
 	router.HandleFunc("/create", CreateBookingHandler).Methods("POST")
 	router.HandleFunc("/information", InformationBookingHandler).Methods("POST")
-	router.HandleFunc("/update", UpdateBookingHandler).Methods("POST")
 	router.HandleFunc("/remove", DeleteBookingHandler).Methods("POST")
 	return nil
 }
@@ -27,7 +25,7 @@ func BookingHandlers(router *mux.Router) error {
 /////////////////////////////////////////////
 // Functions
 
-// CreateBookingHandler registers a new user
+// CreateBookingHandler creates or updates a booking
 func CreateBookingHandler(writer http.ResponseWriter, request *http.Request) {
 	var booking data.Booking
 
@@ -66,7 +64,7 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request) {
 	utils.Ok(writer, request)
 }
 
-// InformationBookingHandler registers a new user
+// InformationBookingHandler gets bookings
 func InformationBookingHandler(writer http.ResponseWriter, request *http.Request) {
 	var booking data.Booking
 
@@ -103,8 +101,8 @@ func InformationBookingHandler(writer http.ResponseWriter, request *http.Request
 	utils.JSONResponse(writer, request, bookings)
 }
 
-// UpdateBookingHandler rewrites fields for booking where applicable
-func UpdateBookingHandler(writer http.ResponseWriter, request *http.Request){
+// DeleteBookingHandler removes a booking
+func DeleteBookingHandler(writer http.ResponseWriter, request *http.Request) {
 	var booking data.Booking
 
 	err := utils.UnmarshalJSON(writer, request, &booking)
@@ -114,22 +112,28 @@ func UpdateBookingHandler(writer http.ResponseWriter, request *http.Request){
 		return
 	}
 
-	time := time.Now() 
-	b := data.Booking{
-		Start: &time,
-	}
-	utils.JSONResponse(writer, request, b)
-}
-
-// DeleteBookingHandler rewrites fields for booking where applicable
-func DeleteBookingHandler(writer http.ResponseWriter, request *http.Request){
-	var booking data.Booking
-
-	err := utils.UnmarshalJSON(writer, request, &booking)
+	access, err := db.Open()
 	if err != nil {
-		fmt.Println(err)
-		utils.BadRequest(writer, request, "invalid_request")
+		utils.InternalServerError(writer, request, err)
 		return
 	}
-	utils.Ok(writer, request)
+	defer access.Close()
+
+	da := data.NewBookingDA(access)
+
+	bookingRemoved, err := da.DeleteIdentifier(&booking)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	logger.Access.Printf("%v booking removed\n", booking.Id)
+
+	utils.JSONResponse(writer, request, bookingRemoved)
 }

@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
 
-function BookingsDesk()
+function BookingsMeeting()
 {
   const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -23,7 +23,7 @@ function BookingsDesk()
         body: JSON.stringify({
           id: "33333333-dc08-4a06-9983-8b374586e453",
           user_id: "11111111-dc08-4a06-9983-8b374586e459",
-          resource_type: "DESK",
+          resource_type: "MEETINGROOM",
           resource_preference_id: null,
           resource_id: null,
           start: startDate + "T" + startTime + ":43.511Z",
@@ -49,7 +49,7 @@ function BookingsDesk()
       <div className='content'>
         <Navbar />
         <div className='form-container-team'>
-          <p className='form-header'><h1>CREATE YOUR DESK BOOKING</h1>Please enter your booking details.</p>
+          <p className='form-header'><h1>MEETING ROOM BOOKING</h1>Please enter your booking details.</p>
           
           <Form className='form' onSubmit={handleSubmit}>
             <Form.Group className='form-group' controlId="formBasicName">
@@ -81,4 +81,4 @@ function BookingsDesk()
   )
 }
 
-export default BookingsDesk
+export default BookingsMeeting

@@ -14,7 +14,7 @@ BEGIN
             permission_category = _permission_category,
             permission_tenant = _permission_tenant,
             permission_tenant_id = _permission_tenant_id
-        WHERE user_id = user_id;
+        WHERE user_id = _user_id;
     ELSE
     	INSERT INTO permission.user(user_id, permission_type, permission_category, permission_tenant, permission_tenant_id)
         VALUES (_user_id, _permission_type, _permission_category, _permission_tenant, _permission_tenant_id);

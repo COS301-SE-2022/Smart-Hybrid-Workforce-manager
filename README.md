@@ -11,6 +11,13 @@
   <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Go_Logo_Blue.svg" alt="go" height="35"/>
   <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Postgresql_elephant.svg" alt="postgres" height="35"/>
 </p>
+
+<a href = "https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/COS301-SE-2022/Smart-Hybrid-Workforce-manager"></a>
+[![Docker Image CI](https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/actions/workflows/deploy.yml/badge.svg)](https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/actions/workflows/deploy.yml)
+[![codecov](https://codecov.io/gh/COS301-SE-2022/Smart-Hybrid-Workforce-manager/branch/master/graph/badge.svg?token=FP6940JI0D)](https://codecov.io/gh/COS301-SE-2022/Smart-Hybrid-Workforce-manager)
+[![Requirements Status](https://requires.io/github/InThePipeFiveByFive/Smart-Hybrid-Workforce-manager/requirements.svg?branch=master)](https://requires.io/github/InThePipeFiveByFive/Smart-Hybrid-Workforce-manager/requirements/?branch=master) 
+<img alt="Uptime Robot status" src="https://img.shields.io/uptimerobot/status/m791728122-d14beed6408606d9175acebf">
+
 <br>
 
 <!-- Description  -->
@@ -24,7 +31,7 @@ Smart Hybrid Workforce Manager is a system that aims to provide companies an eas
 <a href="https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/projects" target="_blank">
   ➛ Project Board<br>
 </a> 
-<a href="#" target="_blank">
+<a href="https://drive.google.com/file/d/1P8EYnATIvTuzI92zB5p3PX_Cp5whZi45/view?usp=sharing" target="_blank">
   ➛ Requirements<br>
 </a> 
 
@@ -36,8 +43,11 @@ Smart Hybrid Workforce Manager is a system that aims to provide companies an eas
 <!-- Dark Mode -->
 <img src="https://user-images.githubusercontent.com/53088824/167414102-bf02aafc-c50c-40db-88bf-671a0e7a345d.png#gh-dark-mode-only" height=35/>
 
-<a href="#" target="_blank">
-  ➛ Demo 1<br>
+<a href="https://drive.google.com/file/d/1Ie_8NZNK5KYC1meSEZ1z6F-E5rxnZH6L/view?usp=sharing" target="_blank">
+  ➛ Demo 1 Video<br>
+</a>
+<a href="https://drive.google.com/file/d/19aGbydlYjP7VNsrecyodfphOxQlFE_kn/view?usp=sharing" target="_blank">
+  ➛ Demo 1 Presentation<br>
 </a> 
 <a href="#" target="_blank">
   ➛ Demo 2<br>
@@ -168,3 +178,5 @@ I am a 3rd year BSc Information and Knowledge systems student, specialising in d
 </details>
 
 <br>
+
+![Sprint1](https://user-images.githubusercontent.com/53088824/168417712-9d776adc-4ba9-4ab5-9405-e6ab94406189.png)

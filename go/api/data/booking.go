@@ -15,6 +15,7 @@ type Booking struct {
 	UserId               *string    `json:"user_id,omitempty"`
 	ResourceType         *string    `json:"resource_type,omitempty"`
 	ResourcePreferenceId *string    `json:"resource_preference_id,omitempty"`
+	ResourceId           *string    `json:"resource_id,omitempty"`
 	Start                *time.Time `json:"start,omitempty"`
 	End                  *time.Time `json:"end,omitempty"`
 	Booked               *bool      `json:"booked,omitempty"`
@@ -36,6 +37,11 @@ func NewBookingDA(access *db.Access) *BookingDA {
 	}
 }
 
+// Commit commits the current implicit transaction
+func (access *BookingDA) Commit() error {
+	return access.access.Commit()
+}
+
 //////////////////////////////////////////////////
 // Mappers
 
@@ -46,6 +52,7 @@ func mapBooking(rows *sql.Rows) (interface{}, error) {
 		&identifier.UserId,
 		&identifier.ResourceType,
 		&identifier.ResourcePreferenceId,
+		&identifier.ResourceId,
 		&identifier.Start,
 		&identifier.End,
 		&identifier.Booked,
@@ -63,8 +70,8 @@ func mapBooking(rows *sql.Rows) (interface{}, error) {
 // StoreIdentifier stores an identifier
 func (access *BookingDA) StoreIdentifier(identifier *Booking) error {
 	_, err := access.access.Query(
-		`SELECT 1 FROM booking.identifier_store($1, $2, $3, $4, $5, $6, $7)`, nil,
-		identifier.Id, identifier.UserId, identifier.ResourceType, identifier.ResourcePreferenceId, identifier.Start, identifier.End, identifier.Booked)
+		`SELECT 1 FROM booking.identifier_store($1, $2, $3, $4, $5, $6, $7, $8)`, nil,
+		identifier.Id, identifier.UserId, identifier.ResourceType, identifier.ResourcePreferenceId, identifier.ResourceId, identifier.Start, identifier.End, identifier.Booked)
 	if err != nil {
 		return err
 	}
@@ -74,8 +81,8 @@ func (access *BookingDA) StoreIdentifier(identifier *Booking) error {
 //FindIdentifier finds an identifier
 func (access *BookingDA) FindIdentifier(identifier *Booking) (Bookings, error) {
 	results, err := access.access.Query(
-		`SELECT * FROM booking.identifier_find($1, $2, $3, $4, $5, $6, $7, $8)`, mapBooking,
-		identifier.Id, identifier.UserId, identifier.ResourceType, identifier.ResourcePreferenceId, identifier.Start, identifier.End, identifier.Booked, identifier.DateCreated)
+		`SELECT * FROM booking.identifier_find($1, $2, $3, $4, $5, $6, $7, $8, $9)`, mapBooking,
+		identifier.Id, identifier.UserId, identifier.ResourceType, identifier.ResourcePreferenceId, identifier.ResourceId, identifier.Start, identifier.End, identifier.Booked, identifier.DateCreated)
 	if err != nil {
 		return nil, err
 	}
@@ -86,4 +93,30 @@ func (access *BookingDA) FindIdentifier(identifier *Booking) (Bookings, error) {
 		}
 	}
 	return tmp, nil
+}
+
+//DeleteIdentifier finds an identifier
+func (access *BookingDA) DeleteIdentifier(identifier *Booking) (*Booking, error) {
+	results, err := access.access.Query(
+		`SELECT * FROM booking.identifier_remove($1)`, mapBooking,
+		identifier.Id)
+	if err != nil {
+		return nil, err
+	}
+	var tmp Bookings
+	tmp = make([]*Booking, 0)
+	for r, _ := range results {
+		if value, ok := results[r].(Booking); ok {
+			tmp = append(tmp, &value)
+		}
+	}
+	return tmp.FindHead(), nil
+}
+
+//FindHead returns the first Booking
+func (bookings Bookings) FindHead() *Booking {
+	if len(bookings) == 0 {
+		return nil
+	}
+	return bookings[0]
 }

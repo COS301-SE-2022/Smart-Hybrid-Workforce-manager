@@ -1,21 +1,21 @@
-CREATE OR REPLACE FUNCTION "user".identifier_remove(
+CREATE OR REPLACE FUNCTION "user".credential_remove(
     _id uuid
 )
 RETURNS TABLE (
-    id uuid,
+    id VARCHAR(256),
+	secret VARCHAR(256),
 	identifier VARCHAR(256),
-	first_name VARCHAR(256),
-	last_name VARCHAR(256),
-	email VARCHAR(256),
-	picture VARCHAR(256),
-    date_created TIMESTAMP
+	"type"  "user".credential_type,
+	active BOOLEAN,
+	failed_attempts INT,
+    last_accessed TIMESTAMP
 ) AS 
 $$
 BEGIN
 
     IF NOT EXISTS (
         SELECT 1
-        FROM "user".identifier as b
+        FROM "user".credential as b
         WHERE b.id = _id
         FOR UPDATE
     ) THEN
@@ -24,7 +24,7 @@ BEGIN
     END IF;
 
     RETURN QUERY
-    DELETE FROM "user".identifier as a WHERE a.id = _id
+    DELETE FROM "user".credential as a WHERE a.id = _id
     RETURNING *;
 
 END
