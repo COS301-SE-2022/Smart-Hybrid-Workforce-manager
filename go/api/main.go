@@ -8,7 +8,7 @@ import (
 	"lib/logger"
 	"net/http"
 	"os"
-
+	"context"
 	"github.com/gorilla/mux"
 )
 
@@ -23,8 +23,13 @@ func main() {
 	///////////////////////////|db|///////////////////////////
 
 	///////////////////////////|db|///////////////////////////
+	var ctx = context.Background()
 	rdb := security.ExampleClient()
-	fmt.Println(rdb)
+    redisErr := rdb.Set(ctx, "key", "value", 0).Err()
+    if err != nil {
+        panic(err)
+    }
+	fmt.Println(redisErr)
 	///////////////////////////|db|///////////////////////////
 
 	///////////////////////////|api_endpoints|///////////////////////////
