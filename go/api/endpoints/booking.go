@@ -17,9 +17,13 @@ import (
 
 //BookingHandlers handles booking requests
 func BookingHandlers(router *mux.Router) error {
-	router.HandleFunc("/create", CreateBookingHandler).Methods("POST")
+	createPermission := data.CreateGenericPermission("CREATE", "BOOKING", "USER")
+	router.HandleFunc("/create", security.Validate(CreateBookingHandler, createPermission)).Methods("POST")
+
 	router.HandleFunc("/information", InformationBookingHandler).Methods("POST")
-	router.HandleFunc("/remove", DeleteBookingHandler).Methods("POST")
+
+	removePermission := data.CreateGenericPermission("DELETE", "BOOKING", "USER")
+	router.HandleFunc("/remove", security.Validate(DeleteBookingHandler, removePermission)).Methods("POST")
 	return nil
 }
 

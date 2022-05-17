@@ -37,7 +37,7 @@ BEGIN
     AND a.permission_category = _permission_category
     AND a.permission_tenant = _permission_tenant
     AND a.permission_tenant_id = _permission_tenant_id
-    RETURNING *;
+    RETURNING a.role_id, a.permission_type, a.permission_category, a.permission_tenant, a.permission_tenant_id, a.date_added;
 
 END
 $$ LANGUAGE plpgsql;

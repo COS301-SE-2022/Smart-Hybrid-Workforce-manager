@@ -2,8 +2,8 @@ CREATE SCHEMA IF NOT EXISTS permission;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TYPE permission.type AS ENUM ('CREATE', 'DELETE', 'VIEW', 'EDIT');
-CREATE TYPE permission.category AS ENUM ('USER', 'BOOKING', 'PERMISSION');
-CREATE TYPE permission.tenant AS ENUM ('ROLE', 'USER', 'TEAM');
+CREATE TYPE permission.category AS ENUM ('USER', 'BOOKING', 'PERMISSION', 'ROLE', 'TEAM');
+CREATE TYPE permission.tenant AS ENUM ('ROLE', 'USER', 'TEAM', 'PERMISSION');
 
 CREATE TABLE IF NOT EXISTS permission.role (
     id uuid DEFAULT uuid_generate_v4(),

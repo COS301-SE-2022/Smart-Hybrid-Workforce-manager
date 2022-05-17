@@ -22,6 +22,33 @@ type Permission struct {
 // Permissions represent a splice of Permission
 type Permissions []*Permission
 
+// CreateGenericPermission creates a permission
+func CreateGenericPermission(permissionType string, permissionCategory string, permissionTenant string) *Permission {
+	typ := &permissionType
+	category := &permissionCategory
+	tenant := &permissionTenant
+
+	if *typ == "" {
+		typ = nil
+	}
+	if *category == "" {
+		category = nil
+	}
+	if *tenant == "" {
+		tenant = nil
+	}
+
+	return &Permission{
+		PermissionType:     typ,
+		PermissionCategory: category,
+		PermissionTenant:   tenant,
+	}
+}
+
+func (p *Permission) CompareTo(permission *Permission) bool {
+	return *p.PermissionType == *permission.PermissionType && *p.PermissionCategory == *permission.PermissionCategory && *p.PermissionTenant == *permission.PermissionTenant
+}
+
 // PermissionDA provides access to the database for authentication purposes
 type PermissionDA struct {
 	access *db.Access
