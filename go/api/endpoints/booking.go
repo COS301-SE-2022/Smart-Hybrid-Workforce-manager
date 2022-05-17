@@ -3,6 +3,7 @@ package endpoints
 import (
 	"api/data"
 	"api/db"
+	"api/security"
 	"api/utils"
 	"fmt"
 	"lib/logger"
@@ -82,9 +83,17 @@ func InformationBookingHandler(writer http.ResponseWriter, request *http.Request
 	}
 	defer access.Close()
 
-	da := data.NewBookingDA(access)
+	user_id := "11111111-3333-4a06-9983-8b374586e459"
+	permissions, err := security.GetPermissionsUserId(&user_id, access) // TODO [KP]: Fix this once redis is up and running
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
 
-	bookings, err := da.FindIdentifier(&booking)
+	// TODO [KP]: null check
+
+	da := data.NewBookingDA(access)
+	bookings, err := da.FindIdentifier(&booking, &permissions)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
