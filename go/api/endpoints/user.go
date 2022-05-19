@@ -46,6 +46,7 @@ func TempUserHandlerfunc(writer http.ResponseWriter, request *http.Request) {
 
 // RegisterUserHandler registers a new user
 func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
+	// TODO [KP]: Add default permissions to users once they register
 	var registerUserStruct RegisterUserStruct
 
 	err := utils.UnmarshalJSON(writer, request, &registerUserStruct)

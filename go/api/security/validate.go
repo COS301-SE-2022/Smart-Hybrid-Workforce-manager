@@ -8,9 +8,11 @@ import (
 	"net/http"
 )
 
-type HandlerFunc func(http.ResponseWriter, *http.Request)
+type HandlerFunc func(http.ResponseWriter, *http.Request, *data.Permissions)
+type HandlerFuncOut func(http.ResponseWriter, *http.Request)
 
-func Validate(function HandlerFunc, permissionRequired *data.Permission) HandlerFunc {
+// Validate validates if the sender has permissions to execute the endpoint
+func Validate(function HandlerFunc, permissionRequired *data.Permission) HandlerFuncOut {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		access, err := db.Open()
 		if err != nil {
@@ -19,23 +21,30 @@ func Validate(function HandlerFunc, permissionRequired *data.Permission) Handler
 		}
 		defer access.Close()
 
-		user_id := "11111111-3333-4a06-9983-8b374586e459"
-		permissions, err := GetPermissionsUserId(&user_id, access) // TODO [KP]: Fix this once redis is up and running
+		// if the user does not require permissions
+		if permissionRequired == nil {
+			function(writer, request, nil)
+			return
+		}
+
+		user_id := "00000000-0000-0000-0000-000000000000" // TODO [KP]: Fix this once redis is up and running
+		permissions, err := GetPermissionsUserId(&user_id, access)
 		if err != nil {
 			utils.InternalServerError(writer, request, err)
 			return
 		}
 
-		authorized := false
+		// filter permissions based on the permission required
+		var filteredPermissions data.Permissions
 		for _, permission := range permissions {
 			if permissionRequired.CompareTo(permission) {
-				authorized = true
+				filteredPermissions = append(filteredPermissions, permission)
 			}
 		}
-		if !authorized {
-			utils.AccessDenied(writer, request, fmt.Errorf("doesn't have permissions to execute query"))
+		if len(filteredPermissions) == 0 {
+			utils.AccessDenied(writer, request, fmt.Errorf("the user doesn't have permission to execute query"))
 			return
 		}
-		function(writer, request)
+		function(writer, request, &filteredPermissions)
 	}
 }

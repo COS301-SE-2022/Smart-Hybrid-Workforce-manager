@@ -2,8 +2,8 @@ CREATE SCHEMA IF NOT EXISTS permission;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TYPE permission.type AS ENUM ('CREATE', 'DELETE', 'VIEW', 'EDIT');
-CREATE TYPE permission.category AS ENUM ('USER', 'BOOKING', 'PERMISSION', 'ROLE', 'TEAM');
-CREATE TYPE permission.tenant AS ENUM ('ROLE', 'USER', 'TEAM', 'PERMISSION');
+CREATE TYPE permission.category AS ENUM ('USER', 'BOOKING', 'PERMISSION', 'ROLE', 'TEAM', 'RESOURCE');
+CREATE TYPE permission.tenant AS ENUM ('ROLE', 'USER', 'TEAM', 'PERMISSION', 'BUILDING', 'ROOM', 'ROOMASSOCIATION', 'IDENTIFIER', 'NA');
 
 CREATE TABLE IF NOT EXISTS permission.role (
     id uuid DEFAULT uuid_generate_v4(),
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS permission.user (
     PRIMARY KEY (id)
 );
 
-CREATE UNIQUE INDEX permission_user_1 ON permission.user (role_id, permission_type, permission_category, permission_tenant, permission_tenant_id) 
+CREATE UNIQUE INDEX permission_user_1 ON permission.user (user_id, permission_type, permission_category, permission_tenant, permission_tenant_id) 
 WHERE permission_tenant_id is not null;
 -- CREATE UNIQUE INDEX permission_role_2 ON permission.role (role_id, permission_type, permission_category, permission_tenant) 
 -- WHERE permission_tenant_id is null;

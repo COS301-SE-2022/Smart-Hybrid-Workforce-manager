@@ -26,21 +26,25 @@ type CreateResourceStruct struct {
 
 //ResourceHandlers
 func ResourceHandlers(router *mux.Router) error {
+	// Resource Identifier
 	router.HandleFunc("/create", CreateIdentifierHandler).Methods("POST")
-	router.HandleFunc("/remove", DeleteIdentifierHandler).Methods("POST")
 	router.HandleFunc("/information", InformationIdentifiersHandler).Methods("POST")
+	router.HandleFunc("/remove", DeleteIdentifierHandler).Methods("POST")
 
+	// Resource room
 	router.HandleFunc("/room/create", CreateRoomHandler).Methods("POST")
-	router.HandleFunc("/room/remove", DeleteRoomHandler).Methods("POST")
 	router.HandleFunc("/room/information", InformationRoomsHandler).Methods("POST")
+	router.HandleFunc("/room/remove", DeleteRoomHandler).Methods("POST")
 
+	// Resource room association
 	router.HandleFunc("/room/association/create", CreateRoomAssociationHandler).Methods("POST")
-	router.HandleFunc("/room/association/remove", DeleteRoomAssociationHandler).Methods("POST")
 	router.HandleFunc("/room/association/information", InformationRoomAssociationsHandler).Methods("POST")
+	router.HandleFunc("/room/association/remove", DeleteRoomAssociationHandler).Methods("POST")
 
+	// Resource building
 	router.HandleFunc("/building/create", CreateBuildingHandler).Methods("POST")
-	router.HandleFunc("/building/remove", DeleteBuildingHandler).Methods("POST")
 	router.HandleFunc("/building/information", InformationBuildingsHandler).Methods("POST")
+	router.HandleFunc("/building/remove", DeleteBuildingHandler).Methods("POST")
 
 	return nil
 }

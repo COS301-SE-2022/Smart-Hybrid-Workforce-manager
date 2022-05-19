@@ -19,13 +19,16 @@ import (
 
 //PermissionHandlers
 func PermissionHandlers(router *mux.Router) error {
+	// Permissions Roles
 	router.HandleFunc("/role/create", CreatePermissionRoleHandler).Methods("POST")
 	router.HandleFunc("/role/information", InformationPermissionRoleHandler).Methods("POST")
 	router.HandleFunc("/role/remove", DeletePermissionRoleHandler).Methods("POST")
 
+	// Permissions Users
 	router.HandleFunc("/user/create", CreatePermissionUserHandler).Methods("POST")
 	router.HandleFunc("/user/information", InformationPermissionUserHandler).Methods("POST")
 	router.HandleFunc("/user/remove", DeletePermissionUserHandler).Methods("POST")
+
 	return nil
 }
 

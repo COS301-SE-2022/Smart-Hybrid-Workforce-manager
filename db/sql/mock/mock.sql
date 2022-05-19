@@ -1,4 +1,90 @@
 ----------------------------------
+-- Admin User
+
+-- Admin User
+SELECT "user".identifier_store(
+	'00000000-0000-0000-0000-000000000000'::uuid,
+	'admin@example.com', 
+	'Admin', 
+	'Admin', 
+	'admin@example.com', 
+	'/picture'
+);
+
+-- Permission Admin
+SELECT permission.user_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'VIEW'::permission.type,
+	'BOOKING'::permission.category,
+	'USER'::permission.tenant,
+	null::uuid -- All users
+);
+
+SELECT permission.user_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'CREATE'::permission.type,
+	'BOOKING'::permission.category,
+	'USER'::permission.tenant,
+	null::uuid -- All users
+);
+
+SELECT permission.user_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'DELETE'::permission.type,
+	'BOOKING'::permission.category,
+	'USER'::permission.tenant,
+	null::uuid -- All users
+);
+
+SELECT permission.user_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'CREATE'::permission.type,
+	'PERMISSION'::permission.category,
+	'USER'::permission.tenant,
+	null::uuid -- All users
+);
+
+SELECT permission.user_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'CREATE'::permission.type,
+	'PERMISSION'::permission.category,
+	'ROLE'::permission.tenant,
+	null::uuid -- All users
+);
+
+SELECT permission.user_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'CREATE'::permission.type,
+	'RESOURCE'::permission.category,
+	'IDENTIFIER'::permission.tenant,
+	null::uuid -- All users
+);
+
+SELECT permission.user_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'CREATE'::permission.type,
+	'RESOURCE'::permission.category,
+	'ROOM'::permission.tenant,
+	null::uuid -- All users
+);
+
+SELECT permission.user_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'CREATE'::permission.type,
+	'RESOURCE'::permission.category,
+	'ROOMASSOCIATION'::permission.tenant,
+	null::uuid -- All users
+);
+
+SELECT permission.user_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'CREATE'::permission.type,
+	'RESOURCE'::permission.category,
+	'BUILDING'::permission.tenant,
+	null::uuid -- All users
+);
+
+----------------------------------
 -- User
 
 -- User 01
@@ -17,7 +103,7 @@ SELECT "user".identifier_store(
 	'anemail@example.com', 
 	'Test', 
 	'Tester', 
-	'email@example.com', 
+	'anemail@example.com', 
 	'/picture'
 );
 
@@ -27,10 +113,9 @@ SELECT "user".identifier_store(
 	'anotheremail@example.com', 
 	'Test', 
 	'Tester', 
-	'email@example.com', 
+	'anotheremail@example.com', 
 	'/picture'
 );
-
 
 ----------------------------------
 -- Team
