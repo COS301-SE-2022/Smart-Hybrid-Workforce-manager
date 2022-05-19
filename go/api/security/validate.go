@@ -28,7 +28,7 @@ func Validate(function HandlerFunc, permissionRequired *data.Permission) Handler
 		}
 
 		user_id := "00000000-0000-0000-0000-000000000000" // TODO [KP]: Fix this once redis is up and running
-		permissions, err := GetPermissionsUserId(&user_id, access)
+		permissions, err := GetUserPermissions(&user_id, access)
 		if err != nil {
 			utils.InternalServerError(writer, request, err)
 			return

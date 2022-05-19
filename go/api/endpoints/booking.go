@@ -106,7 +106,7 @@ func InformationBookingHandler(writer http.ResponseWriter, request *http.Request
 	// TODO [KP]: null checks etc.
 
 	da := data.NewBookingDA(access)
-	bookings, err := da.FindIdentifier(&booking, permissions)
+	bookings, err := da.FindIdentifier(&booking, security.RemoveRolePermissions(permissions))
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
