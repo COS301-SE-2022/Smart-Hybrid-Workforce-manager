@@ -9,7 +9,7 @@ import (
 func GetUserPermissions(userId *string, access *db.Access) (data.Permissions, error) {
 	// Create data-access
 	da := data.NewPermissionDA(access)
-	permissions, err := da.FindUserPermission(&data.Permission{Id: userId})
+	permissions, err := da.FindUserPermission(&data.Permission{Id: userId}, &data.Permissions{data.CreateGenericPermission("VIEW", "PERMISSION", "USER")})
 	if err != nil {
 		return nil, err
 	}
@@ -23,7 +23,7 @@ func GetUserPermissions(userId *string, access *db.Access) (data.Permissions, er
 
 	// Get role permissions
 	for _, role := range roles {
-		permission, err := da.FindRolePermission(&data.Permission{Id: role.RoleId})
+		permission, err := da.FindRolePermission(&data.Permission{Id: role.RoleId}, &data.Permissions{data.CreateGenericPermission("VIEW", "PERMISSION", "ROLE")})
 		if err != nil {
 			return nil, err
 		}

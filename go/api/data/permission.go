@@ -3,6 +3,7 @@ package data
 import (
 	"api/db"
 	"database/sql"
+	"encoding/json"
 	"time"
 )
 
@@ -111,10 +112,14 @@ func (access *PermissionDA) StoreRolePermission(identifier *Permission) error {
 }
 
 // FindUserPermission finds a user identifier
-func (access *PermissionDA) FindUserPermission(identifier *Permission) (Permissions, error) {
+func (access *PermissionDA) FindUserPermission(identifier *Permission, permissions *Permissions) (Permissions, error) {
+	permissionContent, err := json.Marshal(*permissions)
+	if err != nil {
+		return nil, err
+	}
 	results, err := access.access.Query(
-		`SELECT * FROM permission.user_find($1, $2, $3, $4, $5, $6)`, mapPermission,
-		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId, identifier.DateAdded)
+		`SELECT * FROM permission.user_find($1, $2, $3, $4, $5, $6, $7)`, mapPermission,
+		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId, identifier.DateAdded, permissionContent)
 	if err != nil {
 		return nil, err
 	}
@@ -128,10 +133,14 @@ func (access *PermissionDA) FindUserPermission(identifier *Permission) (Permissi
 }
 
 // FindRolePermission finds a role identifier
-func (access *PermissionDA) FindRolePermission(identifier *Permission) (Permissions, error) {
+func (access *PermissionDA) FindRolePermission(identifier *Permission, permissions *Permissions) (Permissions, error) {
+	permissionContent, err := json.Marshal(*permissions)
+	if err != nil {
+		return nil, err
+	}
 	results, err := access.access.Query(
-		`SELECT * FROM permission.role_find($1, $2, $3, $4, $5, $6)`, mapPermission,
-		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId, identifier.DateAdded)
+		`SELECT * FROM permission.role_find($1, $2, $3, $4, $5, $6, $7)`, mapPermission,
+		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId, identifier.DateAdded, permissionContent)
 	if err != nil {
 		return nil, err
 	}

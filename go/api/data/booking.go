@@ -81,14 +81,14 @@ func (access *BookingDA) StoreIdentifier(identifier *Booking) error {
 
 //FindIdentifier finds an identifier
 func (access *BookingDA) FindIdentifier(identifier *Booking, permissions *Permissions) (Bookings, error) {
-	content, err := json.Marshal(*permissions)
+	permissionContent, err := json.Marshal(*permissions)
 	if err != nil {
 		return nil, err
 	}
 	results, err := access.access.Query(
 		`SELECT * FROM booking.identifier_find($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, mapBooking,
 		identifier.Id, identifier.UserId, identifier.ResourceType, identifier.ResourcePreferenceId,
-		identifier.ResourceId, identifier.Start, identifier.End, identifier.Booked, identifier.DateCreated, content)
+		identifier.ResourceId, identifier.Start, identifier.End, identifier.Booked, identifier.DateCreated, permissionContent)
 	if err != nil {
 		return nil, err
 	}
