@@ -16,7 +16,8 @@ var (
 	dbName   = "postgres"
 	port     = "5433" // host port
 	dialect  = "postgres"
-	dsn      = "host=%s port=%s user=%s dbname=%s password=%s sslmode=disable"
+	// dsn      = "host=%s port=%s user=%s dbname=%s password=%s sslmode=disable"
+	dsn      = "host=%s port=%s user=%s dbname=%s sslmode=disable"
 	host     = "127.0.0.1"
 	idleConn = 5
 	maxConn  = 5
@@ -41,6 +42,7 @@ func TestDummy(t *testing.T) {
 			"POSTGRES_USER=" + user,
 			"POSTGRES_PASSWORD=" + password,
 			"POSTGRES_DB=" + dbName,
+			"POSTGRES_HOST_AUTH_METHOD=trust",
 		},
 		ExposedPorts: []string{"5432"},
 		PortBindings: map[docker.Port][]docker.PortBinding{
@@ -65,7 +67,8 @@ func TestDummy(t *testing.T) {
 		t.Errorf("Could not start resource: %s", err.Error())
 		t.FailNow()
 	}
-	dsn = fmt.Sprintf(dsn, host, port, user, dbName, password)
+	// dsn = fmt.Sprintf(dsn, host, port, user, dbName, password)
+	dsn = fmt.Sprintf(dsn, host, port, user, dbName)
 	// Try connecting to db with exponential backoff
 	if err = pool.Retry(func() error {
 		fmt.Print(tu.Scolour(tu.BLUE, "RETRY "))
