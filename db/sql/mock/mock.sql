@@ -46,7 +46,39 @@ SELECT permission.user_store(
 
 SELECT permission.user_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'VIEW'::permission.type,
+	'PERMISSION'::permission.category,
+	'USER'::permission.tenant,
+	null::uuid -- All users
+);
+
+SELECT permission.user_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'DELETE'::permission.type,
+	'PERMISSION'::permission.category,
+	'USER'::permission.tenant,
+	null::uuid -- All users
+);
+
+SELECT permission.user_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
 	'CREATE'::permission.type,
+	'PERMISSION'::permission.category,
+	'ROLE'::permission.tenant,
+	null::uuid -- All users
+);
+
+SELECT permission.user_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'VIEW'::permission.type,
+	'PERMISSION'::permission.category,
+	'ROLE'::permission.tenant,
+	null::uuid -- All users
+);
+
+SELECT permission.user_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'DELETE'::permission.type,
 	'PERMISSION'::permission.category,
 	'ROLE'::permission.tenant,
 	null::uuid -- All users
