@@ -34,9 +34,7 @@ func GetUserPermissions(userId *string, access *db.Access) (data.Permissions, er
 
 	// Convert Role Id permissions to User Id permissions
 	for _, permission := range permissions {
-		if *permission.PermissionTenant == "USER" {
-			permissions = append(permissions, permission)
-		} else {
+		if *permission.PermissionTenant == "ROLE" {
 			roleUsers, err := dr.FindUserRole(&data.UserRole{RoleId: permission.PermissionTenantId})
 			if err != nil {
 				return nil, err

@@ -25,12 +25,16 @@ func PermissionHandlers(router *mux.Router) error {
 		data.CreateGenericPermission("CREATE", "PERMISSION", "ROLE"))).Methods("POST")
 	router.HandleFunc("/role/information", security.Validate(InformationPermissionRoleHandler,
 		data.CreateGenericPermission("VIEW", "PERMISSION", "ROLE"))).Methods("POST")
-	router.HandleFunc("/role/remove", DeletePermissionRoleHandler).Methods("POST")
+	router.HandleFunc("/role/remove", security.Validate(DeletePermissionRoleHandler,
+		data.CreateGenericPermission("DELETE", "PERMISSION", "ROLE"))).Methods("POST")
 
 	// Permissions Users
-	router.HandleFunc("/user/create", CreatePermissionUserHandler).Methods("POST")
-	router.HandleFunc("/user/information", InformationPermissionUserHandler).Methods("POST")
-	router.HandleFunc("/user/remove", DeletePermissionUserHandler).Methods("POST")
+	router.HandleFunc("/user/create", security.Validate(CreatePermissionUserHandler,
+		data.CreateGenericPermission("CREATE", "PERMISSION", "USER"))).Methods("POST")
+	router.HandleFunc("/user/information", security.Validate(InformationPermissionUserHandler,
+		data.CreateGenericPermission("VIEW", "PERMISSION", "USER"))).Methods("POST")
+	router.HandleFunc("/user/remove", security.Validate(DeletePermissionUserHandler,
+		data.CreateGenericPermission("DELETE", "PERMISSION", "USER"))).Methods("POST")
 
 	return nil
 }
@@ -118,7 +122,7 @@ func InformationPermissionRoleHandler(writer http.ResponseWriter, request *http.
 	// TODO [KP]: null checks etc.
 
 	da := data.NewPermissionDA(access)
-	rolePermissions, err := da.FindRolePermission(&rolePermission)
+	rolePermissions, err := da.FindRolePermission(&rolePermission) // TODO [KP]: Database filtering
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
@@ -130,46 +134,55 @@ func InformationPermissionRoleHandler(writer http.ResponseWriter, request *http.
 		utils.InternalServerError(writer, request, err)
 		return
 	}
-
-	logger.Access.Printf("%v permission information requested\n", rolePermission.Id)
-
+	logger.Access.Printf("%v permission information requested\n", rolePermission.Id) // TODO [KP]: Be more descriptive
 	utils.JSONResponse(writer, request, rolePermissions)
 }
 
 // DeletePermissionRoleHandler removes role permission
-func DeletePermissionRoleHandler(writer http.ResponseWriter, request *http.Request) {
-	var permission data.Permission
-
-	err := utils.UnmarshalJSON(writer, request, &permission)
+func DeletePermissionRoleHandler(writer http.ResponseWriter, request *http.Request, permissions *data.Permissions) {
+	// Unmarshal Permission
+	var rolePermission data.Permission
+	err := utils.UnmarshalJSON(writer, request, &rolePermission)
 	if err != nil {
 		fmt.Println(err)
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
 
+	// Check if user has permission to delete a permission for the incomming role
+	authorized := false
+	for _, permission := range *permissions {
+		// A permission tenant id of nil means the user is allowed to perform the action on all tenants of the type
+		if permission.PermissionTenantId == rolePermission.Id || permission.PermissionTenantId == nil {
+			authorized = true
+		}
+	}
+	if !authorized {
+		utils.AccessDenied(writer, request, fmt.Errorf("doesn't have permission to execute query")) // TODO [KP]: Be more descriptive
+		return
+	}
+
+	// Create a database connection
 	access, err := db.Open()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
 	defer access.Close()
-
 	da := data.NewPermissionDA(access)
-
-	permissionRemoved, err := da.DeleteRolePermission(&permission)
+	permissionRemoved, err := da.DeleteRolePermission(&rolePermission)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
 
+	// Commit transaction
 	err = access.Commit()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
-
-	logger.Access.Printf("%v permission removed\n", permission.Id)
-
+	logger.Access.Printf("%v permission removed\n", permissionRemoved.Id) // TODO [KP]: Be more descriptive
 	utils.JSONResponse(writer, request, permissionRemoved)
 }
 
@@ -177,16 +190,30 @@ func DeletePermissionRoleHandler(writer http.ResponseWriter, request *http.Reque
 // User Permissions
 
 // CreatePermissionUserHandler creates a user permission
-func CreatePermissionUserHandler(writer http.ResponseWriter, request *http.Request) {
-	var permission data.Permission
-
-	err := utils.UnmarshalJSON(writer, request, &permission)
+func CreatePermissionUserHandler(writer http.ResponseWriter, request *http.Request, permissions *data.Permissions) {
+	// Unmarshal Permission
+	var userPermission data.Permission
+	err := utils.UnmarshalJSON(writer, request, &userPermission)
 	if err != nil {
 		fmt.Println(err)
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
 
+	// Check if user has permission to create a permission for the incomming user
+	authorized := false
+	for _, permission := range *permissions {
+		// A permission tenant id of nil means the user is allowed to perform the action on all tenants of the type
+		if permission.PermissionTenantId == userPermission.Id || permission.PermissionTenantId == nil {
+			authorized = true
+		}
+	}
+	if !authorized {
+		utils.AccessDenied(writer, request, fmt.Errorf("doesn't have permission to execute query")) // TODO [KP]: Be more descriptive
+		return
+	}
+
+	// Create a database connection
 	access, err := db.Open()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
@@ -194,38 +221,39 @@ func CreatePermissionUserHandler(writer http.ResponseWriter, request *http.Reque
 	}
 	defer access.Close()
 
-	da := data.NewPermissionDA(access)
-
 	// TODO [KP]: Do more checks like if they already have a permission etc
 
-	err = da.StoreUserPermission(&permission)
+	da := data.NewPermissionDA(access)
+	err = da.StoreUserPermission(&userPermission)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
 
+	// Commit transaction
 	err = access.Commit()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
-
-	logger.Access.Printf("%v created\n", permission.Id)
-
+	logger.Access.Printf("%v created\n", userPermission.Id) // TODO [KP]: Be more descriptive
 	utils.Ok(writer, request)
 }
 
 // InformationPermissionUserHandler gets user permissions
-func InformationPermissionUserHandler(writer http.ResponseWriter, request *http.Request) {
-	var permission data.Permission
-
-	err := utils.UnmarshalJSON(writer, request, &permission)
+func InformationPermissionUserHandler(writer http.ResponseWriter, request *http.Request, permissions *data.Permissions) {
+	// Unmarshal Permission
+	var userPermission data.Permission
+	err := utils.UnmarshalJSON(writer, request, &userPermission)
 	if err != nil {
 		fmt.Println(err)
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
 
+	// No check for permissions the database handles information permissions
+
+	// Create a database connection
 	access, err := db.Open()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
@@ -233,36 +261,50 @@ func InformationPermissionUserHandler(writer http.ResponseWriter, request *http.
 	}
 	defer access.Close()
 
-	da := data.NewPermissionDA(access)
+	// TODO [KP]: null checks etc.
 
-	permissions, err := da.FindUserPermission(&permission)
+	da := data.NewPermissionDA(access)
+	userPermissions, err := da.FindUserPermission(&userPermission) // TODO [KP]: Database filtering
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
 
+	// Commit transaction
 	err = access.Commit()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
-
-	logger.Access.Printf("%v permission information requested\n", permission.Id)
-
-	utils.JSONResponse(writer, request, permissions)
+	logger.Access.Printf("%v permission information requested\n", userPermission.Id) // TODO [KP]: Be more descriptive
+	utils.JSONResponse(writer, request, userPermissions)
 }
 
 // DeletePermissionUserHandler removes user permission
-func DeletePermissionUserHandler(writer http.ResponseWriter, request *http.Request) {
-	var permission data.Permission
-
-	err := utils.UnmarshalJSON(writer, request, &permission)
+func DeletePermissionUserHandler(writer http.ResponseWriter, request *http.Request, permissions *data.Permissions) {
+	// Unmarshal Permission
+	var userPermission data.Permission
+	err := utils.UnmarshalJSON(writer, request, &userPermission)
 	if err != nil {
 		fmt.Println(err)
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
 
+	// Check if user has permission to delete a permission for the incomming user
+	authorized := false
+	for _, permission := range *permissions {
+		// A permission tenant id of nil means the user is allowed to perform the action on all tenants of the type
+		if permission.PermissionTenantId == userPermission.Id || permission.PermissionTenantId == nil {
+			authorized = true
+		}
+	}
+	if !authorized {
+		utils.AccessDenied(writer, request, fmt.Errorf("doesn't have permission to execute query")) // TODO [KP]: Be more descriptive
+		return
+	}
+
+	// Create a database connection
 	access, err := db.Open()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
@@ -271,20 +313,18 @@ func DeletePermissionUserHandler(writer http.ResponseWriter, request *http.Reque
 	defer access.Close()
 
 	da := data.NewPermissionDA(access)
-
-	permissionRemoved, err := da.DeleteUserPermission(&permission)
+	permissionRemoved, err := da.DeleteUserPermission(&userPermission)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
 
+	// Commit transaction
 	err = access.Commit()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
-
-	logger.Access.Printf("%v permission removed\n", permission.Id)
-
+	logger.Access.Printf("%v permission removed\n", userPermission.Id) // TODO [KP]: Be more descriptive
 	utils.JSONResponse(writer, request, permissionRemoved)
 }
