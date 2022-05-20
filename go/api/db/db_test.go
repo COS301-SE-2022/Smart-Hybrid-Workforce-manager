@@ -11,14 +11,16 @@ import (
 )
 
 var (
-	user     = "postgres"
-	password = "secret" // check if we use a password...
-	dbS      = "postgres"
-	port     = "5433"
+	user     = "admin"
+	password = "admin"
+	dbName   = "postgres"
+	port     = "5433" // host port
 	dialect  = "postgres"
-	dsn      = "postgres://%s:%s@localhost:%s/%s?sslmode=disable"
+	dsn      = "host=%s port=%s user=%s dbname=%s password=%s sslmode=disable"
+	host     = "127.0.0.1"
 	idleConn = 5
 	maxConn  = 5
+	tag      = "14" // image tag
 )
 
 var (
@@ -31,26 +33,19 @@ func TestDummy(t *testing.T) {
 		t.Errorf("Could not connect to docker: %s", err)
 		t.FailNow()
 	}
-	// pool.Run("postgres", "14", []string{"POSTGRES_PASSWORD=secret"})
-	// if err != nil {
-	// 	t.Errorf("UGh Could not start resource: %s", err)
-	// 	t.FailNow()
-	// }
 
 	opts := dockertest.RunOptions{
 		Repository: "postgres", // image
-		Tag:        "14",
+		Tag:        tag,
 		Env: []string{
 			"POSTGRES_USER=" + user,
 			"POSTGRES_PASSWORD=" + password,
-			"listen_addresses = '*'",
-			"POSTGRES_DB=" + dbS,
+			"POSTGRES_DB=" + dbName,
 		},
 		ExposedPorts: []string{"5432"},
 		PortBindings: map[docker.Port][]docker.PortBinding{
 			"5432": {
-				// {HostIP: "0.0.0.0", HostPort: port},
-				{HostIP: "127.0.0.1", HostPort: port},
+				{HostIP: host, HostPort: port},
 			},
 		},
 	}
@@ -70,12 +65,11 @@ func TestDummy(t *testing.T) {
 		t.Errorf("Could not start resource: %s", err.Error())
 		t.FailNow()
 	}
-	fmt.Println(tu.Scolourf(tu.GREEN, "PORT %v", resource.GetPort("5432/tcp")))
-	dsn = fmt.Sprintf(dsn, user, password, port, db)
+	dsn = fmt.Sprintf(dsn, host, port, user, dbName, password)
 	// Try connecting to db with exponential backoff
 	if err = pool.Retry(func() error {
-		fmt.Print(tu.Scolour(tu.BLUE, "IN RETRY"))
-		db, err := sql.Open(dialect, "host=127.0.0.1 port=5433 user=postgres dbname=postgres password=secret sslmode=disable")
+		fmt.Print(tu.Scolour(tu.BLUE, "RETRY "))
+		db, err = sql.Open(dialect, dsn)
 		if err != nil {
 			return err
 		}
@@ -89,11 +83,52 @@ func TestDummy(t *testing.T) {
 	}); err != nil {
 		t.Errorf(tu.Scolour(tu.RED, "Could not connect to Docker db, err: %v"), err)
 	}
+	fmt.Println()
+
+	// DB operations below
+	createQuery :=
+		`CREATE TABLE fruits(
+			id SERIAL PRIMARY KEY,
+			name VARCHAR NOT NULL
+		 );`
+	_, err = db.Query(createQuery)
+	if err != nil {
+		t.Error(tu.Scolourf(tu.RED, "Could not execute query, err: %v", err))
+	}
+
+	insertQuery :=
+		`INSERT INTO fruits(name)
+		VALUES
+			('Apple'),
+			('Orange'),
+			('Pear');`
+	_, err = db.Query(insertQuery)
+	if err != nil {
+		t.Error(tu.Scolourf(tu.RED, "Could not execute query, err: %v", err))
+	}
+
+	selectQuery :=
+		`SELECT * FROM fruits;`
+	rows, err := db.Query(selectQuery)
+	if err != nil {
+		t.Error(tu.Scolourf(tu.RED, "Could not execute query, err: %v", err))
+	}
+
+	var id int
+	var name string
+
+	for rows.Next() {
+		err := rows.Scan(&id, &name)
+		if err != nil {
+			t.Error(tu.Scolourf(tu.RED, "Could not scan rows, err: %v", err))
+		}
+		fmt.Println(tu.Scolourf(tu.PURPLE, "ID: %d, Name: %s", id, name))
+	}
 
 	defer func() {
-		if db != nil {
-			db.Close()
-		}
+		// if db != nil {
+		db.Close()
+		// }
 	}()
 
 	if err := pool.Purge(resource); err != nil {
