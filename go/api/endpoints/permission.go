@@ -122,7 +122,7 @@ func InformationPermissionRoleHandler(writer http.ResponseWriter, request *http.
 	// TODO [KP]: null checks etc.
 
 	da := data.NewPermissionDA(access)
-	rolePermissions, err := da.FindRolePermission(&rolePermission, permissions)
+	rolePermissions, err := da.FindRolePermission(&rolePermission, security.RemoveUserPermissions(permissions))
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
@@ -264,7 +264,7 @@ func InformationPermissionUserHandler(writer http.ResponseWriter, request *http.
 	// TODO [KP]: null checks etc.
 
 	da := data.NewPermissionDA(access)
-	userPermissions, err := da.FindUserPermission(&userPermission, permissions)
+	userPermissions, err := da.FindUserPermission(&userPermission, security.RemoveRolePermissions(permissions))
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
