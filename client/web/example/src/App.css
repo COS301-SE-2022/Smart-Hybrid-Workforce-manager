@@ -92,15 +92,6 @@
     animation-fill-mode: forwards;
 }
 
-.card-image2
-{
-    grid-area: image;
-    background: linear-gradient(#fff0 0%, #fff0 70%, #1d1d1d 100%), url("https://synivate.com/wp-content/uploads/conference-room-meetings-1-400x249.jpg");
-    background-size: cover;
-    border-top-left-radius: 4vh;
-    border-top-right-radius: 4vh;
-}
-
 .card-text 
 {
     grid-area: text;

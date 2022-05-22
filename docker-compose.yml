@@ -8,7 +8,7 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ./redis/data
+      - ./redis:/data
     networks:
       - arche-network    
 
@@ -54,19 +54,23 @@ services:
       restart: unless-stopped
       container_name: arche-web
       volumes:
-      - './client/web/example:/app'
-      - '/app/node_modules'
+      - ./client/web/example:/app
+      - /app/node_modules
       ports:
-        - 80:3000   
+        - 80:3000
       # Cannot get hot reloading to work, the following environmental variables have been tested
-      # environment:
-      #  - CHOKIDAR_USEPOLLING=true
+      environment:
+        - CHOKIDAR_USEPOLLING=true
+      #  - NODE_ENV=development
       #  - FAST_REFRESH=false
       #  - WDS_SOCKET_PATH=ws
       depends_on:
         - arche-api
       networks:
         - arche-network
+      command:
+      - nodemon
+      - server.js
 
 networks:
     arche-network:
