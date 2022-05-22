@@ -92,15 +92,6 @@
     animation-fill-mode: forwards;
 }
 
-.card-image
-{
-    grid-area: image;
-    background: linear-gradient(#fff0 0%, #fff0 70%, #1d1d1d 100%), url("https://introducingsa.co.za/wp-content/uploads/sites/142/2022/03/Home-office.png");
-    background-size: cover;
-    border-top-left-radius: 4vh;
-    border-top-right-radius: 4vh;
-}
-
 .card-image2
 {
     grid-area: image;
