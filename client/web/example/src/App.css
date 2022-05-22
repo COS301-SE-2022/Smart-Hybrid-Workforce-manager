@@ -34,6 +34,7 @@
 
 .content
 {
+    min-height: 100vh;
     padding-bottom: 20vh;
     background-color: #252525;
 }

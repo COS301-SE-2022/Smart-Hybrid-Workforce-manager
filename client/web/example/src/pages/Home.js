@@ -1,6 +1,5 @@
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import Button from 'react-bootstrap/Button';
 import BookingTicket from '../components/BookingTicket/BookingTicket';
 import { useState, useEffect } from 'react';
 
@@ -20,7 +19,6 @@ const Home = () =>
           })
         }).then((res) => res.json()).then(data => 
           {
-            console.log(data);
             setBookings(data);
           });
   }
@@ -36,7 +34,6 @@ const Home = () =>
     <div className='page-container'>
       <div className='content'>
         <Navbar />
-        <Button className='button-booking' variant='primary'>Refresh Bookings</Button>
         <div className='booking-container'>
           {bookings.length > 0 && (
             bookings.map(booking => (
