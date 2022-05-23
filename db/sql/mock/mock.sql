@@ -11,6 +11,7 @@ SELECT "user".identifier_store(
 	'/picture'
 );
 
+------------ Booking Permissions
 -- Permission Admin
 SELECT permission.user_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
