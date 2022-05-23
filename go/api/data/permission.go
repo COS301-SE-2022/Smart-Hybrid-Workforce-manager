@@ -46,8 +46,41 @@ func CreateGenericPermission(permissionType string, permissionCategory string, p
 	}
 }
 
-func (p *Permission) CompareTo(permission *Permission) bool {
-	return *p.PermissionType == *permission.PermissionType && *p.PermissionCategory == *permission.PermissionCategory && *p.PermissionTenant == *permission.PermissionTenant
+func CreateUserPermission(userId string, permissionType string, permissionCategory string, permissionTenant string, permissionTenantId string) *Permission {
+	typ := &permissionType
+	category := &permissionCategory
+	tenant := &permissionTenant
+	tenantId := &permissionTenantId
+
+	if *typ == "" {
+		typ = nil
+	}
+	if *category == "" {
+		category = nil
+	}
+	if *tenant == "" {
+		tenant = nil
+	}
+	if *tenantId == "" {
+		tenantId = nil
+	}
+
+	return &Permission{
+		Id:                 &userId,
+		PermissionType:     typ,
+		PermissionCategory: category,
+		PermissionTenant:   tenant,
+		PermissionTenantId: tenantId,
+	}
+}
+
+func (permissions *Permissions) CompareTo(p *Permission) bool {
+	for _, permission := range *permissions {
+		if *p.PermissionType == *permission.PermissionType && *p.PermissionCategory == *permission.PermissionCategory && *p.PermissionTenant == *permission.PermissionTenant {
+			return true
+		}
+	}
+	return false
 }
 
 // PermissionDA provides access to the database for authentication purposes

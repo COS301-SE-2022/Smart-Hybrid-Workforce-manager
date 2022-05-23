@@ -22,19 +22,19 @@ import (
 func PermissionHandlers(router *mux.Router) error {
 	// Permissions Roles
 	router.HandleFunc("/role/create", security.Validate(CreatePermissionRoleHandler,
-		data.CreateGenericPermission("CREATE", "PERMISSION", "ROLE"))).Methods("POST")
+		&data.Permissions{data.CreateGenericPermission("CREATE", "PERMISSION", "ROLE")})).Methods("POST")
 	router.HandleFunc("/role/information", security.Validate(InformationPermissionRoleHandler,
-		data.CreateGenericPermission("VIEW", "PERMISSION", "ROLE"))).Methods("POST")
+		&data.Permissions{data.CreateGenericPermission("VIEW", "PERMISSION", "ROLE")})).Methods("POST")
 	router.HandleFunc("/role/remove", security.Validate(DeletePermissionRoleHandler,
-		data.CreateGenericPermission("DELETE", "PERMISSION", "ROLE"))).Methods("POST")
+		&data.Permissions{data.CreateGenericPermission("DELETE", "PERMISSION", "ROLE")})).Methods("POST")
 
 	// Permissions Users
 	router.HandleFunc("/user/create", security.Validate(CreatePermissionUserHandler,
-		data.CreateGenericPermission("CREATE", "PERMISSION", "USER"))).Methods("POST")
+		&data.Permissions{data.CreateGenericPermission("CREATE", "PERMISSION", "USER")})).Methods("POST")
 	router.HandleFunc("/user/information", security.Validate(InformationPermissionUserHandler,
-		data.CreateGenericPermission("VIEW", "PERMISSION", "USER"))).Methods("POST")
+		&data.Permissions{data.CreateGenericPermission("VIEW", "PERMISSION", "USER")})).Methods("POST")
 	router.HandleFunc("/user/remove", security.Validate(DeletePermissionUserHandler,
-		data.CreateGenericPermission("DELETE", "PERMISSION", "USER"))).Methods("POST")
+		&data.Permissions{data.CreateGenericPermission("DELETE", "PERMISSION", "USER")})).Methods("POST")
 
 	return nil
 }
