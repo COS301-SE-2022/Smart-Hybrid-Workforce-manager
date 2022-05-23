@@ -3,6 +3,7 @@ package data
 import (
 	"api/db"
 	"database/sql"
+	"encoding/json"
 	"time"
 )
 
@@ -120,10 +121,14 @@ func (access *TeamDA) CreateTeam(identifier *Team) error {
 }
 
 //FindIdentifier finds a team
-func (access *TeamDA) FindIdentifier(identifier *Team) (Teams, error) {
+func (access *TeamDA) FindIdentifier(identifier *Team, permissions *Permissions) (Teams, error) {
+	permissionContent, err := json.Marshal(*permissions)
+	if err != nil {
+		return nil, err
+	}
 	results, err := access.access.Query(
-		`SELECT * FROM team.identifier_find($1, $2, $3, $4, $5, $6)`, mapTeam,
-		identifier.Id, identifier.Name, identifier.Description, identifier.Capacity, identifier.Picture, identifier.DateCreated)
+		`SELECT * FROM team.identifier_find($1, $2, $3, $4, $5, $6, $7)`, mapTeam,
+		identifier.Id, identifier.Name, identifier.Description, identifier.Capacity, identifier.Picture, identifier.DateCreated, permissionContent)
 	if err != nil {
 		return nil, err
 	}
@@ -177,10 +182,14 @@ func (access *TeamDA) CreateUserTeam(identifier *UserTeam) error {
 }
 
 //FindUserTeam finds a users team
-func (access *TeamDA) FindUserTeam(identifier *UserTeam) (UserTeams, error) {
+func (access *TeamDA) FindUserTeam(identifier *UserTeam, permissions *Permissions) (UserTeams, error) {
+	permissionContent, err := json.Marshal(*permissions)
+	if err != nil {
+		return nil, err
+	}
 	results, err := access.access.Query(
-		`SELECT * FROM team.user_find($1, $2, $3)`, mapUserTeam,
-		identifier.TeamId, identifier.UserId, identifier.DateAdded)
+		`SELECT * FROM team.user_find($1, $2, $3, $4)`, mapUserTeam,
+		identifier.TeamId, identifier.UserId, identifier.DateAdded, permissionContent)
 	if err != nil {
 		return nil, err
 	}
@@ -234,10 +243,14 @@ func (access *TeamDA) CreateTeamAssociation(identifier *TeamAssociation) error {
 }
 
 //FindTeamAssociation finds a users team
-func (access *TeamDA) FindTeamAssociation(identifier *TeamAssociation) (TeamAssociations, error) {
+func (access *TeamDA) FindTeamAssociation(identifier *TeamAssociation, permissions *Permissions) (TeamAssociations, error) {
+	permissionContent, err := json.Marshal(*permissions)
+	if err != nil {
+		return nil, err
+	}
 	results, err := access.access.Query(
-		`SELECT * FROM team.association_find($1, $2)`, mapTeamAssociation,
-		identifier.TeamId, identifier.TeamIdAssociation)
+		`SELECT * FROM team.association_find($1, $2, $3)`, mapTeamAssociation,
+		identifier.TeamId, identifier.TeamIdAssociation, permissionContent)
 	if err != nil {
 		return nil, err
 	}

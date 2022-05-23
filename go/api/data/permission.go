@@ -3,6 +3,7 @@ package data
 import (
 	"api/db"
 	"database/sql"
+	"encoding/json"
 	"time"
 )
 
@@ -21,6 +22,66 @@ type Permission struct {
 
 // Permissions represent a splice of Permission
 type Permissions []*Permission
+
+// CreateGenericPermission creates a permission
+func CreateGenericPermission(permissionType string, permissionCategory string, permissionTenant string) *Permission {
+	typ := &permissionType
+	category := &permissionCategory
+	tenant := &permissionTenant
+
+	if *typ == "" {
+		typ = nil
+	}
+	if *category == "" {
+		category = nil
+	}
+	if *tenant == "" {
+		tenant = nil
+	}
+
+	return &Permission{
+		PermissionType:     typ,
+		PermissionCategory: category,
+		PermissionTenant:   tenant,
+	}
+}
+
+func CreateUserPermission(userId string, permissionType string, permissionCategory string, permissionTenant string, permissionTenantId string) *Permission {
+	typ := &permissionType
+	category := &permissionCategory
+	tenant := &permissionTenant
+	tenantId := &permissionTenantId
+
+	if *typ == "" {
+		typ = nil
+	}
+	if *category == "" {
+		category = nil
+	}
+	if *tenant == "" {
+		tenant = nil
+	}
+	if *tenantId == "" {
+		tenantId = nil
+	}
+
+	return &Permission{
+		Id:                 &userId,
+		PermissionType:     typ,
+		PermissionCategory: category,
+		PermissionTenant:   tenant,
+		PermissionTenantId: tenantId,
+	}
+}
+
+func (permissions *Permissions) CompareTo(p *Permission) bool {
+	for _, permission := range *permissions {
+		if *p.PermissionType == *permission.PermissionType && *p.PermissionCategory == *permission.PermissionCategory && *p.PermissionTenant == *permission.PermissionTenant {
+			return true
+		}
+	}
+	return false
+}
 
 // PermissionDA provides access to the database for authentication purposes
 type PermissionDA struct {
@@ -84,10 +145,14 @@ func (access *PermissionDA) StoreRolePermission(identifier *Permission) error {
 }
 
 // FindUserPermission finds a user identifier
-func (access *PermissionDA) FindUserPermission(identifier *Permission) (Permissions, error) {
+func (access *PermissionDA) FindUserPermission(identifier *Permission, permissions *Permissions) (Permissions, error) {
+	permissionContent, err := json.Marshal(*permissions)
+	if err != nil {
+		return nil, err
+	}
 	results, err := access.access.Query(
-		`SELECT * FROM permission.user_find($1, $2, $3, $4, $5, $6)`, mapPermission,
-		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId, identifier.DateAdded)
+		`SELECT * FROM permission.user_find($1, $2, $3, $4, $5, $6, $7)`, mapPermission,
+		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId, identifier.DateAdded, permissionContent)
 	if err != nil {
 		return nil, err
 	}
@@ -101,10 +166,14 @@ func (access *PermissionDA) FindUserPermission(identifier *Permission) (Permissi
 }
 
 // FindRolePermission finds a role identifier
-func (access *PermissionDA) FindRolePermission(identifier *Permission) (Permissions, error) {
+func (access *PermissionDA) FindRolePermission(identifier *Permission, permissions *Permissions) (Permissions, error) {
+	permissionContent, err := json.Marshal(*permissions)
+	if err != nil {
+		return nil, err
+	}
 	results, err := access.access.Query(
-		`SELECT * FROM permission.role_find($1, $2, $3, $4, $5, $6)`, mapPermission,
-		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId, identifier.DateAdded)
+		`SELECT * FROM permission.role_find($1, $2, $3, $4, $5, $6, $7)`, mapPermission,
+		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId, identifier.DateAdded, permissionContent)
 	if err != nil {
 		return nil, err
 	}

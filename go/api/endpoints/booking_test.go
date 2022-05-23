@@ -50,7 +50,7 @@ func TestCreateBookingHandler(t *testing.T) {
 		fmt.Printf(testutils.Scolour(testutils.PURPLE, "Error while connecting to DB: %v, skipping test"), err)
 		t.SkipNow()
 	}
-	InformationBookingHandler(writer1, request1)
+	InformationBookingHandler(writer1, request1, nil)
 	response := writer1.Result()
 	defer response.Body.Close()
 	bodyBytes, err := ioutil.ReadAll(response.Body)

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"lib/logger"
 	"net/http"
+	"strings"
 )
 
 /////////////////////////////////////////////
@@ -80,4 +81,47 @@ func Ok(writer http.ResponseWriter, request *http.Request) {
 func JSONResponse(writer http.ResponseWriter, request *http.Request, value interface{}) {
 	jsonResponse(writer, request, http.StatusOK, value)
 	logger.HTTP.Printf("INFO %v %v [200]\n", request.RemoteAddr, request.RequestURI)
+}
+
+// AccessDenied provides the access denied (401) response
+func AccessDenied(writer http.ResponseWriter, request *http.Request, accessError error) {
+	writer.Header().Set("Content-Type", "text/plain")
+	writer.WriteHeader(http.StatusUnauthorized)
+	logger.HTTP.Printf("INFO %v %v [401] access_denied %v\n", request.RemoteAddr, request.RequestURI, accessError)
+
+	// Get address that the request originates from
+	address := clientIP(request)
+
+	// TODO get offending identifier
+	identifier := ""
+	if identifier != "" {
+		logger.Access.Printf("%v %v [401] access_denied for %v %v\n", address, request.RequestURI, identifier, accessError)
+		return
+	}
+
+	logger.Access.Printf("%v %v [401] access_denied %v\n", address, request.RequestURI, accessError)
+}
+
+// clientIP returns the ip of the requesting client
+func clientIP(request *http.Request) string {
+	ipAddress := request.Header.Get("X-Real-Ip")
+	if ipAddress != "" {
+		return ipAddress
+	}
+
+	ipAddress = request.Header.Get("X-Forwarded-For")
+	if ipAddress != "" {
+		if strings.Contains(ipAddress, ",") {
+			ips := strings.Split(ipAddress, ",")
+			if len(ips) > 0 {
+				if ips[0] != "" {
+					return strings.TrimSpace(ips[0])
+				}
+			}
+		} else {
+			return ipAddress
+		}
+	}
+
+	return request.RemoteAddr
 }
