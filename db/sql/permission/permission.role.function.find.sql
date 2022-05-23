@@ -22,7 +22,7 @@ BEGIN
         permission_category permission.category,
         permission_tenant permission.tenant,
         permission_tenant_id uuid
-    ) ON COMMIT DROP;
+    );
 
     INSERT INTO _permissions_table (
     SELECT
@@ -48,5 +48,7 @@ BEGIN
     AND (_permission_tenant IS NULL OR i.permission_tenant = _permission_tenant)
     AND (_permission_tenant_id IS NULL OR i.permission_tenant_id = _permission_tenant_id)
     AND (_date_added IS NULL OR i.date_added >= _date_added);
+
+    DROP TABLE _permissions_table;
 END
 $$ LANGUAGE plpgsql;

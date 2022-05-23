@@ -18,7 +18,7 @@ BEGIN
         permission_category permission.category,
         permission_tenant permission.tenant,
         permission_tenant_id uuid
-    ) ON COMMIT DROP;
+    );
 
     INSERT INTO _permissions_table (
     SELECT
@@ -37,10 +37,12 @@ BEGIN
     )
     SELECT i.id, i.name, i.location, i.dimension
     FROM resource.building as i
-    WHERE (_id IS NULL OR i.id = _id)
-    AND (EXISTS(SELECT 1 FROM permitted_buildings WHERE permission_tenant_id is null) OR i.id = ANY(SELECT * FROM permitted_buildings))
+    WHERE (EXISTS(SELECT 1 FROM permitted_buildings WHERE permission_tenant_id is null) OR i.id = ANY(SELECT * FROM permitted_buildings))
+    AND (_id IS NULL OR i.id = _id)
     AND (_name IS NULL OR i.name = _name)
     AND (_location IS NULL OR i.location = _location)
     AND (_dimension IS NULL OR i.dimension = _dimension);
+    
+    DROP TABLE _permissions_table;
 END
 $$ LANGUAGE plpgsql;
