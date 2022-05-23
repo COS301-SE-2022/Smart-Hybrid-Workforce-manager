@@ -3,6 +3,7 @@ package data
 import (
 	"api/db"
 	"database/sql"
+	"encoding/json"
 	// "database/sql"
 )
 
@@ -151,10 +152,14 @@ func (access *ResourceDA) StoreBuildingResource(identifier *Building) error {
 }
 
 //FindBuildingResource finds a building
-func (access *ResourceDA) FindBuildingResource(identifier *Building) (Buildings, error) {
+func (access *ResourceDA) FindBuildingResource(identifier *Building, permissions *Permissions) (Buildings, error) {
+	permissionContent, err := json.Marshal(*permissions)
+	if err != nil {
+		return nil, err
+	}
 	results, err := access.access.Query(
-		`SELECT * FROM resource.building_find($1, $2, $3, $4)`, mapBuilding,
-		identifier.Id, identifier.Name, identifier.Location, identifier.Dimension)
+		`SELECT * FROM resource.building_find($1, $2, $3, $4, $5)`, mapBuilding,
+		identifier.Id, identifier.Name, identifier.Location, identifier.Dimension, permissionContent)
 	if err != nil {
 		return nil, err
 	}
@@ -208,10 +213,14 @@ func (access *ResourceDA) StoreRoomResource(identifier *Room) error {
 }
 
 //FindRoomResource finds a Room
-func (access *ResourceDA) FindRoomResource(identifier *Room) (Rooms, error) {
+func (access *ResourceDA) FindRoomResource(identifier *Room, permissions *Permissions) (Rooms, error) {
+	permissionContent, err := json.Marshal(*permissions)
+	if err != nil {
+		return nil, err
+	}
 	results, err := access.access.Query(
-		`SELECT * FROM resource.room_find($1, $2, $3, $4, $5)`, mapRoom,
-		identifier.Id, identifier.BuildingId, identifier.Name, identifier.Location, identifier.Dimension)
+		`SELECT * FROM resource.room_find($1, $2, $3, $4, $5, $6)`, mapRoom,
+		identifier.Id, identifier.BuildingId, identifier.Name, identifier.Location, identifier.Dimension, permissionContent)
 	if err != nil {
 		return nil, err
 	}
@@ -265,10 +274,14 @@ func (access *ResourceDA) StoreRoomAssociationResource(identifier *RoomAssociati
 }
 
 //FindRoomAssociationResource finds all RoomAssociations
-func (access *ResourceDA) FindRoomAssociationResource(identifier *RoomAssociation) (RoomAssociations, error) {
+func (access *ResourceDA) FindRoomAssociationResource(identifier *RoomAssociation, permissions *Permissions) (RoomAssociations, error) {
+	permissionContent, err := json.Marshal(*permissions)
+	if err != nil {
+		return nil, err
+	}
 	results, err := access.access.Query(
-		`SELECT * FROM resource.room_association_find($1, $2)`, mapRoomAssociation,
-		identifier.RoomId, identifier.RoomIdAssociation)
+		`SELECT * FROM resource.room_association_find($1, $2, $3)`, mapRoomAssociation,
+		identifier.RoomId, identifier.RoomIdAssociation, permissionContent)
 	if err != nil {
 		return nil, err
 	}
@@ -313,8 +326,8 @@ func (RoomAssociations RoomAssociations) FindHead() *RoomAssociation {
 // StoreIdentifier stores a Resource Identifier
 func (access *ResourceDA) StoreIdentifier(identifier *Resource) error {
 	_, err := access.access.Query(
-		`SELECT 1 FROM resource.identifier_store($1, $2, $3, $4, $5)`, nil,
-		identifier.Id, identifier.RoomId, identifier.Location, identifier.RoleId, identifier.ResourceType)
+		`SELECT 1 FROM resource.identifier_store($1, $2, $3, $4, $5, $6)`, nil,
+		identifier.Id, identifier.RoomId, identifier.Name, identifier.Location, identifier.RoleId, identifier.ResourceType)
 	if err != nil {
 		return err
 	}
@@ -322,10 +335,14 @@ func (access *ResourceDA) StoreIdentifier(identifier *Resource) error {
 }
 
 //FindIdentifier finds all Resource Identifiers
-func (access *ResourceDA) FindIdentifier(identifier *Resource) (Resources, error) {
+func (access *ResourceDA) FindIdentifier(identifier *Resource, permissions *Permissions) (Resources, error) {
+	permissionContent, err := json.Marshal(*permissions)
+	if err != nil {
+		return nil, err
+	}
 	results, err := access.access.Query(
-		`SELECT * FROM resource.identifier_find($1, $2, $3, $4, $5, $6)`, mapResource,
-		identifier.Id, identifier.RoomId, identifier.Location, identifier.RoleId, identifier.ResourceType, identifier.DateCreated)
+		`SELECT * FROM resource.identifier_find($1, $2, $3, $4, $5, $6, $7, $8)`, mapResource,
+		identifier.Id, identifier.RoomId, identifier.Name, identifier.Location, identifier.RoleId, identifier.ResourceType, identifier.DateCreated, permissionContent)
 	if err != nil {
 		return nil, err
 	}

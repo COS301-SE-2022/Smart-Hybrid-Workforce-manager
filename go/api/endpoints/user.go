@@ -46,19 +46,21 @@ func TempUserHandlerfunc(writer http.ResponseWriter, request *http.Request) {
 
 // RegisterUserHandler registers a new user
 func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
+	// Unmarshall register user
 	var registerUserStruct RegisterUserStruct
-
 	err := utils.UnmarshalJSON(writer, request, &registerUserStruct)
 	if err != nil {
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
 
+	// Validate email
 	if !emailRegex.MatchString(registerUserStruct.Email) {
 		utils.BadRequest(writer, request, "invalid_email")
 		return
 	}
 
+	// Create database connection
 	access, err := db.Open()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
@@ -66,8 +68,8 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 	}
 	defer access.Close()
 
+	// Check if user already exists
 	da := data.NewUserDA(access)
-
 	users, err := da.FindIdentifier(&data.User{Email: &registerUserStruct.Email})
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
@@ -75,12 +77,12 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	user := users.FindHead()
-
 	if user != nil {
 		utils.BadRequest(writer, request, "user_already_exists")
 		return
 	}
 
+	// Create user
 	user = &data.User{
 		Identifier: &registerUserStruct.Email,
 		Email:      &registerUserStruct.Email,
@@ -89,7 +91,7 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 		Picture:    registerUserStruct.Picture,
 	}
 
-	err = da.StoreIdentifier(user)
+	id, err := da.StoreIdentifier(user)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
@@ -102,15 +104,50 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	err = access.Commit()
+	// Add default user permissions
+	err = addDefaultPermissions(id, access)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
 
-	logger.Access.Printf("%v registered\n", user.Identifier)
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	logger.Access.Printf("%v registered\n", *user.Identifier)
+	utils.JSONResponse(writer, request, user.Id)
+}
 
-	utils.Ok(writer, request)
+func addDefaultPermissions(user string, access *db.Access) error {
+	dp := data.NewPermissionDA(access)
+	err := dp.StoreUserPermission(data.CreateUserPermission(user, "CREATE", "BOOKING", "USER", user))
+	if err != nil {
+		return err
+	}
+	err = dp.StoreUserPermission(data.CreateUserPermission(user, "VIEW", "BOOKING", "USER", user))
+	if err != nil {
+		return err
+	}
+	err = dp.StoreUserPermission(data.CreateUserPermission(user, "DELETE", "BOOKING", "USER", user))
+	if err != nil {
+		return err
+	}
+	err = dp.StoreUserPermission(data.CreateUserPermission(user, "VIEW", "ROLE", "USER", user))
+	if err != nil {
+		return err
+	}
+	err = dp.StoreUserPermission(data.CreateUserPermission(user, "VIEW", "PERMISSION", "USER", user))
+	if err != nil {
+		return err
+	}
+	err = dp.StoreUserPermission(data.CreateUserPermission(user, "VIEW", "TEAM", "USER", user))
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func InformationUserHandler(writer http.ResponseWriter, request *http.Request) {

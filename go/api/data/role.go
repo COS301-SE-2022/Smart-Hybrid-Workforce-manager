@@ -3,6 +3,7 @@ package data
 import (
 	"api/db"
 	"database/sql"
+	"encoding/json"
 	"time"
 )
 
@@ -90,10 +91,14 @@ func (access *RoleDA) StoreIdentifier(identifier *Role) error {
 }
 
 //FindIdentifier finds an identifier
-func (access *RoleDA) FindIdentifier(identifier *Role) (Roles, error) {
+func (access *RoleDA) FindIdentifier(identifier *Role, permissions *Permissions) (Roles, error) {
+	permissionContent, err := json.Marshal(*permissions)
+	if err != nil {
+		return nil, err
+	}
 	results, err := access.access.Query(
-		`SELECT * FROM role.identifier_find($1, $2, $3)`, mapRole,
-		identifier.Id, identifier.RoleName, identifier.DateAdded)
+		`SELECT * FROM role.identifier_find($1, $2, $3, $4)`, mapRole,
+		identifier.Id, identifier.RoleName, identifier.DateAdded, permissionContent)
 	if err != nil {
 		return nil, err
 	}
@@ -144,10 +149,14 @@ func (access *RoleDA) StoreUserRole(identifier *UserRole) error {
 }
 
 //FindUserRole finds an identifier
-func (access *RoleDA) FindUserRole(identifier *UserRole) (UserRoles, error) {
+func (access *RoleDA) FindUserRole(identifier *UserRole, permissions *Permissions) (UserRoles, error) {
+	permissionContent, err := json.Marshal(*permissions)
+	if err != nil {
+		return nil, err
+	}
 	results, err := access.access.Query(
-		`SELECT * FROM role.user_find($1, $2, $3)`, mapUserRole,
-		identifier.RoleId, identifier.UserId, identifier.DateAdded)
+		`SELECT * FROM role.user_find($1, $2, $3, $4)`, mapUserRole,
+		identifier.RoleId, identifier.UserId, identifier.DateAdded, permissionContent)
 	if err != nil {
 		return nil, err
 	}
