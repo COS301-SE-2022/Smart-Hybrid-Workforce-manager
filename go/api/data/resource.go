@@ -326,8 +326,8 @@ func (RoomAssociations RoomAssociations) FindHead() *RoomAssociation {
 // StoreIdentifier stores a Resource Identifier
 func (access *ResourceDA) StoreIdentifier(identifier *Resource) error {
 	_, err := access.access.Query(
-		`SELECT 1 FROM resource.identifier_store($1, $2, $3, $4, $5)`, nil,
-		identifier.Id, identifier.RoomId, identifier.Location, identifier.RoleId, identifier.ResourceType)
+		`SELECT 1 FROM resource.identifier_store($1, $2, $3, $4, $5, $6)`, nil,
+		identifier.Id, identifier.RoomId, identifier.Name, identifier.Location, identifier.RoleId, identifier.ResourceType)
 	if err != nil {
 		return err
 	}
@@ -342,7 +342,7 @@ func (access *ResourceDA) FindIdentifier(identifier *Resource, permissions *Perm
 	}
 	results, err := access.access.Query(
 		`SELECT * FROM resource.identifier_find($1, $2, $3, $4, $5, $6, $7, $8)`, mapResource,
-		identifier.Id, identifier.RoomId, identifier.Location, identifier.RoleId, identifier.ResourceType, identifier.DateCreated, permissionContent)
+		identifier.Id, identifier.RoomId, identifier.Name, identifier.Location, identifier.RoleId, identifier.ResourceType, identifier.DateCreated, permissionContent)
 	if err != nil {
 		return nil, err
 	}
