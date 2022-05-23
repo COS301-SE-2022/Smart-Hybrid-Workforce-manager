@@ -29,8 +29,11 @@ func RoleHandlers(router *mux.Router) error {
 
 	router.HandleFunc("/user/create", security.Validate(CreateUserRoleHandler,
 		&data.Permissions{data.CreateGenericPermission("CREATE", "ROLE", "USER")})).Methods("POST")
+
 	router.HandleFunc("/user/information", security.Validate(InformationUserRolesHandler,
-		&data.Permissions{data.CreateGenericPermission("VIEW", "ROLE", "USER")})).Methods("POST")
+		&data.Permissions{data.CreateGenericPermission("VIEW", "ROLE", "USER"),
+			data.CreateGenericPermission("VIEW", "USER", "ROLE")})).Methods("POST")
+
 	router.HandleFunc("/user/remove", security.Validate(DeleteUserRoleHandler,
 		&data.Permissions{data.CreateGenericPermission("DELETE", "ROLE", "USER")})).Methods("POST")
 	return nil

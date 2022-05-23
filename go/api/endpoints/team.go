@@ -26,8 +26,11 @@ func TeamHandlers(router *mux.Router) error {
 
 	router.HandleFunc("/user/create", security.Validate(CreateUserTeamHandler,
 		&data.Permissions{data.CreateGenericPermission("CREATE", "TEAM", "USER")})).Methods("POST")
+
 	router.HandleFunc("/user/information", security.Validate(InformationUserTeamHandler,
-		&data.Permissions{data.CreateGenericPermission("VIEW", "TEAM", "USER")})).Methods("POST")
+		&data.Permissions{data.CreateGenericPermission("VIEW", "TEAM", "USER"),
+			data.CreateGenericPermission("VIEW", "USER", "TEAM")})).Methods("POST")
+
 	router.HandleFunc("/user/remove", security.Validate(DeleteUserTeamHandler,
 		&data.Permissions{data.CreateGenericPermission("DELETE", "TEAM", "USER")})).Methods("POST")
 
