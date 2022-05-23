@@ -16,7 +16,7 @@ func GetUserPermissions(userId *string, access *db.Access) (data.Permissions, er
 
 	// Get user roles
 	dr := data.NewRoleDA(access)
-	roles, err := dr.FindUserRole(&data.UserRole{UserId: userId})
+	roles, err := dr.FindUserRole(&data.UserRole{UserId: userId}, &data.Permissions{data.CreateGenericPermission("VIEW", "USER", "ROLE")})
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +35,7 @@ func GetUserPermissions(userId *string, access *db.Access) (data.Permissions, er
 	// Convert Role Id permissions to User Id permissions
 	for _, permission := range permissions {
 		if *permission.PermissionTenant == "ROLE" {
-			roleUsers, err := dr.FindUserRole(&data.UserRole{RoleId: permission.PermissionTenantId})
+			roleUsers, err := dr.FindUserRole(&data.UserRole{RoleId: permission.PermissionTenantId}, &data.Permissions{data.CreateGenericPermission("VIEW", "ROLE", "USER")})
 			if err != nil {
 				return nil, err
 			}

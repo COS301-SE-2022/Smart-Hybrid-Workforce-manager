@@ -12,7 +12,7 @@ type HandlerFunc func(http.ResponseWriter, *http.Request, *data.Permissions)
 type HandlerFuncOut func(http.ResponseWriter, *http.Request)
 
 // Validate validates if the sender has permissions to execute the endpoint
-func Validate(function HandlerFunc, permissionRequired *data.Permission) HandlerFuncOut {
+func Validate(function HandlerFunc, permissionRequired *data.Permissions) HandlerFuncOut {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		access, err := db.Open()
 		if err != nil {
@@ -42,7 +42,7 @@ func Validate(function HandlerFunc, permissionRequired *data.Permission) Handler
 			}
 		}
 		if len(filteredPermissions) == 0 {
-			utils.AccessDenied(writer, request, fmt.Errorf("the user doesn't have permission to execute query"))
+			utils.AccessDenied(writer, request, fmt.Errorf("the user doesn't have permission to execute query")) // TODO [KP]: Be more descriptive
 			return
 		}
 		function(writer, request, &filteredPermissions)
