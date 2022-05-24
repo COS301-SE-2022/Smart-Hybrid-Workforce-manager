@@ -4,17 +4,29 @@ import (
 	"database/sql"
 	"fmt"
 	tu "lib/testutils"
+	"testing"
 
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
+
+	_ "github.com/lib/pq"
 )
 
 type TestDbConfig struct {
 	Verbose  bool   // indicates whether or not connection and other information should be output
-	HostPort string // the host port to bind
+	HostPort string // the host port to bind to
 	HostAdrr string
+	Pool     *dockertest.Pool // Optional
 }
 
+type TestDb struct {
+	Db       *sql.DB              // db connection
+	resource *dockertest.Resource // not export since it should be treated as final
+	pool     *dockertest.Pool     // not export since it should be treated as final
+	Dsn      string
+}
+
+// Common db config
 var (
 	user     = "admin"
 	password = "admin"
@@ -26,15 +38,20 @@ var (
 	tag      = "14" // image tag
 )
 
-var db *sql.DB
-
-func StartTestDb(config TestDbConfig) (*sql.DB, error) {
-	pool, err := dockertest.NewPool("")
+func StartTestDb(config TestDbConfig) (TestDb, error) {
+	var db *sql.DB
+	var pool *dockertest.Pool
+	var err error = nil
+	if config.Pool == nil { // Create a new pool if pool was not passed in
+		pool, err = dockertest.NewPool("")
+	} else {
+		pool = config.Pool
+	}
 	if err != nil {
 		if config.Verbose {
 			fmt.Println(tu.Scolourf(tu.RED, "Could not connect to docker: %v", err))
 		}
-		return nil, err
+		return TestDb{}, err
 	}
 
 	opts := dockertest.RunOptions{
@@ -54,7 +71,7 @@ func StartTestDb(config TestDbConfig) (*sql.DB, error) {
 		},
 	}
 
-	_, err = pool.RunWithOptions(
+	resource, err := pool.RunWithOptions(
 		// resource, err := pool.RunWithOptions(
 		&opts,
 		func(config *docker.HostConfig) {
@@ -70,14 +87,16 @@ func StartTestDb(config TestDbConfig) (*sql.DB, error) {
 		if config.Verbose {
 			fmt.Println(tu.Scolourf(tu.RED, "Could not start resource: %v", err))
 		}
-		return nil, err
+		return TestDb{}, err
 	}
 
-	dsn = fmt.Sprintf(dsn, config.HostAdrr, config.HostPort, user, dbName)
+	db_dsn := fmt.Sprintf(dsn, config.HostAdrr, config.HostPort, user, dbName)
 	// Try connecting to db with exponential backoff
 	if err = pool.Retry(func() error {
-		fmt.Print(tu.Scolour(tu.BLUE, "RETRY "))
-		db, err = sql.Open(dialect, dsn)
+		if config.Verbose {
+			fmt.Print(tu.Scolour(tu.BLUE, "RETRY "))
+		}
+		db, err = sql.Open(dialect, db_dsn)
 		if err != nil {
 			return err
 		}
@@ -92,10 +111,31 @@ func StartTestDb(config TestDbConfig) (*sql.DB, error) {
 		if config.Verbose {
 			fmt.Println(tu.Scolourf(tu.RED, "Could not connect to Docker db, err: %v", err))
 		}
-		return nil, err
+		return TestDb{}, err
 	}
 	if config.Verbose {
 		fmt.Println()
 	}
-	return db, nil
+	return TestDb{Db: db, resource: resource, Dsn: db_dsn, pool: pool}, nil
+}
+
+func StopTestDb(testDb TestDb) error {
+	if testDb.Db != nil {
+		testDb.Db.Close()
+	}
+	if err := testDb.pool.Purge(testDb.resource); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Mainly used to defer the closing and stopping of the container
+func StopTestDbWithTest(testdb TestDb, t *testing.T, failNow bool) {
+	err := StopTestDb(testdb)
+	if err != nil {
+		t.Errorf(tu.Scolourf(tu.RED, "Error stopping container or closing db, err: %v", err))
+		if failNow {
+			t.FailNow()
+		}
+	}
 }
