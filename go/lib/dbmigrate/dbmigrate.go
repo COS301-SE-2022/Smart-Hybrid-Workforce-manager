@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"regexp"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -55,7 +56,7 @@ type ManMigrate struct {
 	// the order is important if there are dependencies
 	MigrateDirs []string // Required
 
-	// PathPatterns contains a set of shell path patterns the files in dirs of MigrateDirs will
+	// PathPatterns contains a set of shell path patterns, the files in dirs of MigrateDirs will
 	// be evaluated in the order of the PathPatterns, see example for further details
 	// If left out, all files will be processed and in any order, no file will be processed
 	// more than once.
@@ -84,10 +85,10 @@ func (mg ManMigrate) Migrate(db *sql.DB) error {
 				if err != nil {
 					return err
 				}
-				_, isPresent := fileProcessedMap[file.Name()]
+				_, isPresent := fileProcessedMap[filepath.Join(dir, file.Name())]
 				if matched && !isPresent {
 					// fmt.Println("  ", file.Name(), "  ", dir, file.Name())
-					fileProcessedMap[file.Name()] = true
+					fileProcessedMap[filepath.Join(dir, file.Name())] = true
 					err = migrateFile(filepath.Join(dir, file.Name()), db)
 					// err = migrateFile(dir+"/"+file.Name(), db)
 					if err != nil {
@@ -119,4 +120,87 @@ func migrateFile(filepath string, db *sql.DB) error {
 	}
 	_, err = db.Exec(string(file))
 	return err
+}
+
+// var notGoAhead string = `^pq: (syntax error at or near .*$)`
+// if the error matches this pattern, go ahead and try again later
+var goAhead string = `^pq: (.* does not exist$)`
+
+type AutoMigrate struct {
+	// The root of the directory containing the relevant files,
+	// this directory will be traversed recursively
+	MigratePath string
+
+	// PathPatterns contains a set of shell path patterns the, files will be processed
+	// in the order of the PathPatterns, see example for further details
+	// If left out, all files will be processed and in any order, no file will be processed
+	// more than once.
+	PathPatterns []string
+}
+
+func (am AutoMigrate) Migrate(db *sql.DB) error {
+	processed := make(map[string]bool)
+	allMigrated := false
+	var err error
+	for _, pattern := range am.PathPatterns {
+		allMigrated = false
+		for !allMigrated {
+			allMigrated, err = recursiveMigrate(am.MigratePath, processed, pattern, db)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func recursiveMigrate(dir string, processed map[string]bool, pattern string, db *sql.DB) (bool, error) {
+	// fmt.Println(dir)
+	allMigrated := true
+	files, err := ioutil.ReadDir(dir)
+	if err != nil {
+		return false, err
+	}
+	for _, file := range files {
+		if file.IsDir() { // if file is a directory, recursively traverse
+			dirMigrated, err := recursiveMigrate(filepath.Join(dir, file.Name()), processed, pattern, db)
+			if err != nil {
+				return false, err
+			}
+			allMigrated = allMigrated && dirMigrated
+		} else {
+			// fmt.Println("  ", file.Name())
+			_, hasBeenProcessed := processed[filepath.Join(dir, file.Name())] // check if file has been succesfully processed already
+			if !hasBeenProcessed {
+				// fmt.Println("   ----------------")
+				matched, err := path.Match(pattern, file.Name()) // check if it matches the current pattern
+				if err != nil {
+					return false, err
+				}
+				if matched {
+					// fmt.Println("   *****************")
+					fileBytes, err := os.ReadFile(filepath.Join(dir, file.Name()))
+					if err != nil {
+						return false, err
+					}
+					_, err = db.Exec(string(fileBytes))
+					if err != nil {
+						canGoAhead, regexErr := regexp.MatchString(goAhead, err.Error())
+						if regexErr != nil {
+							return false, regexErr
+						}
+						if canGoAhead {
+							allMigrated = false
+						} else {
+							return false, err
+						}
+					} else {
+						// fmt.Println("   +++++++++++++++")
+						processed[filepath.Join(dir, file.Name())] = true
+					}
+				}
+			}
+		}
+	}
+	return allMigrated, nil // TODO
 }
