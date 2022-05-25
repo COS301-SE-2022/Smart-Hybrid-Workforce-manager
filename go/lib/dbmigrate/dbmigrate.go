@@ -55,7 +55,7 @@ type ManMigrate struct {
 	// the order is important if there are dependencies
 	MigrateDirs []string // Required
 
-	// PathPatterns contains a set of shell path patterns the files in dirs of MigrateDirs will
+	// PathPatterns contains a set of shell path patterns, the files in dirs of MigrateDirs will
 	// be evaluated in the order of the PathPatterns, see example for further details
 	// If left out, all files will be processed and in any order, no file will be processed
 	// more than once.
@@ -84,10 +84,10 @@ func (mg ManMigrate) Migrate(db *sql.DB) error {
 				if err != nil {
 					return err
 				}
-				_, isPresent := fileProcessedMap[file.Name()]
+				_, isPresent := fileProcessedMap[filepath.Join(dir, file.Name())]
 				if matched && !isPresent {
 					// fmt.Println("  ", file.Name(), "  ", dir, file.Name())
-					fileProcessedMap[file.Name()] = true
+					fileProcessedMap[filepath.Join(dir, file.Name())] = true
 					err = migrateFile(filepath.Join(dir, file.Name()), db)
 					// err = migrateFile(dir+"/"+file.Name(), db)
 					if err != nil {
