@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -68,7 +69,7 @@ func (mg ManMigrate) Migrate(db *sql.DB) error {
 		return err
 	}
 	for _, dir := range paths {
-		fmt.Println(dir)
+		// fmt.Println(dir)
 		for _, pathRule := range patterns {
 			files, err := ioutil.ReadDir(dir)
 			if err != nil {
@@ -85,9 +86,10 @@ func (mg ManMigrate) Migrate(db *sql.DB) error {
 				}
 				_, isPresent := fileProcessedMap[file.Name()]
 				if matched && !isPresent {
-					fmt.Println("  ", file.Name(), "  ", dir+"/"+file.Name())
+					// fmt.Println("  ", file.Name(), "  ", dir, file.Name())
 					fileProcessedMap[file.Name()] = true
-					err = migrateFile(dir+"/"+file.Name(), db)
+					err = migrateFile(filepath.Join(dir, file.Name()), db)
+					// err = migrateFile(dir+"/"+file.Name(), db)
 					if err != nil {
 						return err
 					}
@@ -104,8 +106,7 @@ func (mg ManMigrate) setup() (patterns []string, paths []string, err error) {
 	copy(patterns, mg.PathPatterns)
 	paths = make([]string, len(mg.MigrateDirs))
 	for i, path := range mg.MigrateDirs {
-		paths[i] = mg.PathPrefix + path
-		// filepath.Join(mg.PathPrefix, path)
+		paths[i] = filepath.Join(mg.PathPrefix, path)
 	}
 	return patterns, paths, nil
 }
