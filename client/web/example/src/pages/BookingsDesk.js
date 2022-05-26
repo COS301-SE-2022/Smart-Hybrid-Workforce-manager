@@ -3,6 +3,7 @@ import Footer from "../components/Footer"
 import React, { useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import emailjs from '@emailjs/browser';
 import '../App.css'
 
 function BookingsDesk()
@@ -34,8 +35,27 @@ function BookingsDesk()
 
       if(res.status === 200)
       {
-        alert("Booking Successfully Created!");
-        window.location.assign("./");
+        var data =
+        {
+          toEmail: "archecapstoneteam@gmail.com",
+          sDate: startDate,
+          sTime: startTime,
+          eDate: endDate,
+          eTime: endTime
+        };
+
+        emailjs.send('service_o88tkbb', 'template_xtvztfr', data, 'cKZXC1eO8lC78jvzV').then((result) =>
+        {
+          console.log(result.text);
+          alert("Booking Successfully Created!");
+          window.location.assign("./");
+        }, (error) =>
+        {
+          console.log(error.text);
+        });
+
+        //alert("Booking Successfully Created!");
+        //window.location.assign("./");
       }
     }
     catch(err)
@@ -54,22 +74,22 @@ function BookingsDesk()
           <Form className='form' onSubmit={handleSubmit}>
             <Form.Group className='form-group' controlId="formBasicName">
               <Form.Label className='form-label'>Start Date<br></br></Form.Label>
-              <Form.Control className='form-input' type="text" placeholder="yyyy-mm-dd" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+              <Form.Control name="sDate" className='form-input' type="text" placeholder="yyyy-mm-dd" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
             </Form.Group>
 
             <Form.Group className='form-group' controlId="formBasicName">
               <Form.Label className='form-label'>Start Time<br></br></Form.Label>
-              <Form.Control className='form-input' type="text" placeholder="hh:mm" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+              <Form.Control name="sTime" className='form-input' type="text" placeholder="hh:mm" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
             </Form.Group>
 
             <Form.Group className='form-group' controlId="formBasicName">
               <Form.Label className='form-label'>End Date<br></br></Form.Label>
-              <Form.Control className='form-input' type="text" placeholder="yyyy-mm-dd" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+              <Form.Control name="eDate" className='form-input' type="text" placeholder="yyyy-mm-dd" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
             </Form.Group>
             
             <Form.Group className='form-group' controlId="formBasicName">
               <Form.Label className='form-label'>End Time<br></br></Form.Label>
-              <Form.Control className='form-input' type="text" placeholder="hh:mm" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+              <Form.Control name="eTime" className='form-input' type="text" placeholder="hh:mm" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
             </Form.Group>
 
             <Button className='button-submit' variant='primary' type='submit'>Create Booking</Button>
