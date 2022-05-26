@@ -251,7 +251,7 @@ SELECT permission.user_store(
 
 SELECT permission.user_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
-	'REMOVE'::permission.type,
+	'DELETE'::permission.type,
 	'TEAM'::permission.category,
 	'IDENTIFIER'::permission.tenant,
 	null::uuid -- All users
@@ -275,7 +275,7 @@ SELECT permission.user_store(
 
 SELECT permission.user_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
-	'REMOVE'::permission.type,
+	'DELETE'::permission.type,
 	'TEAM'::permission.category,
 	'USER'::permission.tenant,
 	null::uuid -- All users
@@ -299,7 +299,7 @@ SELECT permission.user_store(
 
 SELECT permission.user_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
-	'REMOVE'::permission.type,
+	'DELETE'::permission.type,
 	'TEAM'::permission.category,
 	'ASSOCIATION'::permission.tenant,
 	null::uuid -- All users
