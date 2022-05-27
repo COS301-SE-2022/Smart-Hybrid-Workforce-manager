@@ -4,6 +4,7 @@ services:
     image: redis:6.2.7
     hostname: redis
     container_name: arche-redis
+    command: redis-server --requirepass archepassword1234
     restart: unless-stopped
     ports:
       - "6379:6379"

@@ -4,7 +4,6 @@ import (
 	"api/db"
 	"api/endpoints"
 	"lib/logger"
-	
 	"net/http"
 	"os"
 
@@ -12,6 +11,9 @@ import (
 )
 
 func main() {
+
+	
+
 	// Create Database connection pool
 	err := db.RegisterAccess()
 	if err != nil {
