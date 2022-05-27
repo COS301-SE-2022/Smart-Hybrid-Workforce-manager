@@ -18,7 +18,7 @@ function BookingsDesk()
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/booking/create", 
+      /*let res = await fetch("http://localhost:8100/api/booking/create", 
       {
         method: "POST",
         body: JSON.stringify({
@@ -56,7 +56,19 @@ function BookingsDesk()
 
         //alert("Booking Successfully Created!");
         //window.location.assign("./");
-      }
+      }*/
+
+      let res = await fetch("http://localhost:8100/api/notification/send", 
+      {
+        method: "POST",
+        body: JSON.stringify({
+          to: "archecapstoneteam@gmail.com",
+          sDate: startDate,
+          sTime: startTime,
+          eDate: endDate,
+          eTime: endTime
+        })
+      });
     }
     catch(err)
     {
