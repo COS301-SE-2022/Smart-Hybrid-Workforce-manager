@@ -3,7 +3,6 @@ import Footer from "../components/Footer"
 import React, { useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import emailjs from '@emailjs/browser';
 import '../App.css'
 
 function BookingsDesk()
@@ -18,7 +17,7 @@ function BookingsDesk()
     e.preventDefault();
     try
     {
-      /*let res = await fetch("http://localhost:8100/api/booking/create", 
+      let res = await fetch("http://localhost:8100/api/booking/create", 
       {
         method: "POST",
         body: JSON.stringify({
@@ -35,40 +34,24 @@ function BookingsDesk()
 
       if(res.status === 200)
       {
-        var data =
+        let res = await fetch("http://localhost:8100/api/notification/send", 
         {
-          toEmail: "archecapstoneteam@gmail.com",
-          sDate: startDate,
-          sTime: startTime,
-          eDate: endDate,
-          eTime: endTime
-        };
-
-        emailjs.send('service_o88tkbb', 'template_xtvztfr', data, 'cKZXC1eO8lC78jvzV').then((result) =>
-        {
-          console.log(result.text);
-          alert("Booking Successfully Created!");
-          window.location.assign("./");
-        }, (error) =>
-        {
-          console.log(error.text);
+          method: "POST",
+          body: JSON.stringify({
+            to: "tash2814@gmail.com",
+            sDate: startDate,
+            sTime: startTime,
+            eDate: endDate,
+            eTime: endTime
+          })
         });
 
-        //alert("Booking Successfully Created!");
-        //window.location.assign("./");
-      }*/
-
-      let res = await fetch("http://localhost:8100/api/notification/send", 
-      {
-        method: "POST",
-        body: JSON.stringify({
-          to: "archecapstoneteam@gmail.com",
-          sDate: startDate,
-          sTime: startTime,
-          eDate: endDate,
-          eTime: endTime
-        })
-      });
+        if(res.status === 200)
+        {
+          alert("Booking Successfully Created!");
+          window.location.assign("./");
+        }
+      }
     }
     catch(err)
     {
