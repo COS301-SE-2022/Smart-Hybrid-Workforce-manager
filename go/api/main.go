@@ -3,22 +3,36 @@ package main
 import (
 	"api/db"
 	"api/endpoints"
+	"api/security"
+	"fmt"
 	"lib/logger"
-	
 	"net/http"
 	"os"
-
+	"context"
 	"github.com/gorilla/mux"
 )
 
 func main() {
+	///////////////////////////|db|///////////////////////////
 	// Create Database connection pool
 	err := db.RegisterAccess()
 	if err != nil {
 		logger.Error.Fatal(err)
 		os.Exit(-1)
 	}
+	///////////////////////////|db|///////////////////////////
 
+	///////////////////////////|db|///////////////////////////
+	var ctx = context.Background()
+	rdb := security.ExampleClient()
+    redisErr := rdb.Set(ctx, "key", "value", 0).Err()
+    if err != nil {
+        panic(err)
+    }
+	fmt.Println(redisErr)
+	///////////////////////////|db|///////////////////////////
+
+	///////////////////////////|api_endpoints|///////////////////////////
 	// Route endpoints
 	router := mux.NewRouter().StrictSlash(true)
 
@@ -73,4 +87,5 @@ func main() {
 	// Start API on port 8080 in its docker container
 	logger.Info.Println("Starting API on 8080")
 	logger.Error.Fatal(http.ListenAndServe(":8080", router))
+	///////////////////////////|api_endpoints|///////////////////////////
 }
