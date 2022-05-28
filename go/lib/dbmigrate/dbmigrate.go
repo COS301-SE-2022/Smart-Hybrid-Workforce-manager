@@ -204,3 +204,34 @@ func recursiveMigrate(dir string, processed map[string]bool, pattern string, db 
 	}
 	return allMigrated, nil // TODO
 }
+
+// Removes all schemas and tables from the database
+func ClearDB(db *sql.DB) error {
+	query :=
+		`
+	SET search_path = _global, pg_catalog;
+
+	CREATE OR REPLACE FUNCTION drop_all () 
+	RETURNS VOID  AS
+	$$
+	DECLARE rec RECORD; 
+	BEGIN
+	-- Get all the schemas
+		FOR rec IN
+			select distinct schemaname
+			from pg_catalog.pg_tables
+			-- schemas that should not be removed
+			where schemaname not like 'pg_catalog'  and schemaname not like 'information_schema'
+		LOOP
+			EXECUTE 'DROP SCHEMA ' || concat('"',rec.schemaname,'"') || ' CASCADE'; 
+		END LOOP; 
+		RETURN; 
+	END;
+	$$ LANGUAGE plpgsql;
+
+	select drop_all();
+	`
+
+	_, err := db.Query(query)
+	return err
+}
