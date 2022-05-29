@@ -12,8 +12,6 @@ import (
 
 func main() {
 
-	
-
 	// Create Database connection pool
 	err := db.RegisterAccess()
 	if err != nil {
@@ -43,6 +41,14 @@ func main() {
 	// Booking endpoints
 	bookingRouter := router.PathPrefix("/api/booking").Subrouter()
 	err = endpoints.BookingHandlers(bookingRouter)
+	if err != nil {
+		logger.Error.Fatal(err)
+		os.Exit(-1)
+	}
+
+	//Notification endpoints
+	notificationRouter := router.PathPrefix("/api/notification").Subrouter()
+	err = endpoints.NotificationHandlers(notificationRouter)
 	if err != nil {
 		logger.Error.Fatal(err)
 		os.Exit(-1)
