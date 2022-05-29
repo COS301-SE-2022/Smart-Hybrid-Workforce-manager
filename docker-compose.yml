@@ -36,6 +36,7 @@ services:
       context: ./go
       dockerfile: api/Dockerfile
     container_name: arche-api
+    hostname: arche-api
     env_file: .env
     restart: unless-stopped
     volumes:
@@ -46,22 +47,6 @@ services:
       - arche-network
     depends_on:
       - arche-db
-
-  arche-smart-scheduler:
-    build:
-      context: ./smart_scheduler
-      dockerfile: Dockerfile
-    container_name: arche-smart-scheduler
-    env_file: .env
-    # restart: unless-stopped
-    volumes:
-      - ./smart_scheduler:/smart-scheduler
-    ports:
-      - 8101:8081
-    networks:
-      - arche-network
-    depends_on:
-      - arche-api
 
   arche-web:
       build:
@@ -84,6 +69,31 @@ services:
         - arche-api
       networks:
         - arche-network
+        
+        
+  arche-smart-scheduler:
+      build:
+        context: ./smart_scheduler
+        dockerfile: Dockerfile
+      container_name: arche-smart-scheduler
+      hostname: arche-smart-scheduler
+      env_file: .env
+      # restart: unless-stopped
+      volumes:
+        - ./smart_scheduler:/smart-scheduler
+        - /var/run/docker.sock:/var/run/docker.sock
+      ports:
+        - 8101:8081
+      networks:
+        - arche-network
+      links:
+        - arche-api
+        - arche-web 
+      depends_on:
+        - arche-api
+        - arche-web
+
+    
 
 networks:
     arche-network:
