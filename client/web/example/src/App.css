@@ -435,3 +435,86 @@
     cursor: pointer;
     color: #919191;
 }
+
+.combo-grid
+{
+    display: grid;
+    grid-template-columns: 50vw 50vw;
+    grid-template-rows: 10vh;
+    grid-template-areas: "building" "room";
+}
+
+.building-container
+{
+    grid-area: 'building';
+    margin-top: 3vh;
+    margin-left: 4vw;
+}
+
+.room-container
+{
+    grid-area: 'room';
+    margin-top: 3vh;
+    margin-left: 4vw;
+}
+
+.combo-box
+{
+    font-size: 2vh;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+
+    width: 40vw;
+
+    border-radius: 1vh;
+    border-style: none;
+    color: white;
+    background-color: #1b1b1b;
+    text-align: center;
+}
+
+.resources-map
+{
+    position: relative;
+    overflow-y: auto;
+    margin-top: 3vh;
+    margin-left: 10vw;
+
+    padding-top: 3vh;
+    padding-bottom: 3vh;
+    padding-left: 5vw;
+    padding-right: 5vw;
+
+    width: 80vw;
+
+    border-radius: 1vh;
+    background-color: #1b1b1b;
+}
+
+.resource-container
+{
+    float: left;
+    margin-top: 2vh;
+    margin-left: 1vw;
+    margin-right: 1vw;
+    padding-top: 2.5vh;
+
+    height: 10vh;
+    width: 12vw;
+    border-radius: 1vh;
+    background-color: #919191;
+    text-align: center;
+}
+
+.resource
+{
+    color: white;
+}
+
+.resource-container:hover
+{
+    cursor: pointer;
+    background-color: #09A4FB;
+}

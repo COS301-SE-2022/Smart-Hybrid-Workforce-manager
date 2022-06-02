@@ -8,6 +8,7 @@ import BookingsDeskEdit from './pages/BookingsDeskEdit'
 import BookingsMeeting from './pages/BookingsMeeting'
 import Teams from './pages/Teams'
 import Meetings from './pages/Meetings'
+import Resources from './pages/Resources'
 
 function App()
 {
@@ -23,6 +24,7 @@ function App()
         <Route path="/teams" exact element={<Teams/>} />
         <Route path="/meetings" exact element={<Meetings/>} />
         <Route path="/bookings-desk-edit" exact element={<BookingsDeskEdit/>} />
+        <Route path="/resources" exact element={<Resources/>} />
       </Routes>
     </Router>
   );
