@@ -19,6 +19,8 @@ import (
 func BatchBookingHandlers(router *mux.Router) error {
 	router.HandleFunc("/create", security.Validate(CreateBatchBookingHandler,
 		&data.Permissions{data.CreateGenericPermission("CREATE", "BOOKING", "USER")})).Methods("POST")
+	router.HandleFunc("/information", security.Validate(InformationBatchBookingHandler,
+		&data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "USER")})).Methods("POST")
 	return nil
 }
 
@@ -74,6 +76,8 @@ func CreateBatchBookingHandler(writer http.ResponseWriter, request *http.Request
 	}
 	defer access.Close()
 
+	// TODO @JonathanEnslin do other necessary checks
+
 	da := data.NewBatchBookingDA(access)
 	err = da.StoreIdentifiers(&bookings)
 	if err != nil {
@@ -91,4 +95,43 @@ func CreateBatchBookingHandler(writer http.ResponseWriter, request *http.Request
 		logger.Access.Printf("%v created\n", booking.Id)
 	}
 	utils.Ok(writer, request)
+}
+
+func InformationBatchBookingHandler(writer http.ResponseWriter, request *http.Request, permissions *data.Permissions) {
+	// Unmarhsal bookings
+	var bookings data.BatchBooking
+	err := utils.UnmarshalJSON(writer, request, &bookings)
+	if err != nil {
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	// Connect to db
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	// TODO @JonathanEnslin do other necessary checks
+
+	da := data.NewBatchBookingDA(access)
+	bookingsInfo, err := da.FindIdentifiers(&bookings, security.RemoveRolePermissions(permissions))
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	// commit transaction
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	for _, booking := range bookings.Bookings {
+		logger.Access.Printf("%v, batch booking information requested\n", booking.Id)
+	}
+	utils.JSONResponse(writer, request, bookingsInfo)
 }
