@@ -66,6 +66,7 @@ func CreateBatchBookingHandler(writer http.ResponseWriter, request *http.Request
 
 	if authFailed {
 		utils.AccessDenied(writer, request, fmt.Errorf("does not have permissions to create one or more of the specified booking"))
+		return
 	}
 
 	// Connect to db
