@@ -50,6 +50,7 @@ func (access *BatchBookingDA) FindIdentifiers(indentifiers *BatchBooking, permis
 	}
 	allResults := make([]interface{}, 0)
 	// Get the results for each booking
+	// Could update to just use a BookingDA
 	for _, identifier := range indentifiers.Bookings {
 		results, err := access.access.Query(
 			`SELECT * FROM booking.identifier_find($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, mapBooking,
@@ -78,4 +79,18 @@ func (access *BatchBookingDA) FindIdentifiers(indentifiers *BatchBooking, permis
 		}
 	}
 	return bookingSet, nil
+}
+
+// Delete identifiers deletes (and returns) multiple bookings
+func (access *BatchBookingDA) DeleteIdentifiers(identifiers *BatchBooking) (Bookings, error) {
+	bookingDA := NewBookingDA(access.access)
+	allDeleted := make([]*Booking, 0)
+	for _, booking := range identifiers.Bookings {
+		result, err := bookingDA.DeleteIdentifier(booking)
+		if err != nil {
+			return nil, err
+		}
+		allDeleted = append(allDeleted, result)
+	}
+	return allDeleted, nil
 }
