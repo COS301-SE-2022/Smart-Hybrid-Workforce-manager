@@ -341,6 +341,7 @@
 
 .booking
 {
+    position: relative;
     display: grid;
     grid-template-columns: 25vw 25vw;
     grid-template-rows: 30vh;
@@ -358,8 +359,6 @@
     box-shadow: 1vh 1vh 4vh rgba(0,0,0,0.9);
     text-align: center;
 
-    transition: 0.5s ease-in-out;
-
     animation: fadeIn ease 3s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
@@ -372,6 +371,8 @@
     background-size: cover;
     border-top-left-radius: 4vh;
     border-bottom-left-radius: 4vh;
+
+    transition: opacity 0.2s ease-out;
 }
 
 .booking-text
@@ -382,6 +383,67 @@
 
     text-align: center;
     font-size: 3vh;
+
+    transition: opacity 0.2s ease-out;
+}
+
+.booking-popup
+{
+    position: absolute;
+    visibility: collapse;
+    transition: opacity 0.5s ease-in-out;
+
+    display: grid;
+    grid-template-columns: 25vw 25vw;
+    grid-template-rows: 30vh;
+    grid-template-areas: "edit" "delete";
+
+    width: 100%;
+    text-align: center;
+    color: white;
+}
+
+.booking:hover .booking-popup
+{
+    visibility: visible;
+    opacity: 1;
+}
+
+.booking:hover .booking-image
+{
+    opacity: 0.1;
+}
+
+.booking:hover .booking-text
+{
+    opacity: 0.1;
+}
+
+.booking:hover
+{
+    background-color: #09A4FB;
+}
+
+.booking-edit
+{
+    grid-area: 'edit';
+    margin: 10vh;
+}
+
+.booking-delete
+{
+    grid-area: 'delete';
+    margin: 10vh;
+}
+
+.booking-edit:hover
+{
+    cursor: pointer;
+}
+
+.booking-delete:hover
+{
+    cursor: pointer;
 }
 
 .button-booking

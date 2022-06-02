@@ -4,6 +4,7 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Bookings from './pages/Bookings'
 import BookingsDesk from './pages/BookingsDesk'
+import BookingsDeskEdit from './pages/BookingsDeskEdit'
 import BookingsMeeting from './pages/BookingsMeeting'
 import Teams from './pages/Teams'
 import Meetings from './pages/Meetings'
@@ -21,6 +22,7 @@ function App()
         <Route path="/bookings-meeting" exact element={<BookingsMeeting/>} />
         <Route path="/teams" exact element={<Teams/>} />
         <Route path="/meetings" exact element={<Meetings/>} />
+        <Route path="/bookings-desk-edit" exact element={<BookingsDeskEdit/>} />
       </Routes>
     </Router>
   );

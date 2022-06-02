@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
 
-function BookingsDesk()
+function BookingsDeskEdit()
 {
   const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -21,7 +21,7 @@ function BookingsDesk()
       {
         method: "POST",
         body: JSON.stringify({
-          id: null,
+          id: window.sessionStorage.getItem("BookingID"),
           user_id: "11111111-1111-4a06-9983-8b374586e459",
           resource_type: "DESK",
           resource_preference_id: null,
@@ -48,7 +48,7 @@ function BookingsDesk()
 
         if(res.status === 200)
         {
-          alert("Booking Successfully Created!");
+          alert("Booking Successfully Edited!");
           window.location.assign("./");
         }
       }
@@ -64,7 +64,7 @@ function BookingsDesk()
       <div className='content'>
         <Navbar />
         <div className='form-container-team'>
-          <p className='form-header'><h1>CREATE YOUR DESK BOOKING</h1>Please enter your booking details.</p>
+          <p className='form-header'><h1>EDIT YOUR DESK BOOKING</h1>Please enter your new booking details.</p>
           
           <Form className='form' onSubmit={handleSubmit}>
             <Form.Group className='form-group' controlId="formBasicName">
@@ -87,7 +87,7 @@ function BookingsDesk()
               <Form.Control name="eTime" className='form-input' type="text" placeholder="hh:mm" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
             </Form.Group>
 
-            <Button className='button-submit' variant='primary' type='submit'>Create Booking</Button>
+            <Button className='button-submit' variant='primary' type='submit'>Edit Booking</Button>
           </Form>
         </div>
       </div>
@@ -96,4 +96,4 @@ function BookingsDesk()
   )
 }
 
-export default BookingsDesk
+export default BookingsDeskEdit
