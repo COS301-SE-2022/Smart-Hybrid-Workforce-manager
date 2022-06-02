@@ -8,27 +8,34 @@ const BookingTicket = ({id, startDate, startTime, endDate, endTime, confirmed}) 
         e.preventDefault();
         window.location.assign("./bookings-desk-edit");
         window.sessionStorage.setItem("BookingID", id);
-        /*try
+    }
+
+    let DeleteBooking = async (e) =>
+    {
+        e.preventDefault();
+        if(window.confirm("Are you sure you want to delete this booking?"))
         {
-            let res = await fetch("http://localhost:8100/api/booking/create", 
+            try
             {
-                method: "POST",
-                body: JSON.stringify({
-                id: null,
-                user_id: "11111111-1111-4a06-9983-8b374586e459",
-                resource_type: "DESK",
-                resource_preference_id: null,
-                resource_id: null,
-                start: startDate + "T" + startTime + ":43.511Z",
-                end: endDate + "T" + endTime + ":43.511Z",
-                booked: false
-                })
-            });
+                let res = await fetch("http://localhost:8100/api/booking/remove", 
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                    id: id
+                    })
+                });
+
+                if(res.status === 200)
+                {
+                    alert("Booking Successfully Deleted!");
+                    window.location.assign("./");
+                }
+            }
+            catch (err)
+            {
+                console.log(err);    
+            }
         }
-        catch (err)
-        {
-            console.log(err);    
-        }*/
     }
 
     return (
@@ -47,8 +54,8 @@ const BookingTicket = ({id, startDate, startTime, endDate, endTime, confirmed}) 
                 )}                
                 </div>
                 <div className='booking-popup'>
-                    <div className='booking-edit' onClick={EditBooking}><MdEdit size={80}/></div>
-                    <div className='booking-delete'><MdDelete size={80}/></div>
+                    <div className='booking-edit'><MdEdit size={80} className="booking-edit-icon" onClick={EditBooking}/></div>
+                    <div className='booking-delete'><MdDelete size={80} className="booking-delete-icon" onClick={DeleteBooking}/></div>
                 </div>
             </div>
         </div>
