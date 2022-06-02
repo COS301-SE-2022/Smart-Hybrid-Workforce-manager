@@ -2,6 +2,7 @@ package data
 
 import (
 	"api/db"
+	"encoding/json"
 )
 
 type BatchBooking struct {
@@ -39,4 +40,42 @@ func (access *BatchBookingDA) StoreIdentifiers(identifiers *BatchBooking) error 
 		}
 	}
 	return nil
+}
+
+// Finds and returns bookings as specified by the identifiers in the Bookings array
+func (access *BatchBookingDA) FindIdentifiers(indentifiers *BatchBooking, permissions *Permissions) (Bookings, error) {
+	permissionContent, err := json.Marshal(*permissions)
+	if err != nil {
+		return nil, err
+	}
+	allResults := make([]interface{}, 0)
+	// Get the results for each booking
+	for _, identifier := range indentifiers.Bookings {
+		results, err := access.access.Query(
+			`SELECT * FROM booking.identifier_find($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, mapBooking,
+			identifier.Id, identifier.UserId, identifier.ResourceType, identifier.ResourcePreferenceId,
+			identifier.ResourceId, identifier.Start, identifier.End, identifier.Booked, identifier.DateCreated, permissionContent,
+		)
+		if err != nil {
+			return nil, err
+		}
+		allResults = append(allResults, results...)
+	}
+	tmp := make([]*Booking, 0)
+	for r := range allResults {
+		if val, ok := allResults[r].(Booking); ok {
+			tmp = append(tmp, &val)
+		}
+	}
+	// filter out duplicates (incase)
+	idMap := make(map[string]bool)
+	bookingSet := make([]*Booking, 0)
+	for _, booking := range tmp {
+		// If booking not yet added
+		if _, added := idMap[*booking.Id]; !added {
+			bookingSet = append(bookingSet, booking) // add booking to set
+			idMap[*booking.Id] = true
+		}
+	}
+	return bookingSet, nil
 }
