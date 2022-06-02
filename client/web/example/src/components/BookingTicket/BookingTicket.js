@@ -6,8 +6,13 @@ const BookingTicket = ({id, startDate, startTime, endDate, endTime, confirmed}) 
     let EditBooking = async (e) =>
     {
         e.preventDefault();
-        window.location.assign("./bookings-desk-edit");
         window.sessionStorage.setItem("BookingID", id);
+        window.sessionStorage.setItem("StartDate", startDate);
+        window.sessionStorage.setItem("StartTime", startTime);
+        window.sessionStorage.setItem("EndDate", endDate);
+        window.sessionStorage.setItem("EndTime", endTime);
+        window.location.assign("./bookings-desk-edit");
+        
     }
 
     let DeleteBooking = async (e) =>

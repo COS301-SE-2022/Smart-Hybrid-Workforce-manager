@@ -21,6 +21,10 @@ const Home = () =>
           {
             setBookings(data);
             window.sessionStorage.removeItem("BookingID");
+            window.sessionStorage.removeItem("StartDate");
+            window.sessionStorage.removeItem("StartTime");
+            window.sessionStorage.removeItem("EndDate");
+            window.sessionStorage.removeItem("EndTime");
           });
   }
 

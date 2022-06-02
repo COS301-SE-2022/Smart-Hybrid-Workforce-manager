@@ -1,9 +1,8 @@
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
-import React, { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import '../App.css'
 
 function BookingsDeskEdit()
 {
@@ -58,6 +57,15 @@ function BookingsDeskEdit()
       console.log(err);
     }
   };  
+
+  //Using useEffect hook. This will ste the default values of the form once the components are mounted
+  useEffect(() =>
+  {
+    setStartDate(window.sessionStorage.getItem("StartDate"));
+    setStartTime(window.sessionStorage.getItem("StartTime"));
+    setEndDate(window.sessionStorage.getItem("EndDate"));
+    setEndTime(window.sessionStorage.getItem("EndTime"));
+  }, [])
 
   return (
     <div className='page-container'>
