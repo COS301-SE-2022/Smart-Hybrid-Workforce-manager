@@ -1440,7 +1440,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"user_id\": \"00000000-0000-0000-0000-000000000000\",\r\n    \"bookings\": [\r\n        {\r\n            \"id\": \"de5b5b7d-de06-4ed6-b066-5f1509b0d7b3\"\r\n        },\r\n        {\r\n            \"id\": \"3f63400e-d7c0-49a9-ad80-af7abd80b057\",\r\n            \"user_id\": \"11111111-3333-4a06-9983-8b374586e459\",\r\n            \"resource_type\": \"DESK\",\r\n            \"resource_preference_id\": null,\r\n            \"start\": \"2012-06-05T18:25:43.511Z\",\r\n            \"end\": \"2012-07-05T19:25:43.511Z\",\r\n            \"booked\": false\r\n        },\r\n    ]\r\n}",
+							"raw": "{\r\n    \"user_id\": \"00000000-0000-0000-0000-000000000000\",\r\n    \"bookings\": [\r\n        {\r\n            \"id\": \"3f63400e-d7c0-49a9-ad80-af7abd80b057\"\r\n        },\r\n        {\r\n            \"id\": \"425400a9-5aaf-483c-b543-74a1b3acf9df\",\r\n            \"user_id\": \"11111111-3333-4a06-9983-8b374586e459\",\r\n            \"resource_type\": \"DESK\",\r\n            \"resource_preference_id\": null,\r\n            \"start\": \"2012-06-05T18:25:43.511Z\",\r\n            \"end\": \"2012-07-05T19:25:43.511Z\",\r\n            \"booked\": false\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
