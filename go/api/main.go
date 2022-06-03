@@ -78,6 +78,13 @@ func main() {
 		os.Exit(-1)
 	}
 
+	batchBookingRouter := router.PathPrefix("/api/batch-booking").Subrouter()
+	err = endpoints.BatchBookingHandlers(batchBookingRouter)
+	if err != nil {
+		logger.Error.Fatal(err)
+		os.Exit(-1)
+	}
+
 	// Start API on port 8080 in its docker container
 	logger.Info.Println("Starting API on 8080")
 	logger.Error.Fatal(http.ListenAndServe(":8080", router))
