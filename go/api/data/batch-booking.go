@@ -42,6 +42,7 @@ func (access *BatchBookingDA) StoreIdentifiers(identifiers *BatchBooking) error 
 	return nil
 }
 
+
 // Finds and returns bookings as specified by the identifiers in the Bookings array
 func (access *BatchBookingDA) FindIdentifiers(indentifiers *BatchBooking, permissions *Permissions) (Bookings, error) {
 	permissionContent, err := json.Marshal(*permissions)
