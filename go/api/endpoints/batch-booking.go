@@ -83,6 +83,7 @@ func CreateBatchBookingHandler(writer http.ResponseWriter, request *http.Request
 	err = da.StoreIdentifiers(&bookings)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
+		return
 	}
 
 	err = access.Commit()
