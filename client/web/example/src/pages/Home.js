@@ -15,11 +15,16 @@ const Home = () =>
           method: "POST",
           body: JSON.stringify({
             id: null,
-            user_id: "11111111-1111-4a06-9983-8b374586e459"
+            user_id: null
           })
         }).then((res) => res.json()).then(data => 
           {
             setBookings(data);
+            window.sessionStorage.removeItem("BookingID");
+            window.sessionStorage.removeItem("StartDate");
+            window.sessionStorage.removeItem("StartTime");
+            window.sessionStorage.removeItem("EndDate");
+            window.sessionStorage.removeItem("EndTime");
           });
   }
 
@@ -37,7 +42,7 @@ const Home = () =>
         <div className='booking-container'>
           {bookings.length > 0 && (
             bookings.map(booking => (
-              <BookingTicket startDate={booking.start.substring(0,10)} startTime={booking.start.substring(11,16)} endDate={booking.end.substring(0,10)} endTime={booking.end.substring(11,16)} confirmed={booking.booked}/>
+              <BookingTicket id={booking.id} startDate={booking.start.substring(0,10)} startTime={booking.start.substring(11,16)} endDate={booking.end.substring(0,10)} endTime={booking.end.substring(11,16)} confirmed={booking.booked}/>
             ))
           )}
 
