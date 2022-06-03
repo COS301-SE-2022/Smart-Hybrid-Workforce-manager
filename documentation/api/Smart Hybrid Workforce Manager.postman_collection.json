@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "4fb43f5a-5737-413c-80d5-3561c53b1616",
+		"_postman_id": "4c2b412c-0384-4fc9-af62-611993b7e8ac",
 		"name": "Smart Hybrid Workforce Manager",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15560435"
 	},
 	"item": [
 		{
@@ -1362,6 +1363,104 @@
 								"create"
 							]
 						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "BatchBooking",
+			"item": [
+				{
+					"name": "Create Batch Booking",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": \"00000000-0000-0000-0000-000000000000\",\r\n    \"bookings\": [\r\n        {\r\n            \"user_id\": \"11111111-1111-4a06-9983-8b374586e459\",\r\n            \"resource_type\": \"DESK\",\r\n            \"resource_preference_id\": null,\r\n            \"start\": \"2012-06-05T18:25:43.511Z\",\r\n            \"end\": \"2012-06-05T19:25:43.511Z\",\r\n            \"booked\": false\r\n        },\r\n        {\r\n            \"user_id\": \"11111111-1111-4a06-9983-8b374586e459\",\r\n            \"resource_type\": \"DESK\",\r\n            \"resource_preference_id\": null,\r\n            \"start\": \"2012-06-05T18:25:43.511Z\",\r\n            \"end\": \"2012-06-05T19:25:43.511Z\",\r\n            \"booked\": false\r\n        },\r\n        {\r\n            \"user_id\": \"00000000-0000-0000-0000-000000000000\",\r\n            \"resource_type\": \"DESK\",\r\n            \"resource_preference_id\": null,\r\n            \"start\": \"2012-06-05T18:25:43.511Z\",\r\n            \"end\": \"2012-06-05T19:25:43.511Z\",\r\n            \"booked\": false\r\n        },\r\n        {\r\n            \"user_id\": \"11111111-2222-4a06-9983-8b374586e459\",\r\n            \"resource_type\": \"DESK\",\r\n            \"resource_preference_id\": null,\r\n            \"start\": \"2012-06-05T18:25:43.511Z\",\r\n            \"end\": \"2012-08-05T19:25:43.511Z\",\r\n            \"booked\": false\r\n        },\r\n        {\r\n            \"id\" : \"74a1b0b8-0fc1-4d9e-a17b-b26aab3c632a\",\r\n            \"user_id\": \"11111111-3333-4a06-9983-8b374586e459\",\r\n            \"resource_type\": \"DESK\",\r\n            \"resource_preference_id\": null,\r\n            \"start\": \"2012-06-05T18:25:43.511Z\",\r\n            \"end\": \"2012-07-05T19:25:43.511Z\",\r\n            \"booked\": false\r\n        },\r\n        {\r\n            \"id\" : \"3f63400e-d7c0-49a9-ad80-af7abd80b057\",\r\n            \"user_id\": \"11111111-3333-4a06-9983-8b374586e459\",\r\n            \"resource_type\": \"DESK\",\r\n            \"resource_preference_id\": null,\r\n            \"start\": \"2012-06-05T18:25:43.511Z\",\r\n            \"end\": \"2012-07-05T19:25:43.511Z\",\r\n            \"booked\": false\r\n        },\r\n        {\r\n            \"id\" : \"425400a9-5aaf-483c-b543-74a1b3acf9df\",\r\n            \"user_id\": \"11111111-3333-4a06-9983-8b374586e459\",\r\n            \"resource_type\": \"DESK\",\r\n            \"resource_preference_id\": null,\r\n            \"start\": \"2012-06-05T18:25:43.511Z\",\r\n            \"end\": \"2012-07-05T19:25:43.511Z\",\r\n            \"booked\": false\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8100/api/batch-booking/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8100",
+							"path": [
+								"api",
+								"batch-booking",
+								"create"
+							]
+						},
+						"description": "\"user_id\" Is the id if the user making the request and creating the bookings, this user requires permissions to create bookings for all the users that bookings are being created for.\n\nThe operation is atomic, and either all bookings are created or none, if an error occurs.\n\n\"bookings\" is an array of bookings that are to be created."
+					},
+					"response": []
+				},
+				{
+					"name": "Information Batch Booking",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": \"00000000-0000-0000-0000-000000000000\",\r\n    \"bookings\": [\r\n        {\r\n            \"id\": \"33333333-dc08-4a06-9983-8b374586e459\"\r\n        },\r\n                {\r\n            \"id\": \"33333333-dc08-4a06-9983-8b374586e459\"\r\n        },\r\n        {\r\n            \"user_id\" : \"00000000-0000-0000-0000-000000000000\"\r\n        },\r\n        {\r\n            \"user_id\": \"11111111-2222-4a06-9983-8b374586e459\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8100/api/batch-booking/information",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8100",
+							"path": [
+								"api",
+								"batch-booking",
+								"information"
+							]
+						},
+						"description": "\"user_id\" is the id of the user that is requesting the bookings' information, this user requires permissions to view the bookings that it requests to view.\n\n\"bookings\" is a list of identifiers that are used to specify the bookings that are searched for, this array can contain objects in the same way that one would do for the BookingInformation endpoint.\n\nThis operation is atomic, and either all bookings that are requested for are returned if they exist or none, if some error occurs.\n\nNo duplicates will be returned in a single request."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Batch Booking",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": \"00000000-0000-0000-0000-000000000000\",\r\n    \"bookings\": [\r\n        {\r\n            \"id\": \"3f63400e-d7c0-49a9-ad80-af7abd80b057\"\r\n        },\r\n        {\r\n            \"id\": \"425400a9-5aaf-483c-b543-74a1b3acf9df\",\r\n            \"user_id\": \"11111111-3333-4a06-9983-8b374586e459\",\r\n            \"resource_type\": \"DESK\",\r\n            \"resource_preference_id\": null,\r\n            \"start\": \"2012-06-05T18:25:43.511Z\",\r\n            \"end\": \"2012-07-05T19:25:43.511Z\",\r\n            \"booked\": false\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8100/api/batch-booking/remove",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8100",
+							"path": [
+								"api",
+								"batch-booking",
+								"remove"
+							]
+						},
+						"description": "StartFragment\n\n\"user_id\" is the id of the user that is requesting the deletion of bookings, this user requires permissions to delete the bookings that it requests to view.\n\n\"bookings\" is a list of identifiers that are used to specify the bookings that are to be deleted, this array can contain objects in the same way that one would do for the DeleteBooking endpoint.\n\nThis operation is atomic, and either all the bookings are deleted as requested, or none, if some error occurs.\n\nEndFragment\n\nOnly a booking id need be supplied in the array, although the other fields of the booking can also be added, although they will have no effect."
 					},
 					"response": []
 				}

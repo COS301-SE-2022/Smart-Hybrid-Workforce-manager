@@ -21,8 +21,8 @@ function BookingsDesk()
       {
         method: "POST",
         body: JSON.stringify({
-          id: "33333333-dc08-4a06-9983-8b374586e453",
-          user_id: "11111111-dc08-4a06-9983-8b374586e459",
+          id: null,
+          user_id: "11111111-1111-4a06-9983-8b374586e459",
           resource_type: "DESK",
           resource_preference_id: null,
           resource_id: null,
@@ -34,8 +34,23 @@ function BookingsDesk()
 
       if(res.status === 200)
       {
-        alert("Booking Successfully Created!");
-        window.location.reload();
+        let res = await fetch("http://localhost:8100/api/notification/send", 
+        {
+          method: "POST",
+          body: JSON.stringify({
+            to: "tash2814@gmail.com",
+            sDate: startDate,
+            sTime: startTime,
+            eDate: endDate,
+            eTime: endTime
+          })
+        });
+
+        if(res.status === 200)
+        {
+          alert("Booking Successfully Created!");
+          window.location.assign("./");
+        }
       }
     }
     catch(err)
@@ -54,22 +69,22 @@ function BookingsDesk()
           <Form className='form' onSubmit={handleSubmit}>
             <Form.Group className='form-group' controlId="formBasicName">
               <Form.Label className='form-label'>Start Date<br></br></Form.Label>
-              <Form.Control className='form-input' type="text" placeholder="yyyy-mm-dd" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+              <Form.Control name="sDate" className='form-input' type="text" placeholder="yyyy-mm-dd" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
             </Form.Group>
 
             <Form.Group className='form-group' controlId="formBasicName">
               <Form.Label className='form-label'>Start Time<br></br></Form.Label>
-              <Form.Control className='form-input' type="text" placeholder="hh:mm" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+              <Form.Control name="sTime" className='form-input' type="text" placeholder="hh:mm" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
             </Form.Group>
 
             <Form.Group className='form-group' controlId="formBasicName">
               <Form.Label className='form-label'>End Date<br></br></Form.Label>
-              <Form.Control className='form-input' type="text" placeholder="yyyy-mm-dd" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+              <Form.Control name="eDate" className='form-input' type="text" placeholder="yyyy-mm-dd" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
             </Form.Group>
             
             <Form.Group className='form-group' controlId="formBasicName">
               <Form.Label className='form-label'>End Time<br></br></Form.Label>
-              <Form.Control className='form-input' type="text" placeholder="hh:mm" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+              <Form.Control name="eTime" className='form-input' type="text" placeholder="hh:mm" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
             </Form.Group>
 
             <Button className='button-submit' variant='primary' type='submit'>Create Booking</Button>
