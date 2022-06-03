@@ -451,6 +451,32 @@
     margin-left: 4vw;
 }
 
+.button-resource
+{
+    margin-left: 1vw;
+
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+
+    width: 10vw;
+
+    background-color: #09A4FB;
+    color: white;
+
+    border-style: none;
+    border-radius: 1.3vh;
+
+    font-size: 2vh;
+}
+
+.button-resource:hover
+{
+    cursor: pointer;
+    background-color: #03639b;
+}
+
 .room-container
 {
     grid-area: 'room';
@@ -466,7 +492,7 @@
     padding-left: 1vw;
     padding-right: 1vw;
 
-    width: 40vw;
+    width: 30vw;
 
     border-radius: 1vh;
     border-style: none;
@@ -517,4 +543,10 @@
 {
     cursor: pointer;
     background-color: #09A4FB;
+}
+
+.button-resource-container
+{
+    margin-top: 2vh;
+    margin-left: 42.5vw;
 }

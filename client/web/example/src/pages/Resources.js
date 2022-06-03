@@ -2,12 +2,14 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { useState, useEffect } from 'react';
 import { MdDesktopWindows } from 'react-icons/md'
+import Button from 'react-bootstrap/Button'
 
 const Resources = () =>
 {
   const [buildings, SetBuildings] = useState([])
   const [currBuilidng, SetCurrBuilding] = useState("")
   const [rooms, SetRooms] = useState([])
+  const [currRoom, SetCurrRoom] = useState("")
   const [resources, SetResources] = useState([])
 
   //POST request
@@ -50,13 +52,47 @@ const Resources = () =>
         }).then((res) => res.json()).then(data => 
           {
             SetResources(data);
+            SetCurrRoom(e.target.value);
           });
+  }
+
+  const AddBuilding = () =>
+  {
+    window.location.assign("./building");
+  }
+
+  const AddRoom = () =>
+  {
+    if(currBuilidng !== "")
+    {
+      window.sessionStorage.setItem("BuildingID", currBuilidng);
+      window.location.assign("./room");
+    }
+    else
+    {
+      alert("Please select a building");
+    }
+  }
+
+  const AddDesk = () =>
+  {
+    if(currRoom !== "")
+    {
+      window.sessionStorage.setItem("RoomID", currRoom);
+      window.location.assign("./desk");
+    }
+    else
+    {
+      alert("Please select a room");
+    }
   }
 
   //Using useEffect hook. This will send the POST request once the component is mounted
   useEffect(() =>
   {
     FetchBuildings()
+    window.sessionStorage.removeItem("BuildingID");
+    window.sessionStorage.removeItem("RoomID");
   }, [])
   
 
@@ -74,6 +110,8 @@ const Resources = () =>
                 ))
               )}
             </select>
+
+            <Button className='button-resource' variant='primary' onClick={AddBuilding}>Add Building</Button>
           </div>
 
           <div className='room-container'>
@@ -85,6 +123,8 @@ const Resources = () =>
                 ))
               )}
             </select>
+
+            <Button className='button-resource' variant='primary' onClick={AddRoom}>Add Room</Button>
           </div>
         </div>
 
@@ -97,6 +137,11 @@ const Resources = () =>
               ))
             )}
         </div>
+
+        <div className='button-resource-container'>
+          <Button className='button-resource' variant='primary' onClick={AddDesk}>Add Desk</Button>
+        </div>
+
       </div>  
       <Footer />
     </div>
