@@ -1,16 +1,17 @@
+from xml.etree.ElementTree import QName
 import docker
 import requests
 import json 
 
+# gets a list of all bookings and removes those that are already booked. Ideally this step would be converted to an API call in future to avoid looping through the entire array
 def init():
-    # response = requests.post("http://arche-api:8080/api/booking/information", data="{}")
     response = requests.post("http://arche-api:8080/api/booking/information", data='{}')
     global bookingsList
     bookingsList = json.loads(response.content)
+    bookingsList = [booking for booking in bookingsList if not booking['booked']]
 
+# only used for testing purposes
 def printBookings():
-    response = requests.post("http://arche-api:8080/api/booking/information", data='{}')
-    bookingsList = json.loads(response.content)
     i = 1
     for booking in bookingsList:
         print('Booking ' + str(i) + ': ')
@@ -19,14 +20,18 @@ def printBookings():
             print(field + ' : ' + str(booking[field]))
         print()
 
-# only creates the first booking for now
-def finaliseBookings():
+def setAllBookingsTrue():
     for booking in bookingsList:
-        if not booking['booked']:
-            response = requests.post("http://arche-api:8080/api/booking/create", data='{"id": "' + str(booking['id']) + '", "user_id": "' + str(booking['user_id']) + '", "resource_type": "' + str(booking['resource_type']) + '", "resource_preference_id": "' + str(booking['resource_preference_id']) + '", "start": "' + str(booking['start']) + '", "end": "' + str(booking['end']) + '", "booked": true}')
-            print(response)
-            break
+        booking['booked'] = True
+
+# books all unfinalised bookings, no logic is performed yet.
+def finaliseBookings():
+    setAllBookingsTrue()
+    batchBooking = {"user_id"  : "00000000-0000-0000-0000-000000000000", 
+                    "bookings" :  bookingsList }
+    response = requests.post("http://arche-api:8080/api/batch-booking/create", data=json.dumps(batchBooking))
+    print(response)
 
 init()
-# finaliseBookings()
 # printBookings()
+# finaliseBookings()
