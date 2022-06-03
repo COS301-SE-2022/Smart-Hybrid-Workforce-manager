@@ -1,2 +1,3 @@
 *.bat
 .vscode
+redis/dump.rdb
