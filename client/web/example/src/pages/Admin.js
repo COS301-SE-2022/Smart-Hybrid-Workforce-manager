@@ -8,12 +8,19 @@ function Admin()
     <div className='page-container'>
       <div className='content'>
         <Navbar />
-        <div className='card-container'>
+        <div className='admin-card-container'>
+          <AdminCard name='Users' description='Create and manage users.' 
+            path='/users' type='Users' />
+          
           <AdminCard name='Teams' description='Create and manage teams.' 
-          path='/teams' image='https://introducingsa.co.za/wp-content/uploads/sites/142/2022/03/Home-office.png'/>
-
+          path='/teams' type='Teams'/>
+        </div>
+        <div className='admin-card-container'>
           <AdminCard name='Resources' description='Create and manage resources.' 
-          path='/resources' image='https://synivate.com/wp-content/uploads/conference-room-meetings-1-400x249.jpg'/>
+            path='/resources' type='Resources' />
+          
+          <AdminCard name='Roles' description='Create and manage roles.' 
+          path='/roles' type='Roles'/>
         </div>
       </div>  
       <Footer />

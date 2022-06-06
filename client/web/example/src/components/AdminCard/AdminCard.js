@@ -1,8 +1,9 @@
 import React from 'react'
 import { FaLongArrowAltRight } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
+import { MdAccountCircle, MdSupervisedUserCircle, MdHomeFilled, MdPermIdentity } from 'react-icons/md'
 
-const AdminCard = ({name, description, path, image}) =>
+const AdminCard = ({name, description, path, type}) =>
 {
     let navigate = useNavigate();
     const route = () =>
@@ -10,24 +11,30 @@ const AdminCard = ({name, description, path, image}) =>
         navigate(path);
     }
 
+    function icon()
+    {
+        if (type == 'Users')
+            return <MdAccountCircle className='admin-icon' size={50} />
+        if (type == 'Teams')
+            return <MdSupervisedUserCircle className='admin-icon' size={50} />
+        if (type == 'Resources')
+            return <MdHomeFilled className='admin-icon' size={50} />
+        return <MdPermIdentity className='admin-icon' size={50} />
+    }
+
+
     return (
         <div>
-            <div className="card" onClick={route}>
-                <div className="card-image" 
-                    style={{
-                        gridArea : 'image',
-                        background : 'linear-gradient(#fff0 0%, #fff0 70%, #1d1d1d 100%), url(' + image + ')',
-                        'background-size': 'cover',
-                        'border-top-left-radius': '4vh',
-                        'border-top-right-radius': '4vh'
-                        }}>
+            <div className="admin-card" onClick={route}>
+                <div className="admin-card-image">
+                    {icon()}
                 </div>
                 
-                <div className="card-text">
+                <div className="admin-card-text">
                     <h2>{name}</h2>
                     <p>{description}</p>
                 </div>
-                <div className="card-arrow">
+                <div className="admin-card-arrow">
                     <FaLongArrowAltRight size={50}/>
                 </div>
             </div>
