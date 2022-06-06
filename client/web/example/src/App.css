@@ -501,6 +501,78 @@
     text-align: center;
 }
 
+.resource {
+    position: relative;
+    display: grid;
+    grid-template-columns: 12vw 12vw;
+    grid-template-rows: 10vh;
+    grid-template-areas: "image""text";
+    float: left;
+
+    margin-top: 2vh;
+    margin-left: 1vw;
+    margin-right: 1vw;
+    padding-top: 1.5vh;
+
+    height: 10vh;
+    width: 12vw;
+    border-radius: 1vh;
+    background-color: #919191;
+    text-align: center;
+
+    animation: fadeIn ease 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+.resource-popup {
+    position: absolute;
+    visibility: hidden;
+
+    display: grid;
+    grid-template-columns: 6vw 6vw;
+    grid-template-rows: 10vh;
+    grid-template-areas: "edit""delete";
+
+    border-radius: 1vh;
+    opacity: 0;
+
+    background-color: #1b1b1b;
+
+    text-align: center;
+    color: white;
+
+    transition: 0.5s;
+}
+
+.resource:hover .resource-popup {
+    visibility: visible;
+    transition: 0.5s;
+    opacity: 0.95;
+    background-color: #09A4FB;
+}
+
+.resource-edit {
+    grid-area: 'edit';
+    margin: 3.5vh;
+}
+
+.resource-delete {
+    grid-area: 'delete';
+    margin: 3.5vh;
+}
+
+
+.resource-edit-icon:hover {
+    cursor: pointer;
+    color: #919191;
+}
+
+.resource-delete-icon:hover {
+    cursor: pointer;
+    color: #919191;
+}
+
 .resources-map
 {
     position: relative;
@@ -519,37 +591,14 @@
     background-color: #1b1b1b;
 }
 
-.resource-container
+.resource-icon
 {
-    float: left;
-    margin-top: 2vh;
-    margin-left: 1vw;
-    margin-right: 1vw;
-    padding-top: 1.5vh;
-
-    height: 10vh;
-    width: 12vw;
-    border-radius: 1vh;
-    background-color: #919191;
+    color: white;
+    display: float;
     text-align: center;
 }
 
-.resource
-{
-    color: white;
-}
-
-.resource-container:hover
-{
-    cursor: pointer;
-    background-color: #09A4FB;
-}
-
-.button-resource-container
-{
+.button-resource-container {
     margin-top: 2vh;
     margin-left: 42.5vw;
-}
-
-.resource-name {
 }

@@ -1,8 +1,9 @@
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { useState, useEffect } from 'react';
-import { MdDesktopWindows, MdSupervisorAccount } from 'react-icons/md'
 import Button from 'react-bootstrap/Button'
+import ResourceDesk from '../components/Resource/ResourceDesk';
+import ResourceMeetingRoom from '../components/Resource/ResourceMeetingRoom';
 
 const Resources = () =>
 {
@@ -145,17 +146,13 @@ const Resources = () =>
 
         <div className='resources-map'>
           {resources.length > 0 && (
-            resources.map(resource => {
+            resources.map(resource => 
+            {
               if (resource.resource_type == "DESK")
-                return <div className='resource-container'>
-                  <div className='resource-name'>{'Desk ' + resource.name}</div>
-                  <MdDesktopWindows className='resource' size={50} />
-                </div>
-              return <div className='resource-container'>
-                  <div className='resource-name'>{'Room ' + resource.name}</div>
-                  <MdSupervisorAccount className='resource' size={50} />
-                </div>
-            })
+                return <ResourceDesk id={resource.id} name={resource.name}/>
+              return <ResourceMeetingRoom id={resource.id} name={resource.name}/>
+            }
+          )
           )}
         </div>
 
