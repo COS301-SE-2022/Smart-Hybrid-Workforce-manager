@@ -125,6 +125,7 @@ const Resources = () =>
             </select>
 
             <Button className='button-resource' variant='primary' onClick={AddBuilding}>Add Building</Button>
+            <Button className='button-resource' variant='primary' onClick={AddBuilding}>Edit Building</Button>
           </div>
 
           <div className='room-container'>
@@ -138,6 +139,7 @@ const Resources = () =>
             </select>
 
             <Button className='button-resource' variant='primary' onClick={AddRoom}>Add Room</Button>
+            <Button className='button-resource' variant='primary' onClick={AddRoom}>Edit Room</Button>
           </div>
         </div>
 
@@ -146,9 +148,11 @@ const Resources = () =>
             resources.map(resource => {
               if (resource.resource_type == "DESK")
                 return <div className='resource-container'>
+                  <div className='resource-name'>{'Desk ' + resource.name}</div>
                   <MdDesktopWindows className='resource' size={50} />
                 </div>
               return <div className='resource-container'>
+                  <div className='resource-name'>{'Room ' + resource.name}</div>
                   <MdSupervisorAccount className='resource' size={50} />
                 </div>
             })

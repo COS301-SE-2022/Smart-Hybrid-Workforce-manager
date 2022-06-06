@@ -492,7 +492,7 @@
     padding-left: 1vw;
     padding-right: 1vw;
 
-    width: 30vw;
+    width: 22vw;
 
     border-radius: 1vh;
     border-style: none;
@@ -525,7 +525,7 @@
     margin-top: 2vh;
     margin-left: 1vw;
     margin-right: 1vw;
-    padding-top: 2.5vh;
+    padding-top: 1.5vh;
 
     height: 10vh;
     width: 12vw;
@@ -549,4 +549,7 @@
 {
     margin-top: 2vh;
     margin-left: 42.5vw;
+}
+
+.resource-name {
 }
