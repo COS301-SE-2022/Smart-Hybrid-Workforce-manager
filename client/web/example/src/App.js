@@ -12,6 +12,7 @@ import Resources from './pages/Resources'
 import CreateBuilding from './pages/CreateBuilding'
 import CreateRoom from './pages/CreateRoom'
 import CreateDesk from './pages/CreateDesk'
+import CreateMeetingRoom from './pages/CreateMeetingRoom'
 
 function App()
 {
@@ -31,6 +32,7 @@ function App()
         <Route path="/building" exact element={<CreateBuilding/>} />
         <Route path="/room" exact element={<CreateRoom/>} />
         <Route path="/desk" exact element={<CreateDesk/>} />
+        <Route path="/meetingroom" exact element={<CreateMeetingRoom/>} />
       </Routes>
     </Router>
   );

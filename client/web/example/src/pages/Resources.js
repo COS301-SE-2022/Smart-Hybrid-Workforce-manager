@@ -1,7 +1,7 @@
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { useState, useEffect } from 'react';
-import { MdDesktopWindows } from 'react-icons/md'
+import { MdDesktopWindows, MdSupervisorAccount } from 'react-icons/md'
 import Button from 'react-bootstrap/Button'
 
 const Resources = () =>
@@ -87,6 +87,19 @@ const Resources = () =>
     }
   }
 
+  const AddMeetingRoom = () =>
+  {
+    if(currRoom !== "")
+    {
+      window.sessionStorage.setItem("RoomID", currRoom);
+      window.location.assign("./meetingroom");
+    }
+    else
+    {
+      alert("Please select a room");
+    }
+  }
+
   //Using useEffect hook. This will send the POST request once the component is mounted
   useEffect(() =>
   {
@@ -129,17 +142,22 @@ const Resources = () =>
         </div>
 
         <div className='resources-map'>
-            {resources.length > 0 && (
-              resources.map(resource => (
-                <div className='resource-container'>
-                  <MdDesktopWindows className='resource' size={50}/>
+          {resources.length > 0 && (
+            resources.map(resource => {
+              if (resource.resource_type == "DESK")
+                return <div className='resource-container'>
+                  <MdDesktopWindows className='resource' size={50} />
                 </div>
-              ))
-            )}
+              return <div className='resource-container'>
+                  <MdSupervisorAccount className='resource' size={50} />
+                </div>
+            })
+          )}
         </div>
 
         <div className='button-resource-container'>
           <Button className='button-resource' variant='primary' onClick={AddDesk}>Add Desk</Button>
+          <Button className='button-resource' variant='primary' onClick={AddMeetingRoom}>Add Meeting Room</Button>
         </div>
 
       </div>  
