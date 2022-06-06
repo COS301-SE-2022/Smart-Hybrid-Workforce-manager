@@ -12,8 +12,6 @@ import (
 
 func main() {
 
-	
-
 	// Create Database connection pool
 	err := db.RegisterAccess()
 	if err != nil {
@@ -48,6 +46,14 @@ func main() {
 		os.Exit(-1)
 	}
 
+	//Notification endpoints
+	notificationRouter := router.PathPrefix("/api/notification").Subrouter()
+	err = endpoints.NotificationHandlers(notificationRouter)
+	if err != nil {
+		logger.Error.Fatal(err)
+		os.Exit(-1)
+	}
+
 	// Resource endpoints
 	resourceRouter := router.PathPrefix("/api/resource").Subrouter()
 	err = endpoints.ResourceHandlers(resourceRouter)
@@ -67,6 +73,13 @@ func main() {
 	// Permission endpoints
 	permissionRouter := router.PathPrefix("/api/permission").Subrouter()
 	err = endpoints.PermissionHandlers(permissionRouter)
+	if err != nil {
+		logger.Error.Fatal(err)
+		os.Exit(-1)
+	}
+
+	batchBookingRouter := router.PathPrefix("/api/batch-booking").Subrouter()
+	err = endpoints.BatchBookingHandlers(batchBookingRouter)
 	if err != nil {
 		logger.Error.Fatal(err)
 		os.Exit(-1)

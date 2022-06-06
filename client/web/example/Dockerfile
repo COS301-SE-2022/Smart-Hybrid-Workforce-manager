@@ -6,6 +6,8 @@ FROM node:13.12.0-alpine
 # set working directory
 WORKDIR /app
 
+RUN npm install -g nodemon
+
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
 
