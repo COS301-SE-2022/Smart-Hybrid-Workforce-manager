@@ -607,7 +607,7 @@
     display: flex;
 
     margin-left: calc((100vw - 60vw) / 2);
-    margin-top: 10vh;
+    margin-top: 5vh;
 }
 
 .admin-card {
@@ -619,8 +619,8 @@
     min-width: 25vw;
     min-height: 35vh;
 
-    margin-left: 2.5vw;
-    margin-right: 2.5vw;
+    margin-left: 1.5vw;
+    margin-right: 1.5vw;
 
     border-radius: 4vh;
     background: white;

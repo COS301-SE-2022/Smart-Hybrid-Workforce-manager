@@ -8,12 +8,14 @@ import BookingsDeskEdit from './pages/BookingsDeskEdit'
 import BookingsMeeting from './pages/BookingsMeeting'
 import Admin from './pages/Admin'
 import Teams from './pages/Teams'
-import Meetings from './pages/Meetings'
 import Resources from './pages/Resources'
 import CreateBuilding from './pages/CreateBuilding'
 import CreateRoom from './pages/CreateRoom'
 import CreateDesk from './pages/CreateDesk'
 import CreateMeetingRoom from './pages/CreateMeetingRoom'
+import Profile from './pages/Profile'
+import Users from './pages/Users'
+import Roles from './pages/Roles'
 
 function App()
 {
@@ -25,16 +27,18 @@ function App()
         <Route path="/signup" exact element={<Signup/>} />
         <Route path="/bookings" exact element={<Bookings/>} />
         <Route path="/bookings-desk" exact element={<BookingsDesk/>} />
-        <Route path="/bookings-meeting" exact element={<BookingsMeeting/>} />
-        <Route path="/admin" exact element={<Admin/>} />
-        <Route path="/teams" exact element={<Teams/>} />
-        <Route path="/meetings" exact element={<Meetings/>} />
+        <Route path="/bookings-meeting" exact element={<BookingsMeeting />} />
+        <Route path="/admin" exact element={<Admin />} />
+        <Route path="/users" exact element={<Users/>} />
+        <Route path="/teams" exact element={<Teams />} />
         <Route path="/bookings-desk-edit" exact element={<BookingsDeskEdit/>} />
         <Route path="/resources" exact element={<Resources/>} />
         <Route path="/building" exact element={<CreateBuilding/>} />
         <Route path="/room" exact element={<CreateRoom/>} />
         <Route path="/desk" exact element={<CreateDesk/>} />
-        <Route path="/meetingroom" exact element={<CreateMeetingRoom/>} />
+        <Route path="/meetingroom" exact element={<CreateMeetingRoom />} />
+        <Route path="/roles" exact element={<Roles/>} />
+        <Route path="/profile" exact element={<Profile/>} />
       </Routes>
     </Router>
   );

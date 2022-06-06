@@ -16,9 +16,6 @@ const Navbar = () => {
                 <NavLink to="/bookings" activeStyle>
                     BOOKINGS
                 </NavLink>
-                <NavLink to="/meetings" activeStyle>
-                    MEETINGS
-                </NavLink>
                 <NavLink to="/admin" activeStyle>
                     ADMIN
                 </NavLink>
