@@ -6,6 +6,7 @@ import Bookings from './pages/Bookings'
 import BookingsDesk from './pages/BookingsDesk'
 import BookingsDeskEdit from './pages/BookingsDeskEdit'
 import BookingsMeeting from './pages/BookingsMeeting'
+import Admin from './pages/Admin'
 import Teams from './pages/Teams'
 import Meetings from './pages/Meetings'
 import Resources from './pages/Resources'
@@ -25,6 +26,7 @@ function App()
         <Route path="/bookings" exact element={<Bookings/>} />
         <Route path="/bookings-desk" exact element={<BookingsDesk/>} />
         <Route path="/bookings-meeting" exact element={<BookingsMeeting/>} />
+        <Route path="/admin" exact element={<Admin/>} />
         <Route path="/teams" exact element={<Teams/>} />
         <Route path="/meetings" exact element={<Meetings/>} />
         <Route path="/bookings-desk-edit" exact element={<BookingsDeskEdit/>} />
