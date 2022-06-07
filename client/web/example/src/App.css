@@ -545,7 +545,34 @@
     transition: 0.5s;
 }
 
+.user-popup {
+    position: absolute;
+    visibility: hidden;
+
+    display: grid;
+    grid-template-columns: 12vw;
+    grid-template-rows: 10vh;
+    grid-template-areas: "edit";
+
+    border-radius: 1vh;
+    opacity: 0;
+
+    background-color: #1b1b1b;
+
+    text-align: center;
+    color: white;
+
+    transition: 0.5s;
+}
+
 .resource:hover .resource-popup {
+    visibility: visible;
+    transition: 0.5s;
+    opacity: 0.95;
+    background-color: #09A4FB;
+}
+
+.resource:hover .user-popup {
     visibility: visible;
     transition: 0.5s;
     opacity: 0.95;

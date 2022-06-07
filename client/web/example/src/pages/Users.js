@@ -1,11 +1,12 @@
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import { useState, useEffect } from 'react';
-import RoleListItem from '../components/Role/RoleListItem';
+import UserListItem from '../components/Profile/UserListItem';
+import Button from 'react-bootstrap/Button'
 
 function Users()
 {
-  const [users, SetUsers] = useState([])
+  const [users, setUsers] = useState([])
 
   //POST request
   const FetchUsers = () =>
@@ -17,7 +18,7 @@ function Users()
           })
         }).then((res) => res.json()).then(data => 
           {
-            SetUsers(data);
+            setUsers(data);
           });
   }
 
@@ -27,6 +28,11 @@ function Users()
     FetchUsers()
   }, [])
 
+  const AddUser = () =>
+  {
+    window.location.assign("./signup");
+  }
+
   return (
     <div className='page-container'>
       <div className='content'>
@@ -35,10 +41,13 @@ function Users()
           {users.length > 0 && (
             users.map(user => 
             {
-              return <RoleListItem id={user.id} name={user.first_name + " " + user.last_name}/>
+              return <UserListItem id={user.id} name={user.first_name + " " + user.last_name}/>
             }
           )
           )}
+        </div>
+        <div className='button-resource-container'>
+          <Button className='button-resource' variant='primary' onClick={AddUser}>Add User</Button>
         </div>
       </div>  
       <Footer />

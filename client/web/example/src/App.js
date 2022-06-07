@@ -35,7 +35,9 @@ function App()
         <Route path="/bookings-desk" exact element={<BookingsDesk/>} />
         <Route path="/bookings-meeting" exact element={<BookingsMeeting />} />
         <Route path="/admin" exact element={<Admin />} />
-        <Route path="/users" exact element={<Users/>} />
+
+        <Route path="/users" exact element={<Users />} />
+        
         <Route path="/teams" exact element={<Teams />} />
         <Route path="/bookings-desk-edit" exact element={<BookingsDeskEdit/>} />
         <Route path="/resources" exact element={<Resources/>} />
