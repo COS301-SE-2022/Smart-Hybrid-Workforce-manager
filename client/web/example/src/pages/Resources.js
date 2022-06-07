@@ -41,7 +41,7 @@ const Resources = () =>
             document.getElementById("RoomDefault").selected = true;
             SetCurrRoom("");
             SetCurrBuilding(e.target.value);
-            SetResources(new Array());
+            SetResources([]);
           });
   }
 
@@ -171,7 +171,7 @@ const Resources = () =>
           {resources.length > 0 && (
             resources.map(resource => 
             {
-              if (resource.resource_type == "DESK")
+              if (resource.resource_type === "DESK")
                 return <ResourceDesk id={resource.id} name={resource.name} location={resource.location} roomId={resource.room_id}/>
               return <ResourceMeetingRoom id={resource.id} name={resource.name} location={resource.location} capacity={resource.capacity} roomId={resource.room_id}/>
             }

@@ -13,11 +13,11 @@ const AdminCard = ({name, description, path, type}) =>
 
     function icon()
     {
-        if (type == 'Users')
+        if (type === 'Users')
             return <MdAccountCircle className='admin-icon' size={50} />
-        if (type == 'Teams')
+        if (type === 'Teams')
             return <MdSupervisedUserCircle className='admin-icon' size={50} />
-        if (type == 'Resources')
+        if (type === 'Resources')
             return <MdHomeFilled className='admin-icon' size={50} />
         return <MdPermIdentity className='admin-icon' size={50} />
     }
