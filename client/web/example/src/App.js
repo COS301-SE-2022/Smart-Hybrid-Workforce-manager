@@ -10,6 +10,7 @@ import Admin from './pages/Admin'
 import Teams from './pages/Teams'
 import Resources from './pages/Resources'
 import CreateBuilding from './pages/ResourcesBuildingCreate'
+import EditBuilding from './pages/ResourcesBuildingEdit'
 import CreateRoom from './pages/ResourcesRoomCreate'
 import CreateDesk from './pages/ResourcesDeskCreate'
 import EditDesk from './pages/ResourcesDeskEdit'
@@ -36,6 +37,7 @@ function App()
         <Route path="/bookings-desk-edit" exact element={<BookingsDeskEdit/>} />
         <Route path="/resources" exact element={<Resources/>} />
         <Route path="/building" exact element={<CreateBuilding/>} />
+        <Route path="/building-edit" exact element={<EditBuilding/>} />
         <Route path="/room" exact element={<CreateRoom/>} />
         <Route path="/desk" exact element={<CreateDesk/>} />
         <Route path="/resources-desk-edit" exact element={<EditDesk/>} />

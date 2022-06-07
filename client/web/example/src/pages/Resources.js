@@ -8,7 +8,7 @@ import ResourceMeetingRoom from '../components/Resource/ResourceMeetingRoom';
 const Resources = () =>
 {
   const [buildings, SetBuildings] = useState([])
-  const [currBuilidng, SetCurrBuilding] = useState("")
+  const [currBuilding, SetCurrBuilding] = useState("")
   const [rooms, SetRooms] = useState([])
   const [currRoom, SetCurrRoom] = useState("")
   const [resources, SetResources] = useState([])
@@ -62,11 +62,19 @@ const Resources = () =>
     window.location.assign("./building");
   }
 
+  let EditBuilding = async (e) =>
+    {
+        e.preventDefault();
+        window.sessionStorage.setItem("BuildingID", currBuilding);
+        window.location.assign("./building-edit");
+    }
+
+
   const AddRoom = () =>
   {
-    if(currBuilidng !== "")
+    if(currBuilding !== "")
     {
-      window.sessionStorage.setItem("BuildingID", currBuilidng);
+      window.sessionStorage.setItem("BuildingID", currBuilding);
       window.location.assign("./room");
     }
     else
@@ -126,7 +134,7 @@ const Resources = () =>
             </select>
 
             <Button className='button-resource' variant='primary' onClick={AddBuilding}>Add Building</Button>
-            <Button className='button-resource' variant='primary' onClick={AddBuilding}>Edit Building</Button>
+            <Button className='button-resource' variant='primary' onClick={EditBuilding}>Edit Building</Button>
           </div>
 
           <div className='room-container'>
