@@ -2,14 +2,16 @@ import React from 'react'
 import { MdEdit, MdDelete } from 'react-icons/md'
 import { MdSupervisorAccount } from 'react-icons/md'
 
-const ResourceMeetingRoom = ({id, name, location}) => {
+const ResourceMeetingRoom = ({id, name, location, capacity, roomId}) => {
 
     let EditResource = async (e) =>
     {
         e.preventDefault();
-        window.sessionStorage.setItem("MeetingRoomId", id);
+        window.sessionStorage.setItem("MeetingRoomID", id);
         window.sessionStorage.setItem("MeetingRoomName", name);
         window.sessionStorage.setItem("MeetingRoomLocation", location);
+        window.sessionStorage.setItem("MeetingRoomCapacity", capacity);
+        window.sessionStorage.setItem("RoomID", roomId);
         window.location.assign("./resources-meeting-room-edit");
     }
 

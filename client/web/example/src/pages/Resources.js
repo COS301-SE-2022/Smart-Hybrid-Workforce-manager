@@ -150,7 +150,7 @@ const Resources = () =>
             {
               if (resource.resource_type == "DESK")
                 return <ResourceDesk id={resource.id} name={resource.name} location={resource.location} roomId={resource.room_id}/>
-              return <ResourceMeetingRoom id={resource.id} name={resource.name} location={resource.location}/>
+              return <ResourceMeetingRoom id={resource.id} name={resource.name} location={resource.location} capacity={resource.capacity} roomId={resource.room_id}/>
             }
           )
           )}
