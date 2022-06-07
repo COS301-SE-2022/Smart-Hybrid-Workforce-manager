@@ -13,7 +13,7 @@ function Admin()
             path='/users' type='Users'/>
           
           <AdminCard name='Teams' description='Create and manage teams.' 
-          path='/teams' type='Teams'/>
+          path='/team' type='Teams'/>
         </div>
         <div className='admin-card-container'>
           <AdminCard name='Resources' description='Create and manage resources.' 

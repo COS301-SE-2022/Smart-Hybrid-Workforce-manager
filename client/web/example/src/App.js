@@ -8,6 +8,7 @@ import BookingsDeskEdit from './pages/BookingsDeskEdit'
 import BookingsMeeting from './pages/BookingsMeeting'
 import Admin from './pages/Admin'
 import Teams from './pages/Teams'
+import CreateTeam from './pages/TeamsCreate'
 import Resources from './pages/Resources'
 import CreateBuilding from './pages/ResourcesBuildingCreate'
 import EditBuilding from './pages/ResourcesBuildingEdit'
@@ -38,7 +39,9 @@ function App()
 
         <Route path="/users" exact element={<Users />} />
         
-        <Route path="/teams" exact element={<Teams />} />
+        <Route path="/team" exact element={<Teams />} />
+        <Route path="/team-create" exact element={<CreateTeam />} />
+
         <Route path="/bookings-desk-edit" exact element={<BookingsDeskEdit/>} />
         <Route path="/resources" exact element={<Resources/>} />
         <Route path="/building" exact element={<CreateBuilding/>} />
@@ -50,7 +53,7 @@ function App()
         <Route path="/resources-meeting-room-edit" exact element={<EditMeetingRoom/>} />
         <Route path="/meetingroom" exact element={<CreateMeetingRoom />} />
         <Route path="/profile" exact element={<Profile />} />
-        
+
         <Route path="/role" exact element={<Roles/>} />
         <Route path="/role-create" exact element={<CreateRole/>} />
         <Route path="/role-edit" exact element={<EditRole/>} />
