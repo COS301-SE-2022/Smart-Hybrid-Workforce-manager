@@ -38,7 +38,10 @@ const Resources = () =>
         }).then((res) => res.json()).then(data => 
           {
             SetRooms(data);
+            document.getElementById("RoomDefault").selected = true;
+            SetCurrRoom("");
             SetCurrBuilding(e.target.value);
+            SetResources(new Array());
           });
   }
 
@@ -119,9 +122,14 @@ const Resources = () =>
   //Using useEffect hook. This will send the POST request once the component is mounted
   useEffect(() =>
   {
-    FetchBuildings()
+    FetchBuildings();
+    document.getElementById("RoomDefault").selected = true;
+    document.getElementById("BuildingDefault").selected = true;
     window.sessionStorage.removeItem("BuildingID");
     window.sessionStorage.removeItem("RoomID");
+    window.sessionStorage.removeItem("DeskID");
+    window.sessionStorage.removeItem("DeskLocation");
+    window.sessionStorage.removeItem("DeskName");
   }, [])
   
 
@@ -132,7 +140,7 @@ const Resources = () =>
         <div className='combo-grid'>
           <div className='building-container'>
             <select className='combo-box' name='building' onChange={UpdateRooms.bind(this)}>
-              <option value='' disabled selected>--Select the building--</option>
+              <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
               {buildings.length > 0 && (
                 buildings.map(building => (
                   <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
@@ -146,7 +154,7 @@ const Resources = () =>
 
           <div className='room-container'>
             <select className='combo-box' name='room' onChange={UpdateResources.bind(this)}>
-              <option value='' disabled selected>--Select the room--</option>
+              <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
               {rooms.length > 0 && (
                 rooms.map(room => (
                   <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>

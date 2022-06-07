@@ -1,9 +1,9 @@
-import React from 'react'
+import { useEffect } from 'react'
 import { MdEdit, MdDelete } from 'react-icons/md'
 import { MdPermIdentity } from 'react-icons/md'
 
-const RoleListItem = ({id, name, color}) => {
-
+const RoleListItem = ({id, name, color}) =>
+{
     let EditRole = async (e) =>
     {
         e.preventDefault();
@@ -40,6 +40,13 @@ const RoleListItem = ({id, name, color}) => {
             }
         }
     }
+
+    useEffect(() =>
+    {
+        window.sessionStorage.removeItem("RoleID");
+        window.sessionStorage.removeItem("RoleName");
+        window.sessionStorage.removeItem("RoleColor");
+    }, [])
 
     return (
         <div>
