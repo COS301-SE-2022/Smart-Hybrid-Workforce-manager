@@ -451,6 +451,12 @@
     margin-left: 4vw;
 }
 
+.button-resource-container
+{
+    margin-top: 2vh;
+    margin-left: 38vw;
+}
+
 .button-resource
 {
     margin-left: 1vw;
@@ -471,7 +477,33 @@
     font-size: 2vh;
 }
 
+.button-resource-meeting
+{
+    margin-left: 1vw;
+
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+
+    width: 12vw;
+
+    background-color: #09A4FB;
+    color: white;
+
+    border-style: none;
+    border-radius: 1.3vh;
+
+    font-size: 2vh;
+}
+
 .button-resource:hover
+{
+    cursor: pointer;
+    background-color: #03639b;
+}
+
+.button-resource-meeting:hover
 {
     cursor: pointer;
     background-color: #03639b;
@@ -514,10 +546,11 @@
     margin-right: 1vw;
     padding-top: 1.5vh;
 
-    height: 10vh;
+    height: 11vh;
     width: 12vw;
     border-radius: 1vh;
     background-color: #919191;
+    color: white;
     text-align: center;
 
     animation: fadeIn ease 3s;
@@ -531,7 +564,7 @@
 
     display: grid;
     grid-template-columns: 6vw 6vw;
-    grid-template-rows: 10vh;
+    grid-template-rows: 11vh;
     grid-template-areas: "edit""delete";
 
     border-radius: 1vh;
@@ -623,11 +656,6 @@
     color: white;
     display: float;
     text-align: center;
-}
-
-.button-resource-container {
-    margin-top: 2vh;
-    margin-left: 42.5vw;
 }
 
 .admin-card-container {

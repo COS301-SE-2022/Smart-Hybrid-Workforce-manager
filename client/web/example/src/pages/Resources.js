@@ -181,7 +181,7 @@ const Resources = () =>
 
         <div className='button-resource-container'>
           <Button className='button-resource' variant='primary' onClick={AddDesk}>Add Desk</Button>
-          <Button className='button-resource' variant='primary' onClick={AddMeetingRoom}>Add Meeting Room</Button>
+          <Button className='button-resource-meeting' variant='primary' onClick={AddMeetingRoom}>Add Meeting Room</Button>
         </div>
 
       </div>  
