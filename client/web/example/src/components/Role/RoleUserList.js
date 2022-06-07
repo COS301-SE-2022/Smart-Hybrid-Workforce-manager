@@ -5,23 +5,33 @@ const RoleUserList = ({id}) =>
   const [roleName, SetRoleName] = useState("")
 
 //POST request
-  const FetchRoleInformation = () =>
-  {
-    fetch("http://localhost:8100/api/role/information", 
-        {
-          method: "POST",
-          body: JSON.stringify({
-            id:id
-          })
-        }).then((res) => res.json()).then(data => 
-          {
-            SetRoleName(data[0].role_name);
-          });
-    }
+    /*const FetchRoleInformation = () =>
+    {
+        fetch("http://localhost:8100/api/role/information", 
+            {
+            method: "POST",
+            body: JSON.stringify({
+                id:id
+            })
+            }).then((res) => res.json()).then(data => 
+            {
+                SetRoleName(data[0].role_name);
+            });
+    }*/
     
     useEffect(() =>
     {
-        FetchRoleInformation();
+        fetch("http://localhost:8100/api/role/information", 
+        {
+        method: "POST",
+        body: JSON.stringify({
+            id: this.id
+        })
+        }).then((res) => res.json()).then(data => 
+        {
+            SetRoleName(data[0].role_name);
+        });
+        //FetchRoleInformation();
     }, [])
 
     return (
