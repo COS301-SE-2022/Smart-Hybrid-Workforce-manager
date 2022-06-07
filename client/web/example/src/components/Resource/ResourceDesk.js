@@ -2,12 +2,15 @@ import React from 'react'
 import { MdEdit, MdDelete } from 'react-icons/md'
 import { MdDesktopWindows } from 'react-icons/md'
 
-const ResourceDesk = ({id, name}) => {
+const ResourceDesk = ({id, name, location, roomId}) => {
 
     let EditResource = async (e) =>
     {
         e.preventDefault();
-        window.sessionStorage.setItem("ResourceId", id);
+        window.sessionStorage.setItem("DeskID", id);
+        window.sessionStorage.setItem("DeskName", name);
+        window.sessionStorage.setItem("DeskLocation", location);
+        window.sessionStorage.setItem("RoomID", roomId);
         window.location.assign("./resources-desk-edit");
     }
 

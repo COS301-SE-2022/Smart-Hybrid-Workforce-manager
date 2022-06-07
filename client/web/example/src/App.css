@@ -655,6 +655,7 @@
     transform: scale(1.05);
     cursor: pointer;
     transition: 0.5s ease-in-out;
+    background-color: #45bbff;
 }
 
 .admin-icon {

@@ -49,7 +49,7 @@ const RoleListItem = ({id, name}) => {
         <div>
             <div className="resource">
                 <div className='resource-container'>
-                    <div className='resource-name'>{'Role ' + name}</div>
+                    <div className='resource-name'>{name}</div>
                     <MdPermIdentity className='resource-icon' size={50} />
                 </div>                
                 <div className='resource-popup'>

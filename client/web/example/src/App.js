@@ -12,6 +12,7 @@ import Resources from './pages/Resources'
 import CreateBuilding from './pages/CreateBuilding'
 import CreateRoom from './pages/CreateRoom'
 import CreateDesk from './pages/CreateDesk'
+import EditDesk from './pages/ResourcesDeskEdit'
 import CreateMeetingRoom from './pages/CreateMeetingRoom'
 import Profile from './pages/Profile'
 import Users from './pages/Users'
@@ -36,6 +37,7 @@ function App()
         <Route path="/building" exact element={<CreateBuilding/>} />
         <Route path="/room" exact element={<CreateRoom/>} />
         <Route path="/desk" exact element={<CreateDesk/>} />
+        <Route path="/resources-desk-edit" exact element={<EditDesk/>} />
         <Route path="/meetingroom" exact element={<CreateMeetingRoom />} />
         <Route path="/roles" exact element={<Roles/>} />
         <Route path="/profile" exact element={<Profile/>} />

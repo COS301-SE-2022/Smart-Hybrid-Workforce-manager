@@ -7,23 +7,23 @@ function Admin()
   return (
     <div className='page-container'>
       <div className='content'>
-        <Navbar />
+        <Navbar/>
         <div className='admin-card-container'>
           <AdminCard name='Users' description='Create and manage users.' 
-            path='/users' type='Users' />
+            path='/users' type='Users'/>
           
           <AdminCard name='Teams' description='Create and manage teams.' 
           path='/teams' type='Teams'/>
         </div>
         <div className='admin-card-container'>
           <AdminCard name='Resources' description='Create and manage resources.' 
-            path='/resources' type='Resources' />
+            path='/resources' type='Resources'/>
           
           <AdminCard name='Roles' description='Create and manage roles.' 
           path='/roles' type='Roles'/>
         </div>
       </div>  
-      <Footer />
+      <Footer/>
     </div>
   )
 }

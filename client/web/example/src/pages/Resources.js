@@ -149,8 +149,8 @@ const Resources = () =>
             resources.map(resource => 
             {
               if (resource.resource_type == "DESK")
-                return <ResourceDesk id={resource.id} name={resource.name}/>
-              return <ResourceMeetingRoom id={resource.id} name={resource.name}/>
+                return <ResourceDesk id={resource.id} name={resource.name} location={resource.location} roomId={resource.room_id}/>
+              return <ResourceMeetingRoom id={resource.id} name={resource.name} location={resource.location}/>
             }
           )
           )}
