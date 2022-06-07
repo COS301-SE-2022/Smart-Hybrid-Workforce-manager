@@ -63,12 +63,11 @@ const Resources = () =>
   }
 
   let EditBuilding = async (e) =>
-    {
-        e.preventDefault();
-        window.sessionStorage.setItem("BuildingID", currBuilding);
-        window.location.assign("./building-edit");
-    }
-
+  {
+      e.preventDefault();
+      window.sessionStorage.setItem("BuildingID", currBuilding);
+      window.location.assign("./building-edit");
+  }
 
   const AddRoom = () =>
   {
@@ -81,6 +80,14 @@ const Resources = () =>
     {
       alert("Please select a building");
     }
+  }
+
+  let EditRoom = async (e) =>
+  {
+      e.preventDefault();
+      window.sessionStorage.setItem("RoomID", currRoom);
+      window.sessionStorage.setItem("BuildingID", currBuilding);
+      window.location.assign("./room-edit");
   }
 
   const AddDesk = () =>
@@ -148,7 +155,7 @@ const Resources = () =>
             </select>
 
             <Button className='button-resource' variant='primary' onClick={AddRoom}>Add Room</Button>
-            <Button className='button-resource' variant='primary' onClick={AddRoom}>Edit Room</Button>
+            <Button className='button-resource' variant='primary' onClick={EditRoom}>Edit Room</Button>
           </div>
         </div>
 
