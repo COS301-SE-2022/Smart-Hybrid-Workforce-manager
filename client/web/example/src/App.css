@@ -704,3 +704,101 @@
         opacity: 1;
     }
 }
+
+.user-container {
+    display: float;
+
+    margin-left: 30vw;
+    margin-top: 10vh;
+}
+
+.user {
+    position: relative;
+    display: grid;
+    grid-template-columns: 20vw 20vw;
+    grid-template-rows: 20vh 15vh 15vh 10vh ;
+    grid-template-areas: "image""text";
+
+    width: 40vw;
+    height: 60vh;
+
+    margin-left: 2.5vw;
+    margin-right: 2.5vw;
+    margin-top: 10vh;
+
+    border-radius: 4vh;
+    background: white;
+    box-shadow: 1vh 1vh 4vh rgba(0, 0, 0, 0.9);
+    text-align: left;
+
+    animation: fadeIn ease 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+.user-image {
+    grid-area: 'image';
+    background: linear-gradient(#fff0 0%, #fff0 70%, #1d1d1d 100%), url("https://media.istockphoto.com/photos/the-setup-for-success-picture-id1165916723?k=20&m=1165916723&s=612x612&w=0&h=ASBd76yDYvooY6s-Bck44cvzRcYOqkQBAzvEnKUUivw=");
+    background-size: cover;
+    border-radius: 50vh;
+
+    margin-left: 2.5vw;
+    margin-top: 2.5vh;
+
+    width: 10vw;
+    height: 10vw;
+}
+
+.user-text {
+    grid-area: 'text';
+
+    margin-top: 5.5vh;
+    margin-top: 5.5vh;
+
+    text-align: left;
+}
+
+.user-text-name {
+    font-size: 5vh;
+}
+
+.user-text-email {
+    font-size: 1.5vh;
+}
+
+.user-roles {
+    grid-column: span 2;
+    margin-top: 5vh;
+}
+
+.user-teams {
+    grid-column: span 2;
+    margin-top: 5vh;
+}
+
+.button-user-profile {
+    margin-left: 1.5vw;
+    margin-bottom: 1vw;
+
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+
+    grid-column: span 1;
+
+    width: 17.5vw;
+
+    background-color: #09A4FB;
+    color: white;
+
+    border-style: none;
+    border-radius: 1.3vh;
+
+    font-size: 2vh;
+}
+
+.button-user-profile:hover {
+    cursor: pointer;
+    background-color: #03639b;
+}

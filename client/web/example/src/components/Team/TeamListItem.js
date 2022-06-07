@@ -2,7 +2,7 @@ import React from 'react'
 import { MdEdit, MdDelete } from 'react-icons/md'
 import { MdSupervisedUserCircle } from 'react-icons/md'
 
-const TeamListItem = ({id, name, description, capacity}) => {
+const TeamListItem = ({id, name, description, capacity, picture}) => {
 
     let EditTeam = async (e) =>
     {
@@ -11,6 +11,7 @@ const TeamListItem = ({id, name, description, capacity}) => {
         window.sessionStorage.setItem("TeamName", name);
         window.sessionStorage.setItem("TeamDescription", description);
         window.sessionStorage.setItem("TeamCapacity", capacity);
+        window.sessionStorage.setItem("TeamPicture", picture);
         window.location.assign("./team-edit");
     }
 

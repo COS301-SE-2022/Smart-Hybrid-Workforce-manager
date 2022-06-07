@@ -232,6 +232,14 @@ SELECT permission.user_store(
 	null::uuid -- All users
 );
 
+SELECT permission.user_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'VIEW'::permission.type,
+	'USER'::permission.category,
+	'ROLE'::permission.tenant,
+	null::uuid -- John Doe
+);
+
 ------------ Team Permissions
 SELECT permission.user_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
@@ -275,11 +283,20 @@ SELECT permission.user_store(
 
 SELECT permission.user_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'VIEW'::permission.type,
+	'USER'::permission.category,
+	'TEAM'::permission.tenant,
+	null::uuid -- John Doe
+);
+
+SELECT permission.user_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
 	'DELETE'::permission.type,
 	'TEAM'::permission.category,
 	'USER'::permission.tenant,
 	null::uuid -- All users
 );
+
 
 SELECT permission.user_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
