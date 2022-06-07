@@ -20,6 +20,8 @@ import CreateMeetingRoom from './pages/ResourcesMeetingRoomCreate'
 import Profile from './pages/Profile'
 import Users from './pages/Users'
 import Roles from './pages/Roles'
+import CreateRole from './pages/RolesCreate'
+import EditRole from './pages/RolesEdit'
 
 function App()
 {
@@ -45,8 +47,11 @@ function App()
         <Route path="/resources-desk-edit" exact element={<EditDesk/>} />
         <Route path="/resources-meeting-room-edit" exact element={<EditMeetingRoom/>} />
         <Route path="/meetingroom" exact element={<CreateMeetingRoom />} />
-        <Route path="/roles" exact element={<Roles/>} />
-        <Route path="/profile" exact element={<Profile/>} />
+        <Route path="/profile" exact element={<Profile />} />
+        
+        <Route path="/role" exact element={<Roles/>} />
+        <Route path="/role-create" exact element={<CreateRole/>} />
+        <Route path="/role-edit" exact element={<EditRole/>} />
       </Routes>
     </Router>
   );

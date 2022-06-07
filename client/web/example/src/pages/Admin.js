@@ -20,7 +20,7 @@ function Admin()
             path='/resources' type='Resources'/>
           
           <AdminCard name='Roles' description='Create and manage roles.' 
-          path='/roles' type='Roles'/>
+          path='/role' type='Roles'/>
         </div>
       </div>  
       <Footer/>

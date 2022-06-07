@@ -2,12 +2,14 @@ import React from 'react'
 import { MdEdit, MdDelete } from 'react-icons/md'
 import { MdPermIdentity } from 'react-icons/md'
 
-const RoleListItem = ({id, name}) => {
+const RoleListItem = ({id, name, color}) => {
 
     let EditRole = async (e) =>
     {
         e.preventDefault();
-        window.sessionStorage.setItem("RoleId", id);
+        window.sessionStorage.setItem("RoleID", id);
+        window.sessionStorage.setItem("RoleName", name);
+        window.sessionStorage.setItem("RoleColor", color);
         window.location.assign("./role-edit");
     }
 
@@ -29,7 +31,7 @@ const RoleListItem = ({id, name}) => {
                 if(res.status === 200)
                 {
                     alert("Role Successfully Deleted!");
-                    window.location.assign("./roles");
+                    window.location.assign("./role");
                 }
             }
             catch (err)
@@ -37,12 +39,6 @@ const RoleListItem = ({id, name}) => {
                 console.log(err);    
             }
         }
-    }
-
-    const AddRole = () =>
-    {
-        window.sessionStorage.setItem("RoleID", currRoom);
-        window.location.assign("./add-role");
     }
 
     return (

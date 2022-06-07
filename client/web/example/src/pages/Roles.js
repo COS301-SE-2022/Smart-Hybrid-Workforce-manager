@@ -1,12 +1,12 @@
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
+import Button from 'react-bootstrap/Button'
 import { useState, useEffect } from 'react';
 import RoleListItem from '../components/Role/RoleListItem';
 
 function Roles()
 {
   const [roles, SetRoles] = useState([])
-  const [currRole, SetCurrRole] = useState("")
 
   //POST request
   const FetchRoles = () =>
@@ -20,6 +20,11 @@ function Roles()
           {
             SetRoles(data);
           });
+  }
+
+  const AddRole = () =>
+  {
+    window.location.assign("./role-create");
   }
 
   //Using useEffect hook. This will send the POST request once the component is mounted
@@ -40,6 +45,10 @@ function Roles()
             }
           )
           )}
+        </div>
+
+        <div className='button-resource-container'>
+          <Button className='button-resource' variant='primary' onClick={AddRole}>Add Role</Button>
         </div>
       </div>  
       <Footer />
