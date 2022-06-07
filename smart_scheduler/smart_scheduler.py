@@ -3,9 +3,8 @@ import docker
 import requests
 import json 
 
-# gets a list of all bookings and removes those that are already booked. Ideally this step would be converted to an API call in future to avoid looping through the entire array
 def init():
-    response = requests.post("http://arche-api:8080/api/booking/information", data='{}')
+    response = requests.post("http://arche-api:8080/api/booking/information", data='{"booked":false}')
     global bookingsList
     bookingsList = json.loads(response.content)
     bookingsList = [booking for booking in bookingsList if not booking['booked']]
