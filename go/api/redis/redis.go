@@ -1,17 +1,19 @@
-package security
+package redis
 
 import (
 	"lib/logger"
-
 	"context"
-
 	"github.com/go-redis/redis/v8"
 )
+////////////////////////////////////////////////
+//Databases
+// 0 : testing
+// 1 : user session token
 
 ////////////////////////////////////////////////
 //Structures and Variables
 
-//Redis client --Singleton design pattern-- so use GetRedisClient function to get
+//Redis client
 var redisClient *redis.Client
 
 //context of the program for instance of redis running
@@ -44,3 +46,4 @@ func GetRedisClient() redis.Client {
 	_ = val
 	return *redisClient
 }
+
