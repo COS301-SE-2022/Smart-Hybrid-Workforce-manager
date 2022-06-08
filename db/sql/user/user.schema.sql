@@ -1,6 +1,9 @@
 CREATE SCHEMA IF NOT EXISTS "user";
+CREATE SCHEMA IF NOT EXISTS parking;
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TYPE parking.type AS ENUM ('NONE', 'STANDARD', 'DISABLED');
 
 CREATE TABLE IF NOT EXISTS "user".identifier (
     id uuid DEFAULT uuid_generate_v4(),
@@ -10,6 +13,10 @@ CREATE TABLE IF NOT EXISTS "user".identifier (
     email VARCHAR(256) CHECK(email <> ''),
     picture VARCHAR(256) CHECK(picture <> ''),
     date_created TIMESTAMP WITHOUT TIME ZONE DEFAULT(now() AT TIME ZONE 'uct'),
+    parking parking.type NOT NULL,
+    office_days INTEGER NOT NULL DEFAULT 0,
+    preferred_start_time TIME WITHOUT TIME ZONE,
+    preferred_end_time TIME WITHOUT TIME ZONE,
 	
     PRIMARY KEY (id)
 );
