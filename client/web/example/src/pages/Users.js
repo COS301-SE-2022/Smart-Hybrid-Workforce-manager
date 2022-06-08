@@ -41,7 +41,7 @@ function Users()
           {users.length > 0 && (
             users.map(user => 
             {
-              return <UserListItem id={user.id} name={user.first_name + " " + user.last_name}/>
+              return <UserListItem id={user.id} name={user.first_name + " " + user.last_name} email = {user.email}/>
             }
           )
           )}
