@@ -4,7 +4,8 @@ CREATE OR REPLACE FUNCTION resource.identifier_store(
     _name VARCHAR(256),
 	_location VARCHAR(256),
 	_role_id uuid,
-	_resource_type resource.type
+	_resource_type resource.type,
+    _decorations JSON
 )
 RETURNS uuid AS 
 $$
@@ -21,9 +22,9 @@ BEGIN
         WHERE id = _id
 		RETURNING identifier.id INTO __id;
     ELSE
-    	INSERT INTO resource.identifier(id, room_id, name, location, role_id, resource_type)
-        VALUES (COALESCE(_id, uuid_generate_v4()), _room_id, _name, _location, _role_id, _resource_type)
-		RETURNING identifier.id INTO __id;
+        INSERT INTO resource.identifier(id, room_id, name, location, role_id, resource_type, decorations)
+        VALUES (COALESCE(_id, uuid_generate_v4()), _room_id, _name, _location, _role_id, _resource_type, _decorations)
+        RETURNING identifier.id INTO __id;
     END IF;
 	RETURN __id;
 END
