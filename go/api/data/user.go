@@ -102,8 +102,9 @@ func mapCredential(rows *sql.Rows) (interface{}, error) {
 //StoreIdentifier stores an identifier
 func (access *UserDA) StoreIdentifier(identifier *User) (string, error) {
 	results, err := access.access.Query(
-		`SELECT * FROM "user".identifier_store($1, $2, $3, $4, $5, $6)`, mapString,
-		identifier.Id, identifier.Identifier, identifier.FirstName, identifier.LastName, identifier.Email, identifier.Picture)
+		`SELECT * FROM "user".identifier_store($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`, mapString,
+		identifier.Id, identifier.Identifier, identifier.FirstName, identifier.LastName, identifier.Email, identifier.Picture, identifier.WorkFromHome,
+		identifier.Parking, identifier.OfficeDays, identifier.PreferredStartTime, identifier.PreferredEndTime)
 	if err != nil {
 		return "", err
 	}
