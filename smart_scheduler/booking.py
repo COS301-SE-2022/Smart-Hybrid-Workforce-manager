@@ -71,9 +71,7 @@ def parse_dict(booking: Dict[str, str | bool | None]) -> Booking:
         parsed_booking["date_created"] = datetime.strptime(
             parsed_booking["date_created"], TIME_FMT
         )
-    booking = Booking()
-    booking.booking = parsed_booking
-    return booking
+    return Booking(parsed_booking)
 
 
 # gets bookings that match at least one of the passed in filters
