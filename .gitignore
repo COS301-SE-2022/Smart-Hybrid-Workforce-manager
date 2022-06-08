@@ -2,3 +2,4 @@
 .vscode
 redis/dump.rdb
 smart_scheduler/.idea
+*.pyc
