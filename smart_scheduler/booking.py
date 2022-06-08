@@ -79,7 +79,7 @@ def parse_dict(booking: Dict[str, str | bool | None]) -> Booking:
 
 
 # gets bookings that match at least one of the passed in filters
-def get_bookings(filters: List[Booking]) -> List[Booking]:
+def fetch_bookings(filters: List[Booking]) -> List[Booking]:
     """
     This method calls the api and fetches bookings, it fetches
     all bookings matching at least one filter, as specified
@@ -103,6 +103,6 @@ if __name__ == '__main__':
     booking_filters = [Booking({"booked": False})]
     for f in booking_filters:
         print(f)
-    _bookings = get_bookings(booking_filters)
+    _bookings = fetch_bookings(booking_filters)
     for b in _bookings:
         print(b)
