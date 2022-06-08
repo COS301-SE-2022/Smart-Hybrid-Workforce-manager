@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS resource.identifier (
     role_id uuid REFERENCES role.identifier(id) ON DELETE SET NULL,
     resource_type resource.type NOT NULL,
     date_created TIMESTAMP WITHOUT TIME ZONE DEFAULT(now() AT TIME ZONE 'uct'),
+    decorations JSON NOT NULL,
 	
     PRIMARY KEY (id)
 );
