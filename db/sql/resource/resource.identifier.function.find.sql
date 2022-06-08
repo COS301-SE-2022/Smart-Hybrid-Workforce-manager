@@ -50,7 +50,7 @@ BEGIN
     AND (_location IS NULL OR i.location = _location)
     AND (_role_id IS NULL OR i.role_id = _role_id)
     AND (_resource_type IS NULL OR i.resource_type = _resource_type)
-    AND (_date_created IS NULL OR i.date_created >= _date_created);
+    AND (_date_created IS NULL OR i.date_created >= _date_created)
 
     DROP TABLE _permissions_table;
 END

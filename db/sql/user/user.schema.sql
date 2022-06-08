@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS "user".identifier (
     email VARCHAR(256) CHECK(email <> ''),
     picture VARCHAR(256) CHECK(picture <> ''),
     date_created TIMESTAMP WITHOUT TIME ZONE DEFAULT(now() AT TIME ZONE 'uct'),
+    work_from_home BOOLEAN NOT NULL DEFAULT false,
     parking parking.type NOT NULL DEFAULT 'STANDARD',
     office_days INTEGER NOT NULL DEFAULT 0,
     preferred_start_time TIME WITHOUT TIME ZONE DEFAULT NULL,
