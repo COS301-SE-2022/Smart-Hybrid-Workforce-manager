@@ -1,3 +1,6 @@
+"""
+This module contains the code relating to Bookings
+"""
 import json
 from typing import Dict, List
 from datetime import datetime
@@ -9,13 +12,12 @@ ENDPOINT_BATCH: str = 'http://arche-api:8080/api/batch-booking/information'
 
 # change in future to be a global constant
 TIME_FMT: str = '%Y-%m-%dT%H:%M:%S.%fZ'
-
-
 # TIME_FMT: str = '%Y-%m-%dT%H:%M:%S.%f%z'  # %z formats Z as being UTC+0
+
 
 class Booking:
     """
-
+    Represents a booking, encapsulates a dict
     """
     def __init__(self, booking_dict: Dict = None):
         self.booking = {
@@ -84,7 +86,7 @@ def fetch_bookings(filters: List[Booking]) -> List[Booking]:
     This method calls the api and fetches bookings, it fetches
     all bookings matching at least one filter, as specified
     per the API documentation
-    :param filters: The filters used when fetching bookings
+    :param filters: The filters used when fetching bookings`
     :return: The bookings that have been fetched
     """
     req_dict: Dict = {
