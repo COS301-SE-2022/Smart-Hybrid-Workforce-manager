@@ -8,7 +8,12 @@ SELECT "user".identifier_store(
 	'Admin', 
 	'Admin', 
 	'admin@example.com', 
-	'/picture'
+	'/picture',
+    false,
+    'STANDARD',
+    0,
+    '09:00',
+    '17:00'
 );
 
 ------------ Booking Permissions
@@ -332,6 +337,11 @@ SELECT "user".identifier_store(
 	'Doe', 
 	'john.doe@gmail.com', 
 	'/johndoe.png'
+    false,
+    'STANDARD',
+    0,
+    '09:00',
+    '17:00'
 );
 
 -- User 02
@@ -342,6 +352,11 @@ SELECT "user".identifier_store(
 	'Doe', 
 	'jane.doe@icloud.com', 
 	'/janedoe.jpeg'
+    false,
+    'STANDARD',
+    0,
+    '09:00',
+    '17:00'
 );
 
 -- User 03
@@ -352,6 +367,11 @@ SELECT "user".identifier_store(
 	'Harrington', 
 	'steve@harrington.com', 
 	'/steve.png'
+    false,
+    'STANDARD',
+    0,
+    '09:00',
+    '17:00'
 );
 
 ----------------------------------
