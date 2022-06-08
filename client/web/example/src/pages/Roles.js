@@ -2,35 +2,35 @@ import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import Button from 'react-bootstrap/Button'
 import { useState, useEffect } from 'react';
-import TeamListItem from '../components/Team/TeamListItem';
+import RoleListItem from '../components/Role/RoleListItem';
 
-function Teams()
+function Roles()
 {
-  const [teams, SetTeams] = useState([])
+  const [roles, SetRoles] = useState([])
 
   //POST request
-  const FetchTeams = () =>
+  const FetchRoles = () =>
   {
-    fetch("http://localhost:8100/api/team/information", 
+    fetch("http://localhost:8100/api/role/information", 
         {
           method: "POST",
           body: JSON.stringify({
           })
         }).then((res) => res.json()).then(data => 
           {
-            SetTeams(data);
+            SetRoles(data);
           });
   }
 
-  const AddTeam = () =>
+  const AddRole = () =>
   {
-    window.location.assign("./team-create");
+    window.location.assign("./role-create");
   }
 
   //Using useEffect hook. This will send the POST request once the component is mounted
   useEffect(() =>
   {
-    FetchTeams()
+    FetchRoles()
   }, [])
 
   return (
@@ -38,17 +38,17 @@ function Teams()
       <div className='content'>
         <Navbar />
         <div className='resources-map'>
-          {teams.length > 0 && (
-            teams.map(team => 
+          {roles.length > 0 && (
+            roles.map(role => 
             {
-              return <TeamListItem id={team.id} name={team.name} description={team.description} capacity={team.capacity} picture={team.picture}/>
+              return <RoleListItem id={role.id} name={'Role ' + role.role_name}/>
             }
           )
           )}
         </div>
 
         <div className='button-resource-container'>
-          <Button className='button-resource' variant='primary' onClick={AddTeam}>Add Team</Button>
+          <Button className='button-resource' variant='primary' onClick={AddRole}>Add Role</Button>
         </div>
       </div>  
       <Footer />
@@ -56,4 +56,4 @@ function Teams()
   )
 }
 
-export default Teams
+export default Roles
