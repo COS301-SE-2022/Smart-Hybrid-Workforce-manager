@@ -1,7 +1,8 @@
 import unittest
+import json
 from datetime import datetime
 
-import booking
+import booking as _booking
 
 
 class Test(unittest.TestCase):
@@ -26,8 +27,20 @@ class Test(unittest.TestCase):
             "booked": False,
             "date_created": datetime(2022, 6, 8, 11, 7, 56, 123456)
         }
-        result = booking.parse_dict(booking1)
-        self.assertEqual(result, booking_parsed)
+        result = _booking.parse_dict(booking1)
+        self.assertEqual(result.booking, booking_parsed)
+
+    def test_booking_encoder(self):
+        year, month, day, hour, minutes, seconds, mu_seconds = 2022, 12, 11, 10, 23, 34, 123456
+        id_str = "123-123"
+        booking = _booking.Booking()
+        booking.booking["id"] = id_str  # no need to test with real id
+        booking.booking["start"] = datetime(year, month, day, hour, minutes, seconds, mu_seconds)
+        json_str = json.dumps(booking, cls=_booking.BookingEncoder)
+        expect_date = f'{year}-{month}-{day}T{hour}:{minutes}:{seconds}.{123456}Z'
+        self.assertEqual(json_str, f'{{"id": "{id_str}", "user_id": null, "resource_type": null, '
+                                   f'"resource_preference_id": null, "start": "{expect_date}", '
+                                   f'"end": null, "booked": null, "date_created": null}}')
 
 
 if __name__ == '__main__':
