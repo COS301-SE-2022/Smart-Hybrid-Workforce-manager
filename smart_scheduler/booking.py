@@ -1,8 +1,9 @@
 from typing import Dict
-from datetime import datetime
+from datetime import datetime, timezone
 
 # change in future to be a global constant
-TIME_FMT: str = '%Y-%m-%dT%H:%M:%S.%f%z'  # %z formats Z as being UTC+0
+TIME_FMT: str = '%Y-%m-%dT%H:%M:%S.%fZ'
+# TIME_FMT: str = '%Y-%m-%dT%H:%M:%S.%f%z'  # %z formats Z as being UTC+0
 
 
 class Booking:
@@ -10,7 +11,7 @@ class Booking:
     end_key: str = 'end'
     date_created_key = 'date_created'
 
-    def __init__(self, booking_dict: Dict[str]):
+    def __init__(self, booking_dict: Dict[str,  str | bool | None | datetime]):
         self.booking = booking_dict
 
 
