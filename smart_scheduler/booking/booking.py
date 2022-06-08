@@ -1,0 +1,2 @@
+class Booking:
+    pass
