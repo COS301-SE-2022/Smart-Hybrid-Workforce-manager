@@ -15,7 +15,8 @@ RETURNS TABLE (
 	location VARCHAR(256),
 	role_id uuid,
 	resource_type resource.type,
-    date_created TIMESTAMP
+    date_created TIMESTAMP,
+    decorations JSON
 ) AS 
 $$
 BEGIN
@@ -41,7 +42,7 @@ BEGIN
         AND permission_category = 'RESOURCE'::permission.category
         AND permission_tenant = 'IDENTIFIER'::permission.tenant
     )
-    SELECT i.id, i.room_id, i.name, i.location, i.role_id, i.resource_type, i.date_created
+    SELECT i.id, i.room_id, i.name, i.location, i.role_id, i.resource_type, i.date_created, i.decorations
     FROM resource.identifier as i
     WHERE (EXISTS(SELECT 1 FROM permitted_identifiers WHERE permission_tenant_id is null) OR i.id = ANY(SELECT * FROM permitted_identifiers))
     AND (_id IS NULL OR i.id = _id)
@@ -50,7 +51,7 @@ BEGIN
     AND (_location IS NULL OR i.location = _location)
     AND (_role_id IS NULL OR i.role_id = _role_id)
     AND (_resource_type IS NULL OR i.resource_type = _resource_type)
-    AND (_date_created IS NULL OR i.date_created >= _date_created)
+    AND (_date_created IS NULL OR i.date_created >= _date_created);
 
     DROP TABLE _permissions_table;
 END

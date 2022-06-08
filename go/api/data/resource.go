@@ -127,8 +127,8 @@ func mapResource(rows *sql.Rows) (interface{}, error) {
 		&identifier.Location,
 		&identifier.RoleId,
 		&identifier.ResourceType,
-		&identifier.Decorations,
 		&identifier.DateCreated,
+		&identifier.Decorations,
 	)
 	if err != nil {
 		return nil, err
