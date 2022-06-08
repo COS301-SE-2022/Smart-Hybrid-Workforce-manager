@@ -336,7 +336,7 @@ SELECT "user".identifier_store(
 	'John', 
 	'Doe', 
 	'john.doe@gmail.com', 
-	'/johndoe.png'
+	'/johndoe.png',
     false,
     'STANDARD',
     0,
@@ -351,7 +351,7 @@ SELECT "user".identifier_store(
 	'Jane', 
 	'Doe', 
 	'jane.doe@icloud.com', 
-	'/janedoe.jpeg'
+	'/janedoe.jpeg',
     false,
     'STANDARD',
     0,
@@ -366,7 +366,7 @@ SELECT "user".identifier_store(
 	'Steve', 
 	'Harrington', 
 	'steve@harrington.com', 
-	'/steve.png'
+	'/steve.png',
     false,
     'STANDARD',
     0,
@@ -452,7 +452,8 @@ SELECT resource.identifier_store(
 	'115', 
 	'B2', 
 	null::uuid, 
-	'DESK'::resource.type
+	'DESK'::resource.type,
+	'{}'
 );
 
 ----------------------------------
