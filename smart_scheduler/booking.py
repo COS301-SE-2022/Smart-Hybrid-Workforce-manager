@@ -37,10 +37,6 @@ class Booking:
     def __str__(self):
         return str(self.booking)
 
-    start_key: str = 'start'
-    end_key: str = 'end'
-    date_created_key = 'date_created'
-
 
 class BookingEncoder(json.JSONEncoder):
     """
