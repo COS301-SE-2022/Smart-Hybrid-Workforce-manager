@@ -1,54 +1,53 @@
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
-import Button from 'react-bootstrap/Button'
 import { useState, useEffect } from 'react';
-import TeamListItem from '../components/Team/TeamListItem';
+import UserListItem from '../components/Profile/UserListItem';
+import Button from 'react-bootstrap/Button'
 
-function Teams()
+function Users()
 {
-  const [teams, SetTeams] = useState([])
+  const [users, setUsers] = useState([])
 
   //POST request
-  const FetchTeams = () =>
+  const FetchUsers = () =>
   {
-    fetch("http://localhost:8100/api/team/information", 
+    fetch("http://localhost:8100/api/user/information", 
         {
           method: "POST",
           body: JSON.stringify({
           })
         }).then((res) => res.json()).then(data => 
           {
-            SetTeams(data);
+            setUsers(data);
           });
-  }
-
-  const AddTeam = () =>
-  {
-    window.location.assign("./team-create");
   }
 
   //Using useEffect hook. This will send the POST request once the component is mounted
   useEffect(() =>
   {
-    FetchTeams()
+    FetchUsers()
   }, [])
+
+  const AddUser = () =>
+  {
+    window.location.assign("./signup");
+  }
 
   return (
     <div className='page-container'>
       <div className='content'>
         <Navbar />
         <div className='resources-map'>
-          {teams.length > 0 && (
-            teams.map(team => 
+          {users.length > 0 && (
+            users.map(user => 
             {
-              return <TeamListItem id={team.id} name={team.name} description={team.description} capacity={team.capacity} picture={team.picture}/>
+              return <UserListItem id={user.id} name={user.first_name + " " + user.last_name}/>
             }
           )
           )}
         </div>
-
         <div className='button-resource-container'>
-          <Button className='button-resource' variant='primary' onClick={AddTeam}>Add Team</Button>
+          <Button className='button-resource' variant='primary' onClick={AddUser}>Add User</Button>
         </div>
       </div>  
       <Footer />
@@ -56,4 +55,4 @@ function Teams()
   )
 }
 
-export default Teams
+export default Users

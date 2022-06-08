@@ -1,13 +1,14 @@
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { useState, useEffect } from 'react';
-import { MdDesktopWindows } from 'react-icons/md'
 import Button from 'react-bootstrap/Button'
+import ResourceDesk from '../components/Resource/ResourceDesk';
+import ResourceMeetingRoom from '../components/Resource/ResourceMeetingRoom';
 
 const Resources = () =>
 {
   const [buildings, SetBuildings] = useState([])
-  const [currBuilidng, SetCurrBuilding] = useState("")
+  const [currBuilding, SetCurrBuilding] = useState("")
   const [rooms, SetRooms] = useState([])
   const [currRoom, SetCurrRoom] = useState("")
   const [resources, SetResources] = useState([])
@@ -37,7 +38,10 @@ const Resources = () =>
         }).then((res) => res.json()).then(data => 
           {
             SetRooms(data);
+            document.getElementById("RoomDefault").selected = true;
+            SetCurrRoom("");
             SetCurrBuilding(e.target.value);
+            SetResources([]);
           });
   }
 
@@ -61,17 +65,32 @@ const Resources = () =>
     window.location.assign("./building");
   }
 
+  let EditBuilding = async (e) =>
+  {
+      e.preventDefault();
+      window.sessionStorage.setItem("BuildingID", currBuilding);
+      window.location.assign("./building-edit");
+  }
+
   const AddRoom = () =>
   {
-    if(currBuilidng !== "")
+    if(currBuilding !== "")
     {
-      window.sessionStorage.setItem("BuildingID", currBuilidng);
+      window.sessionStorage.setItem("BuildingID", currBuilding);
       window.location.assign("./room");
     }
     else
     {
       alert("Please select a building");
     }
+  }
+
+  let EditRoom = async (e) =>
+  {
+      e.preventDefault();
+      window.sessionStorage.setItem("RoomID", currRoom);
+      window.sessionStorage.setItem("BuildingID", currBuilding);
+      window.location.assign("./room-edit");
   }
 
   const AddDesk = () =>
@@ -87,12 +106,30 @@ const Resources = () =>
     }
   }
 
+  const AddMeetingRoom = () =>
+  {
+    if(currRoom !== "")
+    {
+      window.sessionStorage.setItem("RoomID", currRoom);
+      window.location.assign("./meetingroom");
+    }
+    else
+    {
+      alert("Please select a room");
+    }
+  }
+
   //Using useEffect hook. This will send the POST request once the component is mounted
   useEffect(() =>
   {
-    FetchBuildings()
+    FetchBuildings();
+    document.getElementById("RoomDefault").selected = true;
+    document.getElementById("BuildingDefault").selected = true;
     window.sessionStorage.removeItem("BuildingID");
     window.sessionStorage.removeItem("RoomID");
+    window.sessionStorage.removeItem("DeskID");
+    window.sessionStorage.removeItem("DeskLocation");
+    window.sessionStorage.removeItem("DeskName");
   }, [])
   
 
@@ -103,7 +140,7 @@ const Resources = () =>
         <div className='combo-grid'>
           <div className='building-container'>
             <select className='combo-box' name='building' onChange={UpdateRooms.bind(this)}>
-              <option value='' disabled selected>--Select the building--</option>
+              <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
               {buildings.length > 0 && (
                 buildings.map(building => (
                   <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
@@ -112,11 +149,12 @@ const Resources = () =>
             </select>
 
             <Button className='button-resource' variant='primary' onClick={AddBuilding}>Add Building</Button>
+            <Button className='button-resource' variant='primary' onClick={EditBuilding}>Edit Building</Button>
           </div>
 
           <div className='room-container'>
             <select className='combo-box' name='room' onChange={UpdateResources.bind(this)}>
-              <option value='' disabled selected>--Select the room--</option>
+              <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
               {rooms.length > 0 && (
                 rooms.map(room => (
                   <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>
@@ -125,21 +163,25 @@ const Resources = () =>
             </select>
 
             <Button className='button-resource' variant='primary' onClick={AddRoom}>Add Room</Button>
+            <Button className='button-resource' variant='primary' onClick={EditRoom}>Edit Room</Button>
           </div>
         </div>
 
         <div className='resources-map'>
-            {resources.length > 0 && (
-              resources.map(resource => (
-                <div className='resource-container'>
-                  <MdDesktopWindows className='resource' size={50}/>
-                </div>
-              ))
-            )}
+          {resources.length > 0 && (
+            resources.map(resource => 
+            {
+              if (resource.resource_type === "DESK")
+                return <ResourceDesk id={resource.id} name={resource.name} location={resource.location} roomId={resource.room_id}/>
+              return <ResourceMeetingRoom id={resource.id} name={resource.name} location={resource.location} capacity={resource.capacity} roomId={resource.room_id}/>
+            }
+          )
+          )}
         </div>
 
         <div className='button-resource-container'>
           <Button className='button-resource' variant='primary' onClick={AddDesk}>Add Desk</Button>
+          <Button className='button-resource-meeting' variant='primary' onClick={AddMeetingRoom}>Add Meeting Room</Button>
         </div>
 
       </div>  

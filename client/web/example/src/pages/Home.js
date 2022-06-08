@@ -45,7 +45,6 @@ const Home = () =>
               <BookingTicket id={booking.id} startDate={booking.start.substring(0,10)} startTime={booking.start.substring(11,16)} endDate={booking.end.substring(0,10)} endTime={booking.end.substring(11,16)} confirmed={booking.booked}/>
             ))
           )}
-
         </div>
       </div>  
       <Footer />
