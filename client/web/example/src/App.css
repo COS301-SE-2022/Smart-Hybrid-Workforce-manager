@@ -584,7 +584,7 @@
 
     display: grid;
     grid-template-columns: 12vw;
-    grid-template-rows: 10vh;
+    grid-template-rows: 11vh;
     grid-template-areas: "edit";
 
     border-radius: 1vh;

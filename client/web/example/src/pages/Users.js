@@ -30,7 +30,7 @@ function Users()
 
   const AddUser = () =>
   {
-    window.location.assign("./signup");
+    window.location.assign("./user-create");
   }
 
   return (
