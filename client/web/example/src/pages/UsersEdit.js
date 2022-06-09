@@ -85,8 +85,8 @@ function EditUser()
 
             if(res.status === 200)
             {
-                alert("Role Successfully Added!");
-                window.location.reload();
+              alert("Role Successfully Added!");
+              window.location.reload();
             }
         }
         catch (err)
