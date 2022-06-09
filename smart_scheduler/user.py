@@ -6,7 +6,7 @@ import requests
 
 """
 This module is responsible for user related operations
-It currently assumes that teams are flat
+It currently assumes that roles are flat
 """
 
 ENDPOINT: str = 'http://arche-api/api/user/information'

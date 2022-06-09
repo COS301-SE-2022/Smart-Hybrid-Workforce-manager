@@ -14,7 +14,7 @@ class Teams:
     """
     Class representing teams, an object of this class
     will contain a Dict that uses team_ids as keys, the elements
-    of this dict will be lists containing user_ids, a more efficient
+    of this dict will be sets containing user_ids, a more efficient
     solution can still be investigated, a separate dict will also be
     maintained containing the date created for each team
     """
