@@ -59,7 +59,7 @@ class Rooms:
          to 'eq' if an invalid operator is passed
         """
         comparator: operator
-        comparators: Dict[str, operator] = {
+        comparators: Dict[str, any] = {
             'eq': operator.eq,
             'gt': operator.gt,
             'lt': operator.lt,
