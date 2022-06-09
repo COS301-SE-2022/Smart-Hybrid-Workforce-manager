@@ -6,7 +6,6 @@ import Button from 'react-bootstrap/Button'
 
 function Login()
 {
-
   const [identifier, setIdentifier] = useState("");
   const [secret, setSecret] = useState("");
 
@@ -43,7 +42,7 @@ function Login()
       console.log(err);
     }
   };  
-
+  
   return (
     <div className='page-container'>
       <div className='content-login'>
