@@ -2,12 +2,13 @@ package redis
 
 import (
 	"context"
+	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"lib/logger"
 	"math"
-	"crypto/rand"
+	"net/http"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -137,6 +138,22 @@ func AddAuthUser(user_id string) bool{
 	return true
 }
 
+func GetAuthData(token string) *RedisData{
+	redisClient := GetAuthClient()
+	val, err := redisClient.Get(ctx, token).Result();
+	if(err != nil){
+		logger.Error.Println(err)
+		return nil
+	}
+	var rd *RedisData
+	gerr := json.Unmarshal(val, rd)
+	if(gerr != nil){
+		logger.Error.Println(err)
+		return nil
+	}
+	return rd
+}
+
 func GenerateUserToken() string{
     buff:= make([]byte, int(math.Ceil(float64(128)/2)))
     n,err := rand.Read(buff)
@@ -148,11 +165,12 @@ func GenerateUserToken() string{
     return str[:128]
 }
 
-
-
-func main(){
-	// router := mux.NewRouter()
-	// router.HandleFunc("/",handler)
-	// http.ListenAndServe(":5050", router)
-	AddAuthUser("5555")
+func GetUserInfo(request *http.Request) *RedisData{
+	token := string(request.Header.Get("Authorization"))
+	//check "bearer "
+	if(token[0:7] != "bearer "){
+		return nil
+	}
+	token = token[7:]
+	return GetAuthData(token)
 }
