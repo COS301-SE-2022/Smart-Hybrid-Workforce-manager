@@ -261,6 +261,149 @@ func Test_jsonResponse(t *testing.T) {
 	}
 }
 
+func Test_JSONResponse(t *testing.T) {
+	type testType struct {
+		StrField   string  `json:"strfield"`
+		FloatField float64 `json:"floatfield"`
+		IntSlice   []int   `json:"intslice"`
+	}
+	type args struct {
+		w       *httptest.ResponseRecorder
+		r       *http.Request
+		payload interface{}
+	}
+
+	type expect struct {
+		statusCode int
+	}
+
+	tests := []struct {
+		name   string
+		args   args
+		expect expect
+	}{
+		{
+			name: "Valid Payload",
+			args: args{
+				w: httptest.NewRecorder(),
+				r: httptest.NewRequest(http.MethodGet, "/irrelevant/", nil),
+				payload: testType{
+					StrField:   "This is a String Field.",
+					FloatField: 12.5,
+					IntSlice:   []int{1, 2, 3},
+				},
+			},
+			expect: expect{
+				statusCode: 200,
+			},
+		},
+		{
+			name: "Empty Payload",
+			args: args{
+				w:       httptest.NewRecorder(),
+				r:       httptest.NewRequest(http.MethodGet, "/irrelevant/", nil),
+				payload: testType{},
+			},
+			expect: expect{
+				statusCode: 200,
+			},
+		},
+		{
+			name: "Status 400",
+			args: args{
+				w: httptest.NewRecorder(),
+				r: httptest.NewRequest(http.MethodGet, "/irrelevant/", nil),
+				payload: testType{
+					StrField:   "This is a String Field.",
+					FloatField: 12.5,
+					IntSlice:   []int{1, 2, 3},
+				},
+			},
+			expect: expect{
+				statusCode: 400,
+			},
+		},
+		{
+			name: "Single value JSON",
+			args: args{
+				w:       httptest.NewRecorder(),
+				r:       httptest.NewRequest(http.MethodGet, "/irrelevant/", nil),
+				payload: 123,
+			},
+			expect: expect{
+				statusCode: 400,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			writer := tt.args.w
+			JSONResponse(writer, tt.args.r, tt.args.payload)
+			resp := writer.Result()
+			defer resp.Body.Close()
+			// 'Content-Type' hardcoded since it will always be JSON as per the jsonResponse function
+			if resp.Header.Get("Content-Type") != "application/json" {
+				t.Errorf("\033[31mExpected Content-type of 'application/json', got %s instead\033[0m", resp.Header.Get("Content-type"))
+				t.FailNow()
+			}
+			// Test contents, use UnmarshallJSON to test correctness
+			bodyBytes, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("\033[31mError reading response body, expected err to be %v, got %v instead\033[0m", nil, err)
+				t.FailNow()
+			}
+			body := string(bodyBytes)
+			expectedBodyBytes, _ := json.Marshal(tt.args.payload)
+			expectedBody := string(expectedBodyBytes) + "\n" // added since json.Encoder delimits with '\n'
+			if body != expectedBody {
+				t.Errorf("\033[31mPayload not marshalled correctly, expected to payload to be %s, got %s instead\033[0m", expectedBody, body)
+				t.FailNow()
+			}
+		})
+	}
+
+	badTests := []struct {
+		name   string
+		args   args
+		expect expect
+	}{
+		{
+			name: "Invalid value Payload",
+			args: args{
+				w: httptest.NewRecorder(),
+				r: httptest.NewRequest(http.MethodGet, "/irrelevant/", nil),
+				// payload: math.Inf,
+				payload: math.Inf,
+			},
+			expect: expect{
+				statusCode: 200,
+			},
+		},
+	}
+
+	for _, tt := range badTests {
+		t.Run(tt.name, func(t *testing.T) {
+			writer := tt.args.w
+			JSONResponse(writer, tt.args.r, tt.args.payload)
+			resp := writer.Result()
+			defer resp.Body.Close()
+			// 'Content-Type' hardcoded since it will always be JSON as per the jsonResponse function
+			if resp.Header.Get("Content-Type") != "application/json" {
+				t.Errorf("\033[31mExpected Content-type of 'application/json', got %s instead\033[0m", resp.Header.Get("Content-type"))
+				t.FailNow()
+			}
+			respBytes, _ := ioutil.ReadAll(resp.Body)
+			respString := string(respBytes)
+			if respString != "" {
+				t.Errorf("Expected response body to be \"\", got %s instead", respString)
+				t.FailNow()
+			}
+			// Update at some point to catch log output
+		})
+	}
+}
+
 func TestBadRequest(t *testing.T) {
 	writer := httptest.NewRecorder()
 	request := httptest.NewRequest(http.MethodPost, "/somepath/", strings.NewReader("stringbody"))
@@ -348,5 +491,33 @@ func TestOk(t *testing.T) {
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		t.Errorf(testutils.Scolour(testutils.RED, "Expected response status code to be %d but got %d instead"), http.StatusOK, resp.StatusCode)
+	}
+}
+
+func TestAccessDenied(t *testing.T) {
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodPost, "/somepath/", strings.NewReader("stringbody"))
+	message := errors.New("Mock Error")
+	AccessDenied(writer, request, message)
+	response := writer.Result()
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusUnauthorized {
+		t.Errorf(testutils.Scolour(testutils.RED, "Expected status code %d, got %d instead"), http.StatusUnauthorized, response.StatusCode)
+		t.FailNow()
+	}
+}
+
+func TestClientIP(t *testing.T) {
+	writer := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodGet, "/somepath/", nil)
+	ip := clientIP(request)
+	resp := writer.Result()
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf(testutils.Scolour(testutils.RED, "Expected response status code to be %d but got %d instead"), http.StatusOK, resp.StatusCode)
+	}
+	if ip == "" {
+		t.Errorf(testutils.Scolour(testutils.RED, "Ip adress is empty"), http.StatusOK, resp.StatusCode)
 	}
 }
