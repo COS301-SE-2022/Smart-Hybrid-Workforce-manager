@@ -34,6 +34,7 @@ func UserHandlers(router *mux.Router) error {
 	router.HandleFunc("/information", InformationUserHandler).Methods("POST")
 	router.HandleFunc("/update", UpdateUserHandler).Methods("POST")
 	router.HandleFunc("/remove", RemoveUserHandler).Methods("POST")
+	router.HandleFunc("/login", LoginUserHandler).Methods("POST")
 	return nil
 }
 
@@ -182,6 +183,42 @@ func InformationUserHandler(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	logger.Access.Printf("%v user information requested\n", user.Id)
+
+	utils.JSONResponse(writer, request, users)
+}
+
+func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
+	var userCred data.Credential
+
+	err := utils.UnmarshalJSON(writer, request, &userCred)
+	if err != nil {
+		fmt.Println(err)
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	da := data.NewUserDA(access)
+
+	users, err := da.FindCredential(&userCred)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	logger.Access.Printf("%v user information requested\n", userCred.Id)
 
 	utils.JSONResponse(writer, request, users)
 }

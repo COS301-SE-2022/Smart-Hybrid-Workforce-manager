@@ -1,13 +1,13 @@
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 
-const CreateDesk = () =>
+const EditDesk = () =>
 {
-  const [deskName, SetDeskName] = useState("");
-  const [deskLocation, SetDeskLocation] = useState("");
+  const [deskName, setDeskName] = useState("");
+  const [deskLocation, setDeskLocation] = useState("");
 
   let handleSubmit = async (e) =>
   {
@@ -18,7 +18,7 @@ const CreateDesk = () =>
       {
         method: "POST",
         body: JSON.stringify({
-          id: null,
+          id: window.sessionStorage.getItem("DeskID"),
           room_id: window.sessionStorage.getItem("RoomID"),
           name: deskName,
           location: deskLocation,
@@ -29,7 +29,7 @@ const CreateDesk = () =>
 
       if(res.status === 200)
       {
-        alert("Desk Successfully Created!");
+        alert("Desk Successfully Updated!");
         window.location.assign("./resources");
       }
     }
@@ -37,27 +37,34 @@ const CreateDesk = () =>
     {
       console.log(err);
     }
-  };  
+  };
+
+  //Using useEffect hook. This will ste the default values of the form once the components are mounted
+  useEffect(() =>
+  {
+    setDeskName(window.sessionStorage.getItem("DeskName"));
+    setDeskLocation(window.sessionStorage.getItem("DeskLocation"));
+  }, [])
 
   return (
     <div className='page-container'>
       <div className='content'>
         <Navbar />
         <div className='form-container-team'>
-          <p className='form-header'><h1>CREATE YOUR DESK</h1>Please enter your desk details.</p>
+          <p className='form-header'><h1>EDIT DESK</h1>Please update the desk details.</p>
           
           <Form className='form' onSubmit={handleSubmit}>
             <Form.Group className='form-group' controlId="formBasicName">
               <Form.Label className='form-label'>Desk Name<br></br></Form.Label>
-              <Form.Control name="dName" className='form-input' type="text" placeholder="Name" value={deskName} onChange={(e) => SetDeskName(e.target.value)} />
+              <Form.Control name="dName" className='form-input' type="text" placeholder="Name" value={deskName} onChange={(e) => setDeskName(e.target.value)} />
             </Form.Group>
 
             <Form.Group className='form-group' controlId="formBasicName">
               <Form.Label className='form-label'>Desk Location<br></br></Form.Label>
-              <Form.Control name="dLocation" className='form-input' type="text" placeholder="Location" value={deskLocation} onChange={(e) => SetDeskLocation(e.target.value)} />
+              <Form.Control name="dLocation" className='form-input' type="text" placeholder="Location" value={deskLocation} onChange={(e) => setDeskLocation(e.target.value)} />
             </Form.Group>
 
-            <Button className='button-submit' variant='primary' type='submit'>Create Desk</Button>
+            <Button className='button-submit' variant='primary' type='submit'>Update Desk</Button>
           </Form>
         </div>
       </div>
@@ -66,4 +73,4 @@ const CreateDesk = () =>
   )
 }
 
-export default CreateDesk
+export default EditDesk

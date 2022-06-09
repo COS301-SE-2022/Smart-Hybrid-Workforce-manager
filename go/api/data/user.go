@@ -11,13 +11,18 @@ import (
 
 // User identifies a user via common attributes
 type User struct {
-	Id          *string   `json:"id,omitempty"`
-	Identifier  *string   `json:"identifier,omitempty"`
-	FirstName   *string   `json:"first_name,omitempty"`
-	LastName    *string   `json:"last_name,omitempty"`
-	Email       *string   `json:"email,omitempty"`
-	Picture     *string   `json:"picture,omitempty"`
-	DateCreated time.Time `json:"date_created,omitempty"`
+	Id                 *string    `json:"id,omitempty"`
+	Identifier         *string    `json:"identifier,omitempty"`
+	FirstName          *string    `json:"first_name,omitempty"`
+	LastName           *string    `json:"last_name,omitempty"`
+	Email              *string    `json:"email,omitempty"`
+	Picture            *string    `json:"picture,omitempty"`
+	DateCreated        time.Time  `json:"date_created,omitempty"`
+	WorkFromHome       *bool      `json:"work_from_home,omitempty"`
+	Parking            *string    `json:"parking,omitempty"`
+	OfficeDays         *int       `json:"office_days,omitempty"`
+	PreferredStartTime *time.Time `json:"preferred_start_time,omitempty"`
+	PreferredEndTime   *time.Time `json:"preferred_end_time,omitempty"`
 }
 
 // Users represent a splice of User
@@ -63,6 +68,11 @@ func mapUser(rows *sql.Rows) (interface{}, error) {
 		&identifier.Email,
 		&identifier.Picture,
 		&identifier.DateCreated,
+		&identifier.WorkFromHome,
+		&identifier.Parking,
+		&identifier.OfficeDays,
+		&identifier.PreferredStartTime,
+		&identifier.PreferredEndTime,
 	)
 	if err != nil {
 		return nil, err
@@ -92,8 +102,9 @@ func mapCredential(rows *sql.Rows) (interface{}, error) {
 //StoreIdentifier stores an identifier
 func (access *UserDA) StoreIdentifier(identifier *User) (string, error) {
 	results, err := access.access.Query(
-		`SELECT * FROM "user".identifier_store($1, $2, $3, $4, $5, $6)`, mapString,
-		identifier.Id, identifier.Identifier, identifier.FirstName, identifier.LastName, identifier.Email, identifier.Picture)
+		`SELECT * FROM "user".identifier_store($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`, mapString,
+		identifier.Id, identifier.Identifier, identifier.FirstName, identifier.LastName, identifier.Email, identifier.Picture, identifier.WorkFromHome,
+		identifier.Parking, identifier.OfficeDays, identifier.PreferredStartTime, identifier.PreferredEndTime)
 	if err != nil {
 		return "", err
 	}
@@ -108,8 +119,9 @@ func (access *UserDA) StoreIdentifier(identifier *User) (string, error) {
 //FindIdentifier finds an identifier
 func (access *UserDA) FindIdentifier(identifier *User) (Users, error) {
 	results, err := access.access.Query(
-		`SELECT * FROM "user".identifier_find($1, $2, $3, $4, $5, $6, $7)`, mapUser,
-		identifier.Id, identifier.Identifier, identifier.FirstName, identifier.LastName, identifier.Email, identifier.Picture, identifier.DateCreated)
+		`SELECT * FROM "user".identifier_find($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`, mapUser,
+		identifier.Id, identifier.Identifier, identifier.FirstName, identifier.LastName, identifier.Email, identifier.Picture, identifier.DateCreated, identifier.WorkFromHome,
+		identifier.Parking, identifier.OfficeDays, identifier.PreferredStartTime, identifier.PreferredEndTime)
 	if err != nil {
 		return nil, err
 	}
@@ -129,6 +141,23 @@ func (access *UserDA) StoreCredential(Id string, secret *string, identifier stri
 		return err
 	}
 	return nil
+}
+
+//FindCredential finds a user according to Credentials
+func (access *UserDA) FindCredential(credential *Credential) (Users, error) {
+	results, err := access.access.Query(
+		`SELECT * FROM "user".credential_find($1, $2, $3, $4, $5, $6, $7)`, mapCredential,
+		credential.Id, credential.Secret, credential.Identifier, nil, credential.Active, nil, credential.LastAccessed)
+	if err != nil {
+		return nil, err
+	}
+	tmp := make([]*User, 0)
+	for r, _ := range results {
+		if value, ok := results[r].(User); ok {
+			tmp = append(tmp, &value)
+		}
+	}
+	return tmp, nil
 }
 
 //FindHead returns the first User
