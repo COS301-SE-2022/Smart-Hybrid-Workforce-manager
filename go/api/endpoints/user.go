@@ -238,7 +238,9 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	logger.Access.Printf("%v user information requested\n", userCred.Id)
+	logger.Access.Printf("%v user login\n", userCred.Id)
+
+	//After user login create auth token
 
 	utils.JSONResponse(writer, request, users)
 }
