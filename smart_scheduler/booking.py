@@ -96,6 +96,7 @@ def fetch_bookings(filters: List[Booking]) -> List[Booking]:
 
 
 if __name__ == '__main__':
+    ENDPOINT_BATCH: str = 'http://localhost:8100/api/batch-booking/information'
     booking_filters = [Booking({"booked": False})]
     for f in booking_filters:
         print(f)
