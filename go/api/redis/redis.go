@@ -1,49 +1,157 @@
 package redis
 
 import (
-	"lib/logger"
 	"context"
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"lib/logger"
+	"math"
+	"crypto/rand"
+	"time"
+
 	"github.com/go-redis/redis/v8"
+	_ "github.com/gorilla/mux"
 )
+
 ////////////////////////////////////////////////
 //Databases
 // 0 : testing
 // 1 : user session token
+// 2 : open
+// 3 : open
+// 4 : open
 
 ////////////////////////////////////////////////
 //Structures and Variables
 
-//Redis client
-var redisClient *redis.Client
+type RedisData struct{
+	User_id string
+	CreationTime time.Time
+	ExpirationTime time.Time
+}
+
+//Redis clients
+var redisClients[5] *redis.Client
 
 //context of the program for instance of redis running
 var ctx = context.Background()
 
-func GetRedisClient() redis.Client {
-	if redisClient == nil {
-		redisClient = redis.NewClient(&redis.Options{
+func InitializeRedisClients() error{
+	for i := 0; i < 5; i++{
+		if redisClients[i] == nil {
+			redisClients[i] = redis.NewClient(&redis.Options{
+				Addr:     "localhost:6379",
+				Password: "archepassword1234",
+				DB:       i,
+			})
+			err := redisClients[i].Set(ctx, "verify", true, 0).Err()
+			if err != nil {
+				fmt.Println(err)
+				logger.Error.Fatal(err)
+				return err
+			}
+			val, err := redisClients[i].Get(ctx, "verify").Result()
+			if err != nil {
+				logger.Error.Fatal(err)
+				return err
+			}
+			_ = val
+		}
+	}
+	//logger.Info.Println("Redis Initialized")
+	return nil
+} 
+
+func GetRedisClient(database int) redis.Client {
+	if(database > len(redisClients)){
+		//error
+		return GetRedisClient(0);
+	}
+	if redisClients[database] == nil {
+		redisClients[database] = redis.NewClient(&redis.Options{
 			Addr:     "localhost:6379",
 			Password: "archepassword1234",
-			DB:       0, // use default DB
+			DB:       database,
 		})
-		err := redisClient.Set(ctx, "verify", true, 0).Err()
+		err := redisClients[database].Set(ctx, "verify", true, 0).Err()
 		if err != nil {
+			fmt.Println(err)
 			logger.Error.Fatal(err)
 		}
-		val, err := redisClient.Get(ctx, "verify").Result()
+		val, err := redisClients[database].Get(ctx, "verify").Result()
 		if err != nil {
+			fmt.Println(err)
 			logger.Error.Fatal(err)
 		}
 		_ = val
-		return *redisClient
+		return *redisClients[database]
 
 	}
-	val, err := redisClient.Get(ctx, "verify").Result()
+	val, err := redisClients[database].Get(ctx, "verify").Result()
 	if err != nil {
-		redisClient = nil
-		GetRedisClient()
+		redisClients[database] = nil
+		GetRedisClient(database);
 	}
 	_ = val
-	return *redisClient
+	return *redisClients[database];
 }
 
+func GetAuthClient() redis.Client{
+	return GetRedisClient(1);
+}
+
+func ValidateUserToken(token string) bool{
+	redisClient := GetAuthClient();
+	val, err := redisClient.Get(ctx, token).Result();
+	if err != nil {
+		return false;
+	}
+	_ = val
+	return true;
+}
+
+func AddAuthUser(user_id string) bool{
+	udata := RedisData{user_id,time.Now(), time.Now().Add(time.Hour * time.Duration(1))}
+	rdata,err := json.Marshal(udata)
+	if err != nil{
+		logger.Error.Fatal(err)
+		return false
+	}
+	utoken := GenerateUserToken()
+	redisClient := GetAuthClient()
+
+	serr := redisClient.Set(ctx, utoken, rdata, 0).Err();
+	if serr != nil{
+		logger.Error.Fatal(serr)
+		fmt.Println(serr)
+		return false
+	}
+	val, gerr := redisClient.Get(ctx, utoken).Result();
+	if gerr != nil {
+		logger.Error.Fatal(gerr)
+		return false
+	}
+	fmt.Println(string(val))
+	return true
+}
+
+func GenerateUserToken() string{
+    buff:= make([]byte, int(math.Ceil(float64(128)/2)))
+    n,err := rand.Read(buff)
+	if err != nil{
+		logger.Warn.Println(err)
+	}
+	_ = n
+    str := hex.EncodeToString(buff)
+    return str[:128]
+}
+
+
+
+func main(){
+	// router := mux.NewRouter()
+	// router.HandleFunc("/",handler)
+	// http.ListenAndServe(":5050", router)
+	AddAuthUser("5555")
+}
