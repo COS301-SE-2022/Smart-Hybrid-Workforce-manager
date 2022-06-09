@@ -32,7 +32,7 @@ jobs:
         with:
           mode: minimum
           count: 1
-          labels: 'scope:api, scope:cicd, scope:client, scope:db'
+          labels: 'scope:api, scope:cicd, scope:client, scope:db, scope:scheduler'
 
   milestone-check:
     name: Checks if milestone is used
