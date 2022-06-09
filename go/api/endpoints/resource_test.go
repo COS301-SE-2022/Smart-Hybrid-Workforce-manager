@@ -958,7 +958,7 @@ func TestInformationRoomAssociationsHandler(t *testing.T) {
 	}
 }
 
-func TestCreateRoomAssociationsHandler(t *testing.T) {
+func TestCreateRoomAssociationHandler(t *testing.T) {
 	testdb := SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
@@ -1047,10 +1047,7 @@ func TestCreateRoomAssociationsHandler(t *testing.T) {
 	}
 }
 
-// TODO CREATE TEAM USER
-// TODO REMOVE TEAM USER
-
-/*func TestInformationUserTeamHandler(t *testing.T) {
+func TestDeleteRoomAssociationHandler(t *testing.T) {
 	testdb := SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
@@ -1078,10 +1075,10 @@ func TestCreateRoomAssociationsHandler(t *testing.T) {
 			name: "Bad JSON, syntax error",
 			args: args{
 				httptest.NewRecorder(),
-				httptest.NewRequest(http.MethodPost, `http://localhost:8100/api/team/user/information`, strings.NewReader(`
+				httptest.NewRequest(http.MethodPost, `http://localhost:8100/api/room/association/remove`, strings.NewReader(`
 				{
-					team_id : "11111111-1111-4a06-9983-8b374586e459"
-					user_id : "11111111-1111-4a06-9983-8b374586e459"
+					"id": null
+					"roomId": null
 				}`)),
 			},
 			expect: badExpect{
@@ -1093,11 +1090,11 @@ func TestCreateRoomAssociationsHandler(t *testing.T) {
 			name: "Bad JSON, array",
 			args: args{
 				httptest.NewRecorder(),
-				httptest.NewRequest(http.MethodPost, `http://localhost:8100/api/team/user/information`, strings.NewReader(`
+				httptest.NewRequest(http.MethodPost, `http://localhost:8100/api/room/association/remove`, strings.NewReader(`
 				[
 					{
-						team_id : "11111111-1111-4a06-9983-8b374586e459"
-						user_id : "11111111-1111-4a06-9983-8b374586e459"
+						"id": null,
+						"roomId": null
 					}
 				]`)),
 			},
@@ -1110,7 +1107,7 @@ func TestCreateRoomAssociationsHandler(t *testing.T) {
 
 	for _, tt := range basicBadTests {
 		t.Run(tt.name, func(t *testing.T) {
-			InformationUserTeamHandler(tt.args.w, tt.args.r, &data.Permissions{data.CreateGenericPermission("VIEW", "TEAM", "USER")}) // Make request
+			DeleteRoomAssociationHandler(tt.args.w, tt.args.r, &data.Permissions{data.CreateGenericPermission("DELETE", "RESOURCE", "ROOMASSOCIATION")}) // Make request
 			// check response code
 			response := tt.args.w.Result()
 			if response.StatusCode != tt.expect.responseCode {
@@ -1138,95 +1135,3 @@ func TestCreateRoomAssociationsHandler(t *testing.T) {
 		})
 	}
 }
-
-// TODO CREATE TEAM ASSOCIATION
-// TODO REMOVE TEAM ASSOCIATION
-
-func TestInformationTeamAssociationHandler(t *testing.T) {
-	testdb := SetupTest(t)
-	defer dtdb.StopTestDbWithTest(testdb, t, false)
-
-	// ==================
-	// Perform tests ====
-	// ==================
-	type args struct {
-		w *httptest.ResponseRecorder
-		r *http.Request
-	}
-
-	type badExpect struct {
-		responseCode    int
-		responseMessage string
-	}
-
-	// Basic Bad tests ================
-	basicBadTests := []struct {
-		name    string
-		request string
-		args    args
-		expect  badExpect
-	}{
-		{
-			name: "Bad JSON, syntax error",
-			args: args{
-				httptest.NewRecorder(),
-				httptest.NewRequest(http.MethodPost, `http://localhost:8100/api/team/user/information`, strings.NewReader(`
-				{
-					team_id : "11111111-1111-4a06-9983-8b374586e459"
-					user_id : "11111111-1111-4a06-9983-8b374586e459"
-				}`)),
-			},
-			expect: badExpect{
-				responseCode:    http.StatusBadRequest,
-				responseMessage: "invalid_request",
-			},
-		},
-		{
-			name: "Bad JSON, array",
-			args: args{
-				httptest.NewRecorder(),
-				httptest.NewRequest(http.MethodPost, `http://localhost:8100/api/team/user/information`, strings.NewReader(`
-				[
-					{
-						team_id : "11111111-1111-4a06-9983-8b374586e459"
-						user_id : "11111111-1111-4a06-9983-8b374586e459"
-					}
-				]`)),
-			},
-			expect: badExpect{
-				responseCode:    http.StatusBadRequest,
-				responseMessage: "invalid_request",
-			},
-		},
-	}
-
-	for _, tt := range basicBadTests {
-		t.Run(tt.name, func(t *testing.T) {
-			InformationTeamAssociationHandler(tt.args.w, tt.args.r, &data.Permissions{data.CreateGenericPermission("VIEW", "TEAM", "ASSOCIATION")}) // Make request
-			// check response code
-			response := tt.args.w.Result()
-			if response.StatusCode != tt.expect.responseCode {
-				t.Error(tu.Scolourf(tu.RED, "Invalid response code recieved, expected %d, got %d", tt.expect.responseCode, response.StatusCode))
-			}
-			defer response.Body.Close()
-			bodyBytes, err := ioutil.ReadAll(response.Body)
-			if err != nil {
-				t.Error(tu.Scolourf(tu.RED, "Could not read response body, err: %v", err))
-				t.FailNow()
-			}
-			var _error errorResponse
-			err = json.Unmarshal(bodyBytes, &_error) // decode body
-			if err != nil {
-				t.Errorf(tu.Scolourf(tu.RED, "Invalid JSON, could not decode, err: %v", err))
-				t.FailNow()
-			}
-			if message, ok := _error.Error["message"]; ok {
-				if message != tt.expect.responseMessage {
-					t.Error(tu.Scolourf(tu.RED, "Incorrect message returned, expected '%s', got '%s'", tt.expect.responseMessage, message))
-				}
-			} else {
-				t.Error(tu.Scolourf(tu.RED, "Expected an error message, got none"))
-			}
-		})
-	}
-}*/
