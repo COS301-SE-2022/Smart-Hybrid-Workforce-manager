@@ -25,6 +25,14 @@ type RegisterUserStruct struct {
 	Password  *string `json:"password"`
 }
 
+type UpdateUserStruct struct {
+	FirstName *string `json:"first_name,omitempty"`
+	LastName  *string `json:"last_name,omitempty"`
+	Email     string  `json:"email"`
+	Picture   *string `json:"picture,omitempty"`
+	Password  *string `json:"password"`
+}
+
 /////////////////////////////////////////////
 // Endpoints
 
@@ -224,7 +232,37 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
 }
 
 func UpdateUserHandler(writer http.ResponseWriter, request *http.Request) {
-	logger.Info.Println("user update requested")
+	// Unmarshall user
+	var identifier data.User
+	err := utils.UnmarshalJSON(writer, request, &identifier)
+	if err != nil {
+		fmt.Println(err)
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	da := data.NewUserDA(access)
+	id, err := da.StoreIdentifier(&identifier)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	logger.Access.Printf("%v updated\n", id)
 	utils.Ok(writer, request)
 }
 
