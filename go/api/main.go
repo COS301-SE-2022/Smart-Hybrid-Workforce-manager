@@ -22,11 +22,11 @@ func main() {
 
 
 	// Create Redis clients
-	rediserr := redis.InitializeRedisClients()
-	if rediserr != nil{
-		logger.Error.Fatal(err)
-		os.Exit(-1)
-	}
+	// rediserr := redis.InitializeRedisClients()
+	// if rediserr != nil{
+	// 	logger.Error.Fatal(err)
+	// 	os.Exit(-1)
+	// }
 
 	// Route endpoints
 	router := mux.NewRouter().StrictSlash(true)
