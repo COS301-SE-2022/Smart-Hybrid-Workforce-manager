@@ -5,7 +5,7 @@ const RoleUserList = ({id}) =>
 {
   const [roleName, SetRoleName] = useState("")
     
-    useEffect((id) =>
+    useEffect(() =>
     {
         fetch("http://localhost:8100/api/role/information", 
         {

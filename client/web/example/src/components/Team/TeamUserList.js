@@ -5,7 +5,7 @@ const TeamUserList = ({id}) =>
 {
   const [teamName, SetTeamName] = useState("")
 
-    useEffect((id) =>
+    useEffect(() =>
     {
         fetch("http://localhost:8100/api/team/information", 
         {
