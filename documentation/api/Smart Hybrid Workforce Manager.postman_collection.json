@@ -45,6 +45,36 @@
 					]
 				},
 				{
+					"name": "Credential",
+					"item": [
+						{
+							"name": "Login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\":null,\r\n    \"secret\":null,\r\n    \"active\":null,\r\n    \"FailedAttempts\":null,\r\n    \"LastAccessed\":null,\r\n    \"Identifier\":null\r\n}"
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/user/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"user",
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Register User",
 					"request": {
 						"method": "POST",

@@ -143,6 +143,23 @@ func (access *UserDA) StoreCredential(Id string, secret *string, identifier stri
 	return nil
 }
 
+//FindCredential finds a user according to Credentials
+func (access *UserDA) FindCredential(credential *Credential) (Users, error) {
+	results, err := access.access.Query(
+		`SELECT * FROM "user".credential_find($1, $2, $3, $4, $5, $6, $7)`, mapCredential,
+		credential.Id, credential.Secret, credential.Identifier, nil, credential.Active, nil, credential.LastAccessed)
+	if err != nil {
+		return nil, err
+	}
+	tmp := make([]*User, 0)
+	for r, _ := range results {
+		if value, ok := results[r].(User); ok {
+			tmp = append(tmp, &value)
+		}
+	}
+	return tmp, nil
+}
+
 //FindHead returns the first User
 func (users Users) FindHead() *User {
 	if len(users) == 0 {

@@ -3,6 +3,7 @@ package main
 import (
 	"api/db"
 	"api/endpoints"
+	"api/redis"
 	"lib/logger"
 	"net/http"
 	"os"
@@ -15,6 +16,14 @@ func main() {
 	// Create Database connection pool
 	err := db.RegisterAccess()
 	if err != nil {
+		logger.Error.Fatal(err)
+		os.Exit(-1)
+	}
+
+
+	// Create Redis clients
+	rediserr := redis.InitializeRedisClients()
+	if rediserr != nil{
 		logger.Error.Fatal(err)
 		os.Exit(-1)
 	}

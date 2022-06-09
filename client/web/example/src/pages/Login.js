@@ -4,6 +4,38 @@ import Button from 'react-bootstrap/Button'
 
 function Login()
 {
+  // let handleSubmit = async (e) =>
+  // {
+  //   e.preventDefault();
+  //   try
+  //   {
+  //     let res = await fetch("http://localhost:8100/api/booking/create", 
+  //     {
+  //       method: "POST",
+  //       body: JSON.stringify({
+  //         id: "33333333-dc08-4a06-9983-8b374586e453",
+  //         user_id: "11111111-dc08-4a06-9983-8b374586e459",
+  //         resource_type: "DESK",
+  //         resource_preference_id: null,
+  //         resource_id: null,
+  //         start: startDate + "T" + startTime + ":43.511Z",
+  //         end: endDate + "T" + endTime + ":43.511Z",
+  //         booked: false
+  //       })
+  //     });
+
+  //     if(res.status === 200)
+  //     {
+  //       alert("Booking Successfully Created!");
+  //       window.location.reload();
+  //     }
+  //   }
+  //   catch(err)
+  //   {
+  //     console.log(err);
+  //   }
+  // };
+  
   return (
     <div className='page-container'>
       <div className='content-login'>
