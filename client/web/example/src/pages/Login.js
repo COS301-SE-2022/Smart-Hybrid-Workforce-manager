@@ -19,11 +19,11 @@ function Login()
         method: "POST",
         body: JSON.stringify({
           "id":null,
-          "secret":null,
+          "secret":secret,
           "active":null,
           "FailedAttempts":null,
           "LastAccessed":null,
-          "Identifier":null
+          "Identifier":identifier
         })
       });
 

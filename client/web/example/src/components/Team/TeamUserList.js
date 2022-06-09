@@ -5,13 +5,13 @@ const TeamUserList = ({id}) =>
 {
   const [teamName, SetTeamName] = useState("")
 
-    useEffect(() =>
+    useEffect((id) =>
     {
         fetch("http://localhost:8100/api/team/information", 
         {
         method: "POST",
         body: JSON.stringify({
-            id: this.id
+            id: id
         })
         }).then((res) => res.json()).then(data => 
         {

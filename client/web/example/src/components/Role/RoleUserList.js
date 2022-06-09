@@ -5,13 +5,13 @@ const RoleUserList = ({id}) =>
 {
   const [roleName, SetRoleName] = useState("")
     
-    useEffect(() =>
+    useEffect((id) =>
     {
         fetch("http://localhost:8100/api/role/information", 
         {
         method: "POST",
         body: JSON.stringify({
-            id: this.id
+            id: id
         })
         }).then((res) => res.json()).then(data => 
         {
