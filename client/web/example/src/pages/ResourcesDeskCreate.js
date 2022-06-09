@@ -23,7 +23,8 @@ const CreateDesk = () =>
           name: deskName,
           location: deskLocation,
           role_id: null,
-          resource_type: 'DESK'
+          resource_type: 'DESK',
+          decorations: '{"computer": true}',
         })
       });
 
