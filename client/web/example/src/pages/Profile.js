@@ -22,7 +22,7 @@ function Profile()
         {
           method: "POST",
           body: JSON.stringify({
-            id: window.sessionStorage.getItem("UserID")
+            id:"11111111-1111-4a06-9983-8b374586e459"
           })
         }).then((res) => res.json()).then(data => 
           {
@@ -39,7 +39,7 @@ function Profile()
         {
           method: "POST",
           body: JSON.stringify({
-            user_id: window.sessionStorage.getItem("UserID")
+            id:"11111111-1111-4a06-9983-8b374586e459"
           })
         }).then((res) => res.json()).then(data => 
           {
@@ -54,7 +54,7 @@ function Profile()
         {
           method: "POST",
           body: JSON.stringify({
-            user_id: window.sessionStorage.getItem("UserID")
+            id:"11111111-1111-4a06-9983-8b374586e459"
           })
         }).then((res) => res.json()).then(data => 
           {
@@ -65,7 +65,6 @@ function Profile()
   //Using useEffect hook. This will ste the default values of the form once the components are mounted
   useEffect(() =>
   {
-    window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
     FetchUser();
     FetchUserRoles();
     FetchUserTeams();
@@ -78,7 +77,7 @@ function Profile()
 
   const LogOut = () =>
   {
-    window.location.assign("./login");
+    window.location.assign("./signup");
   }
 
   return (
@@ -93,24 +92,19 @@ function Profile()
               <p className="user-text-email">{email}</p>              
             </div>
             <div className="user-roles">
-              <h3>Roles</h3>
-              <div className='list'>
-                {roles.length > 0 && (
-                  roles.map(role => (
-                    <RoleUserList id={role.role_id}/>
-                  ))
-                )}
-              </div>
+              {roles.length > 0 && (
+                roles.map(role => (
+                  <RoleUserList id={role.role_id}/>
+                  
+                ))
+              )}
             </div>
             <div className="user-teams">
-              <h3>Teams</h3>
-              <div className='list'>
-                {teams.length > 0 && (
-                  teams.map(team => (
-                    <TeamUserList id={team.team_id} />
-                  ))
-                )}
-              </div>
+              {teams.length > 0 && (
+                teams.map(team => (
+                  <TeamUserList id={team.team_id} />
+                ))
+              )}
             </div>
             <Button className='button-user-profile' variant='primary' onClick={ProfileConfiguration}>Profile Configuration</Button>
             <Button className='button-user-profile' variant='primary' onClick={LogOut}>Log Out</Button>
