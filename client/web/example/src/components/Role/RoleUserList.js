@@ -11,7 +11,7 @@ const RoleUserList = ({id}) =>
         {
         method: "POST",
         body: JSON.stringify({
-            id: id
+            id: this.id
         })
         }).then((res) => res.json()).then(data => 
         {
