@@ -12,6 +12,13 @@ function Profile()
   const [lastName, SetLastName] = useState("")
   const [email, SetEmail] = useState("")
 
+  const [workFromHome, SetWorkFromHome] = useState("")
+  const [parking, SetParking] = useState("")
+  const [officeDays, SetOfficeDays] = useState("")
+  const [startTime, SetStartTime] = useState("")
+  const [endTime, SetEndTime] = useState("")
+
+
   const [roles, SetRoles] = useState([])
   const [teams, SetTeams] = useState([])
   
@@ -22,13 +29,18 @@ function Profile()
         {
           method: "POST",
           body: JSON.stringify({
-            id:"11111111-1111-4a06-9983-8b374586e459"
+            id:window.sessionStorage.getItem("UserID")
           })
         }).then((res) => res.json()).then(data => 
           {
             SetFirstName(data[0].first_name);
             SetLastName(data[0].last_name);
             SetEmail(data[0].email);
+            SetWorkFromHome(data[0].work_from_home);
+            SetParking(data[0].parking);
+            SetOfficeDays(data[0].office_days);
+            SetStartTime(data[0].preferred_start_time);
+            SetEndTime(data[0].preferred_end_time);
           });
   }
 
@@ -39,7 +51,7 @@ function Profile()
         {
           method: "POST",
           body: JSON.stringify({
-            id:"11111111-1111-4a06-9983-8b374586e459"
+            user_id:window.sessionStorage.getItem("UserID")
           })
         }).then((res) => res.json()).then(data => 
           {
@@ -54,7 +66,7 @@ function Profile()
         {
           method: "POST",
           body: JSON.stringify({
-            id:"11111111-1111-4a06-9983-8b374586e459"
+            user_id:window.sessionStorage.getItem("UserID")
           })
         }).then((res) => res.json()).then(data => 
           {
@@ -65,6 +77,7 @@ function Profile()
   //Using useEffect hook. This will ste the default values of the form once the components are mounted
   useEffect(() =>
   {
+    window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
     FetchUser();
     FetchUserRoles();
     FetchUserTeams();
@@ -72,12 +85,18 @@ function Profile()
 
   const ProfileConfiguration = () =>
   {
+    window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
+    window.sessionStorage.setItem("WorkFromHome", workFromHome);
+    window.sessionStorage.setItem("Parking", parking);
+    window.sessionStorage.setItem("OfficeDays", officeDays);
+    window.sessionStorage.setItem("StartTime", startTime);
+    window.sessionStorage.setItem("EndTime", endTime);
     window.location.assign("./profile-configuration");
   }
 
   const LogOut = () =>
   {
-    window.location.assign("./signup");
+    window.location.assign("./login");
   }
 
   return (
@@ -92,19 +111,25 @@ function Profile()
               <p className="user-text-email">{email}</p>              
             </div>
             <div className="user-roles">
-              {roles.length > 0 && (
-                roles.map(role => (
-                  <RoleUserList id={role.role_id}/>
-                  
-                ))
-              )}
+              <h3>Roles</h3>
+              <div className='list'>
+                {roles.length > 0 && (
+                  roles.map(role => (
+                    <RoleUserList id={role.role_id}/>
+                    
+                  ))
+                )}
+              </div>
             </div>
             <div className="user-teams">
-              {teams.length > 0 && (
-                teams.map(team => (
-                  <TeamUserList id={team.team_id} />
-                ))
-              )}
+              <h3>Teams</h3>
+              <div className='list'>
+                {teams.length > 0 && (
+                  teams.map(team => (
+                    <TeamUserList id={team.team_id} />
+                  ))
+                )}
+              </div>
             </div>
             <Button className='button-user-profile' variant='primary' onClick={ProfileConfiguration}>Profile Configuration</Button>
             <Button className='button-user-profile' variant='primary' onClick={LogOut}>Log Out</Button>

@@ -22,6 +22,8 @@ import CreateMeetingRoom from './pages/ResourcesMeetingRoomCreate'
 import Profile from './pages/Profile'
 import ProfileConfiguration from './pages/ProfileConfiguration'
 import Users from './pages/Users'
+import EditUser from './pages/UsersEdit'
+import CreateUser from './pages/UsersCreate'
 import Roles from './pages/Roles'
 import CreateRole from './pages/RolesCreate'
 import EditRole from './pages/RolesEdit'
@@ -46,6 +48,8 @@ function App()
           <Route path="/admin" exact element={<Admin />} />
 
           <Route path="/users" exact element={<Users />} />
+          <Route path="/user-edit" exact element={<EditUser />} />
+          <Route path="/user-create" exact element={<CreateUser />} />
           
           <Route path="/team" exact element={<Teams />} />
           <Route path="/team-create" exact element={<CreateTeam />} />
