@@ -65,6 +65,7 @@ function Profile()
   //Using useEffect hook. This will ste the default values of the form once the components are mounted
   useEffect(() =>
   {
+    window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
     FetchUser();
     FetchUserRoles();
     FetchUserTeams();
