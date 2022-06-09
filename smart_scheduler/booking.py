@@ -75,7 +75,7 @@ def parse_dict(booking: Dict[str, str | bool | None]) -> Booking:
 
 
 # gets bookings that match at least one of the passed in filters
-def fetch_bookings(filters: List[Booking]) -> List[Booking]:
+def fetch_bookings(filters: List[Booking] = None) -> List[Booking]:
     """
     This method calls the api and fetches bookings, it fetches
     all bookings matching at least one filter, as specified
@@ -85,7 +85,7 @@ def fetch_bookings(filters: List[Booking]) -> List[Booking]:
     """
     req_dict: Dict = {
         "user_id": "00000000-0000-0000-0000-000000000000",
-        "bookings": filters
+        "bookings": filters if filters is not None else [{}]
     }
 
     data = json.dumps(req_dict, cls=BookingEncoder)
@@ -97,9 +97,8 @@ def fetch_bookings(filters: List[Booking]) -> List[Booking]:
 
 if __name__ == '__main__':
     ENDPOINT_BATCH: str = 'http://localhost:8100/api/batch-booking/information'
-    booking_filters = [Booking({"booked": False})]
-    for f in booking_filters:
-        print(f)
-    _bookings = fetch_bookings(booking_filters)
+    # booking_filters = [Booking({"booked": False})]
+    # _bookings = fetch_bookings(booking_filters)
+    _bookings = fetch_bookings(None)
     for b in _bookings:
         print(b)
