@@ -2,12 +2,13 @@ package redis
 
 import (
 	"context"
+	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"lib/logger"
 	"math"
-	"crypto/rand"
+	"net/http"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -26,9 +27,15 @@ import (
 //Structures and Variables
 
 type RedisData struct{
-	User_id string
-	CreationTime time.Time
-	ExpirationTime time.Time
+	User_id string				`json:"User_id"`
+	CreationTime time.Time 		`json:"CreationTime"`
+	ExpirationTime time.Time	`json:"ExpirationTime"`
+}
+
+// Authenticated User Struct
+type AuthUserData struct{
+	Token string `json:"token"`
+	ExpirationTime time.Time `json:"expr_time"`
 }
 
 //Redis clients
@@ -112,12 +119,13 @@ func ValidateUserToken(token string) bool{
 	return true;
 }
 
-func AddAuthUser(user_id string) bool{
+func AddAuthUser(user_id string) AuthUserData{
 	udata := RedisData{user_id,time.Now(), time.Now().Add(time.Hour * time.Duration(1))}
 	rdata,err := json.Marshal(udata)
+	aUserData := AuthUserData{}
 	if err != nil{
 		logger.Error.Fatal(err)
-		return false
+		return aUserData
 	}
 	utoken := GenerateUserToken()
 	redisClient := GetAuthClient()
@@ -126,15 +134,36 @@ func AddAuthUser(user_id string) bool{
 	if serr != nil{
 		logger.Error.Fatal(serr)
 		fmt.Println(serr)
-		return false
+		return aUserData
 	}
 	val, gerr := redisClient.Get(ctx, utoken).Result();
 	if gerr != nil {
 		logger.Error.Fatal(gerr)
-		return false
+		return aUserData
 	}
+	_ = val
+	aUserData.Token = utoken
+	aUserData.ExpirationTime = udata.ExpirationTime
+	return aUserData
+}
+
+func GetAuthData(token string) *RedisData{
+	redisClient := GetAuthClient()
+	val, err := redisClient.Get(ctx, token).Result();
+	if(err != nil){
+		logger.Error.Println(err)
+		return nil
+	}
+	var rd *RedisData
 	fmt.Println(string(val))
-	return true
+	gerr := json.Unmarshal([]byte(val), &rd)
+	_ = val
+	fmt.Println(gerr)
+	if(gerr != nil){
+		logger.Error.Println(err)
+		return nil
+	}
+	return rd
 }
 
 func GenerateUserToken() string{
@@ -148,11 +177,12 @@ func GenerateUserToken() string{
     return str[:128]
 }
 
-
-
-func main(){
-	// router := mux.NewRouter()
-	// router.HandleFunc("/",handler)
-	// http.ListenAndServe(":5050", router)
-	AddAuthUser("5555")
+func GetUserInfo(request *http.Request) *RedisData{
+	token := string(request.Header.Get("Authorization"))
+	//check "bearer "
+	if(token[0:7] != "bearer "){
+		return nil
+	}
+	token = token[7:]
+	return GetAuthData(token)
 }

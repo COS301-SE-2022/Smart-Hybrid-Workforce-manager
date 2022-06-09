@@ -27,7 +27,9 @@ func Validate(function HandlerFunc, permissionRequired *data.Permissions) Handle
 			return
 		}
 
-		user_id := "00000000-0000-0000-0000-000000000000" // TODO [KP]: Fix this once redis is up and running
+		//userInfo := redis.GetUserInfo(request)
+
+		user_id := "00000000-0000-0000-0000-000000000000" //userInfo.User_id // TODO [KP]: Fix this once redis is up and running
 		permissions, err := GetUserPermissions(&user_id, access)
 		if err != nil {
 			utils.InternalServerError(writer, request, err)

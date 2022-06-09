@@ -51,6 +51,7 @@ services:
       - arche-network
     depends_on:
       - arche-db
+      - arche-redis
 
   arche-web:
       build:
@@ -98,6 +99,7 @@ services:
         - arche-web 
       depends_on:
         - arche-api
+        - arche-db
         - arche-web
 
 networks:
