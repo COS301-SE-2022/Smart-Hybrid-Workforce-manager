@@ -47,12 +47,30 @@ class Teams:
         """
         self.add_team(team_id, [user_id])
 
-    def exists(self, team_id: str) -> bool:
+    def remove_member(self, team_id, user_id):
         """
-        Used to find if a team has been added
+        Removes a user_id from a team if the users exists
+        :param team_id: The team to remove from
+        :param user_id: The user_id to remove
+        """
+        if self.exists(team_id, user_id):
+            self.teams[team_id].discard(user_id)
+
+    def remove_team(self, team_id):
+        if team_id in self.teams:
+            del self.teams[team_id]
+
+    def exists(self, team_id: str, user_id: str | None = None) -> bool:
+        """
+        Used to find if a team has been added, if
         :param team_id: The if of the team to check
+        :param user_id: The optional user_id to be checked for
         :return: True if it exists otherwise False
         """
+        if user_id is not None:
+            if team_id not in self.teams:
+                return False
+            return user_id in self.teams[team_id]
         return team_id in self.teams
 
     def team_size(self, team_id: str) -> int:
@@ -63,6 +81,14 @@ class Teams:
         :return: The size of the team
         """
         return len(self.teams[team_id]) if team_id in self.teams else -1
+
+    def get_team(self, team_id: str) -> List[str] | None:
+        """
+        Returns a list of user_ids or None if team does not exist
+        :param team_id: The team to retrieve
+        :return: A list of user_ids or None if team doesn't exist
+        """
+        return list(self.teams[team_id]) if team_id in self.teams else None
 
     def __str__(self):
         teams_str: str = '{\n'
@@ -82,7 +108,7 @@ def fetch_team_users(teams_filter: Dict = None) -> Teams:
     """
     req_data = json.dumps(teams_filter)  # no custom encoder so far
     resp: requests.Response = requests.post(ENDPOINT, data=req_data)
-    resp_list: List[Dict] = json.loads(resp.content) # no custom hook yet
+    resp_list: List[Dict] = json.loads(resp.content)  # no custom hook yet
     teams = Teams()
     for user_team in resp_list:
         teams.add_member(user_team["team_id"], user_team["user_id"])
@@ -106,6 +132,16 @@ if __name__ == '__main__':
     # _teams.add_member("321-123", "111-111")
     # print(_teams)
     # print(_teams.team_size("123-123"))
+    # print(_teams.exists("8787878", "4654"))
     # print(_teams.exists("8787878"))
+    # print(_teams.exists("123-123"))
+    # print(_teams.exists("123-123", "56454"))
+    # print(_teams.exists("123-123", "111-111"))
+    # _teams.remove_member("123-123", "111-333")
+    # team_123_123 = _teams.get_team("123-123")
+    # print(team_123_123)
+    # team_123_123.append("789-987")
+    # print(team_123_123)
+    # print(_teams)
     _teams = fetch_team_users()
     print(_teams)
