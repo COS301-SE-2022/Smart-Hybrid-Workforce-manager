@@ -1,6 +1,6 @@
 package db
 
-import (
+/*import (
 	"database/sql"
 	"fmt"
 	tu "lib/testutils"
@@ -133,10 +133,10 @@ func TestDummy(t *testing.T) {
 
 	// }
 	//}()
-
+	if db != nil {
+		db.Close()
+	}
 	if err := pool.Purge(resource); err != nil {
 		t.Errorf("Could not purge resource: %s", err)
 	}
-
-	db.Close()
-}
+}*/
