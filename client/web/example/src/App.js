@@ -27,12 +27,18 @@ import CreateUser from './pages/UsersCreate'
 import Roles from './pages/Roles'
 import CreateRole from './pages/RolesCreate'
 import EditRole from './pages/RolesEdit'
+import { useState } from 'react'
+// import { AppContext } from "./lib/contextLib";
+
+// const [isAuthenticated, userHasAuthenticated] = useState(true);
+
 
 function App()
 {
   return(
     <Router>
       <Routes>
+        <Route path="/login" exact element={<Login/>} />
         <Route path="/" exact element={<Home/>} />
         <Route path="/login" exact element={<Login/>} />
         <Route path="/signup" exact element={<Signup/>} />
