@@ -4,6 +4,7 @@ import (
 	"api/data"
 	"api/db"
 	"api/utils"
+	"api/redis"
 	"fmt"
 	"net/http"
 )
@@ -26,8 +27,10 @@ func Validate(function HandlerFunc, permissionRequired *data.Permissions) Handle
 			function(writer, request, nil)
 			return
 		}
+		
+		userInfo := redis.GetUserInfo(request)
 
-		user_id := "00000000-0000-0000-0000-000000000000" // TODO [KP]: Fix this once redis is up and running
+		user_id := userInfo.User_id // TODO [KP]: Fix this once redis is up and running
 		permissions, err := GetUserPermissions(&user_id, access)
 		if err != nil {
 			utils.InternalServerError(writer, request, err)
