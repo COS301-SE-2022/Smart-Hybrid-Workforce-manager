@@ -21,8 +21,8 @@ function BookingsMeeting()
       {
         method: "POST",
         body: JSON.stringify({
-          id: "33333333-dc08-4a06-9983-8b374586e453",
-          user_id: "11111111-dc08-4a06-9983-8b374586e459",
+          id: null,
+          user_id: "11111111-1111-4a06-9983-8b374586e459",
           resource_type: "MEETINGROOM",
           resource_preference_id: null,
           resource_id: null,

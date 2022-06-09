@@ -34,6 +34,7 @@
 
 .content
 {
+    min-height: 100vh;
     padding-bottom: 20vh;
     background-color: #252525;
 }
@@ -90,24 +91,6 @@
     animation: fadeIn ease 3s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
-}
-
-.card-image
-{
-    grid-area: image;
-    background: linear-gradient(#fff0 0%, #fff0 70%, #1d1d1d 100%), url("https://introducingsa.co.za/wp-content/uploads/sites/142/2022/03/Home-office.png");
-    background-size: cover;
-    border-top-left-radius: 4vh;
-    border-top-right-radius: 4vh;
-}
-
-.card-image2
-{
-    grid-area: image;
-    background: linear-gradient(#fff0 0%, #fff0 70%, #1d1d1d 100%), url("https://synivate.com/wp-content/uploads/conference-room-meetings-1-400x249.jpg");
-    background-size: cover;
-    border-top-left-radius: 4vh;
-    border-top-right-radius: 4vh;
 }
 
 .card-text 
@@ -358,6 +341,7 @@
 
 .booking
 {
+    position: relative;
     display: grid;
     grid-template-columns: 25vw 25vw;
     grid-template-rows: 30vh;
@@ -374,8 +358,6 @@
     background: white;
     box-shadow: 1vh 1vh 4vh rgba(0,0,0,0.9);
     text-align: center;
-
-    transition: 0.5s ease-in-out;
 
     animation: fadeIn ease 3s;
     animation-iteration-count: 1;
@@ -401,12 +383,90 @@
     font-size: 3vh;
 }
 
-.button-booking
+.booking-popup
 {
-    margin-top: 5vh;
-    margin-left: 37vw;
-    width: 25vw;
-    height: 5.5vh;
+    position: absolute;
+    visibility: hidden;
+
+    display: grid;
+    grid-template-columns: 25vw 25vw;
+    grid-template-rows: 30vh;
+    grid-template-areas: "edit" "delete";
+
+    border-radius: 4vh;
+    opacity: 0;
+
+    background-color: #1b1b1b;
+
+    text-align: center;
+    color: white;
+
+    transition: 0.5s;
+}
+
+.booking:hover .booking-popup
+{
+    visibility: visible;
+    transition: 0.5s;
+    opacity: 0.95;
+}
+
+.booking-edit
+{
+    grid-area: 'edit';
+    margin: 10vh;
+}
+
+.booking-delete
+{
+    grid-area: 'delete';
+    margin: 10vh;
+}
+
+
+.booking-edit-icon:hover
+{
+    cursor: pointer;
+    color: #919191;
+}
+
+.booking-delete-icon:hover
+{
+    cursor: pointer;
+    color: #919191;
+}
+
+.combo-grid
+{
+    display: grid;
+    grid-template-columns: 50vw 50vw;
+    grid-template-rows: 10vh;
+    grid-template-areas: "building" "room";
+}
+
+.building-container
+{
+    grid-area: 'building';
+    margin-top: 3vh;
+    margin-left: 4vw;
+}
+
+.button-resource-container
+{
+    margin-top: 2vh;
+    margin-left: 38vw;
+}
+
+.button-resource
+{
+    margin-left: 1vw;
+
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+
+    width: 10vw;
 
     background-color: #09A4FB;
     color: white;
@@ -417,8 +477,454 @@
     font-size: 2vh;
 }
 
-.button-booking:hover
+.button-resource-meeting
+{
+    margin-left: 1vw;
+
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+
+    width: 12vw;
+
+    background-color: #09A4FB;
+    color: white;
+
+    border-style: none;
+    border-radius: 1.3vh;
+
+    font-size: 2vh;
+}
+
+.button-resource:hover
 {
     cursor: pointer;
     background-color: #03639b;
+}
+
+.button-resource-meeting:hover
+{
+    cursor: pointer;
+    background-color: #03639b;
+}
+
+.room-container
+{
+    grid-area: 'room';
+    margin-top: 3vh;
+    margin-left: 4vw;
+}
+
+.combo-box
+{
+    font-size: 2vh;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+
+    width: 22vw;
+
+    border-radius: 1vh;
+    border-style: none;
+    color: white;
+    background-color: #1b1b1b;
+    text-align: center;
+}
+
+.resource {
+    position: relative;
+    display: grid;
+    grid-template-columns: 12vw 12vw;
+    grid-template-rows: 10vh;
+    grid-template-areas: "image""text";
+    float: left;
+
+    margin-top: 2vh;
+    margin-left: 1vw;
+    margin-right: 1vw;
+    padding-top: 1.5vh;
+
+    height: 11vh;
+    width: 12vw;
+    border-radius: 1vh;
+    background-color: #919191;
+    color: white;
+    text-align: center;
+
+    animation: fadeIn ease 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+.resource-popup {
+    position: absolute;
+    visibility: hidden;
+
+    display: grid;
+    grid-template-columns: 6vw 6vw;
+    grid-template-rows: 11vh;
+    grid-template-areas: "edit""delete";
+
+    border-radius: 1vh;
+    opacity: 0;
+
+    background-color: #1b1b1b;
+
+    text-align: center;
+    color: white;
+
+    transition: 0.5s;
+}
+
+.user-popup {
+    position: absolute;
+    visibility: hidden;
+
+    display: grid;
+    grid-template-columns: 12vw;
+    grid-template-rows: 11vh;
+    grid-template-areas: "edit";
+
+    border-radius: 1vh;
+    opacity: 0;
+
+    background-color: #1b1b1b;
+
+    text-align: center;
+    color: white;
+
+    transition: 0.5s;
+}
+
+.resource:hover .resource-popup {
+    visibility: visible;
+    transition: 0.5s;
+    opacity: 0.95;
+    background-color: #09A4FB;
+}
+
+.resource:hover .user-popup {
+    visibility: visible;
+    transition: 0.5s;
+    opacity: 0.95;
+    background-color: #09A4FB;
+}
+
+.resource-edit {
+    grid-area: 'edit';
+    margin: 3.5vh;
+}
+
+.resource-delete {
+    grid-area: 'delete';
+    margin: 3.5vh;
+}
+
+
+.resource-edit-icon:hover {
+    cursor: pointer;
+    color: #919191;
+}
+
+.resource-delete-icon:hover {
+    cursor: pointer;
+    color: #919191;
+}
+
+.resources-map
+{
+    position: relative;
+    overflow-y: auto;
+    margin-top: 3vh;
+    margin-left: 10vw;
+
+    padding-top: 3vh;
+    padding-bottom: 3vh;
+    padding-left: 5vw;
+    padding-right: 5vw;
+
+    width: 80vw;
+
+    border-radius: 1vh;
+    background-color: #1b1b1b;
+}
+
+.resource-icon
+{
+    color: white;
+    display: float;
+    text-align: center;
+}
+
+.admin-card-container {
+    display: flex;
+
+    margin-left: calc((100vw - 60vw) / 2);
+    margin-top: 5vh;
+}
+
+.admin-card {
+    display: grid;
+    grid-template-columns: 25vw;
+    grid-template-rows: 10vh auto 10vh;
+    grid-template-areas: "image""text""icon";
+
+    min-width: 25vw;
+    min-height: 35vh;
+
+    margin-left: 1.5vw;
+    margin-right: 1.5vw;
+
+    border-radius: 4vh;
+    background: white;
+    box-shadow: 1vh 1vh 4vh rgba(0, 0, 0, 0.9);
+    text-align: center;
+
+    transition: 0.5s ease-in-out;
+
+    animation: fadeIn ease 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+.admin-card-text {
+    grid-area: text;
+    margin-top: 3vh;
+    margin-left: 2vw;
+    margin-right: 2vw;
+}
+
+.admin-card-text h2 {
+    font-size: 3.5vh;
+}
+
+.admin-card-text p {
+    margin-top: 1vh;
+    color: grey;
+    font-size: 2vh;
+}
+
+.admin-card:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+    transition: 0.5s ease-in-out;
+    background-color: #45bbff;
+}
+
+.admin-icon {
+    color: black;
+    display: float;
+    text-align: center;
+}
+
+.admin-card-image {
+    margin-top: 3vh;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.user-container {
+    display: float;
+
+    margin-left: 30vw;
+    margin-top: 10vh;
+}
+
+.user {
+    position: relative;
+    display: grid;
+    grid-template-columns: 20vw 20vw;
+    grid-template-rows: 20vh 15vh 15vh 10vh ;
+    grid-template-areas: "image""text";
+
+    width: 40vw;
+    height: 60vh;
+
+    margin-left: 2.5vw;
+    margin-right: 2.5vw;
+    margin-top: 10vh;
+
+    border-radius: 4vh;
+    background: white;
+    box-shadow: 1vh 1vh 4vh rgba(0, 0, 0, 0.9);
+    text-align: left;
+
+    animation: fadeIn ease 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+.user-image {
+    grid-area: 'image';
+    background: linear-gradient(#fff0 0%, #fff0 70%, #1d1d1d 100%), url("https://media.istockphoto.com/photos/the-setup-for-success-picture-id1165916723?k=20&m=1165916723&s=612x612&w=0&h=ASBd76yDYvooY6s-Bck44cvzRcYOqkQBAzvEnKUUivw=");
+    background-size: cover;
+    border-radius: 50vh;
+
+    margin-left: 2.5vw;
+    margin-top: 2.5vh;
+
+    width: 10vw;
+    height: 10vw;
+}
+
+.user-text {
+    grid-area: 'text';
+
+    margin-top: 5.5vh;
+    margin-top: 5.5vh;
+
+    text-align: left;
+}
+
+.user-text-name {
+    font-size: 5vh;
+}
+
+.user-text-email {
+    font-size: 1.5vh;
+}
+
+.user-roles {
+    grid-column: span 2;
+    margin-top: 5vh;
+    margin-left: 5vh;
+}
+
+.user-teams {
+    grid-column: span 2;
+    margin-top: 2vh;
+    margin-left: 5vh;
+}
+
+.button-user-profile {
+    margin-left: 1.5vw;
+    margin-bottom: 1vw;
+
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+
+    grid-column: span 1;
+
+    width: 17.5vw;
+
+    background-color: #09A4FB;
+    color: white;
+
+    border-style: none;
+    border-radius: 1.3vh;
+
+    font-size: 2vh;
+}
+
+.button-user-profile:hover {
+    cursor: pointer;
+    background-color: #03639b;
+}
+
+.list {
+    display: block;
+}
+
+.list-item {
+    position: relative;
+
+    display: grid;
+    grid-template-columns: 10vw;
+    grid-template-rows: 3.5vh;
+
+    margin-left: 1vw !important;
+
+    animation: fadeIn ease 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+.list-item-content {
+    padding-top: 0.15vw;
+    padding-bottom: 0.15vw;
+    padding-left: 1vw;
+    padding-right: 1vw;
+
+    border-radius: 0.75vw;
+
+    background-color: grey;
+}
+
+.list-item-popup {
+    position: absolute;
+    visibility: hidden;
+
+    display: grid;
+    grid-template-columns: 10vw;
+    grid-template-rows: 3.5vh;
+
+    border-radius: 0.75vw;
+    opacity: 0;
+
+    background-color: #1b1b1b;
+
+    text-align: center;
+    color: white;
+
+    transition: 0.5s;
+}
+
+.list-item:hover .list-item-popup {
+    visibility: visible;
+    transition: 0.5s;
+    opacity: 0.95;
+    background-color: #09A4FB;
+}
+
+.list-item-delete {
+    text-align: right;
+    margin-right: 1vw;
+    margin-top: 0.25vw;
+    grid-area: 'delete';
+}
+
+.list-item-delete-icon:hover {
+    cursor: pointer;
+    color: #919191;
+}
+
+.button-profile-add {
+    margin-top: 0.5vw;
+    margin-left: 1vw;
+
+    padding-top: 0.75vh;
+    padding-bottom: 0.75vh;
+    padding-left: 0.75vw;
+    padding-right: 0.75vw;
+
+    width: 7vw;
+
+    background-color: #09A4FB;
+    color: white;
+
+    border-style: none;
+    border-radius: 1.3vh;
+
+    font-size: 1.5vh;
+}
+
+.combo-box-profile {
+    width: 10vw;
+
+    border-radius: 1vh;
+    color: black;
+    background-color: white;
+    text-align: center;
 }

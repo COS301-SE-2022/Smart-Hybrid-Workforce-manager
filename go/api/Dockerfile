@@ -6,10 +6,17 @@ WORKDIR /opt/arche-api
 RUN apk add git
 RUN wget -O - -q https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s v2.4.0
 
-COPY ./api ./api
-COPY ./lib ./lib
+ADD ./api/go.mod ./api/
+ADD ./api/go.sum ./api/
+ADD ./lib/go.mod ./lib/
+ADD ./lib/go.sum ./lib/
 WORKDIR /opt/arche-api/api
 RUN go mod download
+
+WORKDIR /opt/arche-api
+ADD . .
+
+WORKDIR /opt/arche-api/api
 
 RUN go build -o arche-api
 RUN ../bin/gosec ./...

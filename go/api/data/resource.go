@@ -50,6 +50,7 @@ type Resource struct {
 	Location     *string `json:"location,omitempty"`
 	RoleId       *string `json:"role_id,omitempty"`
 	ResourceType *string `json:"resource_type,omitempty"`
+	Decorations  *string `json:"decorations,omitempty"`
 	DateCreated  *string `json:"date_created,omitempty"`
 }
 
@@ -127,6 +128,7 @@ func mapResource(rows *sql.Rows) (interface{}, error) {
 		&identifier.RoleId,
 		&identifier.ResourceType,
 		&identifier.DateCreated,
+		&identifier.Decorations,
 	)
 	if err != nil {
 		return nil, err
@@ -326,8 +328,8 @@ func (RoomAssociations RoomAssociations) FindHead() *RoomAssociation {
 // StoreIdentifier stores a Resource Identifier
 func (access *ResourceDA) StoreIdentifier(identifier *Resource) error {
 	_, err := access.access.Query(
-		`SELECT 1 FROM resource.identifier_store($1, $2, $3, $4, $5, $6)`, nil,
-		identifier.Id, identifier.RoomId, identifier.Name, identifier.Location, identifier.RoleId, identifier.ResourceType)
+		`SELECT 1 FROM resource.identifier_store($1, $2, $3, $4, $5, $6, $7)`, nil,
+		identifier.Id, identifier.RoomId, identifier.Name, identifier.Location, identifier.RoleId, identifier.ResourceType, identifier.Decorations)
 	if err != nil {
 		return err
 	}

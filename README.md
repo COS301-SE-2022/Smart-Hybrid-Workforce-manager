@@ -10,6 +10,8 @@
   <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Docker_%28container_engine%29_logo.svg" alt="docker" height="40"/>
   <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Go_Logo_Blue.svg" alt="go" height="35"/>
   <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Postgresql_elephant.svg" alt="postgres" height="35"/>
+  <img src="https://user-images.githubusercontent.com/53088824/172166404-d2055f12-5dac-4876-9a87-2f9b01b89893.png" alt="postgres" height="35"/>
+  <img src="https://user-images.githubusercontent.com/53088824/172166602-ceb6f817-bd28-4a3a-ac45-9eecc4932f9b.svg" alt="postgres" height="35"/>
 </p>
 
 <a href = "https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/COS301-SE-2022/Smart-Hybrid-Workforce-manager"></a>
@@ -26,14 +28,39 @@
 <!-- Dark Mode -->
 <img src="https://user-images.githubusercontent.com/53088824/167407001-1c69efc3-2f7e-449d-9952-03e34aef579f.png#gh-dark-mode-only" height=35/>
 
-Smart Hybrid Workforce Manager is a system that aims to provide companies an easy to use system for managing company resources by allowing employees to book company space and resources using AI.
+Smart Hybrid Workforce Manager is a system that aims to provide companies an easy to use system for managing company resources by allowing employees to book company space and resources using AI to optimise the workspace.
 
 <a href="https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/projects" target="_blank">
   ➛ Project Board<br>
 </a> 
+
+### SRS Requirements
+
 <a href="https://drive.google.com/file/d/1P8EYnATIvTuzI92zB5p3PX_Cp5whZi45/view?usp=sharing" target="_blank">
-  ➛ Requirements<br>
+  ➛ SRS Requirements v1.0<br>
 </a> 
+<a href="#" target="_blank">
+  ➛ SRS Requirements v2.0<br>
+</a> 
+
+### User Manual
+
+<a href="#" target="_blank">
+  ➛ User Manual v1.0<br>
+</a> 
+
+### Architecture
+
+<a href="#" target="_blank">
+  ➛ Architecture v1.0<br>
+</a> 
+
+### Coding Standards
+
+<a href="#" target="_blank">
+  ➛ Coding Standards v1.0<br>
+</a> 
+
 
 <br>
 
@@ -93,7 +120,7 @@ Please note that the first time `docker-compose up` is run the api will error ou
 <img align="right" src="https://user-images.githubusercontent.com/53088824/167909265-faf15baa-b44c-41ab-8d15-671dd00576eb.jpg" width=150>
 
 <p>
-I am a 3rd year Computer Science Student at the University of Pretoria. I have worked part time(16 hours a week and full time on holidays) for 5DT for one and a half years where I have worked on large web based applications as well as some network based system applications. I have been tutoring for the University for two years in the Computer Science Department.
+I am a 3rd year Computer Science Student at the University of Pretoria. I have worked on large web based applications as well as some network based system applications. I have been tutoring for the University for two years in the Computer Science Department.
 </p>
 
 <a href="https://github.com/KayleePosthumus" target="_blank">
@@ -178,5 +205,3 @@ I am a 3rd year BSc Information and Knowledge systems student, specialising in d
 </details>
 
 <br>
-
-![Sprint1](https://user-images.githubusercontent.com/53088824/168417712-9d776adc-4ba9-4ab5-9405-e6ab94406189.png)

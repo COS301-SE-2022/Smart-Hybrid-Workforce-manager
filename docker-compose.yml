@@ -5,11 +5,15 @@ services:
     hostname: redis
     container_name: arche-redis
     command: redis-server --requirepass archepassword1234
+    build:
+      context: ./redis
+    environment:
+      - REDIS_URL=localhost:6379
     restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
-      - ./redis/data
+      - ./redis:/data
     networks:
       - arche-network    
 
@@ -36,6 +40,7 @@ services:
       context: ./go
       dockerfile: api/Dockerfile
     container_name: arche-api
+    hostname: arche-api
     env_file: .env
     restart: unless-stopped
     volumes:
@@ -55,19 +60,45 @@ services:
       restart: unless-stopped
       container_name: arche-web
       volumes:
-      - './client/web/example:/app'
-      - '/app/node_modules'
+      - ./client/web/example:/app
+      - /app/node_modules
       ports:
-        - 80:3000   
+        - 80:3000
       # Cannot get hot reloading to work, the following environmental variables have been tested
-      # environment:
-      #  - CHOKIDAR_USEPOLLING=true
+      environment:
+        - CHOKIDAR_USEPOLLING=true
+      #  - NODE_ENV=development
       #  - FAST_REFRESH=false
       #  - WDS_SOCKET_PATH=ws
       depends_on:
         - arche-api
       networks:
         - arche-network
+      command:
+      - nodemon
+      - server.js
+
+  arche-smart-scheduler:
+      build:
+        context: ./smart_scheduler
+        dockerfile: Dockerfile
+      container_name: arche-smart-scheduler
+      hostname: arche-smart-scheduler
+      env_file: .env
+      # restart: unless-stopped
+      volumes:
+        - ./smart_scheduler:/smart-scheduler
+        - /var/run/docker.sock:/var/run/docker.sock
+      ports:
+        - 8101:8081
+      networks:
+        - arche-network
+      links:
+        - arche-api
+        - arche-web 
+      depends_on:
+        - arche-api
+        - arche-web
 
 networks:
     arche-network:

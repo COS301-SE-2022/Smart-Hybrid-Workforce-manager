@@ -8,7 +8,8 @@ RETURNS TABLE (
 	location VARCHAR(256),
 	role_id uuid,
 	resource_type resource.type,
-    date_created TIMESTAMP
+    date_created TIMESTAMP,
+    decorations JSON
 ) AS 
 $$
 BEGIN

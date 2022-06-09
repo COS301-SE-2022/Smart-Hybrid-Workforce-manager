@@ -8,7 +8,12 @@ SELECT "user".identifier_store(
 	'Admin', 
 	'Admin', 
 	'admin@example.com', 
-	'/picture'
+	'/picture',
+    false,
+    'STANDARD',
+    0,
+    '09:00',
+    '17:00'
 );
 
 ------------ Booking Permissions
@@ -232,6 +237,14 @@ SELECT permission.user_store(
 	null::uuid -- All users
 );
 
+SELECT permission.user_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'VIEW'::permission.type,
+	'USER'::permission.category,
+	'ROLE'::permission.tenant,
+	null::uuid -- John Doe
+);
+
 ------------ Team Permissions
 SELECT permission.user_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
@@ -275,11 +288,20 @@ SELECT permission.user_store(
 
 SELECT permission.user_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'VIEW'::permission.type,
+	'USER'::permission.category,
+	'TEAM'::permission.tenant,
+	null::uuid -- John Doe
+);
+
+SELECT permission.user_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
 	'DELETE'::permission.type,
 	'TEAM'::permission.category,
 	'USER'::permission.tenant,
 	null::uuid -- All users
 );
+
 
 SELECT permission.user_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
@@ -310,31 +332,46 @@ SELECT permission.user_store(
 -- User 01
 SELECT "user".identifier_store(
 	'11111111-1111-4a06-9983-8b374586e459'::uuid,
-	'email@example.com', 
-	'Test', 
-	'Tester', 
-	'email@example.com', 
-	'/picture'
+	'john.doe@gmail.com', 
+	'John', 
+	'Doe', 
+	'john.doe@gmail.com', 
+	'/johndoe.png',
+    false,
+    'STANDARD',
+    0,
+    '09:00',
+    '17:00'
 );
 
 -- User 02
 SELECT "user".identifier_store(
 	'11111111-2222-4a06-9983-8b374586e459'::uuid,
-	'anemail@example.com', 
-	'Test', 
-	'Tester', 
-	'anemail@example.com', 
-	'/picture'
+	'jane.doe@icloud.com', 
+	'Jane', 
+	'Doe', 
+	'jane.doe@icloud.com', 
+	'/janedoe.jpeg',
+    false,
+    'STANDARD',
+    0,
+    '09:00',
+    '17:00'
 );
 
 -- User 03
 SELECT "user".identifier_store(
 	'11111111-3333-4a06-9983-8b374586e459'::uuid,
-	'anotheremail@example.com', 
-	'Test', 
-	'Tester', 
-	'anotheremail@example.com', 
-	'/picture'
+	'steve@harrington.com', 
+	'Steve', 
+	'Harrington', 
+	'steve@harrington.com', 
+	'/steve.png',
+    false,
+    'STANDARD',
+    0,
+    '09:00',
+    '17:00'
 );
 
 ----------------------------------
@@ -343,8 +380,8 @@ SELECT "user".identifier_store(
 -- Team 01
 SELECT team.identifier_store(
 	'12121212-dc08-4a06-9983-8b374586e459'::uuid,
-	'aTeam',
-	'a description', 
+	'Android',
+	'Android project', 
 	5, 
 	'picture'
 );
@@ -352,8 +389,8 @@ SELECT team.identifier_store(
 -- Team 02
 SELECT team.identifier_store(
 	'47474747-dc08-4a06-9983-8b374586e459'::uuid,
-	'anotherTeam',
-	'a description', 
+	'Aerial Photography',
+	'Project on Aerial Photography', 
 	5, 
 	'picture'
 );
@@ -377,17 +414,17 @@ SELECT team.user_store(
 -- Building 01
 SELECT resource.building_store(
 	'98989898-dc08-4a06-9983-8b374586e459'::uuid,
-	'aName',
-	'ALocation',
-	'5x5'
+	'Durban Office',
+	'63 South Street Drive',
+	'10x5'
 );
 
 -- Room 01
 SELECT resource.room_store(
 	'14141414-dc08-4a06-9983-8b374586e459'::uuid,
 	'98989898-dc08-4a06-9983-8b374586e459'::uuid,
-	'aName',
-	'ALocation',
+	'Office Block B',
+	'B4',
 	'5x5'
 );
 
@@ -396,8 +433,8 @@ SELECT resource.room_store(
 SELECT resource.room_store(
 	'15151515-dc08-4a06-9983-8b374586e459'::uuid,
 	'98989898-dc08-4a06-9983-8b374586e459'::uuid,
-	'aName',
-	'ALocation',
+	'Secretary',
+	'B9',
 	'5x5'
 );
 
@@ -412,10 +449,11 @@ SELECT resource.room_association_store(
 SELECT resource.identifier_store(
 	'22222222-dc08-4a06-9983-8b374586e459'::uuid,
 	'14141414-dc08-4a06-9983-8b374586e459'::uuid, -- Room 01
-	'name', 
-	'ALocation', 
+	'115', 
+	'B2', 
 	null::uuid, 
-	'DESK'::resource.type
+	'DESK'::resource.type,
+	'{}'
 );
 
 ----------------------------------
@@ -447,9 +485,9 @@ SELECT booking.identifier_store(
 -- Role
 
 -- Role 01
-SELECT role.identifier_store('45454545-1111-4a06-9983-8b374586e459'::uuid, 'aRole');
+SELECT role.identifier_store('45454545-1111-4a06-9983-8b374586e459'::uuid, 'Executives');
 -- Role 02
-SELECT role.identifier_store('45454545-2222-4a06-9983-8b374586e459'::uuid, 'anotherRole');
+SELECT role.identifier_store('45454545-2222-4a06-9983-8b374586e459'::uuid, 'Secretary');
 
 -- User Role 01
 SELECT role.user_store('45454545-1111-4a06-9983-8b374586e459'::uuid ,'11111111-1111-4a06-9983-8b374586e459'::uuid); -- Role 01, User 01
