@@ -4,6 +4,7 @@ import (
 	"api/data"
 	"api/db"
 	"api/utils"
+	// "api/redis"
 	"fmt"
 	"lib/logger"
 	"net/http"
@@ -241,6 +242,7 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
 	logger.Access.Printf("%v user login\n", userCred.Id)
 
 	//After user login create auth token
+	//authData := redis.AddAuthUser(user_id)
 
 	utils.JSONResponse(writer, request, users)
 }

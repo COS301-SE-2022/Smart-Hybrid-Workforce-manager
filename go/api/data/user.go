@@ -43,12 +43,6 @@ type UserDA struct {
 	access *db.Access
 }
 
-// Authenticated User Struct
-type AuthUserData struct{
-	Token string `json:"token"`
-	ExpirationTime time.Time `json:"expr_time"`
-}
-
 // NewUserDA creates a new data access from a underlying shared data access
 func NewUserDA(access *db.Access) *UserDA {
 	return &UserDA{

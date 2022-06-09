@@ -27,9 +27,15 @@ import (
 //Structures and Variables
 
 type RedisData struct{
-	User_id string
-	CreationTime time.Time
-	ExpirationTime time.Time
+	User_id string				`json:"User_id"`
+	CreationTime time.Time 		`json:"CreationTime"`
+	ExpirationTime time.Time	`json:"ExpirationTime"`
+}
+
+// Authenticated User Struct
+type AuthUserData struct{
+	Token string `json:"token"`
+	ExpirationTime time.Time `json:"expr_time"`
 }
 
 //Redis clients
@@ -113,12 +119,13 @@ func ValidateUserToken(token string) bool{
 	return true;
 }
 
-func AddAuthUser(user_id string) bool{
+func AddAuthUser(user_id string) AuthUserData{
 	udata := RedisData{user_id,time.Now(), time.Now().Add(time.Hour * time.Duration(1))}
 	rdata,err := json.Marshal(udata)
+	aUserData := AuthUserData{}
 	if err != nil{
 		logger.Error.Fatal(err)
-		return false
+		return aUserData
 	}
 	utoken := GenerateUserToken()
 	redisClient := GetAuthClient()
@@ -127,15 +134,17 @@ func AddAuthUser(user_id string) bool{
 	if serr != nil{
 		logger.Error.Fatal(serr)
 		fmt.Println(serr)
-		return false
+		return aUserData
 	}
 	val, gerr := redisClient.Get(ctx, utoken).Result();
 	if gerr != nil {
 		logger.Error.Fatal(gerr)
-		return false
+		return aUserData
 	}
-	fmt.Println(string(val))
-	return true
+	_ = val
+	aUserData.Token = utoken
+	aUserData.ExpirationTime = udata.ExpirationTime
+	return aUserData
 }
 
 func GetAuthData(token string) *RedisData{
@@ -146,7 +155,10 @@ func GetAuthData(token string) *RedisData{
 		return nil
 	}
 	var rd *RedisData
-	gerr := json.Unmarshal(val, rd)
+	fmt.Println(string(val))
+	gerr := json.Unmarshal([]byte(val), &rd)
+	_ = val
+	fmt.Println(gerr)
 	if(gerr != nil){
 		logger.Error.Println(err)
 		return nil
