@@ -78,7 +78,7 @@ func GetRedisClient(database int) redis.Client {
 	}
 	if redisClients[database] == nil {
 		redisClients[database] = redis.NewClient(&redis.Options{
-			Addr:     "localhost:6379",
+			Addr:     "redis:6379",
 			Password: "archepassword1234",
 			DB:       database,
 		})
