@@ -8,6 +8,7 @@ import (
 	"lib/logger"
 	"net/http"
 	"regexp"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -84,12 +85,31 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	// Create user
+	defaultWorkFromHome := false
+	defaultParking := "STANDARD"
+	defaultOfficeDays := 0
+	defaultPreferredStartTime, timeErr := time.Parse("15:04", "09:00")
+	if timeErr != nil {
+		fmt.Println(timeErr)
+		return
+	}
+
+	defaultPreferredEndTime, timeErr := time.Parse("15:04", "17:00")
+	if timeErr != nil {
+		fmt.Println(timeErr)
+		return
+	}
 	user = &data.User{
-		Identifier: &registerUserStruct.Email,
-		Email:      &registerUserStruct.Email,
-		FirstName:  registerUserStruct.FirstName,
-		LastName:   registerUserStruct.LastName,
-		Picture:    registerUserStruct.Picture,
+		Identifier:         &registerUserStruct.Email,
+		Email:              &registerUserStruct.Email,
+		FirstName:          registerUserStruct.FirstName,
+		LastName:           registerUserStruct.LastName,
+		Picture:            registerUserStruct.Picture,
+		WorkFromHome:       &defaultWorkFromHome,
+		Parking:            &defaultParking,
+		OfficeDays:         &defaultOfficeDays,
+		PreferredStartTime: &defaultPreferredStartTime,
+		PreferredEndTime:   &defaultPreferredEndTime,
 	}
 
 	id, err := da.StoreIdentifier(user)
@@ -224,11 +244,81 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
 }
 
 func UpdateUserHandler(writer http.ResponseWriter, request *http.Request) {
-	logger.Info.Println("user update requested")
-	utils.Ok(writer, request)
+	// Unmarshall user
+	var identifier data.User
+	err := utils.UnmarshalJSON(writer, request, &identifier)
+	if err != nil {
+		fmt.Println(err)
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	da := data.NewUserDA(access)
+	identifierUpdated, err := da.StoreIdentifier(&identifier)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	logger.Access.Printf("%v updated\n", identifier.Id)
+	utils.JSONResponse(writer, request, identifierUpdated)
 }
 
 func RemoveUserHandler(writer http.ResponseWriter, request *http.Request) {
-	logger.Info.Println("user remove requested")
-	utils.Ok(writer, request)
+	// Unmarshal resource
+	var identifier data.User
+	err := utils.UnmarshalJSON(writer, request, &identifier)
+	if err != nil {
+		fmt.Println(err)
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	// Get user information if no user id is specified
+	da := data.NewUserDA(access)
+	if identifier.Id == nil {
+		temp, err := da.FindIdentifier(&identifier)
+		identifier = *temp.FindHead()
+		if err != nil {
+			utils.InternalServerError(writer, request, err)
+			return
+		}
+	}
+
+	identifierRemoved, err := da.DeleteIdentifier(&identifier)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	logger.Access.Printf("%v User removed\n", identifier.Id)
+	utils.JSONResponse(writer, request, identifierRemoved)
 }
