@@ -38,10 +38,11 @@ var redisClients[5] *redis.Client
 var ctx = context.Background()
 
 func InitializeRedisClients() error{
+	logger.Info.Println("Redis Initializing!")
 	for i := 0; i < 5; i++{
 		if redisClients[i] == nil {
 			redisClients[i] = redis.NewClient(&redis.Options{
-				Addr:     "localhost:6379",
+				Addr:     "redis:6379",
 				Password: "archepassword1234",
 				DB:       i,
 			})
@@ -59,7 +60,7 @@ func InitializeRedisClients() error{
 			_ = val
 		}
 	}
-	//logger.Info.Println("Redis Initialized")
+	logger.Info.Println("Redis Initialized")
 	return nil
 } 
 
