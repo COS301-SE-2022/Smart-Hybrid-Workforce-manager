@@ -25,6 +25,7 @@ class Resource:
             "room_id": None,
             "name": None,
             "location": None,
+            "role_id": None,
             "resource_type": "DESK",
             "decorations": {},
             "date_created": None
