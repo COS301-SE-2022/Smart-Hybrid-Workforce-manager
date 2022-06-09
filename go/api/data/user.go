@@ -134,6 +134,24 @@ func (access *UserDA) FindIdentifier(identifier *User) (Users, error) {
 	return tmp, nil
 }
 
+//DeleteIdentifier deletes an identifier
+func (access *UserDA) DeleteIdentifier(identifier *User) (*User, error) {
+	results, err := access.access.Query(
+		`SELECT * FROM "user".identifier_remove($1)`, mapUser,
+		identifier.Id)
+	if err != nil {
+		return nil, err
+	}
+	var tmp Users
+	tmp = make([]*User, 0)
+	for r, _ := range results {
+		if value, ok := results[r].(User); ok {
+			tmp = append(tmp, &value)
+		}
+	}
+	return tmp.FindHead(), nil
+}
+
 // StoreCredential stores a credential
 func (access *UserDA) StoreCredential(Id string, secret *string, identifier string) error {
 	_, err := access.access.Query(`SELECT * FROM "user".credential_store($1, $2, $3)`, nil, Id, secret, identifier)

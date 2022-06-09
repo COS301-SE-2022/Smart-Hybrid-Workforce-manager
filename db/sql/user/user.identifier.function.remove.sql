@@ -8,7 +8,12 @@ RETURNS TABLE (
 	last_name VARCHAR(256),
 	email VARCHAR(256),
 	picture VARCHAR(256),
-    date_created TIMESTAMP
+    date_created TIMESTAMP,
+    work_from_home BOOLEAN,
+    parking parking.type,
+    office_days INTEGER,
+    preferred_start_time TIME WITHOUT TIME ZONE,
+    preferred_end_time TIME WITHOUT TIME ZONE
 ) AS 
 $$
 BEGIN
