@@ -2,13 +2,14 @@ import React from 'react'
 import { MdEdit } from 'react-icons/md'
 import { MdAccountCircle } from 'react-icons/md'
 
-const UserListItem = ({id, name}) => {
+const UserListItem = ({id, name, email}) => {
 
     let EditUser = async (e) =>
     {
         e.preventDefault();
         window.sessionStorage.setItem("UserID", id);
         window.sessionStorage.setItem("UserName", name);
+        window.sessionStorage.setItem("UserEmail", email);
         window.location.assign("./user-edit");
     }
 

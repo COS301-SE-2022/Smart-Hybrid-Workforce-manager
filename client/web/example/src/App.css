@@ -584,7 +584,7 @@
 
     display: grid;
     grid-template-columns: 12vw;
-    grid-template-rows: 10vh;
+    grid-template-rows: 11vh;
     grid-template-areas: "edit";
 
     border-radius: 1vh;
@@ -782,7 +782,6 @@
 
     margin-top: 5.5vh;
     margin-top: 5.5vh;
-
     text-align: left;
 }
 
@@ -797,11 +796,13 @@
 .user-roles {
     grid-column: span 2;
     margin-top: 5vh;
+    margin-left: 5vh;
 }
 
 .user-teams {
     grid-column: span 2;
-    margin-top: 5vh;
+    margin-top: 2vh;
+    margin-left: 5vh;
 }
 
 .button-user-profile {
@@ -829,4 +830,100 @@
 .button-user-profile:hover {
     cursor: pointer;
     background-color: #03639b;
+}
+
+.list {
+    display: block;
+}
+
+.list-item {
+    position: relative;
+
+    display: grid;
+    grid-template-columns: 10vw;
+    grid-template-rows: 3.5vh;
+
+    margin-left: 1vw !important;
+
+    animation: fadeIn ease 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+.list-item-content {
+    padding-top: 0.15vw;
+    padding-bottom: 0.15vw;
+    padding-left: 1vw;
+    padding-right: 1vw;
+
+    border-radius: 0.75vw;
+
+    background-color: grey;
+}
+
+.list-item-popup {
+    position: absolute;
+    visibility: hidden;
+
+    display: grid;
+    grid-template-columns: 10vw;
+    grid-template-rows: 3.5vh;
+
+    border-radius: 0.75vw;
+    opacity: 0;
+
+    background-color: #1b1b1b;
+
+    text-align: center;
+    color: white;
+
+    transition: 0.5s;
+}
+
+.list-item:hover .list-item-popup {
+    visibility: visible;
+    transition: 0.5s;
+    opacity: 0.95;
+    background-color: #09A4FB;
+}
+
+.list-item-delete {
+    text-align: right;
+    margin-right: 1vw;
+    margin-top: 0.25vw;
+    grid-area: 'delete';
+}
+
+.list-item-delete-icon:hover {
+    cursor: pointer;
+    color: #919191;
+}
+
+.button-profile-add {
+    margin-top: 0.5vw;
+    margin-left: 1vw;
+
+    padding-top: 0.75vh;
+    padding-bottom: 0.75vh;
+    padding-left: 0.75vw;
+    padding-right: 0.75vw;
+
+    width: 7vw;
+
+    background-color: #09A4FB;
+    color: white;
+
+    border-style: none;
+    border-radius: 1.3vh;
+
+    font-size: 1.5vh;
+}
+
+.combo-box-profile {
+    width: 10vw;
+
+    border-radius: 1vh;
+    color: black;
+    background-color: white;
+    text-align: center;
 }
