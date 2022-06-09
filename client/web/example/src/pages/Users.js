@@ -30,7 +30,7 @@ function Users()
 
   const AddUser = () =>
   {
-    window.location.assign("./user-create");
+    window.location.assign("./signup");
   }
 
   return (
@@ -41,7 +41,7 @@ function Users()
           {users.length > 0 && (
             users.map(user => 
             {
-              return <UserListItem id={user.id} name={user.first_name + " " + user.last_name} email = {user.email}/>
+              return <UserListItem id={user.id} name={user.first_name + " " + user.last_name}/>
             }
           )
           )}
