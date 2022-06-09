@@ -15,6 +15,11 @@ import (
 	"testing"
 )
 
+// Taken from lib/utils, copied since it is not exported
+type errorResponse struct {
+	Error map[string]interface{} `json:"error"`
+}
+
 func createUser(identifier string, firstName string, lastName string, email string, picture string) data.User {
 	var user data.User
 	user.Identifier = &identifier
@@ -25,13 +30,7 @@ func createUser(identifier string, firstName string, lastName string, email stri
 	return user
 }
 
-func TestRegisterUserHandler(t *testing.T) {
-	// todo @JonathanEnslin find out if no password/firstname/lastname should be allowed
-	// Taken from lib/utils, copied since it is not exported
-	type errorResponse struct {
-		Error map[string]interface{} `json:"error"`
-	}
-
+func SetupTest(t *testing.T) dtdb.TestDb {
 	// SETUP =============
 	config := dtdb.TestDbConfig{
 		Verbose:  true,
@@ -39,7 +38,6 @@ func TestRegisterUserHandler(t *testing.T) {
 		HostAdrr: "127.0.0.1",
 	}
 	testdb, err := dtdb.StartTestDb(config) // Start DB
-	defer dtdb.StopTestDbWithTest(testdb, t, false)
 	if err != nil {
 		t.Error(tu.Scolourf(tu.RED, "Could not start testDb, err: %v", err))
 		t.FailNow()
@@ -74,7 +72,15 @@ func TestRegisterUserHandler(t *testing.T) {
 	} else {
 		fmt.Println(tu.Scolour(tu.GREEN, "DB connected"))
 	}
+
+	return testdb
 	// ==================
+}
+
+func TestRegisterUserHandler(t *testing.T) {
+	// todo @JonathanEnslin find out if no password/firstname/lastname should be allowed
+	testdb := SetupTest(t)
+	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
 	// Perform tests ====
