@@ -51,7 +51,7 @@ Smart Hybrid Workforce Manager is a system that aims to provide companies an eas
 
 ### Architecture
 
-<a href="https://drive.google.com/file/d/1OK0Rvyt7aP2WyLYTT17Hj-MfmQkQrwmo/view?usp=sharing" target="_blank">
+<a href="https://drive.google.com/file/d/1dUcNiLwj9LP6OB6-xko3WhuYArjuHN7K/view" target="_blank">
   ➛ Architecture v1.0<br>
 </a> 
 
