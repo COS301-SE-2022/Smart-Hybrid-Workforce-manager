@@ -24,7 +24,8 @@ const CreateMeetingRoom = () =>
           name: meetingRoomName,
           location: meetingRoomLocation,
           role_id: null,
-          resource_type: 'MEETINGROOM'
+          resource_type: 'MEETINGROOM',
+          decorations: '{}',
         })
       });
 
