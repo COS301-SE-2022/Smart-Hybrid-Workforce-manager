@@ -39,7 +39,7 @@ Smart Hybrid Workforce Manager is a system that aims to provide companies an eas
 <a href="https://drive.google.com/file/d/1P8EYnATIvTuzI92zB5p3PX_Cp5whZi45/view?usp=sharing" target="_blank">
   ➛ SRS Requirements v1.0<br>
 </a> 
-<a href="#" target="_blank">
+<a href="https://drive.google.com/file/d/1nA5BDkb-0W2gQ5Xp25A9YvOM9bbOvX94/view?usp=sharing" target="_blank">
   ➛ SRS Requirements v2.0<br>
 </a> 
 
@@ -51,7 +51,7 @@ Smart Hybrid Workforce Manager is a system that aims to provide companies an eas
 
 ### Architecture
 
-<a href="#" target="_blank">
+<a href="https://drive.google.com/file/d/1OK0Rvyt7aP2WyLYTT17Hj-MfmQkQrwmo/view?usp=sharing" target="_blank">
   ➛ Architecture v1.0<br>
 </a> 
 
@@ -76,8 +76,11 @@ Smart Hybrid Workforce Manager is a system that aims to provide companies an eas
 <a href="https://drive.google.com/file/d/19aGbydlYjP7VNsrecyodfphOxQlFE_kn/view?usp=sharing" target="_blank">
   ➛ Demo 1 Presentation<br>
 </a> 
-<a href="#" target="_blank">
-  ➛ Demo 2<br>
+<a href="https://drive.google.com/file/d/1tdKq7UG-QFVdbF707Krwku3s3XBLsHHU/view?usp=sharing" target="_blank">
+  ➛ Demo 2 Video<br>
+</a>
+<a href="https://drive.google.com/file/d/1AmSAFxEOtFoHWTqlOaQfrDKmoL14LMdL/view?usp=sharing" target="_blank">
+  ➛ Demo 2 Presentation<br>
 </a> 
 <a href="#" target="_blank">
   ➛ Demo 3<br>
