@@ -11,7 +11,7 @@ const TeamUserList = ({id}) =>
         {
         method: "POST",
         body: JSON.stringify({
-            id: this.id
+            id: id
         })
         }).then((res) => res.json()).then(data => 
         {
