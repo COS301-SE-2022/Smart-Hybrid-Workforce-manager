@@ -10,6 +10,7 @@ import (
 	"math"
 	"net/http"
 	"time"
+	"api/data"
 
 	"github.com/go-redis/redis/v8"
 	_ "github.com/gorilla/mux"
@@ -34,8 +35,12 @@ type RedisData struct{
 
 // Authenticated User Struct
 type AuthUserData struct{
-	Token string `json:"token"`
-	ExpirationTime time.Time `json:"expr_time"`
+	Token 				string 		`json:"token"`
+	FirstName          	*string		`json:"first_name,omitempty"`
+	LastName           	*string		`json:"last_name,omitempty"`
+	Email              	*string		`json:"email,omitempty"`
+	Picture            	*string		`json:"picture,omitempty"`
+	ExpirationTime 		time.Time 	`json:"expr_time"`
 }
 
 //Redis clients
@@ -119,8 +124,12 @@ func ValidateUserToken(token string) bool{
 	return true;
 }
 
-func AddAuthUser(user_id string) AuthUserData{
-	udata := RedisData{user_id,time.Now(), time.Now().Add(time.Hour * time.Duration(1))}
+func AddAuthUser(user data.User) AuthUserData{
+	Identifier := user.Identifier
+	if(Identifier == nil){
+		logger.Error.Fatal(Identifier)
+	}
+	udata := RedisData{*Identifier,time.Now(), time.Now().Add(time.Hour * time.Duration(1))}
 	rdata,err := json.Marshal(udata)
 	aUserData := AuthUserData{}
 	if err != nil{
@@ -142,6 +151,10 @@ func AddAuthUser(user_id string) AuthUserData{
 		return aUserData
 	}
 	_ = val
+	aUserData.FirstName = user.FirstName
+	aUserData.LastName = user.LastName
+	aUserData.Email = user.Email
+	aUserData.Picture = user.Picture
 	aUserData.Token = utoken
 	aUserData.ExpirationTime = udata.ExpirationTime
 	return aUserData
