@@ -236,8 +236,10 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
 	users, err := da.FindCredential(&userCred)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
+		logger.Error.Fatal("\nerror\n%v\n",err)
 		return
 	}
+	
 	_ = users
 	var user = data.User{
 		Identifier: &(userCred.Id),

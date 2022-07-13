@@ -16,6 +16,7 @@ import (
 	"net/http"
 	"time"
 
+	"api/data"
 	"github.com/go-redis/redis/v8"
 	_ "github.com/gorilla/mux"
 )
@@ -30,21 +31,6 @@ import (
 
 ////////////////////////////////////////////////
 //Structures and Variables
-
-type User struct {
-	Id                 *string    `json:"id,omitempty"`
-	Identifier         *string    `json:"identifier,omitempty"`
-	FirstName          *string    `json:"first_name,omitempty"`
-	LastName           *string    `json:"last_name,omitempty"`
-	Email              *string    `json:"email,omitempty"`
-	Picture            *string    `json:"picture,omitempty"`
-	DateCreated        time.Time  `json:"date_created,omitempty"`
-	WorkFromHome       *bool      `json:"work_from_home,omitempty"`
-	Parking            *string    `json:"parking,omitempty"`
-	OfficeDays         *int       `json:"office_days,omitempty"`
-	PreferredStartTime *time.Time `json:"preferred_start_time,omitempty"`
-	PreferredEndTime   *time.Time `json:"preferred_end_time,omitempty"`
-}
 
 type RedisData struct{
 	User_id string				`json:"User_id"`
@@ -144,7 +130,7 @@ func ValidateUserToken(token string) bool{
 	return true;
 }
 
-func AddAuthUser(user User) AuthUserData{
+func AddAuthUser(user data.User) AuthUserData{
 	//if user exists/has id
 	Identifier := user.Identifier
 	if(Identifier == nil){
