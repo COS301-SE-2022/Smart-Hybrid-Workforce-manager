@@ -13,30 +13,37 @@ function Login()
     e.preventDefault();
     console.log(identifier);
     console.log(secret);
-    try
+    let bod = JSON.stringify({
+      "id":identifier,
+      "secret":secret,
+      "active":null,
+      "FailedAttempts":null,
+      "LastAccessed":null,
+      "Identifier":null
+    });
+    console.log(bod);
+    console.log("HERE")
+    let res = await fetch("http://localhost:8100/api/user/login", 
     {
-      let res = await fetch("http://localhost:8100/api/user/login", 
-      {
-        method: "POST",
-        body: JSON.stringify({
-          "id":null,
-          "secret":secret,
-          "active":null,
-          "FailedAttempts":null,
-          "LastAccessed":null,
-          "Identifier":identifier
-        })
-      });
+      method: "POST",
+      mode: "cors",
+      body: JSON.stringify({
+        "id":identifier,
+        "secret":secret,
+        "active":null,
+        "FailedAttempts":null,
+        "LastAccessed":null,
+        "Identifier":null
+      })
+    });
+    console.log(res);
+    if(res.status === 200)
+    {
+      console.log(res.json());
+      sessionStorage.setItem("auth_data", res);
+      alert("Successfully Logged In!");
 
-      if(res.status === 200)
-      {
-        alert("Successfully Logged In!");
-        window.location.assign("./bookings");
-      }
-    }
-    catch(err)
-    {
-      console.log(err);
+      // window.location.assign("./bookings");
     }
   };  
 
