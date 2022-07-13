@@ -4,7 +4,7 @@ CREATE OR REPLACE FUNCTION team.identifier_store(
 	_description VARCHAR(256),
 	_capacity INT,
 	_picture VARCHAR(256),
-	_team_lead_id uuid
+	_team_lead_id uuid DEFAULT NULL
 )
 RETURNS uuid AS
 $$
