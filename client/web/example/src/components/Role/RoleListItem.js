@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { MdEdit, MdDelete } from 'react-icons/md'
 import { MdPermIdentity } from 'react-icons/md'
 
-const RoleListItem = ({id, name, color}) =>
+const RoleListItem = ({id, name, color, lead}) =>
 {
     let EditRole = async (e) =>
     {
@@ -10,6 +10,7 @@ const RoleListItem = ({id, name, color}) =>
         window.sessionStorage.setItem("RoleID", id);
         window.sessionStorage.setItem("RoleName", name);
         window.sessionStorage.setItem("RoleColor", color);
+        window.sessionStorage.setItem("RoleLead", lead);
         window.location.assign("./role-edit");
     }
 
@@ -46,6 +47,7 @@ const RoleListItem = ({id, name, color}) =>
         window.sessionStorage.removeItem("RoleID");
         window.sessionStorage.removeItem("RoleName");
         window.sessionStorage.removeItem("RoleColor");
+        window.sessionStorage.removeItem("RoleLead");
     }, [])
 
     return (

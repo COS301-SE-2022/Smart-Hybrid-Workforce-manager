@@ -383,7 +383,8 @@ SELECT team.identifier_store(
 	'Android',
 	'Android project', 
 	5, 
-	'picture'
+	'picture',
+	'11111111-3333-4a06-9983-8b374586e459'
 );
 
 -- Team 02
@@ -392,7 +393,8 @@ SELECT team.identifier_store(
 	'Aerial Photography',
 	'Project on Aerial Photography', 
 	5, 
-	'picture'
+	'picture',
+	'11111111-3333-4a06-9983-8b374586e459'
 );
 
 -- Team Association 01
@@ -485,9 +487,9 @@ SELECT booking.identifier_store(
 -- Role
 
 -- Role 01
-SELECT role.identifier_store('45454545-1111-4a06-9983-8b374586e459'::uuid, 'Executives');
+SELECT role.identifier_store('45454545-1111-4a06-9983-8b374586e459'::uuid, 'Executives', '11111111-1111-4a06-9983-8b374586e459');
 -- Role 02
-SELECT role.identifier_store('45454545-2222-4a06-9983-8b374586e459'::uuid, 'Secretary');
+SELECT role.identifier_store('45454545-2222-4a06-9983-8b374586e459'::uuid, 'Secretary', '11111111-2222-4a06-9983-8b374586e459');
 
 -- User Role 01
 SELECT role.user_store('45454545-1111-4a06-9983-8b374586e459'::uuid ,'11111111-1111-4a06-9983-8b374586e459'::uuid); -- Role 01, User 01

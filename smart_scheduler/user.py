@@ -9,7 +9,7 @@ This module is responsible for user related operations
 It currently assumes that roles are flat
 """
 
-ENDPOINT: str = 'http://arche-api/api/user/information'
+ENDPOINT: str = 'http://arche-api:8080/api/user/information'
 
 # TIME_FMT: str = '%Y-%m-%dT%H:%M:%SZ'
 TIME_FMT: str = '0000-01-01T%H:%M:%SZ'

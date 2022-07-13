@@ -3,12 +3,18 @@ import Footer from "../components/Footer"
 import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import UserTeamList from '../components/Team/UserTeamList'
+import TeamLeadOption from '../components/Team/TeamLeadOption'
 
 const EditTeam = () =>
 {
-  const [teamName, setTeamName] = useState("");
-  const [teamDescription, setTeamDescription] = useState("");
-  const [teamCapacity, setTeamCapacity] = useState("");
+  const [teamName, setTeamName] = useState(window.sessionStorage.getItem("TeamName"));
+  const [teamDescription, setTeamDescription] = useState(window.sessionStorage.getItem("TeamDescription"));
+  const [teamCapacity, setTeamCapacity] = useState(window.sessionStorage.getItem("TeamCapacity"));
+  const [teamLead, setTeamLead] = useState(window.sessionStorage.getItem("TeamLead"));
+
+  const [teamUsers, SetTeamUsers] = useState([]);
+  const [viewableUsers, SetViewableUsers] = useState([]);
 
   let handleSubmit = async (e) =>
   {
@@ -22,7 +28,8 @@ const EditTeam = () =>
           id: window.sessionStorage.getItem("TeamID"),
           name: teamName,
           description: teamDescription,
-          teamCapacity: teamCapacity
+          capacity: parseInt(teamCapacity),
+          team_lead_id: teamLead == "null" ? null : teamLead
         })
       });
 
@@ -38,12 +45,44 @@ const EditTeam = () =>
     }
   };
 
-  //Using useEffect hook. This will ste the default values of the form once the components are mounted
+  //POST request
+  const FetchTeamUsers = () =>
+  {
+    fetch("http://localhost:8100/api/team/user/information", 
+        {
+          method: "POST",
+          body: JSON.stringify({
+            team_id:window.sessionStorage.getItem("TeamID")
+          })
+        }).then((res) => res.json()).then(data => 
+        {
+          SetTeamUsers(data);
+        });
+  }
+
+  //POST request
+  const FetchViewableUsers = () =>
+  {
+    fetch("http://localhost:8100/api/user/information", 
+        {
+          method: "POST",
+          body: JSON.stringify({})
+        }).then((res) => res.json()).then(data => 
+        {
+          SetViewableUsers(data);
+        });
+  }
+
+  //Using useEffect hook. This will set the default values of the form once the components are mounted
   useEffect(() =>
   {
     setTeamName(window.sessionStorage.getItem("TeamName"));
     setTeamDescription(window.sessionStorage.getItem("TeamDescription"));
     setTeamCapacity(window.sessionStorage.getItem("TeamCapacity"));
+    setTeamLead(window.sessionStorage.getItem("TeamLead"));
+
+    FetchTeamUsers();
+    FetchViewableUsers();
   }, [])
 
   return (
@@ -69,6 +108,27 @@ const EditTeam = () =>
               <Form.Control className='form-input' type="text" placeholder="Enter your team capacity" value={teamCapacity} onChange={(e) => setTeamCapacity(e.target.value)} />
             </Form.Group>
 
+            <Form.Group className='form-group' controlId="formBasicTeamLead">
+              <Form.Label className='form-label'>Team Lead<br></br></Form.Label>
+              <select className='combo-box' name='teamlead' value={teamLead} onChange={(e) => setTeamLead(e.target.value)}>
+                <option value="null">--none--</option>
+                {teamUsers.length > 0 && (
+                  teamUsers.map(teamUser => (
+                    <TeamLeadOption id={teamUser.user_id} teamLeadId={teamLead} />
+                  ))
+                )}
+              </select>
+            </Form.Group>
+
+            <Form.Group className='form-group' controlId="formTeamMembers">
+              <Form.Label className='form-label'>Team Members<br></br></Form.Label>
+              {teamUsers.length > 0 && (
+                  teamUsers.map(teamUser => (
+                    <UserTeamList id={teamUser.user_id} />
+                  ))
+                )}
+            </Form.Group>
+            
             <Button className='button-submit' variant='primary' type='submit'>Update Team</Button>
           </Form>
         </div>

@@ -3,11 +3,16 @@ import Footer from "../components/Footer"
 import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import UserRoleList from '../components/Role/UserRoleList'
+import RoleLeadOption from '../components/Role/RoleLeadOption'
 
 const EditRole = () =>
 {
   const [roleName, setRoleName] = useState("");
   const [roleColor, setRoleColor] = useState("");
+  const [roleLead, setRoleLead] = useState(window.sessionStorage.getItem("RoleLead"));
+
+  const [roleUsers, SetRoleUsers] = useState([]);
 
   let handleSubmit = async (e) =>
   {
@@ -19,7 +24,8 @@ const EditRole = () =>
         method: "POST",
         body: JSON.stringify({
           id: window.sessionStorage.getItem("RoleID"),
-          role_name: roleName.substring(5,roleName.length)
+          role_name: roleName,
+          role_lead_id: roleLead == "null" ? null : roleLead
         })
       });
 
@@ -35,11 +41,29 @@ const EditRole = () =>
     }
   };
 
+    //POST request
+  const FetchRoleUsers = () =>
+  {
+    fetch("http://localhost:8100/api/role/user/information", 
+        {
+          method: "POST",
+          body: JSON.stringify({
+            role_id:window.sessionStorage.getItem("RoleID")
+          })
+        }).then((res) => res.json()).then(data => 
+        {
+          SetRoleUsers(data);
+        });
+  }
+
   //Using useEffect hook. This will ste the default values of the form once the components are mounted
   useEffect(() =>
   {
-    setRoleName(window.sessionStorage.getItem("RoleName"));
+    setRoleName(window.sessionStorage.getItem("RoleName").substring(5, window.sessionStorage.getItem("RoleName").length));
     setRoleColor(window.sessionStorage.getItem("RoleColor"));
+    setRoleLead(window.sessionStorage.getItem("RoleLead"));
+
+    FetchRoleUsers();
   }, [])
 
   return (
@@ -58,6 +82,27 @@ const EditRole = () =>
             <Form.Group className='form-group' controlId="formBasicName">
               <Form.Label className='form-label'>Role Color<br></br></Form.Label>
               <Form.Control name="dLocation" className='form-input' type="text" placeholder="#111111" value={roleColor} onChange={(e) => setRoleColor(e.target.value)} />
+            </Form.Group>
+
+            <Form.Group className='form-group' controlId="formBasicRoleLead">
+              <Form.Label className='form-label'>Role Lead<br></br></Form.Label>
+              <select className='combo-box' name='rolelead' value={roleLead} onChange={(e) => setRoleLead(e.target.value)}>
+                <option value="null">--none--</option>
+                {roleUsers.length > 0 && (
+                  roleUsers.map(roleUser => (
+                    <RoleLeadOption id={roleUser.user_id} roleLeadId={roleLead} />
+                  ))
+                )}
+              </select>
+            </Form.Group>
+
+             <Form.Group className='form-group' controlId="formRoleMembers">
+              <Form.Label className='form-label'>Role Members<br></br></Form.Label>
+              {roleUsers.length > 0 && (
+                  roleUsers.map(roleUser => (
+                    <UserRoleList id={roleUser.user_id} />
+                  ))
+                )}
             </Form.Group>
 
             <Button className='button-submit' variant='primary' type='submit'>Update Role</Button>
