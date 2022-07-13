@@ -931,7 +931,9 @@
 
 .canvas-container
 {
-    background-color: white;
+    background-color: rgb(148, 148, 148);
     width: 60vw;
     height: 60vh;
+    margin-left: 20vw;
+    margin-top: 10vh;
 }

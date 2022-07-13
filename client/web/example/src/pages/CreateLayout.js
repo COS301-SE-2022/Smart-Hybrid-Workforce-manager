@@ -29,11 +29,12 @@ const Layout = () =>
                     <Stage width={stage.width} height={stage.height} >
                         <Layer>
                             <Rect
-                                width={50}
+                                width={100}
                                 height={50}
                                 x={position.x}
                                 y={position.y}
-                                fill="red"
+                                fill="white"
+                                stroke="black"
                                 draggable
                                 onDragStart={() =>
                                 {
@@ -42,7 +43,15 @@ const Layout = () =>
                                 onDragEnd={(e) =>
                                 {
                                     setPosition({isDragging : false, x : e.target.x(), y : e.target.y()});
-                                }}   
+                                }}
+                                onMouseEnter={(e) =>
+                                {
+                                    e.target.getStage().container().style.cursor = 'move';
+                                }}
+                                onMouseLeave={(e) =>
+                                {
+                                    e.target.getStage().container().style.cursor = 'default';
+                                }}
                             />
                         </Layer>
                     </Stage>
