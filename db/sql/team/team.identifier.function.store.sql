@@ -3,7 +3,8 @@ CREATE OR REPLACE FUNCTION team.identifier_store(
 	_name VARCHAR(256),
 	_description VARCHAR(256),
 	_capacity INT,
-	_picture VARCHAR(256)
+	_picture VARCHAR(256),
+	_team_lead_id uuid
 )
 RETURNS uuid AS
 $$
@@ -15,12 +16,13 @@ BEGIN
         SET name = _name,
             description = _description,
             capacity = _capacity,
-            picture = _picture
+            picture = _picture,
+			team_lead_id = _team_lead_id
         WHERE id = _id
 		RETURNING identifier.id INTO __id;
     ELSE
-    	INSERT INTO team.identifier(id, name, description, capacity, picture)
-    	VALUES (COALESCE(_id, uuid_generate_v4()), _name, _description, _capacity, _picture)
+    	INSERT INTO team.identifier(id, name, description, capacity, picture, team_lead_id)
+    	VALUES (COALESCE(_id, uuid_generate_v4()), _name, _description, _capacity, _picture, _team_lead_id)
 		RETURNING identifier.id INTO __id;
     END IF;
 	RETURN __id;

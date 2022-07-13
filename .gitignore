@@ -4,3 +4,4 @@ redis/dump.rdb
 smart_scheduler/.idea
 *.pyc
 *.rdb
+redis/dump.rdb
