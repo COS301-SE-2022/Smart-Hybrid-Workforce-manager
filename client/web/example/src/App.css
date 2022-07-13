@@ -928,3 +928,10 @@
     background-color: white;
     text-align: center;
 }
+
+.canvas-container
+{
+    background-color: white;
+    width: 60vw;
+    height: 60vh;
+}

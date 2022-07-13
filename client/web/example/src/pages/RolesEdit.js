@@ -25,7 +25,7 @@ const EditRole = () =>
         body: JSON.stringify({
           id: window.sessionStorage.getItem("RoleID"),
           role_name: roleName,
-          role_lead_id: roleLead == "null" ? null : roleLead
+          role_lead_id: roleLead === "null" ? null : roleLead
         })
       });
 
