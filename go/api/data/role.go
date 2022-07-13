@@ -12,9 +12,10 @@ import (
 
 // Role identifies a Role via common attributes
 type Role struct {
-	Id        *string    `json:"id,omitempty"`
-	RoleName  *string    `json:"role_name,omitempty"`
-	DateAdded *time.Time `json:"date_added,omitempty"`
+	Id         *string    `json:"id,omitempty"`
+	RoleName   *string    `json:"role_name,omitempty"`
+	RoleLeadId *string    `json:"role_lead_id,omitempty"`
+	DateAdded  *time.Time `json:"date_added,omitempty"`
 }
 
 // Roles represent a splice of Role
@@ -55,6 +56,7 @@ func mapRole(rows *sql.Rows) (interface{}, error) {
 	err := rows.Scan(
 		&identifier.Id,
 		&identifier.RoleName,
+		&identifier.RoleLeadId,
 		&identifier.DateAdded,
 	)
 	if err != nil {
@@ -82,8 +84,8 @@ func mapUserRole(rows *sql.Rows) (interface{}, error) {
 // StoreIdentifier stores an identifier
 func (access *RoleDA) StoreIdentifier(identifier *Role) error {
 	_, err := access.access.Query(
-		`SELECT 1 FROM role.identifier_store($1, $2)`, nil,
-		identifier.Id, identifier.RoleName)
+		`SELECT 1 FROM role.identifier_store($1, $2, $3)`, nil,
+		identifier.Id, identifier.RoleName, identifier.RoleLeadId)
 	if err != nil {
 		return err
 	}
@@ -97,8 +99,8 @@ func (access *RoleDA) FindIdentifier(identifier *Role, permissions *Permissions)
 		return nil, err
 	}
 	results, err := access.access.Query(
-		`SELECT * FROM role.identifier_find($1, $2, $3, $4)`, mapRole,
-		identifier.Id, identifier.RoleName, identifier.DateAdded, permissionContent)
+		`SELECT * FROM role.identifier_find($1, $2, $3, $4, $5)`, mapRole,
+		identifier.Id, identifier.RoleName, identifier.RoleLeadId, identifier.DateAdded, permissionContent)
 	if err != nil {
 		return nil, err
 	}
