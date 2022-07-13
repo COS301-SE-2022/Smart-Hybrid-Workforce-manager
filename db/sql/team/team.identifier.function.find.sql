@@ -4,6 +4,7 @@ CREATE OR REPLACE FUNCTION team.identifier_find(
     _description VARCHAR(256) DEFAULT NULL,
     _capacity INT DEFAULT NULL,
     _picture VARCHAR(256) DEFAULT NULL,
+    _team_lead_id uuid DEFAULT NULL,
     _date_created TIMESTAMP DEFAULT NULL,
     _permissions JSONB DEFAULT NULL -- Must only contain role_ids not user_ids
 )
@@ -13,6 +14,7 @@ RETURNS TABLE (
 	description VARCHAR(256),
 	capacity INT,
 	picture VARCHAR(256),
+	team_lead_id uuid,
     date_created TIMESTAMP
 ) AS 
 $$
@@ -39,7 +41,7 @@ BEGIN
         AND permission_category = 'TEAM'::permission.category
         AND permission_tenant = 'IDENTIFIER'::permission.tenant
     )
-    SELECT i.id, i.name, i.description, i.capacity, i.picture, i.date_created
+    SELECT i.id, i.name, i.description, i.capacity, i.picture, i.team_lead_id, i.date_created
     FROM team.identifier as i
     WHERE (EXISTS(SELECT 1 FROM permitted_teams WHERE permission_tenant_id is null) OR i.id = ANY(SELECT * FROM permitted_teams))
     AND (_id IS NULL OR i.id = _id)
@@ -47,6 +49,7 @@ BEGIN
     AND (_description IS NULL OR i.description = _description)
     AND (_capacity IS NULL OR i.capacity = _capacity)
     AND (_picture IS NULL OR i.picture = _picture)
+    AND (_team_lead_id IS NULL OR i.team_lead_id = _team_lead_id)
     AND (_date_created IS NULL OR i.date_created >= _date_created);
 
     DROP TABLE _permissions_table;
