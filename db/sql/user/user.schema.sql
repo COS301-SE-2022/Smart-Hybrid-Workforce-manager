@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS "user".identifier (
     office_days INTEGER NOT NULL DEFAULT 0,
     preferred_start_time TIME WITHOUT TIME ZONE DEFAULT NULL,
     preferred_end_time TIME WITHOUT TIME ZONE DEFAULT NULL,
+    preferred_desk uuid DEFAULT NULL,
 	
     PRIMARY KEY (id)
 );
