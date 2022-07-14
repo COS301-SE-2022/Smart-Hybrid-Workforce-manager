@@ -384,6 +384,7 @@ SELECT team.identifier_store(
 	'Android project', 
 	5, 
 	'picture',
+	0,
 	'11111111-3333-4a06-9983-8b374586e459'
 );
 
@@ -394,6 +395,7 @@ SELECT team.identifier_store(
 	'Project on Aerial Photography', 
 	5, 
 	'picture',
+	1,
 	'11111111-3333-4a06-9983-8b374586e459'
 );
 
