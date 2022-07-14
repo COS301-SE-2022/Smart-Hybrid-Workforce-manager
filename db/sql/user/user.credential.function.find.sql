@@ -22,7 +22,7 @@ BEGIN
     SELECT i.id, i.secret, i.identifier, i."type", i.active, i.failed_attempts, i.last_accessed
     FROM "user".credential as i
     WHERE (_id IS NULL OR i.id = _id)
-    AND (_secret IS NULL OR i.secret = _secret)
+    AND (_secret IS NULL OR CRYPT(_secret, i.secret) = _secret)
     AND (_identifier IS NULL OR i.identifier = _identifier)
     AND (_type IS NULL OR i."type" = _type)
     AND (_active IS NULL OR i.active = _active)
