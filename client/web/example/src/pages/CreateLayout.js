@@ -1,14 +1,17 @@
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import { Stage, Layer, Rect} from 'react-konva'
-import { useRef, useState, useEffect } from 'react'
+import { Stage, Layer, Rect, Transformer} from 'react-konva'
+import { useRef, useState, useEffect, Fragment } from 'react'
 
 const Layout = () =>
 {
     const [position, setPosition] = useState([]);
     const [stage, setStage] = useState({width : 100, height : 100});
     const [count, setCount] = useState(0);
+    const [selectedId, selectShape] = useState(null);
     const canvasRef = useRef(null);
+    const transformRef = useRef(null);
+    const deskRef = useRef(null);
 
     const AddDesk = () =>
     {
@@ -16,15 +19,87 @@ const Layout = () =>
         [
             ...position,
             {
-                id : count,
-                isDragging : false,
+                key : "desk" + count,
+                width : 100,
+                height : 50,
+                cornerRadius : 10,
                 x : 0,
-                y : 0
+                y : 0,
+                fill : "white",
+                stroke : "black",
             }
         ]);
 
         setCount(count + 1);
     }
+
+    const Rectangle = ({ shapeProps, isSelected, onSelect, onChange}) =>
+    {
+        const shapeRef = useRef(null);
+        const transformRef = useRef(null);
+
+        useEffect(() =>
+        {
+            if(isSelected)
+            {
+                transformRef.current.nodes([shapeRef.current]);
+                transformRef.current.getLayer().batchDraw();
+            }
+        }, [isSelected]);
+
+        return (
+            <Fragment>
+                <Rect
+                    onClick={onSelect}
+                    onTap={onSelect}
+                    onDragStart={(e) =>
+                    {
+                        onSelect()
+                    }}
+
+                    ref={shapeRef}
+                    {...shapeProps}
+                    {...console.log(position)}
+                    draggable
+
+                    onDragEnd={(e) =>
+                    {
+                        onChange({
+                            ...shapeProps,
+                            x : e.target.x(),
+                            y : e.target.y()
+                        })
+                    }}
+
+                    onTransformEnd={(e) =>
+                    {
+                        const node = shapeRef.current;
+                        onChange({
+                            ...shapeProps,
+                            x : node.x(),
+                            y : node.y()
+                        });
+                    }}
+
+                    onMouseEnter={(e) =>
+                    {
+                        e.target.getStage().container().style.cursor = 'move';
+                    }}
+
+                    onMouseLeave={(e) =>
+                    {
+                        e.target.getStage().container().style.cursor = 'default';
+                    }}
+                />
+                
+                {isSelected && (
+                    <Transformer 
+                        ref = {transformRef}
+                    />
+                )}
+            </Fragment>
+        );
+    };
 
     const handleResize = () =>
     {
@@ -47,69 +122,91 @@ const Layout = () =>
                     <Stage width={stage.width} height={stage.height} >
                         <Layer>
                             {position.length > 0 && (
-                                position.map(desk => (
-                                    <Rect
-                                        key={desk.id}
-                                        width={100}
-                                        height={50}
-                                        cornerRadius={10}
-                                        x={desk.x}
-                                        y={desk.y}
-                                        fill={desk.isDragging ? "#09A4FB" : "white"}
-                                        stroke="black"
+                                position.map((desk, i) => (
+                                    /*<Rect
+                                        key = {"desk" + desk.id}
+                                        width = {100}
+                                        height = {50}
+                                        cornerRadius = {10}
+                                        x = {desk.x}
+                                        y = {desk.y}
+                                        fill = {desk.isSelected ? "#09A4FB" : "white"}
+                                        stroke = "black"
+                                        ref = {deskRef}
                                         draggable
-                                        onDragStart={(e) =>
+
+                                        onDragStart = {(e) =>
                                         {
                                             const id = e.target.id();
                                             setPosition(
                                                 position.map((pos) => 
+                                                {
+                                                    return {
+                                                        ...pos,
+                                                        isSelected : pos.id === id,
+                                                    }
+                                                })
+                                            );
+                                        }}
+
+                                        onDragEnd = {(e) =>
+                                        {
+                                            const id = e.target.id();
+                                            setPosition(
+                                                position.map((pos) => 
+                                                {
+                                                    if(pos.id === id)
                                                     {
                                                         return {
                                                             ...pos,
-                                                            isDragging : pos.id === id,
+                                                            isSelected : false,
+                                                            x : e.target.x(),
+                                                            y : e.target.y()
                                                         }
-                                                    })
-                                            );
-                                        }}
-                                        onDragEnd={(e) =>
-                                        {
-                                            const id = e.target.id();
-                                            setPosition(
-                                                position.map((pos) => 
+                                                    }
+                                                    else
                                                     {
-                                                        if(pos.id === id)
-                                                        {
-                                                            return {
-                                                                ...pos,
-                                                                isDragging : false,
-                                                                x : e.target.x(),
-                                                                y : e.target.y()
-                                                            }
+                                                        return {
+                                                            ...pos,
+                                                            isSelected : false,
                                                         }
-                                                        else
-                                                        {
-                                                            return {
-                                                                ...pos,
-                                                                isDragging : false,
-                                                            }
-                                                        }
-                                                        
-                                                    })
+                                                    }
+                                                    
+                                                })
                                             );
-                                            //setPosition({isDragging : false, x : e.target.x(), y : e.target.y()});
                                         }}
-                                        onMouseEnter={(e) =>
+
+                                        onMouseEnter = {(e) =>
                                         {
                                             e.target.getStage().container().style.cursor = 'move';
                                         }}
-                                        onMouseLeave={(e) =>
+
+                                        onMouseLeave = {(e) =>
                                         {
                                             e.target.getStage().container().style.cursor = 'default';
                                         }}
+                                    />*/
+
+                                    <Rectangle
+                                        key = {desk.key}
+                                        shapeProps = {desk}
+
+                                        isSelected = {desk.key === selectedId}
+                                        
+                                        onSelect = {() => 
+                                        {
+                                            selectShape(desk.key);
+                                        }}
+                                        
+                                        onChange = {(newPos) => 
+                                        {
+                                            const positions = position.slice();
+                                            positions[i] = newPos;
+                                            setPosition(positions)
+                                        }}
                                     />
                                 ))
-                            )}
-                            
+                            )}                            
                         </Layer>
                     </Stage>
                 </div>
