@@ -4,6 +4,7 @@ CREATE OR REPLACE FUNCTION team.identifier_store(
 	_description VARCHAR(256),
 	_capacity INT,
 	_picture VARCHAR(256),
+	_priority INT DEFAULT NULL,
 	_team_lead_id uuid DEFAULT NULL
 )
 RETURNS uuid AS
@@ -17,12 +18,13 @@ BEGIN
             description = _description,
             capacity = _capacity,
             picture = _picture,
-			team_lead_id = _team_lead_id
+			team_lead_id = _team_lead_id,
+			priority = _priority
         WHERE id = _id
 		RETURNING identifier.id INTO __id;
     ELSE
-    	INSERT INTO team.identifier(id, name, description, capacity, picture, team_lead_id)
-    	VALUES (COALESCE(_id, uuid_generate_v4()), _name, _description, _capacity, _picture, _team_lead_id)
+    	INSERT INTO team.identifier(id, name, description, capacity, picture, priority, team_lead_id)
+    	VALUES (COALESCE(_id, uuid_generate_v4()), _name, _description, _capacity, _picture, _priority, _team_lead_id)
 		RETURNING identifier.id INTO __id;
     END IF;
 	RETURN __id;
