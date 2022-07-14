@@ -9,9 +9,15 @@ const Layout = () =>
     const [stage, setStage] = useState({width : 100, height : 100});
     const [count, setCount] = useState(0);
     const [selectedId, selectShape] = useState(null);
+    const checkDeselect = (e) =>
+    {
+        const clickedEmpty = e.target === e.target.getStage();
+        if(clickedEmpty)
+        {
+            selectShape(null);
+        }
+    }
     const canvasRef = useRef(null);
-    const transformRef = useRef(null);
-    const deskRef = useRef(null);
 
     const AddDesk = () =>
     {
@@ -20,13 +26,14 @@ const Layout = () =>
             ...position,
             {
                 key : "desk" + count,
-                width : 100,
-                height : 50,
                 cornerRadius : 10,
                 x : 0,
                 y : 0,
+                width : 100,
+                height : 50,
                 fill : "white",
                 stroke : "black",
+                rotation : 0
             }
         ]);
 
@@ -52,11 +59,6 @@ const Layout = () =>
                 <Rect
                     onClick={onSelect}
                     onTap={onSelect}
-                    onDragStart={(e) =>
-                    {
-                        onSelect()
-                    }}
-
                     ref={shapeRef}
                     {...shapeProps}
                     {...console.log(position)}
@@ -73,11 +75,11 @@ const Layout = () =>
 
                     onTransformEnd={(e) =>
                     {
-                        const node = shapeRef.current;
                         onChange({
                             ...shapeProps,
-                            x : node.x(),
-                            y : node.y()
+                            x : e.target.x(),
+                            y : e.target.y(),
+                            rotation : e.target.rotation()
                         });
                     }}
 
@@ -95,6 +97,9 @@ const Layout = () =>
                 {isSelected && (
                     <Transformer 
                         ref = {transformRef}
+                        rotationSnaps = {[0, 90, 180, 270]}
+                        resizeEnabled = {false}
+                        centeredScaling = {true}
                     />
                 )}
             </Fragment>
@@ -119,74 +124,10 @@ const Layout = () =>
                 <Navbar />
                 <button onClick={AddDesk}>Add Desk</button>
                 <div ref={canvasRef} className='canvas-container'>
-                    <Stage width={stage.width} height={stage.height} >
+                    <Stage width={stage.width} height={stage.height} onMouseDown={checkDeselect} onTouchStart={checkDeselect}>
                         <Layer>
                             {position.length > 0 && (
                                 position.map((desk, i) => (
-                                    /*<Rect
-                                        key = {"desk" + desk.id}
-                                        width = {100}
-                                        height = {50}
-                                        cornerRadius = {10}
-                                        x = {desk.x}
-                                        y = {desk.y}
-                                        fill = {desk.isSelected ? "#09A4FB" : "white"}
-                                        stroke = "black"
-                                        ref = {deskRef}
-                                        draggable
-
-                                        onDragStart = {(e) =>
-                                        {
-                                            const id = e.target.id();
-                                            setPosition(
-                                                position.map((pos) => 
-                                                {
-                                                    return {
-                                                        ...pos,
-                                                        isSelected : pos.id === id,
-                                                    }
-                                                })
-                                            );
-                                        }}
-
-                                        onDragEnd = {(e) =>
-                                        {
-                                            const id = e.target.id();
-                                            setPosition(
-                                                position.map((pos) => 
-                                                {
-                                                    if(pos.id === id)
-                                                    {
-                                                        return {
-                                                            ...pos,
-                                                            isSelected : false,
-                                                            x : e.target.x(),
-                                                            y : e.target.y()
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        return {
-                                                            ...pos,
-                                                            isSelected : false,
-                                                        }
-                                                    }
-                                                    
-                                                })
-                                            );
-                                        }}
-
-                                        onMouseEnter = {(e) =>
-                                        {
-                                            e.target.getStage().container().style.cursor = 'move';
-                                        }}
-
-                                        onMouseLeave = {(e) =>
-                                        {
-                                            e.target.getStage().container().style.cursor = 'default';
-                                        }}
-                                    />*/
-
                                     <Rectangle
                                         key = {desk.key}
                                         shapeProps = {desk}
