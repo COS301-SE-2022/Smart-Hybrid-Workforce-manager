@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import React, {useState} from 'react';
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
@@ -27,8 +28,8 @@ import CreateUser from './pages/UsersCreate'
 import Roles from './pages/Roles'
 import CreateRole from './pages/RolesCreate'
 import EditRole from './pages/RolesEdit'
-// import React, { useState } from "react";
 
+import globalContext from "./storage/appContext"
 
 function App()
 {

@@ -2,8 +2,14 @@ import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import BookingCard from "../components/BookingCard/BookingCard"
 
+import React, { useState, useEffect, useContext } from "react";
+import { Context } from "../storage/appContext";
+
 function Bookings()
 {
+
+  const { auth_data } = useContext(Context);
+  
   return (
     <div className='page-container'>
       <div className='content'>
