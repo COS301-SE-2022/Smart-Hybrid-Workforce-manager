@@ -7,7 +7,8 @@ function Login()
 {
   const [identifier, setIdentifier] = useState("");
   const [secret, setSecret] = useState("");
-  
+  const auth = sessionStorage.getItem("auth_data");
+
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
@@ -23,7 +24,7 @@ function Login()
     });
     console.log(bod);
     console.log("HERE")
-    let res = await fetch("http://localhost:8100/api/user/login", 
+    fetch("http://localhost:8100/api/user/login", 
     {
       method: "POST",
       mode: "cors",
@@ -35,16 +36,31 @@ function Login()
         "LastAccessed":null,
         "Identifier":null
       })
-    });
-    console.log(res);
-    if(res.status === 200)
-    {
-      console.log(res.json());
-      sessionStorage.setItem("auth_data", res);
-      alert("Successfully Logged In!");
-
+    }).then((res) => {
+      if(res.status === 200){
+        alert("Successfully Logged In!")
+        return res.json();        
+      }
+      else
+        alert("Failed login");
+    }).then((data) => {
+      var json_object = JSON.parse(JSON.stringify(data))
+      var auth_data = {}
+      console.log(data["token"])
+      sessionStorage.setItem("auth_data", json_object);
       // window.location.assign("./bookings");
-    }
+    }).catch((err) => {
+      console.error(err);
+    })
+    
+    // if(res.status === 200)
+    // {
+    //   console.log(res.json());
+    //   // sessionStorage.setItem("auth_data", res);
+    //   alert("Successfully Logged In!");
+
+    //   // window.location.assign("./bookings");
+    // }
   };  
 
   return (
@@ -53,7 +69,7 @@ function Login()
         <div className='login-grid'>
           <div className='form-container-login'>
             <p className='form-header'><h1>WELCOME BACK</h1>Please enter your details.</p>
-            
+            {auth===undefined?console.log("logged In"):console.log("not logged in")}
             <Form className='form' onSubmit={handleSubmit}>
               <Form.Group className='form-group' controlId="formBasicEmail">
                 <Form.Label className='form-label'>Email<br></br></Form.Label>
