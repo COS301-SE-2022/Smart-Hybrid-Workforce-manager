@@ -4,8 +4,11 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 )
+
+const SEP string = "   "
 
 type Status string
 
@@ -23,6 +26,7 @@ type LogEntry struct {
 	status   Status
 }
 
+// Generates a LogEntry struct, if datetime is nil, Now is used
 func NewLogEntry(status Status, datetime *time.Time) LogEntry {
 	now := time.Now() // if no datetime was passed current time will be used
 	if datetime == nil {
@@ -34,10 +38,25 @@ func NewLogEntry(status Status, datetime *time.Time) LogEntry {
 	}
 }
 
+// Generates string representation
 func (entry LogEntry) String() string {
-	return fmt.Sprintf("[%s] %s", entry.status, entry.datetime.Format(DT_FMT))
+	return fmt.Sprintf("%s%s%s", entry.status, SEP, entry.datetime.Format(DT_FMT))
 }
 
+// Parses a string into a struct, representation returned by String is used
+func Parse(str string) (*LogEntry, error) {
+	parts := strings.Split(str, SEP)
+	status := parts[0]
+	dateStr := parts[1]
+	date, err := time.Parse(DT_FMT, dateStr)
+	if err != nil {
+		return nil, err
+	}
+	entry := NewLogEntry(Status(status), &date)
+	return &entry, nil
+}
+
+// Writes the entry to the passed file
 func (entry LogEntry) WriteLog(path string) error {
 	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0640) // rw-r-----
 	if err != nil {
@@ -48,11 +67,13 @@ func (entry LogEntry) WriteLog(path string) error {
 	return err
 }
 
-func (entry LogEntry) ReadLastEntry(path string) (string, error) {
+// reads the last entry from a log file and returns the entry, or nil
+// if file is empty
+func ReadLastEntry(path string) (*LogEntry, error) {
 	// create the file if it does not yet exist
 	f, err := os.OpenFile(path, os.O_CREATE|os.O_RDONLY, 0640) // rw-r-----
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	defer f.Close()
 
@@ -63,7 +84,12 @@ func (entry LogEntry) ReadLastEntry(path string) (string, error) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		return "", err
+		return nil, err
 	}
-	return lastLine, nil
+
+	if lastLine == "" {
+		return nil, nil
+	}
+
+	return Parse(lastLine)
 }
