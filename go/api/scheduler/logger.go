@@ -1,7 +1,9 @@
 package scheduler
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"time"
 )
 
@@ -34,4 +36,34 @@ func NewLogEntry(status Status, datetime *time.Time) LogEntry {
 
 func (entry LogEntry) String() string {
 	return fmt.Sprintf("[%s] %s", entry.status, entry.datetime.Format(DT_FMT))
+}
+
+func (entry LogEntry) WriteLog(path string) error {
+	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0640) // rw-r-----
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	_, err = f.WriteString(entry.String() + "\n")
+	return err
+}
+
+func (entry LogEntry) ReadLastEntry(path string) (string, error) {
+	// create the file if it does not yet exist
+	f, err := os.OpenFile(path, os.O_CREATE|os.O_RDONLY, 0640) // rw-r-----
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+
+	var lastLine string // only last line should be returned
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		lastLine = scanner.Text()
+	}
+
+	if err := scanner.Err(); err != nil {
+		return "", err
+	}
+	return lastLine, nil
 }
