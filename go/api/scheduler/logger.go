@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const SEP string = "   "
+const SEP string = " ~ "
 
 type Status string
 
@@ -26,7 +26,7 @@ type LogEntry struct {
 	status   Status
 }
 
-// Generates a LogEntry struct, if datetime is nil, Now is used
+// NewLogEntry Generates a LogEntry struct, if datetime is nil, Now is used
 func NewLogEntry(status Status, datetime *time.Time) LogEntry {
 	now := time.Now() // if no datetime was passed current time will be used
 	if datetime == nil {
@@ -43,7 +43,7 @@ func (entry LogEntry) String() string {
 	return fmt.Sprintf("%s%s%s", entry.status, SEP, entry.datetime.Format(DT_FMT))
 }
 
-// Parses a string into a struct, representation returned by String is used
+// Parse a string into a struct, representation returned by String is used
 func Parse(str string) (*LogEntry, error) {
 	parts := strings.Split(str, SEP)
 	status := parts[0]
@@ -56,7 +56,7 @@ func Parse(str string) (*LogEntry, error) {
 	return &entry, nil
 }
 
-// Writes the entry to the passed file
+// WriteLog Writes the entry to the passed file
 func (entry LogEntry) WriteLog(path string) error {
 	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0640) // rw-r-----
 	if err != nil {
@@ -67,7 +67,7 @@ func (entry LogEntry) WriteLog(path string) error {
 	return err
 }
 
-// reads the last entry from a log file and returns the entry, or nil
+// ReadLastEntry reads the last entry from a log file and returns the entry, or nil
 // if file is empty
 func ReadLastEntry(path string) (*LogEntry, error) {
 	// create the file if it does not yet exist
