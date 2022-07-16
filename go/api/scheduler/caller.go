@@ -12,13 +12,13 @@ func datesEqual(t1 time.Time, t2 time.Time) bool {
 
 // mayCall determines using the passed in params, and the current time, whether or not the scheduler
 // may be called
-func mayCall(scheduledDay string, lastEntry LogEntry, now time.Time) bool {
+func mayCall(scheduledDay string, lastEntry *LogEntry, now time.Time) bool {
 	// check if correct day of week
 	if scheduledDay != now.Weekday().String() {
 		return false
 	}
 	// compare the dates, if a different date, scheduling may occur
-	if !datesEqual(now, lastEntry.datetime) {
+	if lastEntry == nil || !datesEqual(now, lastEntry.datetime) {
 		return true
 	}
 	// otherwise, inspect the log entry to determine
@@ -36,7 +36,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	if mayCall(scheduledDay, *lastEntry, now) {
+	if mayCall(scheduledDay, lastEntry, now) {
 		call()
 	} else {
 		// TODO: @JonathanEnslin Report error if pending, or exp backoff
