@@ -3,6 +3,7 @@ package data
 import (
 	"api/db"
 	"database/sql"
+	"lib/logger"
 	"time"
 )
 
@@ -169,8 +170,10 @@ func (access *UserDA) FindCredential(credential *Credential) (Users, error) {
 		`SELECT * FROM "user".credential_find($1, $2, $3, $4, $5, $6, $7)`, mapCredential,
 		credential.Id, credential.Secret, credential.Identifier, nil, credential.Active, nil, credential.LastAccessed)
 	if err != nil {
+		logger.Error.Fatal(err)
 		return nil, err
 	}
+	logger.Access.Printf("\nusers\n%v\n", results)
 	tmp := make([]*User, 0)
 	for r, _ := range results {
 		if value, ok := results[r].(User); ok {
