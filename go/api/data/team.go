@@ -17,6 +17,8 @@ type Team struct {
 	Description *string    `json:"description,omitempty"`
 	Capacity    *int       `json:"capacity,omitempty"`
 	Picture     *string    `json:"picture,omitempty"`
+	Priority    *int       `json:"priority,omitempty"`
+	TeamLeadId  *string    `json:"team_lead_id,omitempty"`
 	DateCreated *time.Time `json:"date_created,omitempty"`
 }
 
@@ -70,6 +72,8 @@ func mapTeam(rows *sql.Rows) (interface{}, error) {
 		&identifier.Description,
 		&identifier.Capacity,
 		&identifier.Picture,
+		&identifier.Priority,
+		&identifier.TeamLeadId,
 		&identifier.DateCreated,
 	)
 	if err != nil {
@@ -112,8 +116,8 @@ func mapTeamAssociation(rows *sql.Rows) (interface{}, error) {
 //CreateTeam creates a team
 func (access *TeamDA) CreateTeam(identifier *Team) error {
 	_, err := access.access.Query(
-		`SELECT 1 FROM team.identifier_store($1, $2, $3, $4, $5)`, nil,
-		identifier.Id, identifier.Name, identifier.Description, identifier.Capacity, identifier.Picture)
+		`SELECT 1 FROM team.identifier_store($1, $2, $3, $4, $5, $6, $7)`, nil,
+		identifier.Id, identifier.Name, identifier.Description, identifier.Capacity, identifier.Picture, identifier.Priority, identifier.TeamLeadId)
 	if err != nil {
 		return err
 	}
@@ -127,8 +131,8 @@ func (access *TeamDA) FindIdentifier(identifier *Team, permissions *Permissions)
 		return nil, err
 	}
 	results, err := access.access.Query(
-		`SELECT * FROM team.identifier_find($1, $2, $3, $4, $5, $6, $7)`, mapTeam,
-		identifier.Id, identifier.Name, identifier.Description, identifier.Capacity, identifier.Picture, identifier.DateCreated, permissionContent)
+		`SELECT * FROM team.identifier_find($1, $2, $3, $4, $5, $6, $7, $8, $9)`, mapTeam,
+		identifier.Id, identifier.Name, identifier.Description, identifier.Capacity, identifier.Picture, identifier.Priority, identifier.TeamLeadId, identifier.DateCreated, permissionContent)
 	if err != nil {
 		return nil, err
 	}

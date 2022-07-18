@@ -24,6 +24,7 @@ type User struct {
 	OfficeDays         *int       `json:"office_days,omitempty"`
 	PreferredStartTime *time.Time `json:"preferred_start_time,omitempty"`
 	PreferredEndTime   *time.Time `json:"preferred_end_time,omitempty"`
+	PreferredDesk      *string    `json:"preferred_desk,omitempty"`
 }
 
 // Users represent a splice of User
@@ -74,6 +75,7 @@ func mapUser(rows *sql.Rows) (interface{}, error) {
 		&identifier.OfficeDays,
 		&identifier.PreferredStartTime,
 		&identifier.PreferredEndTime,
+		&identifier.PreferredDesk,
 	)
 	if err != nil {
 		return nil, err
@@ -103,9 +105,9 @@ func mapCredential(rows *sql.Rows) (interface{}, error) {
 //StoreIdentifier stores an identifier
 func (access *UserDA) StoreIdentifier(identifier *User) (string, error) {
 	results, err := access.access.Query(
-		`SELECT * FROM "user".identifier_store($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`, mapString,
+		`SELECT * FROM "user".identifier_store($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`, mapString,
 		identifier.Id, identifier.Identifier, identifier.FirstName, identifier.LastName, identifier.Email, identifier.Picture, identifier.WorkFromHome,
-		identifier.Parking, identifier.OfficeDays, identifier.PreferredStartTime, identifier.PreferredEndTime)
+		identifier.Parking, identifier.OfficeDays, identifier.PreferredStartTime, identifier.PreferredEndTime, identifier.PreferredDesk)
 	if err != nil {
 		return "", err
 	}
@@ -120,9 +122,9 @@ func (access *UserDA) StoreIdentifier(identifier *User) (string, error) {
 //FindIdentifier finds an identifier
 func (access *UserDA) FindIdentifier(identifier *User) (Users, error) {
 	results, err := access.access.Query(
-		`SELECT * FROM "user".identifier_find($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`, mapUser,
+		`SELECT * FROM "user".identifier_find($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`, mapUser,
 		identifier.Id, identifier.Identifier, identifier.FirstName, identifier.LastName, identifier.Email, identifier.Picture, identifier.DateCreated, identifier.WorkFromHome,
-		identifier.Parking, identifier.OfficeDays, identifier.PreferredStartTime, identifier.PreferredEndTime)
+		identifier.Parking, identifier.OfficeDays, identifier.PreferredStartTime, identifier.PreferredEndTime, identifier.PreferredDesk)
 	if err != nil {
 		return nil, err
 	}
