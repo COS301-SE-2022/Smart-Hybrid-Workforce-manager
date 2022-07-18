@@ -32,12 +32,13 @@ type Users []*User
 
 // Credential identifies a login (not a user)
 type Credential struct {
-	Id             string    `json:"id,omitempty"`
-	Secret         string    `json:"secret,omitempty"`
-	Active         bool      `json:"active,omitempty"`
-	Identifier     string    `json:"identifier,omitempty"`
-	FailedAttempts int       `json:"failed_attempts,omitempty"`
-	LastAccessed   time.Time `json:"last_accessed,omitempty"`
+	Id             	*string    	`json:"id,omitempty"`
+	Secret         	*string    	`json:"secret,omitempty"`
+	Identifier     	*string    	`json:"identifier,omitempty"`
+	Type		 	*string		`json:"type,omitempty"`
+	Active         	*bool      	`json:"active,omitempty"`
+	FailedAttempts 	*int       	`json:"failed_attempts,omitempty"`
+	LastAccessed   	time.Time 	`json:"last_accessed,omitempty"`
 }
 
 // UserDA provides access to the database for authentication purposes
@@ -88,10 +89,11 @@ func mapCredential(rows *sql.Rows) (interface{}, error) {
 	err := rows.Scan(
 		&cred.Id,
 		&cred.Secret,
+		&cred.Identifier,
+		&cred.Type,
 		&cred.Active,
 		&cred.FailedAttempts,
 		&cred.LastAccessed,
-		&cred.Identifier,
 	)
 	if err != nil {
 		return nil, err
@@ -168,12 +170,11 @@ func (access *UserDA) StoreCredential(Id string, secret *string, identifier stri
 func (access *UserDA) FindCredential(credential *Credential) (Users, error) {
 	results, err := access.access.Query(
 		`SELECT * FROM "user".credential_find($1, $2, $3, $4, $5, $6, $7)`, mapCredential,
-		credential.Id, credential.Secret, credential.Identifier, nil, credential.Active, nil, credential.LastAccessed)
+		credential.Id, credential.Secret, credential.Identifier, credential.Type, credential.Active, credential.FailedAttempts, credential.LastAccessed)
 	if err != nil {
 		logger.Error.Fatal(err)
 		return nil, err
 	}
-	logger.Access.Printf("\nusers\n%v\n", results)
 	tmp := make([]*User, 0)
 	for r, _ := range results {
 		if value, ok := results[r].(User); ok {
