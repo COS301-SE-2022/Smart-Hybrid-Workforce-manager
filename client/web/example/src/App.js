@@ -29,7 +29,7 @@ import Roles from './pages/Roles'
 import CreateRole from './pages/RolesCreate'
 import EditRole from './pages/RolesEdit'
 
-import globalContext from "./storage/appContext"
+import injectContext from "./store/appContext";
 
 function App()
 {
