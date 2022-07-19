@@ -179,7 +179,7 @@ func InformationUserHandler(writer http.ResponseWriter, request *http.Request) {
 	if(resp == ""){
 		logger.Access.Printf("\nresp is empty\n")
 	}
-	logger.Access.Printf("\nresp\n%v\n", resp)
+	// logger.Access.Printf("\nresp\n%v\n", resp)
 
 	err := utils.UnmarshalJSON(writer, request, &user)
 	if err != nil {
@@ -187,7 +187,7 @@ func InformationUserHandler(writer http.ResponseWriter, request *http.Request) {
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
-
+	logger.Access.Printf("\nlogin user\n%v\n", user)
 	access, err := db.Open()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
@@ -223,7 +223,7 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
-
+	logger.Access.Printf("\nuserCred\n%v\n", userCred)
 	access, err := db.Open()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
@@ -239,13 +239,12 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
 		logger.Error.Fatal("\nerror\n%v\n",err)
 		return
 	}
-	
-	_ = users
+	logger.Access.Printf("\nusers\n%v\n", users)
 	var user = data.User{
-		Identifier: &(userCred.Id),
+		Identifier: userCred.Identifier,
 	}
 
-	logger.Access.Printf("\nuser\n%v\n", user)
+	// logger.Access.Printf("\nuser\n%v\n", user)
 
 	users, err = da.FindIdentifier(&user)
 	if err != nil {
@@ -253,7 +252,7 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	logger.Access.Printf("\nusers\n%v\n", users[0])
+	// logger.Access.Printf("\nusers\n%v\n", users[0])
 
 	err = access.Commit()
 	if err != nil {
@@ -265,7 +264,7 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
 
 	//After user login create auth token
 	authData := redis.AddAuthUser(*(users[0]))
-	logger.Access.Printf("\nauthdata\n%v\n", authData)
+	// logger.Access.Printf("\nauthdata\n%v\n", authData)
 	utils.JSONResponse(writer, request, authData)
 }
 
