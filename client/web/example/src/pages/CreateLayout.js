@@ -1,7 +1,7 @@
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import { Stage, Layer, Rect, Transformer} from 'react-konva'
-import { useRef, useState, useEffect, Fragment } from 'react'
+import { Stage, Layer } from 'react-konva'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import Desk from '../components/Map/Desk'
 import MeetingRoom from '../components/Map/MeetingRoom'
 
@@ -94,7 +94,7 @@ const Layout = () =>
         return keyPressed;
     }
 
-    const handleDelete = () =>
+    const handleDelete = useCallback(() =>
     {
         if(selectedId !== null)
         {
@@ -112,7 +112,7 @@ const Layout = () =>
             }
             else
             {
-                for(var i = 0; i < meetingRoomProps.length; i++)
+                for(i = 0; i < meetingRoomProps.length; i++)
                 {
                     if(meetingRoomProps[i].key === selectedId)
                     {
@@ -123,7 +123,7 @@ const Layout = () =>
                 }
             }
         }
-    }
+    }, [deskProps, meetingRoomProps, selectedId])
 
     const handleResize = () =>
     {
@@ -135,11 +135,12 @@ const Layout = () =>
     useEffect(() =>
     {
         setStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
+        
         if(deletePressed)
         {
             handleDelete();
         }
-    }, [deletePressed])
+    }, [deletePressed, handleDelete])
 
     return (
         <div className='page-container'>
