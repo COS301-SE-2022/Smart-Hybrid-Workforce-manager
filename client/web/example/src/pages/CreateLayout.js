@@ -3,6 +3,7 @@ import Footer from '../components/Footer'
 import { Stage, Layer, Rect, Transformer} from 'react-konva'
 import { useRef, useState, useEffect, Fragment } from 'react'
 import Desk from '../components/Map/Desk'
+import MeetingRoom from '../components/Map/MeetingRoom'
 
 const Layout = () =>
 {
@@ -11,6 +12,7 @@ const Layout = () =>
     const [stage, setStage] = useState({width : 100, height : 100});
     const [count, setCount] = useState(0);
     const [selectedId, selectShape] = useState(null);
+
     const checkDeselect = (e) =>
     {
         const clickedEmpty = e.target === e.target.getStage();
@@ -19,6 +21,7 @@ const Layout = () =>
             selectShape(null);
         }
     }
+
     const canvasRef = useRef(null);
 
     const AddDesk = () =>
@@ -44,84 +47,16 @@ const Layout = () =>
             ...meetingRoomProps,
             {
                 key : "meetingroom" + count,
-                cornerRadius : 10,
                 x : 0,
                 y : 0,
                 width : 200,
                 height : 200,
-                fill : "white",
-                stroke : "black",
                 rotation : 0
             }
         ]);
 
         setCount(count + 1);
     }
-
-    const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange}) =>
-    {
-        const shapeRef = useRef(null);
-        const transformRef = useRef(null);
-
-        useEffect(() =>
-        {
-            if(isSelected)
-            {
-                transformRef.current.nodes([shapeRef.current]);
-                transformRef.current.getLayer().batchDraw();
-            }
-        }, [isSelected]);
-
-        return (
-            <Fragment>
-                <Rect
-                    onClick={onSelect}
-                    onTap={onSelect}
-                    ref={shapeRef}
-                    {...shapeProps}
-                    draggable
-
-                    onDragEnd={(e) =>
-                    {
-                        onChange({
-                            ...shapeProps,
-                            x : e.target.x(),
-                            y : e.target.y()
-                        })
-                    }}
-
-                    onTransformEnd={(e) =>
-                    {
-                        onChange({
-                            ...shapeProps,
-                            x : e.target.x(),
-                            y : e.target.y(),
-                            rotation : e.target.rotation()
-                        });
-                    }}
-
-                    onMouseEnter={(e) =>
-                    {
-                        e.target.getStage().container().style.cursor = 'move';
-                    }}
-
-                    onMouseLeave={(e) =>
-                    {
-                        e.target.getStage().container().style.cursor = 'default';
-                    }}
-                />
-                
-                {isSelected && (
-                    <Transformer 
-                        ref = {transformRef}
-                        rotationSnaps = {[0, 90, 180, 270]}
-                        resizeEnabled = {false}
-                        centeredScaling = {true}
-                    />
-                )}
-            </Fragment>
-        );
-    };
 
     const deletePressed = useKeyPress("Delete")
 
