@@ -1,7 +1,7 @@
 import useImage from 'use-image';
 import meetingroom_grey from '../../img/meetingroom_grey.svg';
 import { Image, Rect } from 'react-konva'
-import { useRef, useEffect, Fragment } from 'react'
+import { useRef, useEffect, Fragment, useState } from 'react'
 import { Transformer } from 'react-konva'
 
 const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange}) =>
@@ -10,6 +10,16 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange}) =>
     const imgRef = useRef(null);
     const transformRef = useRef(null);
     const [image] = useImage(meetingroom_grey);
+    const [center, setCenter] = useState([0,0]);
+
+    const calculateCenter = (x, y, width, height, angle) =>
+    {
+        angle = angle * Math.PI / 180;
+        const cX = x + ((width / 2) * Math.cos(-angle)) + ((height / 2) * Math.sin(-angle));
+        const cY = y + ((width / 2) * Math.sin(angle)) + ((height / 2) * Math.cos(angle));
+
+        setCenter([cX, cY]);
+    }
 
     useEffect(() =>
     {
@@ -39,6 +49,8 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange}) =>
                         x : e.target.x(),
                         y : e.target.y()
                     })
+
+                    calculateCenter(e.target.x(), e.target.y(), e.target.width(), e.target.height(), e.target.getAbsoluteRotation());
                 }}
 
                 onTransformEnd={(e) =>
@@ -73,25 +85,17 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange}) =>
 
             <Image
                 image = {image}
-                x = {shapeProps.x + shapeProps.width/2.0 - 65}
-                y = {shapeProps.y + shapeProps.height/2.0 - 30}
+                rotation = {shapeProps.rotation}
+                x = {center[0]}
+                y = {center[1]}
                 width = {130}
                 height = {60}
+                offsetX = {65}
+                offsetY = {30}
                 ref={imgRef}
-                rotation = {shapeProps.rotation}
-                draggable
 
                 onClick={onSelect}
                 onTap={onSelect}
-
-                onDragMove={(e) =>
-                {
-                    onChange({
-                        ...shapeProps,
-                        x : e.target.x() + 65 - shapeProps.width/2.0,
-                        y : e.target.y() + 30 - shapeProps.height/2.0
-                    })
-                }}
 
                 onMouseEnter={(e) =>
                 {
