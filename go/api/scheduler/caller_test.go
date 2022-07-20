@@ -61,6 +61,103 @@ func Test_datesEqual(t *testing.T) {
 	}
 	assert := assert.New(t)
 	for i, tt := range tests {
-		assert.Equal(datesEqual(tt.args.t1, tt.args.t2), tt.want, tt.name+"Case: "+fmt.Sprint(i))
+		assert.Equal(tt.want, datesEqual(tt.args.t1, tt.args.t2), tt.name+" Case: "+fmt.Sprint(i))
+	}
+}
+
+func makeLogEntryPtr(entry LogEntry) *LogEntry {
+	return &entry
+}
+
+func Test_mayCall(t *testing.T) {
+	// testTime1 := time.Now() // Current time
+	testTime2 := time.Date(2022, time.May, 10, 4, 3, 2, 1, time.UTC)
+	testTime3 := time.Date(2022, time.May, 10, 5, 3, 2, 1, time.UTC) // Same day as testTime2, different time
+
+	type args struct {
+		scheduledDay string
+		lastEntry    *LogEntry
+		now          time.Time
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "Called on wrong day, not scheduled day",
+			args: args{
+				scheduledDay: testTime3.AddDate(0, 0, 1).Weekday().String(),
+				lastEntry:    nil,
+				now:          testTime3,
+			},
+			want: false,
+		},
+		{
+			name: "Last entry is success on same day, should not be allowed",
+			args: args{
+				scheduledDay: testTime3.Weekday().String(),
+				lastEntry:    makeLogEntryPtr(NewLogEntry(SUCCESS, &testTime2)),
+				now:          testTime3,
+			},
+			want: false,
+		},
+		{
+			name: "Correct day, no log entry, should be allowed",
+			args: args{
+				scheduledDay: testTime3.Weekday().String(),
+				lastEntry:    nil,
+				now:          testTime3,
+			},
+			want: true,
+		},
+		{
+			name: "Correct day, FAILURE log entry on same day",
+			args: args{
+				scheduledDay: testTime3.Weekday().String(),
+				lastEntry:    makeLogEntryPtr(NewLogEntry(FAILED, &testTime3)),
+				now:          testTime3,
+			},
+			want: true,
+		},
+		{
+			name: "Correct day, FAILED log entry on different day",
+			args: args{
+				scheduledDay: testTime3.Weekday().String(),
+				lastEntry:    makeLogEntryPtr(NewLogEntry(FAILED, &testTime3)),
+				now:          testTime3.AddDate(0, 0, 7),
+			},
+			want: true,
+		},
+		{
+			name: "Correct day, TIMED_OUT log entry on same day",
+			args: args{
+				scheduledDay: testTime3.Weekday().String(),
+				lastEntry:    makeLogEntryPtr(NewLogEntry(TIMED_OUT, &testTime3)),
+				now:          testTime3,
+			},
+			want: true,
+		},
+		{
+			name: "Correct day, SUCCESS log entry on different day",
+			args: args{
+				scheduledDay: testTime3.Weekday().String(),
+				lastEntry:    makeLogEntryPtr(NewLogEntry(SUCCESS, &testTime3)),
+				now:          testTime3.AddDate(0, 0, 7),
+			},
+			want: true,
+		}, {
+			name: "Correct day, SUCCESS log entry on different day, no passed in time",
+			args: args{
+				scheduledDay: testTime3.Weekday().String(),
+				lastEntry:    makeLogEntryPtr(NewLogEntry(SUCCESS, nil)),
+				now:          testTime3.AddDate(0, 0, 7),
+			},
+			want: true,
+		},
+	}
+	assert := assert.New(t)
+	for i, tt := range tests {
+		assert.Equal(tt.want, mayCall(tt.args.scheduledDay, tt.args.lastEntry, tt.args.now), tt.name+" Case: "+fmt.Sprint(i))
 	}
 }
