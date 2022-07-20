@@ -1,7 +1,10 @@
 package scheduler
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"net/http"
 	"time"
 )
 
@@ -69,7 +72,24 @@ func checkAndCall(scheduledDay string) error {
 }
 
 func call() {
-	// TODO: @JonathanEnslin Implement
+	data := map[string]interface{}{
+		"employee_ids": []string{"145454-54654-654654", "4654654-5465465-5454654"},
+	}
+	body, _ := json.Marshal(map[string]interface{}{ // TODO: @JonathanEnslin get actual config + data
+		"current_time":  time.Now(),
+		"book_for_days": []string{"monday", "wednesday", "friday"},
+		"data":          data,
+	})
+	bodyBytesBuff := bytes.NewBuffer(body)
+	client := http.Client{
+		Timeout: 30 * time.Second, // TODO: @JonathanEnslin - configurable timeout (incase scheduling takes long)
+	}
+	_, err := client.Post("http://localhost:8101", "application/json", bodyBytesBuff) // TODO @JonathanEnslin URL env param
+	if err != nil {
+		// TODO @JonathanEnslin - log the error
+	} else {
+		// TODO @JonathanEnslin - handle the response and log success
+	}
 }
 
 // callOnDay will call checkAndCall() on each recurring certain day of the week,
