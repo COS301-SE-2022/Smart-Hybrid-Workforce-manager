@@ -3,14 +3,19 @@ import React, {useState} from 'react';
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+
 import Bookings from './pages/Bookings'
 import BookingsDesk from './pages/BookingsDesk'
 import BookingsDeskEdit from './pages/BookingsDeskEdit'
 import BookingsMeeting from './pages/BookingsMeeting'
+
 import Admin from './pages/Admin'
+
 import Teams from './pages/Teams'
 import CreateTeam from './pages/TeamsCreate'
 import EditTeam from './pages/TeamsEdit'
+import PermissionsTeam from './pages/TeamsPermissions'
+
 import Resources from './pages/Resources'
 import CreateBuilding from './pages/ResourcesBuildingCreate'
 import EditBuilding from './pages/ResourcesBuildingEdit'
@@ -20,11 +25,13 @@ import CreateDesk from './pages/ResourcesDeskCreate'
 import EditDesk from './pages/ResourcesDeskEdit'
 import EditMeetingRoom from './pages/ResourcesMeetingRoomEdit'
 import CreateMeetingRoom from './pages/ResourcesMeetingRoomCreate'
+
 import Profile from './pages/Profile'
 import ProfileConfiguration from './pages/ProfileConfiguration'
 import Users from './pages/Users'
 import EditUser from './pages/UsersEdit'
 import CreateUser from './pages/UsersCreate'
+
 import Roles from './pages/Roles'
 import CreateRole from './pages/RolesCreate'
 import EditRole from './pages/RolesEdit'
@@ -53,6 +60,7 @@ function App()
           <Route path="/team" exact element={<Teams />} />
           <Route path="/team-create" exact element={<CreateTeam />} />
           <Route path="/team-edit" exact element={<EditTeam />} />
+          <Route path="/team-permissions" exact element={<PermissionsTeam />} />
 
           <Route path="/bookings-desk-edit" exact element={<BookingsDeskEdit/>} />
           <Route path="/resources" exact element={<Resources/>} />

@@ -13,6 +13,8 @@ import (
 // Permission identifies a permission via common attributes
 type Permission struct {
 	Id                 *string    `json:"id,omitempty"`
+	PermissionId       *string    `json:"permission_id,omitempty"`
+	PermissionIdType   *string    `json:"permission_id_type,omitempty"`
 	PermissionType     *string    `json:"permission_type,omitempty"`
 	PermissionCategory *string    `json:"permission_category,omitempty"`
 	PermissionTenant   *string    `json:"permission_tenant,omitempty"`
@@ -46,7 +48,7 @@ func CreateGenericPermission(permissionType string, permissionCategory string, p
 	}
 }
 
-func CreateUserPermission(userId string, permissionType string, permissionCategory string, permissionTenant string, permissionTenantId string) *Permission {
+func CreatePermission(permissionId string, permissionIdType string, permissionType string, permissionCategory string, permissionTenant string, permissionTenantId string) *Permission {
 	typ := &permissionType
 	category := &permissionCategory
 	tenant := &permissionTenant
@@ -66,7 +68,8 @@ func CreateUserPermission(userId string, permissionType string, permissionCatego
 	}
 
 	return &Permission{
-		Id:                 &userId,
+		PermissionId:       &permissionId,
+		PermissionIdType:   &permissionIdType,
 		PermissionType:     typ,
 		PermissionCategory: category,
 		PermissionTenant:   tenant,
@@ -107,6 +110,8 @@ func mapPermission(rows *sql.Rows) (interface{}, error) {
 	var identifier Permission
 	err := rows.Scan(
 		&identifier.Id,
+		&identifier.PermissionId,
+		&identifier.PermissionIdType,
 		&identifier.PermissionType,
 		&identifier.PermissionCategory,
 		&identifier.PermissionTenant,
@@ -122,37 +127,26 @@ func mapPermission(rows *sql.Rows) (interface{}, error) {
 //////////////////////////////////////////////////
 // Functions
 
-// StoreUserPermission stores a user identifier
-func (access *PermissionDA) StoreUserPermission(identifier *Permission) error {
+// StorePermission stores an identifier
+func (access *PermissionDA) StorePermission(identifier *Permission) error {
 	_, err := access.access.Query(
-		`SELECT 1 FROM permission.user_store($1, $2, $3, $4, $5)`, nil,
-		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId)
+		`SELECT 1 FROM permission.identifier_store($1, $2, $3, $4, $5, $6)`, nil,
+		identifier.PermissionId, identifier.PermissionIdType, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-// StoreRolePermission stores a role identifier
-func (access *PermissionDA) StoreRolePermission(identifier *Permission) error {
-	_, err := access.access.Query(
-		`SELECT 1 FROM permission.role_store($1, $2, $3, $4, $5)`, nil,
-		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// FindUserPermission finds a user identifier
-func (access *PermissionDA) FindUserPermission(identifier *Permission, permissions *Permissions) (Permissions, error) {
+// FindPermission finds an identifier
+func (access *PermissionDA) FindPermission(identifier *Permission, permissions *Permissions) (Permissions, error) {
 	permissionContent, err := json.Marshal(*permissions)
 	if err != nil {
 		return nil, err
 	}
 	results, err := access.access.Query(
-		`SELECT * FROM permission.user_find($1, $2, $3, $4, $5, $6, $7)`, mapPermission,
-		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId, identifier.DateAdded, permissionContent)
+		`SELECT * FROM permission.identifier_find($1, $2, $3, $4, $5, $6, $7, $8, $9)`, mapPermission,
+		identifier.Id, identifier.PermissionId, identifier.PermissionIdType, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId, identifier.DateAdded, permissionContent)
 	if err != nil {
 		return nil, err
 	}
@@ -165,32 +159,11 @@ func (access *PermissionDA) FindUserPermission(identifier *Permission, permissio
 	return tmp, nil
 }
 
-// FindRolePermission finds a role identifier
-func (access *PermissionDA) FindRolePermission(identifier *Permission, permissions *Permissions) (Permissions, error) {
-	permissionContent, err := json.Marshal(*permissions)
-	if err != nil {
-		return nil, err
-	}
+//DeletePermission deletes an identifier
+func (access *PermissionDA) DeletePermission(identifier *Permission) (*Permission, error) {
 	results, err := access.access.Query(
-		`SELECT * FROM permission.role_find($1, $2, $3, $4, $5, $6, $7)`, mapPermission,
-		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId, identifier.DateAdded, permissionContent)
-	if err != nil {
-		return nil, err
-	}
-	tmp := make([]*Permission, 0)
-	for r, _ := range results {
-		if value, ok := results[r].(Permission); ok {
-			tmp = append(tmp, &value)
-		}
-	}
-	return tmp, nil
-}
-
-//DeleteUserPermission finds an identifier
-func (access *PermissionDA) DeleteUserPermission(identifier *Permission) (*Permission, error) {
-	results, err := access.access.Query(
-		`SELECT * FROM permission.user_remove($1, $2, $3, $4, $5)`, mapPermission,
-		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId)
+		`SELECT * FROM permission.identifier_remove($1)`, nil,
+		identifier.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -204,25 +177,7 @@ func (access *PermissionDA) DeleteUserPermission(identifier *Permission) (*Permi
 	return tmp.FindHead(), nil
 }
 
-//DeleteRolePermission finds an identifier
-func (access *PermissionDA) DeleteRolePermission(identifier *Permission) (*Permission, error) {
-	results, err := access.access.Query(
-		`SELECT * FROM permission.role_remove($1, $2, $3, $4, $5)`, mapPermission,
-		identifier.Id, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId)
-	if err != nil {
-		return nil, err
-	}
-	var tmp Permissions
-	tmp = make([]*Permission, 0)
-	for r, _ := range results {
-		if value, ok := results[r].(Permission); ok {
-			tmp = append(tmp, &value)
-		}
-	}
-	return tmp.FindHead(), nil
-}
-
-//FindHead returns the first Booking
+//FindHead returns the first Permission
 func (permissions Permissions) FindHead() *Permission {
 	if len(permissions) == 0 {
 		return nil

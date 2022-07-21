@@ -114,14 +114,19 @@ func mapTeamAssociation(rows *sql.Rows) (interface{}, error) {
 // Team
 
 //CreateTeam creates a team
-func (access *TeamDA) CreateTeam(identifier *Team) error {
-	_, err := access.access.Query(
-		`SELECT 1 FROM team.identifier_store($1, $2, $3, $4, $5, $6, $7)`, nil,
+func (access *TeamDA) CreateTeam(identifier *Team) (string, error) {
+	results, err := access.access.Query(
+		`SELECT * FROM team.identifier_store($1, $2, $3, $4, $5, $6, $7)`, mapString,
 		identifier.Id, identifier.Name, identifier.Description, identifier.Capacity, identifier.Picture, identifier.Priority, identifier.TeamLeadId)
 	if err != nil {
-		return err
+		return "", err
 	}
-	return nil
+	for r, _ := range results {
+		if value, ok := results[r].(string); ok {
+			return value, nil
+		}
+	}
+	return "", nil
 }
 
 //FindIdentifier finds a team
