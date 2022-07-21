@@ -134,24 +134,23 @@ const Layout = () =>
 
     window.addEventListener('resize', handleResize);
 
-    const stageDrag = () =>
-    {
-        console.log(stageRef.current.x() + " " + stageRef.current.y());
-        console.log(stageRef.current.width() + " " + stageRef.current.height());
-    }
-
     const zoomInOut = (event) =>
     {
         if(stageRef.current !== null)
         {
             const stage = stageRef.current;
             const oldScale = stage.scaleX();
-            const {x : pointerX, y : pointerY} = stage.getPointerPosition();
-            console.log(stage.x());
-            const mousePointTo = 
+
+            const stageCenter =
             {
-                x : (pointerX - stage.x()) / oldScale,
-                y : (pointerY - stage.y()) / oldScale,
+                x : (-stage.x() + stage.width() / 2.0) / oldScale,
+                y : (-stage.y() + stage.height() / 2.0) / oldScale
+            }
+
+            const newStageCenter = 
+            {
+                x : (stageCenter.x - stage.x()) / oldScale,
+                y : (stageCenter.y - stage.y()) / oldScale,
             }
 
             var newScale;
@@ -165,10 +164,11 @@ const Layout = () =>
             }
 
             stage.scale({x : newScale, y : newScale});
+
             const newPos = 
             {
-                x : pointerX - mousePointTo.x * newScale,
-                y : pointerY - mousePointTo.y * newScale,
+                x : stageCenter.x - newStageCenter.x * newScale,
+                y : stageCenter.y - newStageCenter.y * newScale,
             }
 
             stage.position(newPos);
@@ -193,7 +193,7 @@ const Layout = () =>
                 <button onClick={AddDesk}>Add Desk</button><br></br>
                 <button onClick={AddMeetingRoom}>Add Meeting Room</button>
                 <div ref={canvasRef} className='canvas-container'>
-                    <Stage width={stage.width} height={stage.height} onMouseDown={checkDeselect} onTouchStart={checkDeselect} draggable onDragEnd={stageDrag} onWheel={zoomInOut} ref={stageRef}>
+                    <Stage width={stage.width} height={stage.height} onMouseDown={checkDeselect} onTouchStart={checkDeselect} draggable onWheel={zoomInOut} ref={stageRef}>
                         <Layer>
                             {deskProps.length > 0 && (
                                 deskProps.map((desk, i) => (
