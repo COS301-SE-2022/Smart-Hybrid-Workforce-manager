@@ -85,6 +85,11 @@ const EditTeam = () =>
     FetchViewableUsers();
   }, [])
 
+  const PermissionConfiguration = () =>
+  {
+    window.location.assign("./team-permissions");
+  }
+
   return (
     <div className='page-container'>
       <div className='content'>
@@ -130,6 +135,7 @@ const EditTeam = () =>
             </Form.Group>
             
             <Button className='button-submit' variant='primary' type='submit'>Update Team</Button>
+            <Button className='button-submit' variant='primary' onClick={PermissionConfiguration}>Configure Permissions</Button>
           </Form>
         </div>
       </div>
