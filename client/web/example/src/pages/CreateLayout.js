@@ -49,8 +49,8 @@ const Layout = () =>
             ...meetingRoomProps,
             {
                 key : "meetingroom" + count,
-                x : 0,
-                y : 0,
+                x : (-stageRef.current.x() + stageRef.current.width() / 2.0) / stageRef.current.scaleX(),
+                y : (-stageRef.current.y() + stageRef.current.height() / 2.0) / stageRef.current.scaleY(),
                 width : 200,
                 height : 200,
                 rotation : 0
@@ -237,6 +237,8 @@ const Layout = () =>
                                             newMeetingRoomProps[i] = newProps;
                                             setMeetingRoomProps(newMeetingRoomProps)
                                         }}
+
+                                        stage = {stageRef.current}
                                     />
                                 ))
                             )}                             

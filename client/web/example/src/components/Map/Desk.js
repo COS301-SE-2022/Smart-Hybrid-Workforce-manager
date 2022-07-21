@@ -25,6 +25,8 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange}) =>
                 image = {image}
                 width = {60}
                 height = {55}
+                offsetX = {30}
+                offsetY = {27.5}
                 {...shapeProps}
                 ref={shapeRef}
                 draggable

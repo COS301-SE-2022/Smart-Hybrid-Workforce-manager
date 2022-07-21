@@ -4,19 +4,19 @@ import { Image, Rect } from 'react-konva'
 import { useRef, useEffect, Fragment, useState } from 'react'
 import { Transformer } from 'react-konva'
 
-const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange}) =>
+const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, stage}) =>
 {
     const shapeRef = useRef(null);
     const imgRef = useRef(null);
     const transformRef = useRef(null);
     const [image] = useImage(meetingroom_grey);
-    const [center, setCenter] = useState([100,100]);
+    const [center, setCenter] = useState([(-stage.x() + stage.width() / 2.0) / stage.scaleX(), (-stage.y() + stage.height() / 2.0) / stage.scaleY()]);
 
-    const calculateCenter = (x, y, width, height, angle) =>
+    const calculateCenter = (x, offX, y, offY, width, height, angle) =>
     {
         angle = angle * Math.PI / 180;
-        const cX = x + ((width / 2) * Math.cos(-angle)) + ((height / 2) * Math.sin(-angle));
-        const cY = y + ((width / 2) * Math.sin(angle)) + ((height / 2) * Math.cos(angle));
+        const cX = x + ((width / 2) * Math.cos(-angle)) + ((height / 2) * Math.sin(-angle)) - (offX * Math.cos(-angle)) - (offY * Math.sin(-angle));
+        const cY = y + ((width / 2) * Math.sin(angle)) + ((height / 2) * Math.cos(angle)) - (offY * Math.cos(angle)) - (offX * Math.sin(angle));
 
         setCenter([cX, cY]);
     }
@@ -37,6 +37,8 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange}) =>
                 fill = {"#bfcbd6"}
                 {...shapeProps}
                 ref={shapeRef}
+                offsetX = {shapeProps.width / 2.0}
+                offsetY = {shapeProps.height / 2.0}
                 draggable
 
                 onClick={onSelect}
@@ -50,7 +52,7 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange}) =>
                         y : e.target.y()
                     })
 
-                    calculateCenter(e.target.x(), e.target.y(), e.target.width(), e.target.height(), e.target.getAbsoluteRotation());
+                    calculateCenter(e.target.x(), e.target.offsetX(), e.target.y(), e.target.offsetY(), e.target.width(), e.target.height(), e.target.getAbsoluteRotation());
                 }}
 
                 onTransformEnd={(e) =>
