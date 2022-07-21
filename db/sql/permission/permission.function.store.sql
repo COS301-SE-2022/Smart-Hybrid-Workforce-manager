@@ -6,13 +6,15 @@ CREATE OR REPLACE FUNCTION permission.identifier_store(
 	_permission_tenant permission.tenant,
 	_permission_tenant_id uuid
 )
-RETURNS BOOLEAN AS 
+RETURNS uuid AS 
 $$
+DECLARE
+	__id uuid;
 BEGIN
-
     INSERT INTO permission.identifier(permission_id, permission_id_type, permission_type, permission_category, permission_tenant, permission_tenant_id)
-    VALUES (_permission_id, _permission_id_type, _permission_type, _permission_category, _permission_tenant, _permission_tenant_id);
+    VALUES (_permission_id, _permission_id_type, _permission_type, _permission_category, _permission_tenant, _permission_tenant_id)
+    RETURNING identifier.id INTO __id;
 
-	RETURN true;
+    RETURN __id;
 END
 $$ LANGUAGE plpgsql;

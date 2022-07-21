@@ -45,21 +45,6 @@ func CreatePermissionIdentifierHandler(writer http.ResponseWriter, request *http
 		return
 	}
 
-	// Check if user has permission to create a role permission for the incomming role
-	authorized := false
-	if permission.Id != nil {
-		for _, permission := range *permissions {
-			// A permission tenant id of nil means the user is allowed to perform the action on all tenants of the type
-			if permission.PermissionTenantId == permission.Id || permission.PermissionTenantId == nil {
-				authorized = true
-			}
-		}
-	}
-	if !authorized {
-		utils.AccessDenied(writer, request, fmt.Errorf("doesn't have permission to execute query")) // TODO [KP]: Be more descriptive
-		return
-	}
-
 	// Create a database connection
 	access, err := db.Open()
 	if err != nil {
@@ -138,18 +123,7 @@ func DeletePermissionIdentifierHandler(writer http.ResponseWriter, request *http
 		return
 	}
 
-	// Check if user has permission to delete a permission for the incomming role
-	authorized := false
-	for _, permission := range *permissions {
-		// A permission tenant id of nil means the user is allowed to perform the action on all tenants of the type
-		if permission.PermissionTenantId == permission.Id || permission.PermissionTenantId == nil {
-			authorized = true
-		}
-	}
-	if !authorized {
-		utils.AccessDenied(writer, request, fmt.Errorf("doesn't have permission to execute query")) // TODO [KP]: Be more descriptive
-		return
-	}
+	logger.Access.Printf("%v PERMISSION ID\n", *permission.Id)
 
 	// Create a database connection
 	access, err := db.Open()
@@ -171,6 +145,6 @@ func DeletePermissionIdentifierHandler(writer http.ResponseWriter, request *http
 		utils.InternalServerError(writer, request, err)
 		return
 	}
-	logger.Access.Printf("%v permission removed\n", permissionRemoved.Id) // TODO [KP]: Be more descriptive
+	logger.Access.Printf("%v permission removed\n", permissionRemoved) // TODO [KP]: Be more descriptive
 	utils.JSONResponse(writer, request, permissionRemoved)
 }

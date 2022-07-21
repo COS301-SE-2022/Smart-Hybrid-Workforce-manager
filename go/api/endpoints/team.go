@@ -68,14 +68,14 @@ func CreateTeamHandler(writer http.ResponseWriter, request *http.Request, permis
 	defer access.Close()
 
 	da := data.NewTeamDA(access)
-	err = da.CreateTeam(&team)
+	teamId, err := da.CreateTeam(&team)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
 
 	// Add default user permissions
-	err = addDefaultPermissionsTeam(*team.Id, access)
+	err = addDefaultPermissionsTeam(teamId, access)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
@@ -91,29 +91,29 @@ func CreateTeamHandler(writer http.ResponseWriter, request *http.Request, permis
 	utils.Ok(writer, request)
 }
 
-func addDefaultPermissionsTeam(user string, access *db.Access) error {
+func addDefaultPermissionsTeam(teamId string, access *db.Access) error {
 	dp := data.NewPermissionDA(access)
-	err := dp.StorePermission(data.CreateUserPermission(user, "CREATE", "BOOKING", "USER", user))
+	err := dp.StorePermission(data.CreatePermission(teamId, "TEAM", "CREATE", "TEAM", "IDENTIFIER", ""))
 	if err != nil {
 		return err
 	}
-	err = dp.StorePermission(data.CreateUserPermission(user, "VIEW", "BOOKING", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(teamId, "TEAM", "VIEW", "TEAM", "IDENTIFIER", ""))
 	if err != nil {
 		return err
 	}
-	err = dp.StorePermission(data.CreateUserPermission(user, "DELETE", "BOOKING", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(teamId, "TEAM", "DELETE", "TEAM", "IDENTIFIER", ""))
 	if err != nil {
 		return err
 	}
-	err = dp.StorePermission(data.CreateUserPermission(user, "VIEW", "ROLE", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(teamId, "TEAM", "CREATE", "TEAM", "USER", ""))
 	if err != nil {
 		return err
 	}
-	err = dp.StorePermission(data.CreateUserPermission(user, "VIEW", "PERMISSION", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(teamId, "TEAM", "VIEW", "TEAM", "USER", ""))
 	if err != nil {
 		return err
 	}
-	err = dp.StorePermission(data.CreateUserPermission(user, "VIEW", "TEAM", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(teamId, "TEAM", "DELETE", "TEAM", "USER", ""))
 	if err != nil {
 		return err
 	}

@@ -48,7 +48,7 @@ func CreateGenericPermission(permissionType string, permissionCategory string, p
 	}
 }
 
-func CreateUserPermission(userId string, permissionType string, permissionCategory string, permissionTenant string, permissionTenantId string) *Permission {
+func CreatePermission(permissionId string, permissionIdType string, permissionType string, permissionCategory string, permissionTenant string, permissionTenantId string) *Permission {
 	typ := &permissionType
 	category := &permissionCategory
 	tenant := &permissionTenant
@@ -68,7 +68,8 @@ func CreateUserPermission(userId string, permissionType string, permissionCatego
 	}
 
 	return &Permission{
-		Id:                 &userId,
+		PermissionId:       &permissionId,
+		PermissionIdType:   &permissionIdType,
 		PermissionType:     typ,
 		PermissionCategory: category,
 		PermissionTenant:   tenant,
@@ -129,8 +130,8 @@ func mapPermission(rows *sql.Rows) (interface{}, error) {
 // StorePermission stores an identifier
 func (access *PermissionDA) StorePermission(identifier *Permission) error {
 	_, err := access.access.Query(
-		`SELECT 1 FROM permission.identifier_store($1, $2, $3, $4, $5, $6, $7)`, nil,
-		identifier.Id, identifier.PermissionId, identifier.PermissionIdType, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId)
+		`SELECT 1 FROM permission.identifier_store($1, $2, $3, $4, $5, $6)`, nil,
+		identifier.PermissionId, identifier.PermissionIdType, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId)
 	if err != nil {
 		return err
 	}
@@ -161,8 +162,8 @@ func (access *PermissionDA) FindPermission(identifier *Permission, permissions *
 //DeletePermission deletes an identifier
 func (access *PermissionDA) DeletePermission(identifier *Permission) (*Permission, error) {
 	results, err := access.access.Query(
-		`SELECT * FROM permission.identifier_remove($1, $2, $3, $4, $5, $6, $7)`, mapPermission,
-		identifier.Id, identifier.PermissionId, identifier.PermissionIdType, identifier.PermissionType, identifier.PermissionCategory, identifier.PermissionTenant, identifier.PermissionTenantId)
+		`SELECT * FROM permission.identifier_remove($1)`, nil,
+		identifier.Id)
 	if err != nil {
 		return nil, err
 	}

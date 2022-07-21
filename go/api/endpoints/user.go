@@ -145,27 +145,27 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 
 func addDefaultPermissions(user string, access *db.Access) error {
 	dp := data.NewPermissionDA(access)
-	err := dp.StorePermission(data.CreateUserPermission(user, "CREATE", "BOOKING", "USER", user))
+	err := dp.StorePermission(data.CreatePermission(user, "USER", "CREATE", "BOOKING", "USER", user))
 	if err != nil {
 		return err
 	}
-	err = dp.StorePermission(data.CreateUserPermission(user, "VIEW", "BOOKING", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "VIEW", "BOOKING", "USER", user))
 	if err != nil {
 		return err
 	}
-	err = dp.StorePermission(data.CreateUserPermission(user, "DELETE", "BOOKING", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "DELETE", "BOOKING", "USER", user))
 	if err != nil {
 		return err
 	}
-	err = dp.StorePermission(data.CreateUserPermission(user, "VIEW", "ROLE", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "VIEW", "ROLE", "USER", user))
 	if err != nil {
 		return err
 	}
-	err = dp.StorePermission(data.CreateUserPermission(user, "VIEW", "PERMISSION", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "VIEW", "PERMISSION", "USER", user))
 	if err != nil {
 		return err
 	}
-	err = dp.StorePermission(data.CreateUserPermission(user, "VIEW", "TEAM", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "VIEW", "TEAM", "USER", user))
 	if err != nil {
 		return err
 	}
