@@ -12,6 +12,11 @@ const Layout = () =>
     const [stage, setStage] = useState({width : 100, height : 100});
     const [count, setCount] = useState(0);
     const [selectedId, selectShape] = useState(null);
+    const [scale, setScale] = useState(1);
+
+    const canvasRef = useRef(null);
+    const stageRef = useRef(null);
+    const scaleFactor = 1.1;
 
     const checkDeselect = (e) =>
     {
@@ -21,8 +26,6 @@ const Layout = () =>
             selectShape(null);
         }
     }
-
-    const canvasRef = useRef(null);
 
     const AddDesk = () =>
     {
@@ -132,6 +135,41 @@ const Layout = () =>
 
     window.addEventListener('resize', handleResize);
 
+    const zoomInOut = (event) =>
+    {
+        if(stageRef.current !== null)
+        {
+            const stage = stageRef.current;
+            const oldScale = stage.scaleX();
+            const {x : pointerX, y : pointerY} = stage.getPointerPosition();
+            const mousePointTo = 
+            {
+                x : (pointerX - stage.x()) / oldScale,
+                y : (pointerY - stage.y()) / oldScale,
+            }
+
+            var newScale;
+            if(event.evt.deltaY < 0)
+            {
+                newScale = oldScale * scaleFactor;
+            }
+            else
+            {
+                newScale = oldScale / scaleFactor;
+            }
+
+            stage.scale({x : newScale, y : newScale});
+            const newPos = 
+            {
+                x : pointerX - mousePointTo.x * newScale,
+                y : pointerY - mousePointTo.y * newScale,
+            }
+
+            stage.position(newPos);
+            stage.batchDraw();
+        }        
+    }
+
     useEffect(() =>
     {
         setStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
@@ -149,7 +187,7 @@ const Layout = () =>
                 <button onClick={AddDesk}>Add Desk</button><br></br>
                 <button onClick={AddMeetingRoom}>Add Meeting Room</button>
                 <div ref={canvasRef} className='canvas-container'>
-                    <Stage width={stage.width} height={stage.height} onMouseDown={checkDeselect} onTouchStart={checkDeselect}>
+                    <Stage width={stage.width} height={stage.height} onMouseDown={checkDeselect} onTouchStart={checkDeselect} draggable onWheel={zoomInOut} ref={stageRef}>
                         <Layer>
                             {deskProps.length > 0 && (
                                 deskProps.map((desk, i) => (

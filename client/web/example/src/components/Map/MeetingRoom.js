@@ -10,7 +10,7 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange}) =>
     const imgRef = useRef(null);
     const transformRef = useRef(null);
     const [image] = useImage(meetingroom_grey);
-    const [center, setCenter] = useState([0,0]);
+    const [center, setCenter] = useState([100,100]);
 
     const calculateCenter = (x, y, width, height, angle) =>
     {
