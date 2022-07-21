@@ -18,24 +18,27 @@ SELECT "user".identifier_store(
 
 ------------ Booking Permissions
 -- Permission Admin
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'VIEW'::permission.type,
 	'BOOKING'::permission.category,
 	'USER'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'CREATE'::permission.type,
 	'BOOKING'::permission.category,
 	'USER'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'DELETE'::permission.type,
 	'BOOKING'::permission.category,
 	'USER'::permission.tenant,
@@ -43,145 +46,136 @@ SELECT permission.user_store(
 );
 
 ------------ Permission Permissions
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'CREATE'::permission.type,
 	'PERMISSION'::permission.category,
-	'USER'::permission.tenant,
+	'IDENTIFIER'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'VIEW'::permission.type,
 	'PERMISSION'::permission.category,
-	'USER'::permission.tenant,
+	'IDENTIFIER'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'DELETE'::permission.type,
 	'PERMISSION'::permission.category,
-	'USER'::permission.tenant,
-	null::uuid -- All users
-);
-
-SELECT permission.user_store(
-	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
-	'CREATE'::permission.type,
-	'PERMISSION'::permission.category,
-	'ROLE'::permission.tenant,
-	null::uuid -- All users
-);
-
-SELECT permission.user_store(
-	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
-	'VIEW'::permission.type,
-	'PERMISSION'::permission.category,
-	'ROLE'::permission.tenant,
-	null::uuid -- All users
-);
-
-SELECT permission.user_store(
-	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
-	'DELETE'::permission.type,
-	'PERMISSION'::permission.category,
-	'ROLE'::permission.tenant,
+	'IDENTIFIER'::permission.tenant,
 	null::uuid -- All users
 );
 
 ------------ Resource Permissions
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'CREATE'::permission.type,
 	'RESOURCE'::permission.category,
 	'IDENTIFIER'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'VIEW'::permission.type,
 	'RESOURCE'::permission.category,
 	'IDENTIFIER'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'DELETE'::permission.type,
 	'RESOURCE'::permission.category,
 	'IDENTIFIER'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'CREATE'::permission.type,
 	'RESOURCE'::permission.category,
 	'ROOM'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'VIEW'::permission.type,
 	'RESOURCE'::permission.category,
 	'ROOM'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'DELETE'::permission.type,
 	'RESOURCE'::permission.category,
 	'ROOM'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'CREATE'::permission.type,
 	'RESOURCE'::permission.category,
 	'ROOMASSOCIATION'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'VIEW'::permission.type,
 	'RESOURCE'::permission.category,
 	'ROOMASSOCIATION'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'DELETE'::permission.type,
 	'RESOURCE'::permission.category,
 	'ROOMASSOCIATION'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'CREATE'::permission.type,
 	'RESOURCE'::permission.category,
 	'BUILDING'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'VIEW'::permission.type,
 	'RESOURCE'::permission.category,
 	'BUILDING'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'DELETE'::permission.type,
 	'RESOURCE'::permission.category,
 	'BUILDING'::permission.tenant,
@@ -189,56 +183,63 @@ SELECT permission.user_store(
 );
 
 ------------ Role Permissions
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'CREATE'::permission.type,
 	'ROLE'::permission.category,
 	'IDENTIFIER'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'VIEW'::permission.type,
 	'ROLE'::permission.category,
 	'IDENTIFIER'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'DELETE'::permission.type,
 	'ROLE'::permission.category,
 	'IDENTIFIER'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'CREATE'::permission.type,
 	'ROLE'::permission.category,
 	'USER'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'VIEW'::permission.type,
 	'ROLE'::permission.category,
 	'USER'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'DELETE'::permission.type,
 	'ROLE'::permission.category,
 	'USER'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'VIEW'::permission.type,
 	'USER'::permission.category,
 	'ROLE'::permission.tenant,
@@ -246,56 +247,63 @@ SELECT permission.user_store(
 );
 
 ------------ Team Permissions
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'CREATE'::permission.type,
 	'TEAM'::permission.category,
 	'IDENTIFIER'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'VIEW'::permission.type,
 	'TEAM'::permission.category,
 	'IDENTIFIER'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'DELETE'::permission.type,
 	'TEAM'::permission.category,
 	'IDENTIFIER'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'CREATE'::permission.type,
 	'TEAM'::permission.category,
 	'USER'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'VIEW'::permission.type,
 	'TEAM'::permission.category,
 	'USER'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'VIEW'::permission.type,
 	'USER'::permission.category,
 	'TEAM'::permission.tenant,
 	null::uuid -- John Doe
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'DELETE'::permission.type,
 	'TEAM'::permission.category,
 	'USER'::permission.tenant,
@@ -303,24 +311,27 @@ SELECT permission.user_store(
 );
 
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'CREATE'::permission.type,
 	'TEAM'::permission.category,
 	'ASSOCIATION'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'VIEW'::permission.type,
 	'TEAM'::permission.category,
 	'ASSOCIATION'::permission.tenant,
 	null::uuid -- All users
 );
 
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
 	'DELETE'::permission.type,
 	'TEAM'::permission.category,
 	'ASSOCIATION'::permission.tenant,
@@ -503,8 +514,9 @@ SELECT role.user_store('45454545-2222-4a06-9983-8b374586e459'::uuid ,'11111111-2
 -- Permissions
 
 -- Permission User 01
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'11111111-3333-4a06-9983-8b374586e459'::uuid, -- User 03
+	'USER'::permission.id_type,
 	'VIEW'::permission.type,
 	'BOOKING'::permission.category,
 	'USER'::permission.tenant,
@@ -512,8 +524,9 @@ SELECT permission.user_store(
 );
 
 -- Permission User 02
-SELECT permission.user_store(
+SELECT permission.identifier_store(
 	'11111111-2222-4a06-9983-8b374586e459'::uuid, -- User 02
+	'USER'::permission.id_type,
 	'VIEW'::permission.type,
 	'BOOKING'::permission.category,
 	'USER'::permission.tenant,
@@ -521,8 +534,9 @@ SELECT permission.user_store(
 );
 
 -- Permission Role 01
-SELECT permission.role_store(
+SELECT permission.identifier_store(
 	'45454545-1111-4a06-9983-8b374586e459'::uuid, -- Role 01
+	'ROLE'::permission.id_type,
 	'VIEW'::permission.type,
 	'BOOKING'::permission.category,
 	'ROLE'::permission.tenant,
@@ -530,8 +544,9 @@ SELECT permission.role_store(
 );
 
 -- Permission Role 02
-SELECT permission.role_store(
+SELECT permission.identifier_store(
 	'45454545-1111-4a06-9983-8b374586e459'::uuid, -- Role 01
+	'ROLE'::permission.id_type,
 	'VIEW'::permission.type,
 	'BOOKING'::permission.category,
 	'ROLE'::permission.tenant,
