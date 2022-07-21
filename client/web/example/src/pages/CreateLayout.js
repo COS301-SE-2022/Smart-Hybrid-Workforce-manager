@@ -7,15 +7,15 @@ import MeetingRoom from '../components/Map/MeetingRoom'
 
 const Layout = () =>
 {
+    const canvasRef = useRef(null);
+    const stageRef = useRef(null);
+    const scaleFactor = 1.3;
+
     const [deskProps, setDeskProps] = useState([]);
     const [meetingRoomProps, setMeetingRoomProps] = useState([]);
     const [stage, setStage] = useState({width : 100, height : 100});
     const [count, setCount] = useState(0);
     const [selectedId, selectShape] = useState(null);
-
-    const canvasRef = useRef(null);
-    const stageRef = useRef(null);
-    const scaleFactor = 1.1;
 
     const checkDeselect = (e) =>
     {
@@ -134,6 +134,11 @@ const Layout = () =>
 
     window.addEventListener('resize', handleResize);
 
+    const canvasDrag = () =>
+    {
+
+    }
+
     const zoomInOut = (event) =>
     {
         if(stageRef.current !== null)
@@ -143,8 +148,8 @@ const Layout = () =>
 
             const stageCenter =
             {
-                x : (-stage.x() + stage.width() / 2.0) / oldScale,
-                y : (-stage.y() + stage.height() / 2.0) / oldScale
+                x : stage.width() / 2.0,
+                y : stage.height() / 2.0
             }
 
             const newStageCenter = 
@@ -184,16 +189,16 @@ const Layout = () =>
         {
             handleDelete();
         }
+
     }, [deletePressed, handleDelete])
 
     return (
         <div className='page-container'>
-            <div className='content'>
-                <Navbar />
+            <div className='canvas-content'>
                 <button onClick={AddDesk}>Add Desk</button><br></br>
                 <button onClick={AddMeetingRoom}>Add Meeting Room</button>
                 <div ref={canvasRef} className='canvas-container'>
-                    <Stage width={stage.width} height={stage.height} onMouseDown={checkDeselect} onTouchStart={checkDeselect} draggable onWheel={zoomInOut} ref={stageRef}>
+                    <Stage width={stage.width} height={stage.height} onMouseDown={checkDeselect} onTouchStart={checkDeselect} draggable onDragEnd={canvasDrag} onWheel={zoomInOut} ref={stageRef}>
                         <Layer>
                             {deskProps.length > 0 && (
                                 deskProps.map((desk, i) => (
@@ -246,7 +251,6 @@ const Layout = () =>
                     </Stage>
                 </div>
             </div>  
-            <Footer />
         </div>
     )
 }
