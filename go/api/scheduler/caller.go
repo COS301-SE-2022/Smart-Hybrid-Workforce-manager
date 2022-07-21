@@ -50,15 +50,17 @@ func timeOfNextWeekDay(now time.Time, weekday string) time.Time {
 	day := int(DaysOfWeek[weekday])
 	currentDay := int(now.Weekday())
 	daysUntil := int((day - currentDay + 7) % 7) // +7 Is to ensure that the firs part of the expr is always >= 0
+	if daysUntil == 0 {
+		daysUntil = 7
+	}
 	y, m, d := now.AddDate(0, 0, daysUntil).Date()
 	return time.Date(y, m, d, 0, 0, 0, 0, now.Location())
 }
 
 // CheckAndCall will access the logs, and then call the scheduler if the info log
 // entry permits it
-func checkAndCall(scheduledDay string) error {
+func checkAndCall(now time.Time, scheduledDay string) error {
 	// scheduledDay := "Friday" // TODO: @JonathanEnslin Make env var
-	now := time.Now()
 	lastEntry, err := ReadLastEntry(LOG_PATH)
 	if err != nil {
 		return err
@@ -95,8 +97,8 @@ func call() {
 // callOnDay will call checkAndCall() on each recurring certain day of the week,
 // the method can be cancelled using the passed in context
 func callOnDay(ctx context.Context, scheduledDay string) {
-	// Initial call, for whenn the function initially gets called
-	checkAndCall(scheduledDay)
+	// Initial call, for when the function initially gets called
+	checkAndCall(time.Now(), scheduledDay)
 	// periodic calls
 	stopLoop := false
 	for !stopLoop {
@@ -105,7 +107,7 @@ func callOnDay(ctx context.Context, scheduledDay string) {
 		defer timer.Stop()
 		select {
 		case <-timer.C:
-			checkAndCall(scheduledDay)
+			checkAndCall(time.Now(), scheduledDay)
 		case <-ctx.Done():
 			stopLoop = true
 		}

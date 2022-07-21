@@ -161,3 +161,76 @@ func Test_mayCall(t *testing.T) {
 		assert.Equal(tt.want, mayCall(tt.args.scheduledDay, tt.args.lastEntry, tt.args.now), tt.name+" Case: "+fmt.Sprint(i))
 	}
 }
+
+func Test_timeOfNextWeekDay(t *testing.T) {
+	type args struct {
+		now     time.Time
+		weekday string
+	}
+	tests := []struct {
+		name string
+		args args
+		want time.Time
+	}{
+		{
+			name: "Thursday 2022 21 July 01:02:03.004, next Thursday should be 2022 28 July 00:00:00.000...",
+			args: args{
+				now:     time.Date(2022, 7, 21, 1, 2, 3, 4, time.UTC),
+				weekday: "Thursday",
+			},
+			want: time.Date(2022, 7, 28, 0, 0, 0, 0, time.UTC),
+		},
+		{
+			name: "Thursday 2022 21 July 01:02:03.004, next Friday should be 2022 22 July 00:00:00.000...",
+			args: args{
+				now:     time.Date(2022, 7, 21, 1, 2, 3, 4, time.UTC),
+				weekday: "Friday",
+			},
+			want: time.Date(2022, 7, 22, 0, 0, 0, 0, time.UTC),
+		},
+		{
+			name: "Thursday 2022 21 July 01:02:03.004, next Saturday should be 2022 23 July 00:00:00.000...",
+			args: args{
+				now:     time.Date(2022, 7, 21, 1, 2, 3, 4, time.UTC),
+				weekday: "Saturday",
+			},
+			want: time.Date(2022, 7, 23, 0, 0, 0, 0, time.UTC),
+		},
+		{
+			name: "Thursday 2022 21 July 01:02:03.004, next Sunday should be 2022 24 July 00:00:00.000...",
+			args: args{
+				now:     time.Date(2022, 7, 21, 1, 2, 3, 4, time.UTC),
+				weekday: "Sunday",
+			},
+			want: time.Date(2022, 7, 24, 0, 0, 0, 0, time.UTC),
+		},
+		{
+			name: "Thursday 2022 21 July 01:02:03.004, next Monday should be 2022 25 July 00:00:00.000...",
+			args: args{
+				now:     time.Date(2022, 7, 21, 1, 2, 3, 4, time.UTC),
+				weekday: "Monday",
+			},
+			want: time.Date(2022, 7, 25, 0, 0, 0, 0, time.UTC),
+		},
+		{
+			name: "Thursday 2022 21 July 01:02:03.004, next Tuesday should be 2022 26 July 00:00:00.000...",
+			args: args{
+				now:     time.Date(2022, 7, 21, 1, 2, 3, 4, time.UTC),
+				weekday: "Tuesday",
+			},
+			want: time.Date(2022, 7, 26, 0, 0, 0, 0, time.UTC),
+		},
+		{
+			name: "Thursday 2022 21 July 01:02:03.004, next Wednesday should be 2022 27 July 00:00:00.000...",
+			args: args{
+				now:     time.Date(2022, 7, 21, 1, 2, 3, 4, time.UTC),
+				weekday: "Wednesday",
+			},
+			want: time.Date(2022, 7, 27, 0, 0, 0, 0, time.UTC),
+		},
+	}
+	assert := assert.New(t)
+	for i, tt := range tests {
+		assert.Equal(tt.want, timeOfNextWeekDay(tt.args.now, tt.args.weekday), tt.name+" Case: "+fmt.Sprint(i))
+	}
+}
