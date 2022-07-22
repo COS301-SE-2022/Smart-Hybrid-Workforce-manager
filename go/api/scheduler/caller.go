@@ -16,7 +16,6 @@ var (
 	Clock       clock.Clock   = &clock.RealClock{} // TODO: @JonathanEnslin make sure this is not a bad way of doing it
 	timeout     time.Duration = 30 * time.Second
 	endpointURL string
-	LogPath     string = "////"
 )
 
 func init() {
@@ -77,26 +76,20 @@ func timeOfNextWeekDay(now time.Time, weekday string) time.Time {
 // entry permits it
 func checkAndCall(now time.Time, scheduledDay string) error {
 	// scheduledDay := "Friday" // TODO: @JonathanEnslin Make env var
-	lastEntry, err := ReadLastEntry(LogPath)
+	lastEntry, err := ReadLastEntry()
 	if err != nil {
 		return err
 	}
 	if mayCall(scheduledDay, lastEntry, now) {
-		call()
+		_ = call(nil) // TODO @JonathanEnslin get data
 	}
 	return nil
 }
 
-func call() error {
-	data := map[string]interface{}{
-		"employee_ids": []string{"145454-54654-654654", "4654654-5465465-5454654"},
-	}
-	body, _ := json.Marshal(map[string]interface{}{ // TODO: @JonathanEnslin get actual config + data
-		"current_time":  time.Now(),
-		"book_for_days": []string{"monday", "wednesday", "friday"},
-		"data":          data,
-	})
+func call(data interface{}) error {
+	body, _ := json.Marshal(data)
 	bodyBytesBuff := bytes.NewBuffer(body)
+
 	request, err := http.NewRequest(http.MethodPost, endpointURL, bodyBytesBuff)
 	// TODO: @JonathanEnslin determine request headers
 	if err != nil {
@@ -109,10 +102,10 @@ func call() error {
 		if os.IsTimeout(err) {
 			errType = TIMED_OUT // TODO @JonathanEnslin look at implementing type of exp backoff for timeout
 		}
-		err = NewLogEntry(errType, &now).WriteLog(LogPath)
+		err = NewLogEntry(errType, &now).WriteLog()
 	} else {
 		// TODO @JonathanEnslin handle the response
-		err = NewLogEntry(SUCCESS, &now).WriteLog(LogPath)
+		err = NewLogEntry(SUCCESS, &now).WriteLog()
 	}
 	return err
 }
@@ -121,7 +114,7 @@ func call() error {
 // the method can be cancelled using the passed in context
 func callOnDay(ctx context.Context, scheduledDay string) {
 	// Initial call, for when the function initially gets called
-	checkAndCall(time.Now(), scheduledDay)
+	_ = checkAndCall(time.Now(), scheduledDay)
 	// periodic calls
 	stopLoop := false
 	for !stopLoop {
@@ -130,7 +123,7 @@ func callOnDay(ctx context.Context, scheduledDay string) {
 		defer timer.Stop()
 		select {
 		case <-timer.C:
-			checkAndCall(time.Now(), scheduledDay)
+			_ = checkAndCall(time.Now(), scheduledDay)
 		case <-ctx.Done():
 			stopLoop = true
 		}

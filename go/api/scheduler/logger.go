@@ -14,6 +14,10 @@ type Status string
 
 const DT_FMT string = "02-01-2006 15:04:05 Monday"
 
+var (
+	logPath string = "scheduler.log"
+)
+
 const (
 	SUCCESS   Status = "SUCCESS"
 	PENDING   Status = "PENDING"
@@ -57,25 +61,27 @@ func Parse(str string) (*LogEntry, error) {
 }
 
 // WriteLog Writes the entry to the passed file
-func (entry LogEntry) WriteLog(path string) error {
-	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0640) // rw-r-----
+func (entry LogEntry) WriteLog() error {
+	// func (entry LogEntry) WriteLog(path string) error {
+	// TODO: @JonathanEnslin investigate why 0644 perms aren't allowed
+	f, err := os.OpenFile(logPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600) // rw-------
 	if err != nil {
 		return err
 	}
-	defer f.Close()
 	_, err = f.WriteString(entry.String() + "\n")
+	_ = f.Close() // TODO: @JonathanEnslin handle error
 	return err
 }
 
 // ReadLastEntry reads the last entry from a log file and returns the entry, or nil
 // if file is empty
-func ReadLastEntry(path string) (*LogEntry, error) {
+func ReadLastEntry() (*LogEntry, error) {
 	// create the file if it does not yet exist
-	f, err := os.OpenFile(path, os.O_CREATE|os.O_RDONLY, 0640) // rw-r-----
+	// TODO: @JonathanEnslin investigate why 0644 perms aren't allowed
+	f, err := os.OpenFile(logPath, os.O_CREATE|os.O_RDONLY, 0600) // rw-------
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
 
 	var lastLine string // only last line should be returned
 	scanner := bufio.NewScanner(f)
@@ -90,6 +96,6 @@ func ReadLastEntry(path string) (*LogEntry, error) {
 	if lastLine == "" {
 		return nil, nil
 	}
-
+	_ = f.Close() // TODO: @JonathanEnslin handle error
 	return Parse(lastLine)
 }
