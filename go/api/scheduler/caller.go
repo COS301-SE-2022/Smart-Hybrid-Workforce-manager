@@ -4,11 +4,27 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"lib/clock"
+	"lib/restclient"
 	"net/http"
+	"os"
 	"time"
 )
 
-const LOG_PATH string = "////"
+var (
+	HTTPClient  restclient.HTTPClient
+	Clock       clock.Clock   = &clock.RealClock{} // TODO: @JonathanEnslin make sure this is not a bad way of doing it
+	timeout     time.Duration = 30 * time.Second
+	endpointURL string
+	LogPath     string = "////"
+)
+
+func init() {
+	// TODO: @JonathanEnslin get env vars here
+	HTTPClient = &http.Client{
+		Timeout: timeout,
+	}
+}
 
 var DaysOfWeek = map[string]time.Weekday{
 	"Sunday":    time.Sunday,
@@ -61,19 +77,17 @@ func timeOfNextWeekDay(now time.Time, weekday string) time.Time {
 // entry permits it
 func checkAndCall(now time.Time, scheduledDay string) error {
 	// scheduledDay := "Friday" // TODO: @JonathanEnslin Make env var
-	lastEntry, err := ReadLastEntry(LOG_PATH)
+	lastEntry, err := ReadLastEntry(LogPath)
 	if err != nil {
 		return err
 	}
 	if mayCall(scheduledDay, lastEntry, now) {
 		call()
-	} else {
-		// TODO: @JonathanEnslin Report error if pending, or exp backoff
 	}
 	return nil
 }
 
-func call() {
+func call() error {
 	data := map[string]interface{}{
 		"employee_ids": []string{"145454-54654-654654", "4654654-5465465-5454654"},
 	}
@@ -83,15 +97,24 @@ func call() {
 		"data":          data,
 	})
 	bodyBytesBuff := bytes.NewBuffer(body)
-	client := http.Client{
-		Timeout: 30 * time.Second, // TODO: @JonathanEnslin - configurable timeout (incase scheduling takes long)
-	}
-	_, err := client.Post("http://localhost:8101", "application/json", bodyBytesBuff) // TODO @JonathanEnslin URL env param
+	request, err := http.NewRequest(http.MethodPost, endpointURL, bodyBytesBuff)
+	// TODO: @JonathanEnslin determine request headers
 	if err != nil {
-		// TODO @JonathanEnslin - log the error
-	} else {
-		// TODO @JonathanEnslin - handle the response and log success
+		return err
 	}
+	_, err = HTTPClient.Do(request) // TODO @JonathanEnslin URL env param
+	now := Clock.Now()
+	if err != nil {
+		errType := FAILED
+		if os.IsTimeout(err) {
+			errType = TIMED_OUT // TODO @JonathanEnslin look at implementing type of exp backoff for timeout
+		}
+		err = NewLogEntry(errType, &now).WriteLog(LogPath)
+	} else {
+		// TODO @JonathanEnslin handle the response
+		err = NewLogEntry(SUCCESS, &now).WriteLog(LogPath)
+	}
+	return err
 }
 
 // callOnDay will call checkAndCall() on each recurring certain day of the week,
