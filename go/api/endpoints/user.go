@@ -3,8 +3,8 @@ package endpoints
 import (
 	"api/data"
 	"api/db"
-	"api/utils"
 	"api/redis"
+	"api/utils"
 	"fmt"
 	"lib/logger"
 	"net/http"
@@ -145,27 +145,27 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 
 func addDefaultPermissions(user string, access *db.Access) error {
 	dp := data.NewPermissionDA(access)
-	err := dp.StoreUserPermission(data.CreateUserPermission(user, "CREATE", "BOOKING", "USER", user))
+	err := dp.StorePermission(data.CreatePermission(user, "USER", "CREATE", "BOOKING", "USER", user))
 	if err != nil {
 		return err
 	}
-	err = dp.StoreUserPermission(data.CreateUserPermission(user, "VIEW", "BOOKING", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "VIEW", "BOOKING", "USER", user))
 	if err != nil {
 		return err
 	}
-	err = dp.StoreUserPermission(data.CreateUserPermission(user, "DELETE", "BOOKING", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "DELETE", "BOOKING", "USER", user))
 	if err != nil {
 		return err
 	}
-	err = dp.StoreUserPermission(data.CreateUserPermission(user, "VIEW", "ROLE", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "VIEW", "ROLE", "USER", user))
 	if err != nil {
 		return err
 	}
-	err = dp.StoreUserPermission(data.CreateUserPermission(user, "VIEW", "PERMISSION", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "VIEW", "PERMISSION", "USER", user))
 	if err != nil {
 		return err
 	}
-	err = dp.StoreUserPermission(data.CreateUserPermission(user, "VIEW", "TEAM", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "VIEW", "TEAM", "USER", user))
 	if err != nil {
 		return err
 	}
@@ -176,7 +176,7 @@ func InformationUserHandler(writer http.ResponseWriter, request *http.Request) {
 	var user data.User
 
 	resp := request.Header.Get("Authorization")
-	if(resp == ""){
+	if resp == "" {
 		logger.Access.Printf("\nresp is empty\n")
 	}
 	// logger.Access.Printf("\nresp\n%v\n", resp)
@@ -236,7 +236,7 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
 	users, err := da.FindCredential(&userCred)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
-		logger.Error.Fatal("\nerror\n%v\n",err)
+		logger.Error.Fatal("\nerror\n%v\n", err)
 		return
 	}
 	logger.Access.Printf("\nusers\n%v\n", users)

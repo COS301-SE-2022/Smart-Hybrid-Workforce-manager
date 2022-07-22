@@ -15,7 +15,6 @@ function ProfileConfiguration()
 
   let handleSubmit = async (e) =>
   {
-    alert(workFromHome)
     e.preventDefault();
     try
     {
