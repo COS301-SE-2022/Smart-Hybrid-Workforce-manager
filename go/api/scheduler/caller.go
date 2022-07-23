@@ -19,7 +19,9 @@ var (
 )
 
 func init() {
-	// TODO: @JonathanEnslin get env vars here
+	// get env vars here
+	endpointURL = os.Getenv("SCHEDULER_ADDR")
+
 	HTTPClient = &http.Client{
 		Timeout: timeout,
 	}
@@ -81,7 +83,7 @@ func checkAndCall(now time.Time, scheduledDay string) error {
 		return err
 	}
 	if mayCall(scheduledDay, lastEntry, now) {
-		_ = call(nil) // TODO @JonathanEnslin get data
+		_ = call(nil) // TODO: @JonathanEnslin get data
 	}
 	return nil
 }
@@ -95,16 +97,16 @@ func call(data interface{}) error {
 	if err != nil {
 		return err
 	}
-	_, err = HTTPClient.Do(request) // TODO @JonathanEnslin URL env param
+	_, err = HTTPClient.Do(request) // TODO: @JonathanEnslin URL env param
 	now := Clock.Now()
 	if err != nil {
 		errType := FAILED
 		if os.IsTimeout(err) {
-			errType = TIMED_OUT // TODO @JonathanEnslin look at implementing type of exp backoff for timeout
+			errType = TIMED_OUT // TODO: @JonathanEnslin look at implementing type of exp backoff for timeout
 		}
 		err = NewLogEntry(errType, &now).WriteLog()
 	} else {
-		// TODO @JonathanEnslin handle the response
+		// TODO: @JonathanEnslin handle the response
 		err = NewLogEntry(SUCCESS, &now).WriteLog()
 	}
 	return err
