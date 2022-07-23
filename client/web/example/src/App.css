@@ -1001,3 +1001,12 @@
     color: white;
     margin-top: 50px;
 }
+
+.white {
+    color: white;
+}
+
+hr {
+    width: 75%;
+    text-align: left;
+}
