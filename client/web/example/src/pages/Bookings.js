@@ -2,8 +2,14 @@ import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import BookingCard from "../components/BookingCard/BookingCard"
 
+import React, { useState, useEffect, useContext } from "react";
+import { Context } from "../store/appContext";
+
 function Bookings()
 {
+
+
+
   return (
     <div className='page-container'>
       <div className='content'>

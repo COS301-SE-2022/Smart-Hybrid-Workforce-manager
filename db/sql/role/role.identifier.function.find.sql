@@ -1,12 +1,14 @@
 CREATE OR REPLACE FUNCTION role.identifier_find(
     _id uuid DEFAULT NULL,
 	_role_name VarChar(256) DEFAULT NULL,
+    _role_lead_id uuid DEFAULT NULL,
     _date_added TIMESTAMP DEFAULT NULL,
     _permissions JSONB DEFAULT NULL -- Must only contain role_ids not user_ids
 )
 RETURNS TABLE (
     id uuid,
 	role_name VarChar(256),
+    role_lead_id uuid,
 	date_added TIMESTAMP
 ) AS 
 $$
@@ -33,11 +35,12 @@ BEGIN
         AND permission_category = 'ROLE'::permission.category
         AND permission_tenant = 'IDENTIFIER'::permission.tenant
     )
-    SELECT i.id, i.role_name, i.date_added
+    SELECT i.id, i.role_name, i.role_lead_id, i.date_added
     FROM role.identifier as i
     WHERE (EXISTS(SELECT 1 FROM permitted_roles WHERE permission_tenant_id is null) OR i.id = ANY(SELECT * FROM permitted_roles))
     AND (_id IS NULL OR i.id = _id)
     AND (_role_name IS NULL OR i.role_name = _role_name)
+    AND (_role_lead_id IS NULL OR i.role_lead_id = _role_lead_id)
     AND (_date_added IS NULL OR i.date_added >= _date_added);
 
     DROP TABLE _permissions_table;

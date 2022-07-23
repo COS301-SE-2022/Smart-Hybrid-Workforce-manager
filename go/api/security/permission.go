@@ -1,6 +1,6 @@
 package security
 
-import (	
+import (
 	"api/data"
 	"api/db"
 )
@@ -9,7 +9,8 @@ import (
 func GetUserPermissions(userId *string, access *db.Access) (data.Permissions, error) {
 	// Create data-access
 	da := data.NewPermissionDA(access)
-	permissions, err := da.FindUserPermission(&data.Permission{Id: userId}, &data.Permissions{data.CreateGenericPermission("VIEW", "PERMISSION", "USER")})
+	temp := "USER"
+	permissions, err := da.FindPermission(&data.Permission{PermissionId: userId, PermissionIdType: &temp}, &data.Permissions{data.CreateGenericPermission("VIEW", "PERMISSION", "USER")})
 	if err != nil {
 		return nil, err
 	}
@@ -22,8 +23,9 @@ func GetUserPermissions(userId *string, access *db.Access) (data.Permissions, er
 	}
 
 	// Get role permissions
+	temp = "ROLE"
 	for _, role := range roles {
-		permission, err := da.FindRolePermission(&data.Permission{Id: role.RoleId}, &data.Permissions{data.CreateGenericPermission("VIEW", "PERMISSION", "ROLE")})
+		permission, err := da.FindPermission(&data.Permission{PermissionId: role.RoleId, PermissionIdType: &temp}, &data.Permissions{data.CreateGenericPermission("VIEW", "PERMISSION", "ROLE")})
 		if err != nil {
 			return nil, err
 		}

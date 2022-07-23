@@ -3,6 +3,7 @@ package data
 import (
 	"api/db"
 	"database/sql"
+	"lib/logger"
 	"time"
 )
 
@@ -23,6 +24,7 @@ type User struct {
 	OfficeDays         *int       `json:"office_days,omitempty"`
 	PreferredStartTime *time.Time `json:"preferred_start_time,omitempty"`
 	PreferredEndTime   *time.Time `json:"preferred_end_time,omitempty"`
+	PreferredDesk      *string    `json:"preferred_desk,omitempty"`
 }
 
 // Users represent a splice of User
@@ -30,12 +32,13 @@ type Users []*User
 
 // Credential identifies a login (not a user)
 type Credential struct {
-	Id             string    `json:"id,omitempty"`
-	Secret         string    `json:"secret,omitempty"`
-	Active         bool      `json:"active,omitempty"`
-	Identifier     string    `json:"identifier,omitempty"`
-	FailedAttempts int       `json:"failed_attempts,omitempty"`
-	LastAccessed   time.Time `json:"last_accessed,omitempty"`
+	Id             	*string    	`json:"id,omitempty"`
+	Secret         	*string    	`json:"secret,omitempty"`
+	Identifier     	*string    	`json:"identifier,omitempty"`
+	Type		 	*string		`json:"type,omitempty"`
+	Active         	*bool      	`json:"active,omitempty"`
+	FailedAttempts 	*int       	`json:"failed_attempts,omitempty"`
+	LastAccessed   	time.Time 	`json:"last_accessed,omitempty"`
 }
 
 // UserDA provides access to the database for authentication purposes
@@ -73,6 +76,7 @@ func mapUser(rows *sql.Rows) (interface{}, error) {
 		&identifier.OfficeDays,
 		&identifier.PreferredStartTime,
 		&identifier.PreferredEndTime,
+		&identifier.PreferredDesk,
 	)
 	if err != nil {
 		return nil, err
@@ -85,10 +89,11 @@ func mapCredential(rows *sql.Rows) (interface{}, error) {
 	err := rows.Scan(
 		&cred.Id,
 		&cred.Secret,
+		&cred.Identifier,
+		&cred.Type,
 		&cred.Active,
 		&cred.FailedAttempts,
 		&cred.LastAccessed,
-		&cred.Identifier,
 	)
 	if err != nil {
 		return nil, err
@@ -102,9 +107,9 @@ func mapCredential(rows *sql.Rows) (interface{}, error) {
 //StoreIdentifier stores an identifier
 func (access *UserDA) StoreIdentifier(identifier *User) (string, error) {
 	results, err := access.access.Query(
-		`SELECT * FROM "user".identifier_store($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`, mapString,
+		`SELECT * FROM "user".identifier_store($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`, mapString,
 		identifier.Id, identifier.Identifier, identifier.FirstName, identifier.LastName, identifier.Email, identifier.Picture, identifier.WorkFromHome,
-		identifier.Parking, identifier.OfficeDays, identifier.PreferredStartTime, identifier.PreferredEndTime)
+		identifier.Parking, identifier.OfficeDays, identifier.PreferredStartTime, identifier.PreferredEndTime, identifier.PreferredDesk)
 	if err != nil {
 		return "", err
 	}
@@ -119,9 +124,9 @@ func (access *UserDA) StoreIdentifier(identifier *User) (string, error) {
 //FindIdentifier finds an identifier
 func (access *UserDA) FindIdentifier(identifier *User) (Users, error) {
 	results, err := access.access.Query(
-		`SELECT * FROM "user".identifier_find($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`, mapUser,
+		`SELECT * FROM "user".identifier_find($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`, mapUser,
 		identifier.Id, identifier.Identifier, identifier.FirstName, identifier.LastName, identifier.Email, identifier.Picture, identifier.DateCreated, identifier.WorkFromHome,
-		identifier.Parking, identifier.OfficeDays, identifier.PreferredStartTime, identifier.PreferredEndTime)
+		identifier.Parking, identifier.OfficeDays, identifier.PreferredStartTime, identifier.PreferredEndTime, identifier.PreferredDesk)
 	if err != nil {
 		return nil, err
 	}
@@ -165,8 +170,9 @@ func (access *UserDA) StoreCredential(Id string, secret *string, identifier stri
 func (access *UserDA) FindCredential(credential *Credential) (Users, error) {
 	results, err := access.access.Query(
 		`SELECT * FROM "user".credential_find($1, $2, $3, $4, $5, $6, $7)`, mapCredential,
-		credential.Id, credential.Secret, credential.Identifier, nil, credential.Active, nil, credential.LastAccessed)
+		credential.Id, credential.Secret, credential.Identifier, credential.Type, credential.Active, credential.FailedAttempts, credential.LastAccessed)
 	if err != nil {
+		logger.Error.Fatal(err)
 		return nil, err
 	}
 	tmp := make([]*User, 0)

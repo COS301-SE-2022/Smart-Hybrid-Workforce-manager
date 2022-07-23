@@ -68,7 +68,14 @@ func CreateTeamHandler(writer http.ResponseWriter, request *http.Request, permis
 	defer access.Close()
 
 	da := data.NewTeamDA(access)
-	err = da.CreateTeam(&team)
+	teamId, err := da.CreateTeam(&team)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	// Add default user permissions
+	err = addDefaultPermissionsTeam(teamId, access)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
@@ -82,6 +89,35 @@ func CreateTeamHandler(writer http.ResponseWriter, request *http.Request, permis
 	}
 	logger.Access.Printf("%v team created\n", team.Name)
 	utils.Ok(writer, request)
+}
+
+func addDefaultPermissionsTeam(teamId string, access *db.Access) error {
+	dp := data.NewPermissionDA(access)
+	err := dp.StorePermission(data.CreatePermission(teamId, "TEAM", "CREATE", "TEAM", "IDENTIFIER", ""))
+	if err != nil {
+		return err
+	}
+	err = dp.StorePermission(data.CreatePermission(teamId, "TEAM", "VIEW", "TEAM", "IDENTIFIER", ""))
+	if err != nil {
+		return err
+	}
+	err = dp.StorePermission(data.CreatePermission(teamId, "TEAM", "DELETE", "TEAM", "IDENTIFIER", ""))
+	if err != nil {
+		return err
+	}
+	err = dp.StorePermission(data.CreatePermission(teamId, "TEAM", "CREATE", "TEAM", "USER", ""))
+	if err != nil {
+		return err
+	}
+	err = dp.StorePermission(data.CreatePermission(teamId, "TEAM", "VIEW", "TEAM", "USER", ""))
+	if err != nil {
+		return err
+	}
+	err = dp.StorePermission(data.CreatePermission(teamId, "TEAM", "DELETE", "TEAM", "USER", ""))
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // InformationTeamHandler gets teams

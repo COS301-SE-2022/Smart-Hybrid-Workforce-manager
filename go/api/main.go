@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/handlers"
 )
 
 func main() {
@@ -93,8 +94,13 @@ func main() {
 		logger.Error.Fatal(err)
 		os.Exit(-1)
 	}
+	// Setup CORS for the API
+	credentials := handlers.AllowCredentials()
+	methods := handlers.AllowedMethods([]string{"POST"})
+	// ttl := handlers.MaxAge(3600)
+	// origins := handlers.AllowedOrigins([]string{"www.example.com"})
 
 	// Start API on port 8080 in its docker container
 	logger.Info.Println("Starting API on 8080")
-	logger.Error.Fatal(http.ListenAndServe(":8080", router))
+	logger.Error.Fatal(http.ListenAndServe(":8080", handlers.CORS(credentials, methods) (router)))
 }

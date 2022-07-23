@@ -72,9 +72,12 @@ class SmartScheduler:
             print(response)
 
     def printBookings(self):
+        ret_str = "BOOKINGS\n"
         print("BOOKINGS")
         for booking in self.bookingsList:
+            ret_str += str(booking) + "\n"
             print(booking)
+        return ret_str
 
 scheduler = SmartScheduler()
 scheduler.schedule()
