@@ -1,7 +1,7 @@
 import React from 'react'
 import { MdEdit, MdDelete } from 'react-icons/md'
 
-const BookingTicket = ({id, startDate, startTime, endDate, endTime, confirmed}) => {
+const BookingTicket = ({id, startDate, startTime, endDate, endTime, confirmed, type}) => {
 
     let EditBooking = async (e) =>
     {
@@ -47,14 +47,13 @@ const BookingTicket = ({id, startDate, startTime, endDate, endTime, confirmed}) 
             <div className="booking">
                 <div className="booking-image"></div>
                 <div className="booking-text">
-                <p>Start Date: {startDate}</p>
                 <p>Start Time: {startTime}</p>
-                <p>End Date: {endDate}</p>
                 <p>End Time: {endTime}</p>
+                <p>Type: {type}</p>
                 {{confirmed} ? (
-                    <p>Confirmed: Pending</p>
+                    <p>Acceptance: Pending</p>
                 ) : (
-                    <p>Confirmed: Approved</p>
+                    <p>Acceptance: Approved</p>
                 )}                
                 </div>
                 <div className='booking-popup'>
