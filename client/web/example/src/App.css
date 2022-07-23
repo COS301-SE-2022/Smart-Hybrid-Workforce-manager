@@ -935,7 +935,7 @@
     display: block;
     position: relative;
     padding-left: 35px;
-    margin-left: 20px;
+    margin-top: 10px;
     cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -1000,4 +1000,13 @@
 .permission-category {
     color: white;
     margin-top: 50px;
+}
+
+.white {
+    color: white;
+}
+
+hr {
+    width: 75%;
+    text-align: left;
 }
