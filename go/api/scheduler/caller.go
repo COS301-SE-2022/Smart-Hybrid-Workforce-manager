@@ -83,12 +83,14 @@ func checkAndCall(now time.Time, scheduledDay string) error {
 		return err
 	}
 	if mayCall(scheduledDay, lastEntry, now) {
-		_ = call(nil) // TODO: @JonathanEnslin get data
+		// TODO: @JonathanEnslin get data
+		schedulerData, _ := GetSchedulerData()
+		_ = call(schedulerData)
 	}
 	return nil
 }
 
-func call(data interface{}) error {
+func call(data *SchedulerData) error {
 	body, _ := json.Marshal(data)
 	bodyBytesBuff := bytes.NewBuffer(body)
 
