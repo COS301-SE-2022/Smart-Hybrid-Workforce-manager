@@ -40,7 +40,7 @@ function BookingsDesk()
             to: "archedevelop@gmail.com",
             sDate: startDate,
             sTime: startTime,
-            eDate: endDate,
+            eDate: startDate,
             eTime: endTime
           })
         });
