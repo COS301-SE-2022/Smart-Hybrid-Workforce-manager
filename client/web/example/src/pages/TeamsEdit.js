@@ -15,7 +15,7 @@ const EditTeam = () =>
   const [teamPriority, setTeamPriority] = useState(window.sessionStorage.getItem("TeamPriority"));
 
   const [teamUsers, SetTeamUsers] = useState([]);
-  const [viewableUsers, SetViewableUsers] = useState([]);
+  //const [viewableUsers, SetViewableUsers] = useState([]);
 
   let handleSubmit = async (e) =>
   {
@@ -31,7 +31,7 @@ const EditTeam = () =>
           description: teamDescription,
           capacity: parseInt(teamCapacity),
           priority: parseInt(teamPriority),
-          team_lead_id: teamLead == "null" ? null : teamLead
+          team_lead_id: teamLead === "null" ? null : teamLead
         })
       });
 
@@ -71,7 +71,7 @@ const EditTeam = () =>
           body: JSON.stringify({})
         }).then((res) => res.json()).then(data => 
         {
-          SetViewableUsers(data);
+          //SetViewableUsers(data);
         });
   }
 

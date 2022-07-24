@@ -35,6 +35,10 @@ import CreateUser from './pages/UsersCreate'
 import Roles from './pages/Roles'
 import CreateRole from './pages/RolesCreate'
 import EditRole from './pages/RolesEdit'
+import Layout from './pages/CreateLayout'
+// import React, { useState } from "react";
+
+// import { AppContext } from "./lib/contextLib";
 
 import injectContext from "./store/appContext";
 
@@ -52,6 +56,7 @@ function App()
           <Route path="/bookings-desk" exact element={<BookingsDesk/>} />
           <Route path="/bookings-meeting" exact element={<BookingsMeeting />} />
           <Route path="/admin" exact element={<Admin />} />
+          <Route path="/layout" exact element={<Layout />} />
 
           <Route path="/users" exact element={<Users />} />
           <Route path="/user-edit" exact element={<EditUser />} />
