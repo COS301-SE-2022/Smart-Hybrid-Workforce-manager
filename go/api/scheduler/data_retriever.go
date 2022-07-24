@@ -12,7 +12,15 @@ type TeamInfo struct {
 	UserIds []string `json:"user_ids"`
 }
 
-type TeamInfos []*TeamInfo
+type BuildingInfo struct {
+	*data.Building
+	RoomIds []string `json:"room_ids"`
+}
+
+type RoomInfo struct {
+	*data.Room
+	ResourceIds []string `json:"resource_ids"`
+}
 
 // GetUsers Retrieves all the users from the database
 func GetUsers() (data.Users, error) {
@@ -121,7 +129,7 @@ func GetUserTeams() (data.UserTeams, error) {
 // GetCompiledTeamInfo will return an array, with team_id as keys
 // this map will contain the info of the team, as well as all the users belonging to
 // that team
-func GetCompiledTeamInfo() (TeamInfos, error) {
+func GetCompiledTeamInfo() ([]*TeamInfo, error) {
 	teams, err := GetTeams()
 	if err != nil {
 		return nil, err
@@ -200,4 +208,73 @@ func GetRooms() (data.Rooms, error) {
 		return nil, err
 	}
 	return rooms, nil
+}
+
+// GetResourceIdentifiers retrieves all the Resources from the database
+func GetResourceIdentifiers() (data.Resources, error) {
+	// Create db connection
+	access, err := db.Open()
+	if err != nil {
+		return nil, err
+	}
+	defer access.Close()
+
+	da := data.NewResourceDA(access)
+	identifier := data.Resource{}
+	permissions := &data.Permissions{data.CreateGenericPermission("VIEW", "RESOURCE", "IDENTIFIER")}
+	identifiers, err := da.FindIdentifier(&identifier, permissions)
+	if err != nil {
+		return nil, err
+	}
+
+	err = access.Commit()
+	if err != nil {
+		return nil, err
+	}
+	return identifiers, nil
+}
+
+func GetCompileResourceInfo() ([]*BuildingInfo, []*RoomInfo, data.Rooms, error) {
+	buildings, err := GetBuildings()
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	rooms, err := GetRooms()
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	identifiers, err := GetResourceIdentifiers()
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	// Map rooms to buildings
+	buildingsMap := make(map[string]*BuildingInfo)
+	for _, building := range buildings {
+		buildingsMap[*building.Id] = &BuildingInfo{building, []string{}}
+	}
+	for _, room := range rooms {
+		buildingsMap[*room.BuildingId].RoomIds = append(buildingsMap[*room.BuildingId].RoomIds, *room.Id)
+	}
+
+	buildingInfos := []*BuildingInfo{}
+	for _, buildingsInfo := range buildingsMap {
+		buildingInfos = append(buildingInfos, buildingsInfo)
+	}
+
+	// Map resources to rooms
+	roomsMap := make(map[string]*RoomInfo)
+	for _, room := range rooms {
+		roomsMap[*room.Id] = &RoomInfo{room, []string{}}
+	}
+	for _, identifier := range identifiers {
+		roomsMap[*identifier.RoomId].ResourceIds = append(roomsMap[*identifier.RoomId].ResourceIds, *identifier.Id)
+	}
+
+	roomInfos := []*RoomInfo{}
+	for _, roomInfo := range roomsMap {
+		roomInfos = append(roomInfos, roomInfo)
+	}
+
+	return buildingInfos, roomInfos, rooms, nil
 }
