@@ -7,6 +7,14 @@ import (
 	"time"
 )
 
+type SchedulerData struct {
+	Users     data.Users      `json:"users"`
+	Teams     []*TeamInfo     `json:"teams"`
+	Buildings []*BuildingInfo `json:"buildings"`
+	Rooms     []*RoomInfo     `json:"rooms"`
+	Resources data.Resources  `json:"resources"`
+}
+
 type TeamInfo struct {
 	*data.Team
 	UserIds []string `json:"user_ids"`
@@ -234,7 +242,8 @@ func GetResourceIdentifiers() (data.Resources, error) {
 	return identifiers, nil
 }
 
-func GetCompileResourceInfo() ([]*BuildingInfo, []*RoomInfo, data.Rooms, error) {
+// GetCompiledResourceInfo maps room ids to buildings, and resource ids to rooms
+func GetCompileResourceInfo() ([]*BuildingInfo, []*RoomInfo, data.Resources, error) {
 	buildings, err := GetBuildings()
 	if err != nil {
 		return nil, nil, nil, err
@@ -276,5 +285,36 @@ func GetCompileResourceInfo() ([]*BuildingInfo, []*RoomInfo, data.Rooms, error) 
 		roomInfos = append(roomInfos, roomInfo)
 	}
 
-	return buildingInfos, roomInfos, rooms, nil
+	return buildingInfos, roomInfos, identifiers, nil
+}
+
+// GetSchedulerData retrieves all the data needed by the scheduler
+func GetSchedulerData() (*SchedulerData, error) {
+	// Get the users
+	users, err := GetUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	// Get the teams
+	teams, err := GetCompiledTeamInfo()
+	if err != nil {
+		return nil, err
+	}
+
+	// Get the buildings, rooms, resources
+	buildings, rooms, resources, err := GetCompileResourceInfo()
+	if err != nil {
+		return nil, err
+	}
+
+	schedulerData := SchedulerData{
+		Users:     users,
+		Teams:     teams,
+		Buildings: buildings,
+		Rooms:     rooms,
+		Resources: resources,
+	}
+
+	return &schedulerData, nil
 }
