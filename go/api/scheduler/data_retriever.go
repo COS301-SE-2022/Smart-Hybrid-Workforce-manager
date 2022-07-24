@@ -8,9 +8,8 @@ import (
 )
 
 type TeamInfo struct {
-	Id      *string    `json:"id"`
-	Team    *data.Team `json:"team"`
-	UserIds []string   `json:"user_ids"`
+	*data.Team
+	UserIds []string `json:"user_ids"`
 }
 
 type TeamInfos []*TeamInfo
@@ -133,7 +132,7 @@ func GetCompiledTeamInfo() (TeamInfos, error) {
 	}
 	teamInfosMap := make(map[string]*TeamInfo)
 	for _, team := range teams {
-		teamInfosMap[*team.Id] = &TeamInfo{Id: team.Id, Team: team, UserIds: []string{}}
+		teamInfosMap[*team.Id] = &TeamInfo{team, []string{}}
 	}
 	for _, userTeam := range userTeams {
 		teamInfosMap[*userTeam.TeamId].UserIds = append(teamInfosMap[*userTeam.TeamId].UserIds, *userTeam.UserId)
@@ -148,4 +147,57 @@ func GetCompiledTeamInfo() (TeamInfos, error) {
 	// final result would be for example:
 	// [{"team_id": "122-122", "team": {team_info...}, "user_ids": ["123-123", "321-123"]},...]
 	return teamInfos, nil
+}
+
+// GetBuildings retrieves all the buildings from the database
+func GetBuildings() (data.Buildings, error) {
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		return nil, err
+	}
+	defer access.Close()
+
+	da := data.NewResourceDA(access)
+	building := data.Building{}
+	permissions := &data.Permissions{data.CreateGenericPermission("VIEW", "RESOURCE", "BUILDING")}
+	buildings, err := da.FindBuildingResource(&building, permissions)
+	if err != nil {
+		return nil, err
+	}
+
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		return nil, err
+	}
+	return buildings, nil
+}
+
+// IMPORTANT: It is assumed at this point that rooms are flat
+
+// TODO: @JonathanEnslin Get funcs for resources and rooms, similar to teams/users
+// GetRooms retrieves all the rooms from the database
+func GetRooms() (data.Rooms, error) {
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		return nil, err
+	}
+	defer access.Close()
+
+	da := data.NewResourceDA(access)
+	room := data.Room{}
+	permissions := &data.Permissions{data.CreateGenericPermission("VIEW", "RESOURCE", "ROOM")}
+	rooms, err := da.FindRoomResource(&room, permissions)
+	if err != nil {
+		return nil, err
+	}
+
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		return nil, err
+	}
+	return rooms, nil
 }
