@@ -3,8 +3,8 @@ package endpoints
 import (
 	"api/data"
 	"api/db"
+	"api/redis"
 	"api/utils"
-	// "api/redis"
 	"fmt"
 	"lib/logger"
 	"net/http"
@@ -145,27 +145,27 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 
 func addDefaultPermissions(user string, access *db.Access) error {
 	dp := data.NewPermissionDA(access)
-	err := dp.StoreUserPermission(data.CreateUserPermission(user, "CREATE", "BOOKING", "USER", user))
+	err := dp.StorePermission(data.CreatePermission(user, "USER", "CREATE", "BOOKING", "USER", user))
 	if err != nil {
 		return err
 	}
-	err = dp.StoreUserPermission(data.CreateUserPermission(user, "VIEW", "BOOKING", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "VIEW", "BOOKING", "USER", user))
 	if err != nil {
 		return err
 	}
-	err = dp.StoreUserPermission(data.CreateUserPermission(user, "DELETE", "BOOKING", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "DELETE", "BOOKING", "USER", user))
 	if err != nil {
 		return err
 	}
-	err = dp.StoreUserPermission(data.CreateUserPermission(user, "VIEW", "ROLE", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "VIEW", "ROLE", "USER", user))
 	if err != nil {
 		return err
 	}
-	err = dp.StoreUserPermission(data.CreateUserPermission(user, "VIEW", "PERMISSION", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "VIEW", "PERMISSION", "USER", user))
 	if err != nil {
 		return err
 	}
-	err = dp.StoreUserPermission(data.CreateUserPermission(user, "VIEW", "TEAM", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "VIEW", "TEAM", "USER", user))
 	if err != nil {
 		return err
 	}
@@ -175,13 +175,19 @@ func addDefaultPermissions(user string, access *db.Access) error {
 func InformationUserHandler(writer http.ResponseWriter, request *http.Request) {
 	var user data.User
 
+	resp := request.Header.Get("Authorization")
+	if resp == "" {
+		logger.Access.Printf("\nresp is empty\n")
+	}
+	// logger.Access.Printf("\nresp\n%v\n", resp)
+
 	err := utils.UnmarshalJSON(writer, request, &user)
 	if err != nil {
 		fmt.Println(err)
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
-
+	logger.Access.Printf("\nlogin user\n%v\n", user)
 	access, err := db.Open()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
@@ -217,7 +223,7 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
-
+	logger.Access.Printf("\nuserCred\n%v\n", userCred)
 	access, err := db.Open()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
@@ -230,8 +236,23 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
 	users, err := da.FindCredential(&userCred)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
+		logger.Error.Fatalf("\nerror\n%v\n", err)
 		return
 	}
+	logger.Access.Printf("\nusers\n%v\n", users)
+	var user = data.User{
+		Identifier: userCred.Identifier,
+	}
+
+	// logger.Access.Printf("\nuser\n%v\n", user)
+
+	users, err = da.FindIdentifier(&user)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	// logger.Access.Printf("\nusers\n%v\n", users[0])
 
 	err = access.Commit()
 	if err != nil {
@@ -239,12 +260,12 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	logger.Access.Printf("%v user login\n", userCred.Id)
+	//IF users == [] return error
 
 	//After user login create auth token
-	//authData := redis.AddAuthUser(user_id)
-
-	utils.JSONResponse(writer, request, users)
+	authData := redis.AddAuthUser(*(users[0]))
+	// logger.Access.Printf("\nauthdata\n%v\n", authData)
+	utils.JSONResponse(writer, request, authData)
 }
 
 func UpdateUserHandler(writer http.ResponseWriter, request *http.Request) {

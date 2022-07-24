@@ -9,7 +9,6 @@ function BookingsDesk()
 {
   const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
 
   let handleSubmit = async (e) =>
@@ -27,7 +26,7 @@ function BookingsDesk()
           resource_preference_id: null,
           resource_id: null,
           start: startDate + "T" + startTime + ":43.511Z",
-          end: endDate + "T" + endTime + ":43.511Z",
+          end: startDate + "T" + endTime + ":43.511Z",
           booked: false
         })
       });
@@ -68,23 +67,18 @@ function BookingsDesk()
           
           <Form className='form' onSubmit={handleSubmit}>
             <Form.Group className='form-group' controlId="formBasicName">
-              <Form.Label className='form-label'>Start Date<br></br></Form.Label>
-              <Form.Control name="sDate" className='form-input' type="text" placeholder="yyyy-mm-dd" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+              <Form.Label className='form-label'>Date<br></br></Form.Label>
+              <Form.Control className='form-input' type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
             </Form.Group>
 
             <Form.Group className='form-group' controlId="formBasicName">
               <Form.Label className='form-label'>Start Time<br></br></Form.Label>
-              <Form.Control name="sTime" className='form-input' type="text" placeholder="hh:mm" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
-            </Form.Group>
-
-            <Form.Group className='form-group' controlId="formBasicName">
-              <Form.Label className='form-label'>End Date<br></br></Form.Label>
-              <Form.Control name="eDate" className='form-input' type="text" placeholder="yyyy-mm-dd" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+              <Form.Control className='form-input' type="time" placeholder="hh:mm" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
             </Form.Group>
             
             <Form.Group className='form-group' controlId="formBasicName">
               <Form.Label className='form-label'>End Time<br></br></Form.Label>
-              <Form.Control name="eTime" className='form-input' type="text" placeholder="hh:mm" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+              <Form.Control className='form-input' type="time" placeholder="hh:mm" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
             </Form.Group>
 
             <Button className='button-submit' variant='primary' type='submit'>Create Booking</Button>

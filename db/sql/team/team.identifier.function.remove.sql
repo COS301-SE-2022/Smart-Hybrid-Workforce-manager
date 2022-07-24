@@ -7,6 +7,8 @@ RETURNS TABLE (
 	description VARCHAR(256),
 	capacity INT,
 	picture VARCHAR(256),
+    priority INT,
+    team_lead_id uuid,
     date_created TIMESTAMP
 ) AS 
 $$

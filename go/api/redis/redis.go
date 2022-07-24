@@ -1,16 +1,22 @@
 package redis
 
+////////////
+//TODO
+//Check if token has expired
+//
+
+
 import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"lib/logger"
 	"math"
 	"net/http"
 	"time"
 
+	"api/data"
 	"github.com/go-redis/redis/v8"
 	_ "github.com/gorilla/mux"
 )
@@ -34,8 +40,12 @@ type RedisData struct{
 
 // Authenticated User Struct
 type AuthUserData struct{
-	Token string `json:"token"`
-	ExpirationTime time.Time `json:"expr_time"`
+	Token 				string 		`json:"token"`
+	FirstName          	*string		`json:"first_name,omitempty"`
+	LastName           	*string		`json:"last_name,omitempty"`
+	Email              	*string		`json:"email,omitempty"`
+	Picture            	*string		`json:"picture,omitempty"`
+	ExpirationTime 		time.Time 	`json:"expr_time"`
 }
 
 //Redis clients
@@ -45,7 +55,7 @@ var redisClients[5] *redis.Client
 var ctx = context.Background()
 
 func InitializeRedisClients() error{
-	logger.Info.Println("Redis Initializing!")
+	// //logger.Info.Println("Redis Initializing!")
 	for i := 0; i < 5; i++{
 		if redisClients[i] == nil {
 			redisClients[i] = redis.NewClient(&redis.Options{
@@ -56,18 +66,18 @@ func InitializeRedisClients() error{
 			err := redisClients[i].Set(ctx, "verify", true, 0).Err()
 			if err != nil {
 				fmt.Println(err)
-				logger.Error.Fatal(err)
+				//logger.Error.Fatal(err)
 				return err
 			}
 			val, err := redisClients[i].Get(ctx, "verify").Result()
 			if err != nil {
-				logger.Error.Fatal(err)
+				//logger.Error.Fatal(err)
 				return err
 			}
 			_ = val
 		}
 	}
-	logger.Info.Println("Redis Initialized")
+	//logger.Info.Println("Redis Initialized")
 	return nil
 } 
 
@@ -85,12 +95,12 @@ func GetRedisClient(database int) redis.Client {
 		err := redisClients[database].Set(ctx, "verify", true, 0).Err()
 		if err != nil {
 			fmt.Println(err)
-			logger.Error.Fatal(err)
+			//logger.Error.Fatal(err)
 		}
 		val, err := redisClients[database].Get(ctx, "verify").Result()
 		if err != nil {
 			fmt.Println(err)
-			logger.Error.Fatal(err)
+			//logger.Error.Fatal(err)
 		}
 		_ = val
 		return *redisClients[database]
@@ -116,32 +126,69 @@ func ValidateUserToken(token string) bool{
 		return false;
 	}
 	_ = val
+
 	return true;
 }
 
-func AddAuthUser(user_id string) AuthUserData{
-	udata := RedisData{user_id,time.Now(), time.Now().Add(time.Hour * time.Duration(1))}
+func AddAuthUser(user data.User) AuthUserData{
+	//if user exists/has id
+	Identifier := user.Identifier
+	if(Identifier == nil){
+		//logger.Error.Fatal(Identifier)
+	}
+
+	//get redis connection
+	redisClient := GetAuthClient()
+
+	utoken := ""
+	//check if user already has token
+	val, err := redisClient.Get(ctx, *Identifier).Result()
+	if(err != nil){
+		//logger.Error.Println(err)
+		utoken = GenerateUserToken()
+		id_err := redisClient.Set(ctx, *Identifier, utoken, 0).Err()
+		if(id_err != nil){
+			fmt.Println(id_err)
+		}
+		err := redisClient.Set(ctx, utoken, true, 0).Err()
+		if err != nil {
+			fmt.Println(err)
+			//logger.Error.Fatal(err)
+		}
+		
+	}else{
+		//user with token exists
+		utoken = val
+	}
+	fmt.Printf("val: %s", val)	
+
+	udata := RedisData{*Identifier,time.Now(), time.Now().Add(time.Hour)}
 	rdata,err := json.Marshal(udata)
 	aUserData := AuthUserData{}
 	if err != nil{
-		logger.Error.Fatal(err)
+		//logger.Error.Fatal(err)
 		return aUserData
 	}
-	utoken := GenerateUserToken()
-	redisClient := GetAuthClient()
+	
+	
 
-	serr := redisClient.Set(ctx, utoken, rdata, 0).Err();
+	serr := redisClient.Set(ctx, utoken, rdata, time.Until(time.Now().Add(time.Hour))).Err();
+	fmt.Println(time.Until(time.Now().Add(time.Hour)))
 	if serr != nil{
-		logger.Error.Fatal(serr)
+		//logger.Error.Fatal(serr)
 		fmt.Println(serr)
 		return aUserData
 	}
 	val, gerr := redisClient.Get(ctx, utoken).Result();
 	if gerr != nil {
-		logger.Error.Fatal(gerr)
+		//logger.Error.Fatal(gerr)
 		return aUserData
 	}
 	_ = val
+	aUserData.FirstName = user.FirstName
+	aUserData.LastName = user.LastName
+	aUserData.Email = user.Email
+	aUserData.Picture = user.Picture
 	aUserData.Token = utoken
 	aUserData.ExpirationTime = udata.ExpirationTime
 	return aUserData
@@ -151,7 +198,7 @@ func GetAuthData(token string) *RedisData{
 	redisClient := GetAuthClient()
 	val, err := redisClient.Get(ctx, token).Result();
 	if(err != nil){
-		logger.Error.Println(err)
+		//logger.Error.Println(err)
 		return nil
 	}
 	var rd *RedisData
@@ -160,7 +207,7 @@ func GetAuthData(token string) *RedisData{
 	_ = val
 	fmt.Println(gerr)
 	if(gerr != nil){
-		logger.Error.Println(err)
+		//logger.Error.Println(err)
 		return nil
 	}
 	return rd
@@ -170,7 +217,7 @@ func GenerateUserToken() string{
     buff:= make([]byte, int(math.Ceil(float64(128)/2)))
     n,err := rand.Read(buff)
 	if err != nil{
-		logger.Warn.Println(err)
+		//logger.Warn.Println(err)
 	}
 	_ = n
     str := hex.EncodeToString(buff)
@@ -186,3 +233,13 @@ func GetUserInfo(request *http.Request) *RedisData{
 	token = token[7:]
 	return GetAuthData(token)
 }
+
+// func GetUserInfo1(token string) *RedisData{
+// 	// token := string(request.Header.Get("Authorization"))
+// 	//check "bearer "
+// 	if(token[0:7] != "bearer "){
+// 		return nil
+// 	}
+// 	token = token[7:]
+// 	return GetAuthData(token)
+// }

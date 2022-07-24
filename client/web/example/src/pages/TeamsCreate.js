@@ -10,6 +10,7 @@ function Teams()
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [capacity, setCapacity] = useState("");
+  const [priority, setPriority] = useState("");
   const [picture, setPicture] = useState("");
 
   let handleSubmit = async (e) =>
@@ -24,6 +25,7 @@ function Teams()
           name: name,
           description: description,
           capacity: parseInt(capacity),
+          priority: parseInt(priority),
           picture: picture
         })
       });
@@ -61,6 +63,15 @@ function Teams()
             <Form.Group className='form-group' controlId="formBasicEmail">
               <Form.Label className='form-label'>Capacity<br></br></Form.Label>
               <Form.Control className='form-input' type="text" placeholder="Enter your team capacity" value={capacity} onChange={(e) => setCapacity(e.target.value)} />
+            </Form.Group>
+
+            <Form.Group className='form-group' controlId="formBasicTeamPriority">
+              <Form.Label className='form-label'>Team Priority<br></br></Form.Label>
+              <select className='combo-box' name='teampriority' value={priority} onChange={(e) => setPriority(e.target.value)}>
+                <option value="0">low</option>
+                <option value="1">medium</option>
+                <option value="2">high</option>
+              </select>
             </Form.Group>
 
             <Form.Group className='form-group' controlId="formFile">

@@ -8,7 +8,7 @@ $$
 BEGIN
     IF EXISTS(SELECT 1 FROM "user"."credential" WHERE id = _id) THEN
         UPDATE "security".credential
-        SET secret = CRYPT(_secret, GEN_SALT('bf', 13))::VARCHAR(256),
+        SET secret = CRYPT(_secret, GEN_SALT('bf'))::VARCHAR(256),
             identifier = _identifier,
             active = TRUE,
             failed_attempts = 0,
@@ -16,7 +16,7 @@ BEGIN
         WHERE id = _id;
     ELSE
         INSERT INTO "user"."credential" (id, secret, identifier, active, failed_attempts)
-        VALUES (_id, CRYPT(_secret, GEN_SALT('bf', 13))::VARCHAR(256), _identifier, TRUE, 0);
+        VALUES (_id, CRYPT(_secret, GEN_SALT('bf'))::VARCHAR(256), _identifier, TRUE, 0);
     END IF;
     RETURN TRUE;
 END

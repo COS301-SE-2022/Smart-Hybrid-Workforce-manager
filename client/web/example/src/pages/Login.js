@@ -1,42 +1,66 @@
 import React, { useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+// import { ReactSession } from 'react-client-session'
 
 function Login()
 {
   const [identifier, setIdentifier] = useState("");
   const [secret, setSecret] = useState("");
-  
+  const auth = sessionStorage.getItem("auth_data");
+
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
     console.log(identifier);
     console.log(secret);
-    try
+    let bod = JSON.stringify({
+      "id":identifier,
+      "secret":secret,
+      "active":null,
+      "FailedAttempts":null,
+      "LastAccessed":null,
+      "Identifier":null
+    });
+    console.log(bod);
+    console.log("HERE")
+    fetch("http://localhost:8100/api/user/login", 
     {
-      let res = await fetch("http://localhost:8100/api/user/login", 
-      {
-        method: "POST",
-        body: JSON.stringify({
-          "id":null,
-          "secret":secret,
-          "active":null,
-          "FailedAttempts":null,
-          "LastAccessed":null,
-          "Identifier":identifier
-        })
-      });
-
-      if(res.status === 200)
-      {
-        alert("Successfully Logged In!");
-        window.location.assign("./bookings");
+      method: "POST",
+      mode: "cors",
+      body: JSON.stringify({
+        "id":identifier,
+        "secret":secret,
+        "active":null,
+        "FailedAttempts":null,
+        "LastAccessed":null,
+        "Identifier":null
+      })
+    }).then((res) => {
+      if(res.status === 200){
+        alert("Successfully Logged In!")
+        return res.json();        
       }
-    }
-    catch(err)
-    {
-      console.log(err);
-    }
+      else
+        alert("Failed login");
+    }).then((data) => {
+      var json_object = JSON.parse(JSON.stringify(data))
+      var auth_data = {}
+      console.log(data["token"])
+      sessionStorage.setItem("auth_data", json_object);
+      // window.location.assign("./bookings");
+    }).catch((err) => {
+      console.error(err);
+    })
+    
+    // if(res.status === 200)
+    // {
+    //   console.log(res.json());
+    //   // sessionStorage.setItem("auth_data", res);
+    //   alert("Successfully Logged In!");
+
+    //   // window.location.assign("./bookings");
+    // }
   };  
 
   return (
@@ -45,7 +69,7 @@ function Login()
         <div className='login-grid'>
           <div className='form-container-login'>
             <p className='form-header'><h1>WELCOME BACK</h1>Please enter your details.</p>
-            
+            {auth===undefined?console.log("logged In"):console.log("not logged in")}
             <Form className='form' onSubmit={handleSubmit}>
               <Form.Group className='form-group' controlId="formBasicEmail">
                 <Form.Label className='form-label'>Email<br></br></Form.Label>
