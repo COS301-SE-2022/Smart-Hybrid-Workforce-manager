@@ -3,9 +3,10 @@ import Footer from '../components/Footer'
 import BookingTicket from '../components/BookingTicket/BookingTicket';
 import { useState, useEffect } from 'react';
 
-const Home = () =>
+const Home = ({userData}) =>
 {
   const [bookings, setBookings] = useState([])
+  
 
   //POST request
   const fetchData = () =>
@@ -38,7 +39,6 @@ const Home = () =>
   return (
     <div className='page-container'>
       <div className='content'>
-        <Navbar />
         <div className='booking-container'>
           {bookings.length > 0 && (
             bookings.map(booking => (
