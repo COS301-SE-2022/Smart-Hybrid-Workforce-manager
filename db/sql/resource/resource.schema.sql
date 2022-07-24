@@ -33,7 +33,11 @@ CREATE TABLE IF NOT EXISTS resource.identifier (
     id uuid DEFAULT uuid_generate_v4(),
     room_id uuid REFERENCES resource.room(id) ON DELETE CASCADE,
     name VARCHAR(256),
-    location VARCHAR(256), -- TODO [KP]: CHANGE TO WHAT WE USE
+    xcoord float,
+    ycoord float,
+    width float,
+    height float,
+    rotation float,
     role_id uuid REFERENCES role.identifier(id) ON DELETE SET NULL,
     resource_type resource.type NOT NULL,
     date_created TIMESTAMP WITHOUT TIME ZONE DEFAULT(now() AT TIME ZONE 'uct'),
