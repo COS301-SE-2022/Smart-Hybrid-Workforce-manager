@@ -84,8 +84,21 @@ func checkAndCall(now time.Time, scheduledDay string) error {
 	}
 	if mayCall(scheduledDay, lastEntry, now) {
 		// TODO: @JonathanEnslin get data
-		schedulerData, _ := GetSchedulerData()
-		_ = call(schedulerData)
+		// TODO: @JonathanEnslin move this into a seperate function that uses exponential backoff
+		nextMonday := timeOfNextWeekDay(now, "Monday")            // Start of next week
+		nextSaturday := timeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
+		schedulerData, err := GetSchedulerData(nextMonday, nextSaturday)
+		if err != nil {
+			log_write_err := NewLogEntry(FAILED, &now).WriteLog()
+			if log_write_err != nil {
+				return log_write_err
+			}
+			return err
+		}
+		err = call(schedulerData) // TODO: @JonathanEnslin handle the return data
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
