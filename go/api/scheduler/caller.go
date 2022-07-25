@@ -154,7 +154,7 @@ func call(data *SchedulerData) error { // TODO: @JonathanEnslin improve this fun
 func callOnDay(ctx context.Context, scheduledDay string) {
 	// Initial call, for when the function initially gets called
 	_ = checkAndCall(time.Now(), scheduledDay)
-	// periodic calls
+	// Periodic calls
 	stopLoop := false
 	for !stopLoop {
 		nextDay := timeOfNextWeekDay(time.Now(), scheduledDay) // TODO: @JonathanEnslin, allow scheduled day to be changed
