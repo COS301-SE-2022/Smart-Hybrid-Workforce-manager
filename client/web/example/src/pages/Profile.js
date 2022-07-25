@@ -126,7 +126,7 @@ function Profile()
               <div className='list'>
                 {teams.length > 0 && (
                   teams.map(team => (
-                    <TeamUserList id={team.team_id} />
+                    <TeamUserList teamId={team.team_id} />
                   ))
                 )}
               </div>

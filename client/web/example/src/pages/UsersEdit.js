@@ -197,7 +197,7 @@ function EditUser()
               <div className='list'>
                 {userTeams.length > 0 && (
                   userTeams.map(userTeam => (
-                    <TeamUserList id={userTeam.team_id} />
+                    <TeamUserList teamId={userTeam.team_id} />
                   ))
                 )}
               </div>

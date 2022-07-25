@@ -1,5 +1,3 @@
-import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
 import { Stage, Layer } from 'react-konva'
 import { useRef, useState, useEffect, useCallback } from 'react'
 import Desk from '../components/Map/Desk'
@@ -67,21 +65,23 @@ const Layout = () =>
         // State for keeping track of whether key is pressed
         const [keyPressed, setKeyPressed] = useState(false);
         // If pressed key is our target key then set to true
-        function downHandler({ key })
+        const downHandler = useCallback(({ key }) =>
         {
             if (key === targetKey)
             {
                 setKeyPressed(true);
             }
-        }
+        },[targetKey]);
+
         // If released key is our target key then set to false
-        const upHandler = ({ key }) =>
+        const upHandler = useCallback(({ key }) =>
         {
             if (key === targetKey)
             {
                 setKeyPressed(false);
             }
-        };
+        },[targetKey]);
+        
         // Add event listeners
         useEffect(() =>
         {
@@ -92,7 +92,7 @@ const Layout = () =>
             window.removeEventListener("keydown", downHandler);
             window.removeEventListener("keyup", upHandler);
             };
-        }, []); // Empty array ensures that effect is only run on mount and unmount
+        }, [downHandler, upHandler]); // Empty array ensures that effect is only run on mount and unmount
         return keyPressed;
     }
 

@@ -45,7 +45,6 @@ function Login()
         alert("Failed login");
     }).then((data) => {
       var json_object = JSON.parse(JSON.stringify(data))
-      var auth_data = {}
       console.log(data["token"])
       sessionStorage.setItem("auth_data", json_object);
       // window.location.assign("./bookings");
