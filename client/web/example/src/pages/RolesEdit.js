@@ -25,7 +25,7 @@ const EditRole = () =>
         body: JSON.stringify({
           id: window.sessionStorage.getItem("RoleID"),
           role_name: roleName,
-          role_lead_id: roleLead == "null" ? null : roleLead
+          role_lead_id: roleLead === "null" ? null : roleLead
         })
       });
 
@@ -54,6 +54,11 @@ const EditRole = () =>
         {
           SetRoleUsers(data);
         });
+  }
+
+  const PermissionConfiguration = () =>
+  {
+    window.location.assign("./role-permissions");
   }
 
   //Using useEffect hook. This will ste the default values of the form once the components are mounted
@@ -106,6 +111,7 @@ const EditRole = () =>
             </Form.Group>
 
             <Button className='button-submit' variant='primary' type='submit'>Update Role</Button>
+            <Button className='button-submit' variant='primary' onClick={PermissionConfiguration}>Configure Permissions</Button>
           </Form>
         </div>
       </div>

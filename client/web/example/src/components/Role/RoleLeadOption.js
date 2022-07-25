@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { MdDelete } from 'react-icons/md'
 
 const RoleLeadOption = ({id, roleLeadId}) =>
 {  
@@ -27,7 +26,7 @@ const RoleLeadOption = ({id, roleLeadId}) =>
   }, [])
 
     return (
-        <option value={id} selected={id == roleLeadId? "" : "selected"}>{name}</option>
+        <option value={id} selected={id === roleLeadId? "" : "selected"}>{name}</option>
     )
 }
 

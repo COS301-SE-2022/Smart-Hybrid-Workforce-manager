@@ -10,7 +10,20 @@ CREATE TABLE IF NOT EXISTS booking.identifier (
     start TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     "end" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     booked BOOLEAN DEFAULT(false),
+    automated BOOLEAN DEFAULT(false),
     date_created TIMESTAMP WITHOUT TIME ZONE DEFAULT(now() AT TIME ZONE 'uct'),
+	
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS booking.meeting_room (
+    id uuid DEFAULT uuid_generate_v4(),
+    booking_id uuid NOT NULL REFERENCES booking.identifier(id) ON DELETE CASCADE,
+    team_id uuid DEFAULT NULL REFERENCES team.identifier(id) ON DELETE CASCADE,
+    role_id uuid DEFAULT NULL REFERENCES role.identifier(id) ON DELETE CASCADE,
+    additional_attendees INT DEFAULT 0,
+    desks_attendees BOOLEAN DEFAULT(false),
+    desks_additional_attendees BOOLEAN DEFAULT(false),
 	
     PRIMARY KEY (id)
 );
