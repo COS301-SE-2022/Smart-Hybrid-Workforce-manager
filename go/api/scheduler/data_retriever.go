@@ -13,6 +13,13 @@ type SchedulerData struct {
 	Buildings []*BuildingInfo `json:"buildings"`
 	Rooms     []*RoomInfo     `json:"rooms"`
 	Resources data.Resources  `json:"resources"`
+	Bookings  *BookingInfo    `json:"bookings"`
+}
+
+type BookingInfo struct {
+	From     time.Time     `json:"from"`
+	To       time.Time     `json:"to"`
+	Bookings data.Bookings `json:"bookings"`
 }
 
 type TeamInfo struct {
@@ -55,7 +62,7 @@ func GetUsers() (data.Users, error) {
 }
 
 // GetBookings Retrieves all the bookings from the database between from from to to
-func GetBookings(from time.Time, to time.Time) (data.Bookings, error) {
+func GetBookings(from time.Time, to time.Time) (*BookingInfo, error) {
 	permissions := &data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "USER")}
 	// Connect to db
 	access, err := db.Open() // TODO: @JonathanEnslin
@@ -80,7 +87,12 @@ func GetBookings(from time.Time, to time.Time) (data.Bookings, error) {
 	if err != nil {
 		return nil, err
 	}
-	return bookings, nil
+	bookingInfo := BookingInfo{
+		From:     from,
+		To:       to,
+		Bookings: bookings,
+	}
+	return &bookingInfo, nil
 }
 
 // GetTeams retrieves all the teams from the database
@@ -289,7 +301,7 @@ func GetCompileResourceInfo() ([]*BuildingInfo, []*RoomInfo, data.Resources, err
 }
 
 // GetSchedulerData retrieves all the data needed by the scheduler
-func GetSchedulerData() (*SchedulerData, error) {
+func GetSchedulerData(from time.Time, to time.Time) (*SchedulerData, error) {
 	// Get the users
 	users, err := GetUsers()
 	if err != nil {
@@ -308,12 +320,20 @@ func GetSchedulerData() (*SchedulerData, error) {
 		return nil, err
 	}
 
+	// Get the existing bookings
+	bookingsInfo, err := GetBookings(from, to)
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO: @JonathanEnslin add bookings!!! IMPORTANT
 	schedulerData := SchedulerData{
 		Users:     users,
 		Teams:     teams,
 		Buildings: buildings,
 		Rooms:     rooms,
 		Resources: resources,
+		Bookings:  bookingsInfo,
 	}
 
 	return &schedulerData, nil
