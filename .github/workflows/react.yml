@@ -21,7 +21,9 @@ jobs:
 
       - name: npm ci
         working-directory: ./client/web/example
-        run: npm ci
+        run: |
+          npm ci
+          npm install konva canvas
 
       - name: Build
         working-directory: ./client/web/example
