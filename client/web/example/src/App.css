@@ -748,7 +748,7 @@
     grid-template-areas: "image""text";
 
     width: 40vw;
-    height: 60vh;
+    height: 65vh;
 
     margin-left: 2.5vw;
     margin-right: 2.5vw;
@@ -1024,4 +1024,12 @@
 hr {
     width: 75%;
     text-align: left;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    border: 3px solid green;
 }
