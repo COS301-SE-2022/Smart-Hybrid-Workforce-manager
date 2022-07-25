@@ -929,6 +929,21 @@
     text-align: center;
 }
 
+.canvas-content
+{
+    min-height: 100vh;
+    background-color: #252525;
+}
+
+.canvas-container
+{
+    background-color: #EDF3F8;
+    width: 70vw;
+    height: 80vh;
+    margin-left: 15vw;
+    margin-top: 10vh;
+    border-radius: 2vh;
+}
 /* Customize the label (the container) */
 .container {
     color: white;

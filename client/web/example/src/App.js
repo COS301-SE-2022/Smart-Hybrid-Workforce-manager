@@ -36,7 +36,13 @@ import PermissionsUser from './pages/UsersPermissions'
 import Roles from './pages/Roles'
 import CreateRole from './pages/RolesCreate'
 import EditRole from './pages/RolesEdit'
+
 import PermissionsRole from './pages/RolesPermissions'
+import Layout from './pages/CreateLayout'
+// import React, { useState } from "react";
+
+// import { AppContext } from "./lib/contextLib";
+
 
 import injectContext from "./store/appContext";
 
@@ -46,15 +52,14 @@ function App()
 
   return(
     <Router>
-      <Routes>
         <Route path="/" exact element={<Home/>} />
         <Route path="/login" exact element={<Login/>} />
         <Route path="/signup" exact element={<Signup/>} />
         <Route path="/bookings" exact element={<Bookings/>} />
-        <Route path="/bookings-desk" exact element={<BookingsDesk />} />
-        <Route path="/bookings-desk-edit" exact element={<BookingsDeskEdit/>} />
+        <Route path="/bookings-desk" exact element={<BookingsDesk/>} />
         <Route path="/bookings-meeting" exact element={<BookingsMeeting />} />
         <Route path="/admin" exact element={<Admin />} />
+        <Route path="/layout" exact element={<Layout />} />
 
         <Route path="/users" exact element={<Users />} />
         <Route path="/user-edit" exact element={<EditUser />} />
