@@ -5,5 +5,4 @@ smart_scheduler/.idea
 *.pyc
 *.rdb
 .env
-google_api/token.json
-google_api/credentials.json
+google_api/*.json
