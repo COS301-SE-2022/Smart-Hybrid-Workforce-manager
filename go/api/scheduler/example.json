@@ -1,0 +1,148 @@
+{
+    "users": [
+        {
+            "id": "00000000-0000-0000-0000-000000000000",
+            "identifier": "admin@example.com",
+            "first_name": "Admin",
+            "last_name": "Admin",
+            "email": "admin@example.com",
+            "picture": "/picture",
+            "date_created": "2022-07-24T15:37:36.315573Z",
+            "work_from_home": false,
+            "parking": "STANDARD",
+            "office_days": 0,
+            "preferred_start_time": "0000-01-01T09:00:00Z",
+            "preferred_end_time": "0000-01-01T17:00:00Z"
+        },
+        {
+            "id": "11111111-1111-4a06-9983-8b374586e459",
+            "identifier": "john.doe@gmail.com",
+            "first_name": "John",
+            "last_name": "Doe",
+            "email": "john.doe@gmail.com",
+            "picture": "/johndoe.png",
+            "date_created": "2022-07-24T15:37:36.524889Z",
+            "work_from_home": false,
+            "parking": "STANDARD",
+            "office_days": 0,
+            "preferred_start_time": "0000-01-01T09:00:00Z",
+            "preferred_end_time": "0000-01-01T17:00:00Z"
+        },
+        {
+            "id": "11111111-2222-4a06-9983-8b374586e459",
+            "identifier": "jane.doe@icloud.com",
+            "first_name": "Jane",
+            "last_name": "Doe",
+            "email": "jane.doe@icloud.com",
+            "picture": "/janedoe.jpeg",
+            "date_created": "2022-07-24T15:37:36.532438Z",
+            "work_from_home": false,
+            "parking": "STANDARD",
+            "office_days": 0,
+            "preferred_start_time": "0000-01-01T09:00:00Z",
+            "preferred_end_time": "0000-01-01T17:00:00Z"
+        },
+        {
+            "id": "11111111-3333-4a06-9983-8b374586e459",
+            "identifier": "steve@harrington.com",
+            "first_name": "Steve",
+            "last_name": "Harrington",
+            "email": "steve@harrington.com",
+            "picture": "/steve.png",
+            "date_created": "2022-07-24T15:37:36.538282Z",
+            "work_from_home": false,
+            "parking": "STANDARD",
+            "office_days": 0,
+            "preferred_start_time": "0000-01-01T09:00:00Z",
+            "preferred_end_time": "0000-01-01T17:00:00Z"
+        }
+    ],
+    "teams": [
+        {
+            "id": "12121212-dc08-4a06-9983-8b374586e459",
+            "name": "Android",
+            "description": "Android project",
+            "capacity": 5,
+            "picture": "picture",
+            "priority": 0,
+            "team_lead_id": "11111111-3333-4a06-9983-8b374586e459",
+            "date_created": "2022-07-24T15:37:36.544504Z",
+            "user_ids": ["11111111-1111-4a06-9983-8b374586e459"]
+        },
+        {
+            "id": "47474747-dc08-4a06-9983-8b374586e459",
+            "name": "Aerial Photography",
+            "description": "Project on Aerial Photography",
+            "capacity": 5,
+            "picture": "picture",
+            "priority": 1,
+            "team_lead_id": "11111111-3333-4a06-9983-8b374586e459",
+            "date_created": "2022-07-24T15:37:36.56056Z",
+            "user_ids": []
+        }
+    ],
+    "buildings":[
+        {
+            "id": "98989898-dc08-4a06-9983-8b374586e459",
+            "name": "Durban Office",
+            "location": "63 South Street Drive",
+            "dimension": "10x5",
+            "room_ids": ["14141414-dc08-4a06-9983-8b374586e459", "15151515-dc08-4a06-9983-8b374586e459"]
+        }
+    ],
+    "rooms": [
+        {
+            "id": "14141414-dc08-4a06-9983-8b374586e459",
+            "building_id": "98989898-dc08-4a06-9983-8b374586e459",
+            "name": "Office Block B",
+            "location": "B4",
+            "dimension": "5x5",
+            "resource_ids": ["22222222-dc08-4a06-9983-8b374586e459"]
+        },
+        {
+            "id": "15151515-dc08-4a06-9983-8b374586e459",
+            "building_id": "98989898-dc08-4a06-9983-8b374586e459",
+            "name": "Secretary",
+            "location": "B9",
+            "dimension": "5x5",
+            "resource_ids": []
+        }
+    ],
+    "resources": [
+        {
+            "id": "22222222-dc08-4a06-9983-8b374586e459",
+            "room_id": "14141414-dc08-4a06-9983-8b374586e459",
+            "name": "115",
+            "location": "B2",
+            "resource_type": "DESK",
+            "decorations": "{}",
+            "date_created": "2022-07-24T15:37:36.691247Z"
+        }
+    ],
+    "bookings": {
+        "from": "2022-05-09T00:00:00.000000Z",
+        "to": "2022-05-10T00:00:00.000000Z",
+        "bookings": [
+            {
+                "id": "33333333-1111-4a06-9983-8b374586e459",
+                "user_id": "11111111-1111-4a06-9983-8b374586e459",
+                "resource_type": "DESK",
+                "resource_preference_id": "22222222-dc08-4a06-9983-8b374586e459",
+                "start": "2022-05-09T09:54:16.865562Z",
+                "end": "2022-05-09T13:54:16.865562Z",
+                "booked": false,
+                "date_created": "2022-07-24T15:37:36.720837Z"
+            },
+            {
+                "id": "33333333-2222-4a06-9983-8b374586e459",
+                "user_id": "11111111-2222-4a06-9983-8b374586e459",
+                "resource_type": "DESK",
+                "resource_preference_id": "22222222-dc08-4a06-9983-8b374586e459",
+                "start": "2022-05-09T09:54:16.865562Z",
+                "end": "2022-05-09T13:54:16.865562Z",
+                "booked": false,
+                "date_created": "2022-07-24T15:37:36.742872Z"
+            }
+        ]
+    }
+}
