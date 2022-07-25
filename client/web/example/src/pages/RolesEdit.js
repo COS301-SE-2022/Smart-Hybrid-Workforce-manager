@@ -56,6 +56,11 @@ const EditRole = () =>
         });
   }
 
+  const PermissionConfiguration = () =>
+  {
+    window.location.assign("./role-permissions");
+  }
+
   //Using useEffect hook. This will ste the default values of the form once the components are mounted
   useEffect(() =>
   {
@@ -106,6 +111,7 @@ const EditRole = () =>
             </Form.Group>
 
             <Button className='button-submit' variant='primary' type='submit'>Update Role</Button>
+            <Button className='button-submit' variant='primary' onClick={PermissionConfiguration}>Configure Permissions</Button>
           </Form>
         </div>
       </div>
