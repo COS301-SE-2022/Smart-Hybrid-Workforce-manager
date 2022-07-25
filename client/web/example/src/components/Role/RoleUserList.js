@@ -17,7 +17,7 @@ const RoleUserList = ({id}) =>
         {
             SetRoleName(data[0].role_name);
         }).catch((err) => console.log(err));
-    }, [])
+    }, [id])
 
     let DeleteRole = async (e) =>
     {

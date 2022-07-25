@@ -1,12 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import React, {useState} from 'react';
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 
 import Bookings from './pages/Bookings'
 import BookingsDesk from './pages/BookingsDesk'
-import BookingsDeskEdit from './pages/BookingsDeskEdit'
+//import BookingsDeskEdit from './pages/BookingsDeskEdit'
 import BookingsMeeting from './pages/BookingsMeeting'
 
 import Admin from './pages/Admin'
@@ -39,12 +38,9 @@ import EditRole from './pages/RolesEdit'
 
 import PermissionsRole from './pages/RolesPermissions'
 import Layout from './pages/CreateLayout'
-// import React, { useState } from "react";
 
 // import { AppContext } from "./lib/contextLib";
-
-
-import injectContext from "./store/appContext";
+// import injectContext from "./store/appContext";
 
 function App()
 {

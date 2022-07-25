@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { MdDelete } from 'react-icons/md'
 
 const UserRoleList = ({id}) =>
@@ -35,7 +35,7 @@ const UserRoleList = ({id}) =>
   }
     
   //POST request
-  const getName = () =>
+  const getName = useCallback(() =>
   {
     fetch("http://localhost:8100/api/user/information", 
         {
@@ -47,13 +47,13 @@ const UserRoleList = ({id}) =>
         {
           setName(data[0].first_name + " " + data[0].last_name);
         });
-  }
+  },[id]);
     
   //Using useEffect hook. This will set the default values of the form once the components are mounted
   useEffect(() =>
   {
       getName();
-  }, [])
+  }, [getName])
 
     return (
         <div className='list-item'>
