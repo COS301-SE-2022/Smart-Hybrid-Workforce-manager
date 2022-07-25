@@ -65,7 +65,7 @@ func GetUsers() (data.Users, error) {
 func GetBookings(from time.Time, to time.Time) (*BookingInfo, error) {
 	permissions := &data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "USER")}
 	// Connect to db
-	access, err := db.Open() // TODO: @JonathanEnslin
+	access, err := db.Open()
 	if err != nil {
 		return nil, err
 	}
@@ -326,7 +326,6 @@ func GetSchedulerData(from time.Time, to time.Time) (*SchedulerData, error) {
 		return nil, err
 	}
 
-	// TODO: @JonathanEnslin add bookings!!! IMPORTANT
 	schedulerData := SchedulerData{
 		Users:     users,
 		Teams:     teams,

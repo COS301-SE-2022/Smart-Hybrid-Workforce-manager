@@ -39,7 +39,6 @@ var DaysOfWeek = map[string]time.Weekday{
 
 // datesEqual checks the equality of dates but ignoring time
 func datesEqual(t1 time.Time, t2 time.Time) bool {
-	// TODO: @JonathanEnslin make sure time zones aren't an issue
 	return t1.Year() == t2.Year() && t1.YearDay() == t2.YearDay()
 }
 
@@ -125,7 +124,6 @@ func call(data *SchedulerData) error { // TODO: @JonathanEnslin improve this fun
 		}
 		return err
 	}
-	// TODO: @JonathanEnslin handle the response
 	defer response.Body.Close()
 	candidateBookings := &CandidateBookings{}
 	err = json.NewDecoder(response.Body).Decode(candidateBookings)

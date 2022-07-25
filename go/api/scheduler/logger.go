@@ -69,7 +69,7 @@ func (entry LogEntry) WriteLog() error {
 		return err
 	}
 	_, err = f.WriteString(entry.String() + "\n")
-	_ = f.Close() // TODO: @JonathanEnslin handle error
+	_ = f.Close()
 	return err
 }
 
@@ -77,7 +77,6 @@ func (entry LogEntry) WriteLog() error {
 // if file is empty
 func ReadLastEntry() (*LogEntry, error) {
 	// create the file if it does not yet exist
-	// TODO: @JonathanEnslin investigate why 0644 perms aren't allowed
 	f, err := os.OpenFile(logPath, os.O_CREATE|os.O_RDONLY, 0600) // rw-------
 	if err != nil {
 		return nil, err
