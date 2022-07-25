@@ -1,6 +1,6 @@
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
@@ -8,7 +8,7 @@ import '../App.css'
 function TeamPermissions()
 {
   const [teamName, setTeamName] = useState(window.sessionStorage.getItem("TeamName"));
-  const [teampermissions, SetTeamPermissions] = useState([]);
+  //const [teampermissions, SetTeamPermissions] = useState([]);
 
   const [createTeamIdentifier, SetCreateTeamIdentifier] = useState("") // allows a user to update the team
   const [createTeamIdentifierId, SetCreateTeamIdentifierId] = useState("")
@@ -131,7 +131,7 @@ function TeamPermissions()
   };
 
   //POST request
-  const FetchTeamPermissions = () =>
+  const FetchTeamPermissions = useCallback(() =>
   {
     fetch("http://localhost:8100/api/permission/information", 
         {
@@ -142,10 +142,10 @@ function TeamPermissions()
           })
         }).then((res) => res.json()).then(data => 
         {
-          SetTeamPermissions(data);
+          //SetTeamPermissions(data); [Uncomment when used]
           data.forEach(setPermissionStates);
         });
-  }
+  },[]);
 
   function setPermissionStates(permission)
   {
@@ -195,7 +195,7 @@ function TeamPermissions()
     FetchTeamPermissions();
 
     setTeamName(window.sessionStorage.getItem("TeamName"));
-  }, [])
+  }, [FetchTeamPermissions])
     
   return (
     <div className='page-container'>
