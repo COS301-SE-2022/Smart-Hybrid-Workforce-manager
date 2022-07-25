@@ -139,6 +139,11 @@ function EditUser()
             console.log(err);
         }
     }
+  
+  const PermissionConfiguration = () =>
+  {
+    window.location.assign("./user-permissions");
+  }
 
   //Using useEffect hook. This will ste the default values of the form once the components are mounted
   useEffect(() =>
@@ -202,9 +207,12 @@ function EditUser()
                 )}
               </div>
             </div>
-            <div className="user-permissions">
-              
-            </div>
+            <div style={{
+                        'width': 'inherit',
+                        'text-align': 'center',
+                        }}>
+                <Button className='button-submit' variant='primary' onClick={PermissionConfiguration}>Configure Permissions</Button>
+            </div>              
           </div>
         </div>
       </div>
