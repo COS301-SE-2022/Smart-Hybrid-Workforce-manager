@@ -11,6 +11,7 @@ import role
 import resource
 import teams
 import room
+import fitness
 
 class SmartScheduler:
     def __init__(self):
@@ -77,8 +78,13 @@ class SmartScheduler:
         for booking in self.bookingsList:
             ret_str += str(booking) + "\n"
             print(booking)
+        print(self.bookingsList)
         return ret_str
 
-scheduler = SmartScheduler()
-scheduler.schedule()
-scheduler.printBookings()
+    def get_fitness(self):
+        return fitness.get_fitness(self.bookingsList)
+
+# scheduler = SmartScheduler()
+# scheduler.schedule()
+# scheduler.printBookings()
+# scheduler.printBookings()
