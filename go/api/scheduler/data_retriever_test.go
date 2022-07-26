@@ -15,7 +15,7 @@ func SetupTest(t *testing.T) dtdb.TestDb {
 	// SETUP =============
 	config := dtdb.TestDbConfig{
 		Verbose:  true,
-		HostPort: "5433",
+		HostPort: "5434",
 		HostAdrr: "127.0.0.1",
 	}
 	testdb, err := dtdb.StartTestDb(config) // Start DB
