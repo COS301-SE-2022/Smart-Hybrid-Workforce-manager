@@ -33,6 +33,8 @@ const Layout = () =>
                 key : "desk" + count,
                 x : (-stageRef.current.x() + stageRef.current.width() / 2.0) / stageRef.current.scaleX(),
                 y : (-stageRef.current.y() + stageRef.current.height() / 2.0) / stageRef.current.scaleY(),
+                width : 60,
+                height : 55,
                 rotation : 0
             }
         ]);
@@ -181,6 +183,11 @@ const Layout = () =>
         }        
     }
 
+    const SaveLayout = () =>
+    {
+        window.alert("Saved");
+    }
+
     useEffect(() =>
     {
         setStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
@@ -250,6 +257,7 @@ const Layout = () =>
                         </Layer>
                     </Stage>
                 </div>
+                <button onClick={SaveLayout}>Save</button>
             </div>  
         </div>
     )
