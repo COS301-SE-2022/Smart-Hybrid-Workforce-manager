@@ -1,20 +1,49 @@
 import { Stage, Layer } from 'react-konva'
-import { useRef, useState, useEffect, useCallback } from 'react'
+import { useRef, useState, useEffect, useCallback, useReducer } from 'react'
 import Desk from '../components/Map/Desk'
 import MeetingRoom from '../components/Map/MeetingRoom'
 
 const Layout = () =>
 {
+    //Reducer initialState
+    const initialState = {
+        counter : 0
+    }
+
+    //Reducer function
+    const reducer = (state, action) =>
+    {
+        var newState;
+        if(action.type === "increase")
+        {
+            newState = 
+            {
+                counter : state.counter + 1
+            };
+        }
+        else
+        {
+            newState = 
+            {
+                counter : state.counter - 1
+            };
+        }
+
+        return newState;
+    }
+
     //Canvas references
     const canvasRef = useRef(null);
     const stageRef = useRef(null);
     const scaleFactor = 1.3;
+    const deskProps = useRef([]);
+    const count = useRef(0);
 
     //Desk and meeting room prop arrays
-    const [deskProps, setDeskProps] = useState([]);
+    //const [deskProps, setDeskProps] = useState([]);
     const [meetingRoomProps, setMeetingRoomProps] = useState([]);
     const [stage, setStage] = useState({width : 100, height : 100});
-    const [count, setCount] = useState(0);
+    const [state, dispatch] = useReducer(reducer, initialState);
     const [selectedId, selectShape] = useState(null);
 
     //API fetch variables
@@ -83,33 +112,15 @@ const Layout = () =>
     }
 
     //Add a desk to the array with default props
-    const AddDesk = useCallback((id, name, x, y, width, height, rotation) =>
+    const LoadDesk = useCallback((id, name, x, y, width, height, rotation) =>
     {
-        if(id === null)
+        if(stageRef.current !== null)
         {
-            console.log("E");
-            setDeskProps(
+            deskProps.current =
             [
-                ...deskProps,
+                ...deskProps.current,
                 {
-                    key : "desk" + count,
-                    id : id,
-                    name : "Desk " + count,
-                    x : (-stageRef.current.x() + stageRef.current.width() / 2.0) / stageRef.current.scaleX(),
-                    y : (-stageRef.current.y() + stageRef.current.height() / 2.0) / stageRef.current.scaleY(),
-                    width : 60,
-                    height : 55,
-                    rotation : 0
-                }
-            ]);
-        }
-        else
-        {
-            setDeskProps(
-            [
-                ...deskProps,
-                {
-                    key : "desk" + count,
+                    key : "desk" + count.current,
                     id : id,
                     name : name,
                     x : x,
@@ -118,11 +129,35 @@ const Layout = () =>
                     height : height,
                     rotation : rotation
                 }
-            ]);
-        }
+            ];
 
-        setCount(count + 1);
-    },[count, deskProps]);
+            count.current = count.current + 1;
+        }
+    },[]);
+
+    const AddDesk = () =>
+    {
+        if(stageRef.current !== null)
+        {
+            console.log(deskProps.current);
+            deskProps.current =
+            [
+                ...deskProps.current,
+                {
+                    key : "desk" + count.current,
+                    id : null,
+                    name : "Desk " + count.current,
+                    x : (-stageRef.current.x() + stageRef.current.width() / 2.0) / stageRef.current.scaleX(),
+                    y : (-stageRef.current.y() + stageRef.current.height() / 2.0) / stageRef.current.scaleY(),
+                    width : 60,
+                    height : 55,
+                    rotation : 0
+                }
+            ];
+
+            count.current = count.current + 1;
+        }
+    };
 
     //Add a meeting room to the array with default props
     const AddMeetingRoom = () =>
@@ -131,7 +166,7 @@ const Layout = () =>
         [
             ...meetingRoomProps,
             {
-                key : "meetingroom" + count,
+                key : "meetingroom" + state.counter,
                 x : (-stageRef.current.x() + stageRef.current.width() / 2.0) / stageRef.current.scaleX(),
                 y : (-stageRef.current.y() + stageRef.current.height() / 2.0) / stageRef.current.scaleY(),
                 width : 200,
@@ -140,7 +175,7 @@ const Layout = () =>
             }
         ]);
 
-        setCount(count + 1);
+        dispatch({type : "increase"});
     }
 
     //Check if resource is selected and delete key is pressed
@@ -191,13 +226,13 @@ const Layout = () =>
         {
             if(selectedId.includes("desk"))
             {
-                for(var i = 0; i < deskProps.length; i++)
+                for(var i = 0; i < deskProps.current.length; i++)
                 {
-                    if(deskProps[i].key === selectedId)
+                    if(deskProps.current[i].key === selectedId)
                     {
-                        var newDesk = [...deskProps];
+                        var newDesk = [...deskProps.current];
                         newDesk.splice(i, 1);
-                        setDeskProps(newDesk);
+                        //setDeskProps(newDesk);
                     }
                 }
             }
@@ -214,7 +249,7 @@ const Layout = () =>
                 }
             }
         }
-    }, [deskProps, meetingRoomProps, selectedId])
+    }, [meetingRoomProps, selectedId])
 
     //Adjusts the canvas size for difference screen sizes
     const handleResize = () =>
@@ -289,21 +324,27 @@ const Layout = () =>
             handleDelete();
         }
 
+    }, [deletePressed, handleDelete])
+
+    useEffect(() =>
+    {
+        deskProps.current = [];
+        count.current = 0;
         for(var i = 0; i < resources.length; i++)
         {
             if(resources[i].resource_type === "DESK")
             {
-                AddDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation);
-                //console.log("DESK " + resources[i].name);
+                console.log("DESK " + resources[i].name);
+                LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation);
             }
         }
 
-    }, [deletePressed, handleDelete, resources, AddDesk])
+    }, [resources, LoadDesk])
 
     return (
         <div className='page-container'>
             <div className='canvas-content'>
-                <button onClick={AddDesk(null, null, null, null, null, null, null)}>Add Desk</button><br></br>
+                <button onClick={AddDesk}>Add Desk</button><br></br>
                 <button onClick={AddMeetingRoom}>Add Meeting Room</button>
 
                 <div className='combo-grid'>
@@ -333,8 +374,8 @@ const Layout = () =>
                 <div ref={canvasRef} className='canvas-container'>
                     <Stage width={stage.width} height={stage.height} onMouseDown={checkDeselect} onTouchStart={checkDeselect} draggable onDragEnd={canvasDrag} onWheel={zoomInOut} ref={stageRef}>
                         <Layer>
-                            {deskProps.length > 0 && (
-                                deskProps.map((desk, i) => (
+                            {deskProps.current.length > 0 && (
+                                deskProps.current.map((desk, i) => (
                                     <Desk
                                         key = {desk.key}
                                         shapeProps = {desk}
@@ -348,9 +389,9 @@ const Layout = () =>
                                         
                                         onChange = {(newProps) => 
                                         {
-                                            const newDeskProps = deskProps.slice();
+                                            const newDeskProps = deskProps.current.slice();
                                             newDeskProps[i] = newProps;
-                                            setDeskProps(newDeskProps)
+                                            //setDeskProps(newDeskProps)
                                         }}
                                     />
                                 ))
