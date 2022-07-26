@@ -132,7 +132,8 @@ func GetUserTeams() (data.UserTeams, error) {
 	da := data.NewTeamDA(access)
 
 	userTeam := data.UserTeam{}
-	permissions := &data.Permissions{data.CreateGenericPermission("VIEW", "TEAM", "USER")}
+	permissions := &data.Permissions{data.CreateGenericPermission("VIEW", "TEAM", "USER"),
+		data.CreateGenericPermission("VIEW", "USER", "TEAM")}
 	userTeams, err := da.FindUserTeam(&userTeam, permissions)
 	if err != nil {
 		return nil, err
