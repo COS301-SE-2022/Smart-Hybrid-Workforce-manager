@@ -14,12 +14,17 @@ import room
 import fitness
 
 class SmartScheduler:
-    def __init__(self):
-        self.teamList = teams.fetch_team_users()
-        self.resourceList = resource.fetch_resources()
-        self.roomList = self.loadResources()
-        self.userList = user.fetch_users()
-        self.bookingsList = []
+    def __init__(self, scheduler_data):
+        self.teamList = scheduler_data["teams"]
+        self.resourceList = scheduler_data["resources"]
+        self.roomList = scheduler_data["rooms"]
+        self.userList = scheduler_data["users"]
+        self.bookingsList = scheduler_data["users"]
+        # self.teamList = teams.fetch_team_users()
+        # self.resourceList = resource.fetch_resources()
+        # self.roomList = self.loadResources()
+        # self.userList = user.fetch_users()
+        # self.bookingsList = []
 
     # only loads desks at the moment
     def loadResources(self):
@@ -31,6 +36,7 @@ class SmartScheduler:
 
     # returns a list of team IDs sorted in descending order of the number of members in the team
     def getSortedTeams(self):
+        # return sorted(self.teamList.teams, key=lambda t: self.teamList.team_size(t), reverse=True)
         return sorted(self.teamList.teams, key=lambda t: self.teamList.team_size(t), reverse=True)
 
     def schedule(self):
