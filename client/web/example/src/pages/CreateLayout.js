@@ -83,23 +83,46 @@ const Layout = () =>
     }
 
     //Add a desk to the array with default props
-    const AddDesk = () =>
+    const AddDesk = useCallback((id, name, x, y, width, height, rotation) =>
     {
-        setDeskProps(
-        [
-            ...deskProps,
-            {
-                key : "desk" + count,
-                x : (-stageRef.current.x() + stageRef.current.width() / 2.0) / stageRef.current.scaleX(),
-                y : (-stageRef.current.y() + stageRef.current.height() / 2.0) / stageRef.current.scaleY(),
-                width : 60,
-                height : 55,
-                rotation : 0
-            }
-        ]);
+        if(id === null)
+        {
+            console.log("E");
+            setDeskProps(
+            [
+                ...deskProps,
+                {
+                    key : "desk" + count,
+                    id : id,
+                    name : "Desk " + count,
+                    x : (-stageRef.current.x() + stageRef.current.width() / 2.0) / stageRef.current.scaleX(),
+                    y : (-stageRef.current.y() + stageRef.current.height() / 2.0) / stageRef.current.scaleY(),
+                    width : 60,
+                    height : 55,
+                    rotation : 0
+                }
+            ]);
+        }
+        else
+        {
+            setDeskProps(
+            [
+                ...deskProps,
+                {
+                    key : "desk" + count,
+                    id : id,
+                    name : name,
+                    x : x,
+                    y : y,
+                    width : width,
+                    height : height,
+                    rotation : rotation
+                }
+            ]);
+        }
 
         setCount(count + 1);
-    }
+    },[count, deskProps]);
 
     //Add a meeting room to the array with default props
     const AddMeetingRoom = () =>
@@ -120,12 +143,14 @@ const Layout = () =>
         setCount(count + 1);
     }
 
+    //Check if resource is selected and delete key is pressed
     const deletePressed = useKeyPress("Delete")
 
     function useKeyPress(targetKey)
     {
         // State for keeping track of whether key is pressed
         const [keyPressed, setKeyPressed] = useState(false);
+
         // If pressed key is our target key then set to true
         const downHandler = useCallback(({ key }) =>
         {
@@ -149,12 +174,14 @@ const Layout = () =>
         {
             window.addEventListener("keydown", downHandler);
             window.addEventListener("keyup", upHandler);
+
             // Remove event listeners on cleanup
             return () => {
-            window.removeEventListener("keydown", downHandler);
-            window.removeEventListener("keyup", upHandler);
+                window.removeEventListener("keydown", downHandler);
+                window.removeEventListener("keyup", upHandler);
             };
-        }, [downHandler, upHandler]); // Empty array ensures that effect is only run on mount and unmount
+        }, [downHandler, upHandler]);
+
         return keyPressed;
     }
 
@@ -189,6 +216,7 @@ const Layout = () =>
         }
     }, [deskProps, meetingRoomProps, selectedId])
 
+    //Adjusts the canvas size for difference screen sizes
     const handleResize = () =>
     {
         setStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
@@ -201,6 +229,7 @@ const Layout = () =>
 
     }
 
+    //Ensures that the zooming in/out is oriented with the center of viewable canvas
     const zoomInOut = (event) =>
     {
         if(stageRef.current !== null)
@@ -243,26 +272,38 @@ const Layout = () =>
         }        
     }
 
+    //Saves the current layout to the database
     const SaveLayout = () =>
     {
-        window.alert("Saved");
+        window.alert("Building: " + currBuilding + "\nRoom: " + currRoom);
+        console.log(resources);
     }
 
     useEffect(() =>
     {
         setStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
+        FetchBuildings();
         
         if(deletePressed)
         {
             handleDelete();
         }
 
-    }, [deletePressed, handleDelete])
+        for(var i = 0; i < resources.length; i++)
+        {
+            if(resources[i].resource_type === "DESK")
+            {
+                AddDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation);
+                //console.log("DESK " + resources[i].name);
+            }
+        }
+
+    }, [deletePressed, handleDelete, resources, AddDesk])
 
     return (
         <div className='page-container'>
             <div className='canvas-content'>
-                <button onClick={AddDesk}>Add Desk</button><br></br>
+                <button onClick={AddDesk(null, null, null, null, null, null, null)}>Add Desk</button><br></br>
                 <button onClick={AddMeetingRoom}>Add Meeting Room</button>
 
                 <div className='combo-grid'>
@@ -271,7 +312,7 @@ const Layout = () =>
                             <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
                             {buildings.length > 0 && (
                                 buildings.map(building => (
-                                <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
+                                    <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
                                 ))
                             )}
                         </select>
@@ -282,7 +323,7 @@ const Layout = () =>
                             <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
                             {rooms.length > 0 && (
                                 rooms.map(room => (
-                                <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>
+                                    <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>
                                 ))
                             )}
                         </select>
