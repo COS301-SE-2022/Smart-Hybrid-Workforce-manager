@@ -1,52 +1,169 @@
 import { Stage, Layer } from 'react-konva'
-import { useRef, useState, useEffect, useCallback } from 'react'
+import { useRef, useState, useEffect, useCallback, useReducer } from 'react'
 import Desk from '../components/Map/Desk'
 import MeetingRoom from '../components/Map/MeetingRoom'
 
 const Layout = () =>
 {
+    //Reducer initialState
+    const initialState = {
+        counter : 0
+    }
+
+    //Reducer function
+    const reducer = (state, action) =>
+    {
+        var newState;
+        if(action.type === "increase")
+        {
+            newState = 
+            {
+                counter : state.counter + 1
+            };
+        }
+        else
+        {
+            newState = 
+            {
+                counter : state.counter - 1
+            };
+        }
+
+        return newState;
+    }
+
+    //Canvas references
     const canvasRef = useRef(null);
     const stageRef = useRef(null);
     const scaleFactor = 1.3;
+    const deskPropsRef = useRef([]);
+    const count = useRef(0);
 
-    const [deskProps, setDeskProps] = useState([]);
-    const [meetingRoomProps, setMeetingRoomProps] = useState([]);
-    const [stage, setStage] = useState({width : 100, height : 100});
-    const [count, setCount] = useState(0);
-    const [selectedId, selectShape] = useState(null);
+    //Desk and meeting room prop arrays
+    const [deskProps, SetDeskProps] = useState([]);
+    const [meetingRoomProps, SetMeetingRoomProps] = useState([]);
+    const [stage, SetStage] = useState({width : 100, height : 100});
+    const [state, dispatch] = useReducer(reducer, initialState);
+    const [selectedId, SelectShape] = useState(null);
 
+    //API fetch variables
+    const [buildings, SetBuildings] = useState([]);
+    const [currBuilding, SetCurrBuilding] = useState("");
+    const [rooms, SetRooms] = useState([]);
+    const [currRoom, SetCurrRoom] = useState("");
+    const [resources, SetResources] = useState([]);
+
+    //POST requests
+    const FetchBuildings = () =>
+    {
+        fetch("http://localhost:8100/api/resource/building/information", 
+            {
+            method: "POST",
+            body: JSON.stringify({
+            })
+            }).then((res) => res.json()).then(data => 
+            {
+                SetBuildings(data);
+            });
+    }
+
+    const UpdateRooms = (e) =>
+    {
+        fetch("http://localhost:8100/api/resource/room/information", 
+            {
+            method: "POST",
+            body: JSON.stringify({
+                building_id: e.target.value
+            })
+            }).then((res) => res.json()).then(data => 
+            {
+                SetRooms(data);
+                document.getElementById("RoomDefault").selected = true;
+                SetCurrRoom("");
+                SetCurrBuilding(e.target.value);
+                SetResources([]);
+            });
+    }
+
+    const UpdateResources = (e) =>
+    {
+        fetch("http://localhost:8100/api/resource/information", 
+            {
+            method: "POST",
+            body: JSON.stringify({
+                room_id: e.target.value
+            })
+            }).then((res) => res.json()).then(data => 
+            {
+                SetResources(data);
+                SetCurrRoom(e.target.value);
+            });
+    }
+
+    //Canvas functions
+    //Check if canvas is clicked and deselect the selected resource
     const checkDeselect = (e) =>
     {
         const clickedEmpty = e.target === e.target.getStage();
         if(clickedEmpty)
         {
-            selectShape(null);
+            SelectShape(null);
         }
     }
 
+    //Add a desk to the array with default props
+    const LoadDesk = useCallback((id, name, x, y, width, height, rotation) =>
+    {
+        if(stageRef.current !== null)
+        {
+            deskPropsRef.current =
+            [
+                ...deskPropsRef.current,
+                {
+                    key : "desk" + count.current,
+                    id : id,
+                    name : name,
+                    x : x,
+                    y : y,
+                    width : width,
+                    height : height,
+                    rotation : rotation
+                }
+            ];
+
+            SetDeskProps(deskPropsRef.current);
+        }
+    },[]);
+
     const AddDesk = () =>
     {
-        setDeskProps(
-        [
-            ...deskProps,
-            {
-                key : "desk" + count,
-                x : (-stageRef.current.x() + stageRef.current.width() / 2.0) / stageRef.current.scaleX(),
-                y : (-stageRef.current.y() + stageRef.current.height() / 2.0) / stageRef.current.scaleY(),
-                rotation : 0
-            }
-        ]);
+        if(stageRef.current !== null)
+        {
+            SetDeskProps(
+            [
+                ...deskProps,
+                {
+                    key : "desk" + count.current,
+                    id : null,
+                    name : "Desk " + count.current,
+                    x : (-stageRef.current.x() + stageRef.current.width() / 2.0) / stageRef.current.scaleX(),
+                    y : (-stageRef.current.y() + stageRef.current.height() / 2.0) / stageRef.current.scaleY(),
+                    width : 60,
+                    height : 55,
+                    rotation : 0
+                }
+            ]);
+        }
+    };
 
-        setCount(count + 1);
-    }
-
+    //Add a meeting room to the array with default props
     const AddMeetingRoom = () =>
     {
-        setMeetingRoomProps(
+        SetMeetingRoomProps(
         [
             ...meetingRoomProps,
             {
-                key : "meetingroom" + count,
+                key : "meetingroom" + state.counter,
                 x : (-stageRef.current.x() + stageRef.current.width() / 2.0) / stageRef.current.scaleX(),
                 y : (-stageRef.current.y() + stageRef.current.height() / 2.0) / stageRef.current.scaleY(),
                 width : 200,
@@ -55,21 +172,23 @@ const Layout = () =>
             }
         ]);
 
-        setCount(count + 1);
+        dispatch({type : "increase"});
     }
 
+    //Check if resource is selected and delete key is pressed
     const deletePressed = useKeyPress("Delete")
 
     function useKeyPress(targetKey)
     {
         // State for keeping track of whether key is pressed
-        const [keyPressed, setKeyPressed] = useState(false);
+        const [keyPressed, SetKeyPressed] = useState(false);
+
         // If pressed key is our target key then set to true
         const downHandler = useCallback(({ key }) =>
         {
             if (key === targetKey)
             {
-                setKeyPressed(true);
+                SetKeyPressed(true);
             }
         },[targetKey]);
 
@@ -78,7 +197,7 @@ const Layout = () =>
         {
             if (key === targetKey)
             {
-                setKeyPressed(false);
+                SetKeyPressed(false);
             }
         },[targetKey]);
         
@@ -87,12 +206,14 @@ const Layout = () =>
         {
             window.addEventListener("keydown", downHandler);
             window.addEventListener("keyup", upHandler);
+
             // Remove event listeners on cleanup
             return () => {
-            window.removeEventListener("keydown", downHandler);
-            window.removeEventListener("keyup", upHandler);
+                window.removeEventListener("keydown", downHandler);
+                window.removeEventListener("keyup", upHandler);
             };
-        }, [downHandler, upHandler]); // Empty array ensures that effect is only run on mount and unmount
+        }, [downHandler, upHandler]);
+
         return keyPressed;
     }
 
@@ -108,7 +229,7 @@ const Layout = () =>
                     {
                         var newDesk = [...deskProps];
                         newDesk.splice(i, 1);
-                        setDeskProps(newDesk);
+                        SetDeskProps(newDesk);
                     }
                 }
             }
@@ -120,16 +241,17 @@ const Layout = () =>
                     {
                         var newMeetingRoom = [...meetingRoomProps];
                         newMeetingRoom.splice(i, 1);
-                        setMeetingRoomProps(newMeetingRoom);
+                        SetMeetingRoomProps(newMeetingRoom);
                     }
                 }
             }
         }
     }, [deskProps, meetingRoomProps, selectedId])
 
+    //Adjusts the canvas size for difference screen sizes
     const handleResize = () =>
     {
-        setStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
+        SetStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
     }
 
     window.addEventListener('resize', handleResize);
@@ -139,6 +261,7 @@ const Layout = () =>
 
     }
 
+    //Ensures that the zooming in/out is oriented with the center of viewable canvas
     const zoomInOut = (event) =>
     {
         if(stageRef.current !== null)
@@ -181,22 +304,79 @@ const Layout = () =>
         }        
     }
 
+    //Saves the current layout to the database
+    const SaveLayout = () =>
+    {
+        window.alert("Building: " + currBuilding + "\nRoom: " + currRoom);
+        console.log(resources);
+    }
+
     useEffect(() =>
     {
-        setStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
-        
+        SetStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
+        FetchBuildings();
+    },[]);
+
+    useEffect(() =>
+    {
         if(deletePressed)
         {
             handleDelete();
         }
+    }, [deletePressed, handleDelete]);
 
-    }, [deletePressed, handleDelete])
+    useEffect(() =>
+    {
+        deskPropsRef.current = [];
+        count.current = 0;
+        for(var i = 0; i < resources.length; i++)
+        {
+            if(resources[i].resource_type === "DESK")
+            {
+                console.log("DESK " + resources[i].name);
+                LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation);
+            }
+        }
+
+    }, [resources, LoadDesk]);
+
+    useEffect(() =>
+    {
+        console.log(deskProps);
+        count.current = deskProps.length;
+    }, [deskProps]);
+
 
     return (
         <div className='page-container'>
             <div className='canvas-content'>
                 <button onClick={AddDesk}>Add Desk</button><br></br>
                 <button onClick={AddMeetingRoom}>Add Meeting Room</button>
+
+                <div className='combo-grid'>
+                    <div className='building-container'>
+                        <select className='combo-box' name='building' onChange={UpdateRooms.bind(this)}>
+                            <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
+                            {buildings.length > 0 && (
+                                buildings.map(building => (
+                                    <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
+                                ))
+                            )}
+                        </select>
+                    </div>
+
+                    <div className='room-container'>
+                        <select className='combo-box' name='room' onChange={UpdateResources.bind(this)}>
+                            <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
+                            {rooms.length > 0 && (
+                                rooms.map(room => (
+                                    <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>
+                                ))
+                            )}
+                        </select>
+                    </div>
+                </div>                                          
+
                 <div ref={canvasRef} className='canvas-container'>
                     <Stage width={stage.width} height={stage.height} onMouseDown={checkDeselect} onTouchStart={checkDeselect} draggable onDragEnd={canvasDrag} onWheel={zoomInOut} ref={stageRef}>
                         <Layer>
@@ -210,14 +390,14 @@ const Layout = () =>
                                         
                                         onSelect = {() => 
                                         {
-                                            selectShape(desk.key);
+                                            SelectShape(desk.key);
                                         }}
                                         
                                         onChange = {(newProps) => 
                                         {
                                             const newDeskProps = deskProps.slice();
                                             newDeskProps[i] = newProps;
-                                            setDeskProps(newDeskProps)
+                                            SetDeskProps(newDeskProps)
                                         }}
                                     />
                                 ))
@@ -233,14 +413,14 @@ const Layout = () =>
                                         
                                         onSelect = {() => 
                                         {
-                                            selectShape(meetingRoom.key);
+                                            SelectShape(meetingRoom.key);
                                         }}
                                         
                                         onChange = {(newProps) => 
                                         {
                                             const newMeetingRoomProps = meetingRoomProps.slice();
                                             newMeetingRoomProps[i] = newProps;
-                                            setMeetingRoomProps(newMeetingRoomProps)
+                                            SetMeetingRoomProps(newMeetingRoomProps)
                                         }}
 
                                         stage = {stageRef.current}
@@ -250,6 +430,7 @@ const Layout = () =>
                         </Layer>
                     </Stage>
                 </div>
+                <button onClick={SaveLayout}>Save</button>
             </div>  
         </div>
     )
