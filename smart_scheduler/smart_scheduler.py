@@ -81,6 +81,11 @@ class SmartScheduler:
         print(self.bookingsList)
         return ret_str
 
+    def get_bookings(self):
+        ret_arr = []
+        ret_arr.append(self.bookingsList)
+        return ret_arr
+
     def get_fitness(self):
         return fitness.get_fitness(self.bookingsList)
 
