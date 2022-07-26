@@ -39,7 +39,6 @@ var DaysOfWeek = map[string]time.Weekday{
 
 // datesEqual checks the equality of dates but ignoring time
 func datesEqual(t1 time.Time, t2 time.Time) bool {
-	// TODO: @JonathanEnslin make sure time zones aren't an issue
 	return t1.Year() == t2.Year() && t1.YearDay() == t2.YearDay()
 }
 
@@ -83,12 +82,27 @@ func checkAndCall(now time.Time, scheduledDay string) error {
 		return err
 	}
 	if mayCall(scheduledDay, lastEntry, now) {
-		_ = call(nil) // TODO: @JonathanEnslin get data
+		// TODO: @JonathanEnslin move this into a seperate function that uses exponential backoff
+		nextMonday := timeOfNextWeekDay(now, "Monday")            // Start of next week
+		nextSaturday := timeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
+		schedulerData, err := GetSchedulerData(nextMonday, nextSaturday)
+		if err != nil {
+			log_write_err := NewLogEntry(FAILED, &now).WriteLog()
+			if log_write_err != nil {
+				return log_write_err
+			}
+			return err
+		}
+		err = call(schedulerData) // TODO: @JonathanEnslin handle the return data
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
-func call(data interface{}) error {
+// call Calls the scheduler endpoint and passes it the data
+func call(data *SchedulerData) error { // TODO: @JonathanEnslin improve this function
 	body, _ := json.Marshal(data)
 	bodyBytesBuff := bytes.NewBuffer(body)
 
@@ -97,19 +111,42 @@ func call(data interface{}) error {
 	if err != nil {
 		return err
 	}
-	_, err = HTTPClient.Do(request) // TODO: @JonathanEnslin URL env param
+	response, err := HTTPClient.Do(request) // TODO: @JonathanEnslin URL env param
 	now := Clock.Now()
 	if err != nil {
 		errType := FAILED
 		if os.IsTimeout(err) {
 			errType = TIMED_OUT // TODO: @JonathanEnslin look at implementing type of exp backoff for timeout
 		}
-		err = NewLogEntry(errType, &now).WriteLog()
-	} else {
-		// TODO: @JonathanEnslin handle the response
-		err = NewLogEntry(SUCCESS, &now).WriteLog()
+		logErr := NewLogEntry(errType, &now).WriteLog()
+		if logErr != nil {
+			return logErr
+		}
+		return err
 	}
-	return err
+	defer response.Body.Close()
+	candidateBookings := &CandidateBookings{}
+	err = json.NewDecoder(response.Body).Decode(candidateBookings)
+	if err != nil {
+		logErr := NewLogEntry(FAILED, &now).WriteLog()
+		if logErr != nil {
+			return logErr
+		}
+		return err
+	}
+	err = makeBookings(*candidateBookings)
+	if err != nil {
+		logErr := NewLogEntry(FAILED, &now).WriteLog()
+		if logErr != nil {
+			return logErr
+		}
+		return err
+	}
+	err = NewLogEntry(SUCCESS, &now).WriteLog()
+	if err != nil { // TODO: IMPORTANT! @JonathanEnslin consider panicking when logger fails
+		return err
+	}
+	return nil
 }
 
 // callOnDay will call checkAndCall() on each recurring certain day of the week,

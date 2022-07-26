@@ -1,13 +1,13 @@
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
 
 function UserPermissions() {
   const [userName, setUserName] = useState(window.sessionStorage.getItem("UserName"));
-  const [userPermissions, SetUserPermissions] = useState([]);
+  //const [userPermissions, SetUserPermissions] = useState([]);
 
   // Resource
   const [createResourceIdentifier, SetCreateResourceIdentifier] = useState("") // allows a user to update the Resource
@@ -116,7 +116,7 @@ function UserPermissions() {
   };
 
   //POST request
-  const FetchUserPermissions = () => {
+  const FetchUserPermissions = useCallback(() => {
     fetch("http://localhost:8100/api/permission/information",
       {
         method: "POST",
@@ -125,10 +125,10 @@ function UserPermissions() {
           permission_id_type: "USER",
         })
       }).then((res) => res.json()).then(data => {
-        SetUserPermissions(data);
+        //SetUserPermissions(data); [Uncomment when used]
         data.forEach(setPermissionStates);
       });
-  }
+  },[]);
 
   function setPermissionStates(permission) {
     // Resource
@@ -146,7 +146,7 @@ function UserPermissions() {
         }
       }
       if (permission.permission_type === "DELETE") {
-        if (ppermission.permission_tenant === "IDENTIFIER") {
+        if (permission.permission_tenant === "IDENTIFIER") {
           SetDeleteResourceIdentifier(true);
           SetDeleteResourceIdentifierId(permission.id);
         }
@@ -168,7 +168,7 @@ function UserPermissions() {
         }
       }
       if (permission.permission_type === "DELETE") {
-        if (ppermission.permission_tenant === "IDENTIFIER") {
+        if (permission.permission_tenant === "IDENTIFIER") {
           SetDeleteRoomIdentifier(true);
           SetDeleteRoomIdentifierId(permission.id);
         }
@@ -180,7 +180,7 @@ function UserPermissions() {
     FetchUserPermissions();
 
     setUserName(window.sessionStorage.getItem("UserName"));
-  }, [])
+  }, [FetchUserPermissions])
 
   return (
     <div className='page-container'>
