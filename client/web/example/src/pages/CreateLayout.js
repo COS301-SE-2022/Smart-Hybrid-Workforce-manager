@@ -5,16 +5,74 @@ import MeetingRoom from '../components/Map/MeetingRoom'
 
 const Layout = () =>
 {
+    //Canvas references
     const canvasRef = useRef(null);
     const stageRef = useRef(null);
     const scaleFactor = 1.3;
 
+    //Desk and meeting room prop arrays
     const [deskProps, setDeskProps] = useState([]);
     const [meetingRoomProps, setMeetingRoomProps] = useState([]);
     const [stage, setStage] = useState({width : 100, height : 100});
     const [count, setCount] = useState(0);
     const [selectedId, selectShape] = useState(null);
 
+    //API fetch variables
+    const [buildings, SetBuildings] = useState([]);
+    const [currBuilding, SetCurrBuilding] = useState("");
+    const [rooms, SetRooms] = useState([]);
+    const [currRoom, SetCurrRoom] = useState("");
+    const [resources, SetResources] = useState([]);
+
+    //POST requests
+    const FetchBuildings = () =>
+    {
+        fetch("http://localhost:8100/api/resource/building/information", 
+            {
+            method: "POST",
+            body: JSON.stringify({
+            })
+            }).then((res) => res.json()).then(data => 
+            {
+                SetBuildings(data);
+            });
+    }
+
+    const UpdateRooms = (e) =>
+    {
+        fetch("http://localhost:8100/api/resource/room/information", 
+            {
+            method: "POST",
+            body: JSON.stringify({
+                building_id: e.target.value
+            })
+            }).then((res) => res.json()).then(data => 
+            {
+                SetRooms(data);
+                document.getElementById("RoomDefault").selected = true;
+                SetCurrRoom("");
+                SetCurrBuilding(e.target.value);
+                SetResources([]);
+            });
+    }
+
+    const UpdateResources = (e) =>
+    {
+        fetch("http://localhost:8100/api/resource/information", 
+            {
+            method: "POST",
+            body: JSON.stringify({
+                room_id: e.target.value
+            })
+            }).then((res) => res.json()).then(data => 
+            {
+                SetResources(data);
+                SetCurrRoom(e.target.value);
+            });
+    }
+
+    //Canvas functions
+    //Check if canvas is clicked and deselect the selected resource
     const checkDeselect = (e) =>
     {
         const clickedEmpty = e.target === e.target.getStage();
@@ -24,6 +82,7 @@ const Layout = () =>
         }
     }
 
+    //Add a desk to the array with default props
     const AddDesk = () =>
     {
         setDeskProps(
@@ -42,6 +101,7 @@ const Layout = () =>
         setCount(count + 1);
     }
 
+    //Add a meeting room to the array with default props
     const AddMeetingRoom = () =>
     {
         setMeetingRoomProps(
@@ -204,6 +264,31 @@ const Layout = () =>
             <div className='canvas-content'>
                 <button onClick={AddDesk}>Add Desk</button><br></br>
                 <button onClick={AddMeetingRoom}>Add Meeting Room</button>
+
+                <div className='combo-grid'>
+                    <div className='building-container'>
+                        <select className='combo-box' name='building' onChange={UpdateRooms.bind(this)}>
+                            <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
+                            {buildings.length > 0 && (
+                                buildings.map(building => (
+                                <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
+                                ))
+                            )}
+                        </select>
+                    </div>
+
+                    <div className='room-container'>
+                        <select className='combo-box' name='room' onChange={UpdateResources.bind(this)}>
+                            <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
+                            {rooms.length > 0 && (
+                                rooms.map(room => (
+                                <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>
+                                ))
+                            )}
+                        </select>
+                    </div>
+                </div>                                          
+
                 <div ref={canvasRef} className='canvas-container'>
                     <Stage width={stage.width} height={stage.height} onMouseDown={checkDeselect} onTouchStart={checkDeselect} draggable onDragEnd={canvasDrag} onWheel={zoomInOut} ref={stageRef}>
                         <Layer>
