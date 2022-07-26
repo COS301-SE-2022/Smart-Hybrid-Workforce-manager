@@ -106,7 +106,7 @@ func TestGetSchedulerData(t *testing.T) {
 			}
 			b, err := json.MarshalIndent(got, "", "  ")
 			if err != nil {
-				t.Errorf("Could not unmarshall json")
+				t.Errorf("Could not marshal json")
 			}
 			fmt.Println(string(b))
 		})

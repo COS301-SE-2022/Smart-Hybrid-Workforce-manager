@@ -93,7 +93,7 @@ func checkAndCall(now time.Time, scheduledDay string) error {
 			}
 			return err
 		}
-		err = call(schedulerData) // TODO: @JonathanEnslin handle the return data
+		err = Call(schedulerData) // TODO: @JonathanEnslin handle the return data
 		if err != nil {
 			return err
 		}
@@ -101,8 +101,8 @@ func checkAndCall(now time.Time, scheduledDay string) error {
 	return nil
 }
 
-// call Calls the scheduler endpoint and passes it the data
-func call(data *SchedulerData) error { // TODO: @JonathanEnslin improve this function
+// Call Calls the scheduler endpoint and passes it the data
+func Call(data *SchedulerData) error { // TODO: @JonathanEnslin improve this function
 	body, _ := json.Marshal(data)
 	bodyBytesBuff := bytes.NewBuffer(body)
 
