@@ -36,15 +36,15 @@ const Layout = () =>
     const canvasRef = useRef(null);
     const stageRef = useRef(null);
     const scaleFactor = 1.3;
-    const deskProps = useRef([]);
+    const deskPropsRef = useRef([]);
     const count = useRef(0);
 
     //Desk and meeting room prop arrays
-    //const [deskProps, setDeskProps] = useState([]);
-    const [meetingRoomProps, setMeetingRoomProps] = useState([]);
-    const [stage, setStage] = useState({width : 100, height : 100});
+    const [deskProps, SetDeskProps] = useState([]);
+    const [meetingRoomProps, SetMeetingRoomProps] = useState([]);
+    const [stage, SetStage] = useState({width : 100, height : 100});
     const [state, dispatch] = useReducer(reducer, initialState);
-    const [selectedId, selectShape] = useState(null);
+    const [selectedId, SelectShape] = useState(null);
 
     //API fetch variables
     const [buildings, SetBuildings] = useState([]);
@@ -107,7 +107,7 @@ const Layout = () =>
         const clickedEmpty = e.target === e.target.getStage();
         if(clickedEmpty)
         {
-            selectShape(null);
+            SelectShape(null);
         }
     }
 
@@ -116,9 +116,9 @@ const Layout = () =>
     {
         if(stageRef.current !== null)
         {
-            deskProps.current =
+            deskPropsRef.current =
             [
-                ...deskProps.current,
+                ...deskPropsRef.current,
                 {
                     key : "desk" + count.current,
                     id : id,
@@ -131,7 +131,7 @@ const Layout = () =>
                 }
             ];
 
-            count.current = count.current + 1;
+            SetDeskProps(deskPropsRef.current);
         }
     },[]);
 
@@ -139,10 +139,9 @@ const Layout = () =>
     {
         if(stageRef.current !== null)
         {
-            console.log(deskProps.current);
-            deskProps.current =
+            SetDeskProps(
             [
-                ...deskProps.current,
+                ...deskProps,
                 {
                     key : "desk" + count.current,
                     id : null,
@@ -153,16 +152,14 @@ const Layout = () =>
                     height : 55,
                     rotation : 0
                 }
-            ];
-
-            count.current = count.current + 1;
+            ]);
         }
     };
 
     //Add a meeting room to the array with default props
     const AddMeetingRoom = () =>
     {
-        setMeetingRoomProps(
+        SetMeetingRoomProps(
         [
             ...meetingRoomProps,
             {
@@ -184,14 +181,14 @@ const Layout = () =>
     function useKeyPress(targetKey)
     {
         // State for keeping track of whether key is pressed
-        const [keyPressed, setKeyPressed] = useState(false);
+        const [keyPressed, SetKeyPressed] = useState(false);
 
         // If pressed key is our target key then set to true
         const downHandler = useCallback(({ key }) =>
         {
             if (key === targetKey)
             {
-                setKeyPressed(true);
+                SetKeyPressed(true);
             }
         },[targetKey]);
 
@@ -200,7 +197,7 @@ const Layout = () =>
         {
             if (key === targetKey)
             {
-                setKeyPressed(false);
+                SetKeyPressed(false);
             }
         },[targetKey]);
         
@@ -226,13 +223,13 @@ const Layout = () =>
         {
             if(selectedId.includes("desk"))
             {
-                for(var i = 0; i < deskProps.current.length; i++)
+                for(var i = 0; i < deskProps.length; i++)
                 {
-                    if(deskProps.current[i].key === selectedId)
+                    if(deskProps[i].key === selectedId)
                     {
-                        var newDesk = [...deskProps.current];
+                        var newDesk = [...deskProps];
                         newDesk.splice(i, 1);
-                        //setDeskProps(newDesk);
+                        SetDeskProps(newDesk);
                     }
                 }
             }
@@ -244,17 +241,17 @@ const Layout = () =>
                     {
                         var newMeetingRoom = [...meetingRoomProps];
                         newMeetingRoom.splice(i, 1);
-                        setMeetingRoomProps(newMeetingRoom);
+                        SetMeetingRoomProps(newMeetingRoom);
                     }
                 }
             }
         }
-    }, [meetingRoomProps, selectedId])
+    }, [deskProps, meetingRoomProps, selectedId])
 
     //Adjusts the canvas size for difference screen sizes
     const handleResize = () =>
     {
-        setStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
+        SetStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
     }
 
     window.addEventListener('resize', handleResize);
@@ -316,19 +313,21 @@ const Layout = () =>
 
     useEffect(() =>
     {
-        setStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
+        SetStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
         FetchBuildings();
-        
+    },[]);
+
+    useEffect(() =>
+    {
         if(deletePressed)
         {
             handleDelete();
         }
-
-    }, [deletePressed, handleDelete])
+    }, [deletePressed, handleDelete]);
 
     useEffect(() =>
     {
-        deskProps.current = [];
+        deskPropsRef.current = [];
         count.current = 0;
         for(var i = 0; i < resources.length; i++)
         {
@@ -339,7 +338,14 @@ const Layout = () =>
             }
         }
 
-    }, [resources, LoadDesk])
+    }, [resources, LoadDesk]);
+
+    useEffect(() =>
+    {
+        console.log(deskProps);
+        count.current = deskProps.length;
+    }, [deskProps]);
+
 
     return (
         <div className='page-container'>
@@ -374,8 +380,8 @@ const Layout = () =>
                 <div ref={canvasRef} className='canvas-container'>
                     <Stage width={stage.width} height={stage.height} onMouseDown={checkDeselect} onTouchStart={checkDeselect} draggable onDragEnd={canvasDrag} onWheel={zoomInOut} ref={stageRef}>
                         <Layer>
-                            {deskProps.current.length > 0 && (
-                                deskProps.current.map((desk, i) => (
+                            {deskProps.length > 0 && (
+                                deskProps.map((desk, i) => (
                                     <Desk
                                         key = {desk.key}
                                         shapeProps = {desk}
@@ -384,14 +390,14 @@ const Layout = () =>
                                         
                                         onSelect = {() => 
                                         {
-                                            selectShape(desk.key);
+                                            SelectShape(desk.key);
                                         }}
                                         
                                         onChange = {(newProps) => 
                                         {
-                                            const newDeskProps = deskProps.current.slice();
+                                            const newDeskProps = deskProps.slice();
                                             newDeskProps[i] = newProps;
-                                            //setDeskProps(newDeskProps)
+                                            SetDeskProps(newDeskProps)
                                         }}
                                     />
                                 ))
@@ -407,14 +413,14 @@ const Layout = () =>
                                         
                                         onSelect = {() => 
                                         {
-                                            selectShape(meetingRoom.key);
+                                            SelectShape(meetingRoom.key);
                                         }}
                                         
                                         onChange = {(newProps) => 
                                         {
                                             const newMeetingRoomProps = meetingRoomProps.slice();
                                             newMeetingRoomProps[i] = newProps;
-                                            setMeetingRoomProps(newMeetingRoomProps)
+                                            SetMeetingRoomProps(newMeetingRoomProps)
                                         }}
 
                                         stage = {stageRef.current}
