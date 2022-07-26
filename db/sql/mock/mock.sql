@@ -13,7 +13,8 @@ SELECT "user".identifier_store(
     'STANDARD',
     0,
     '09:00',
-    '17:00'
+    '17:00',
+	'22222222-dc08-4a06-9983-8b374586e459' -- preferred desk
 );
 
 ------------ Booking Permissions
