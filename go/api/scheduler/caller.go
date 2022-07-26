@@ -107,6 +107,7 @@ func call(data *SchedulerData) error { // TODO: @JonathanEnslin improve this fun
 	bodyBytesBuff := bytes.NewBuffer(body)
 
 	request, err := http.NewRequest(http.MethodPost, endpointURL, bodyBytesBuff)
+	request.Header.Set("Content-Type", "application/json")
 	// TODO: @JonathanEnslin determine request headers
 	if err != nil {
 		return err
