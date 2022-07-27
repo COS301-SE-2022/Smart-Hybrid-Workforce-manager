@@ -394,7 +394,7 @@ const Layout = () =>
 
         if(deletedResources.current.length > 0)
         {
-            console.log(deletedResources.current);
+            console.log(deletedResources.current + currBuilding);
         }
     }
 
