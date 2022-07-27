@@ -25,6 +25,7 @@ func BookingHandlers(router *mux.Router) error {
 
 	router.HandleFunc("/remove", security.Validate(DeleteBookingHandler,
 		&data.Permissions{data.CreateGenericPermission("DELETE", "BOOKING", "USER")})).Methods("POST")
+
 	return nil
 }
 
@@ -67,7 +68,7 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 	// TODO [KP]: Do more checks like if they already have a booking etc
 
 	da := data.NewBookingDA(access)
-	err = da.StoreIdentifier(&booking)
+	_, err = da.StoreIdentifier(&booking)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
@@ -180,4 +181,57 @@ func DeleteBookingHandler(writer http.ResponseWriter, request *http.Request, per
 	}
 	logger.Access.Printf("%v booking removed\n", booking.Id) // TODO [KP]: Be more descriptive
 	utils.JSONResponse(writer, request, bookingRemoved)
+}
+
+func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.Request, permissions *data.Permissions) {
+	// Unmarshall MeetingRoomBooking
+	var meetingRoomBooking data.MeetingRoomBooking
+	err := utils.UnmarshalJSON(writer, request, &meetingRoomBooking)
+	if err != nil {
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	// Check if the user has permission to create or update a booking for the incoming meeting room
+	// TODO: @JonathanEnslin fix these permissions, add perms for creating bookings for certain teams, roles etc...
+	authorized := false
+	if meetingRoomBooking.Id != nil {
+		for _, permission := range *permissions {
+			if meetingRoomBooking.Id == permission.PermissionTenantId || permission.PermissionTenantId == nil {
+				authorized = true
+			}
+		}
+	} else {
+		for _, permission := range *permissions {
+			if permission.PermissionTenantId == nil {
+				authorized = true
+			}
+		}
+	}
+
+	if !authorized {
+		utils.AccessDenied(writer, request, fmt.Errorf("doesn't have permission to execute query"))
+		return
+	}
+
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	da := data.NewBookingDA(access)
+
+	var bookingId *string
+	// TODO: @JonathanEnslin check if booking exists first
+	if meetingRoomBooking.Booking != nil {
+		bookingId, err = da.StoreIdentifier(meetingRoomBooking.Booking)
+		if err != nil {
+			utils.InternalServerError(writer, request, err)
+		}
+	} else {
+
+	}
 }

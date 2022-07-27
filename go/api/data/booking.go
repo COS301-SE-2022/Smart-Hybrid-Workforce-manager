@@ -4,6 +4,7 @@ import (
 	"api/db"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"time"
 )
 
@@ -61,6 +62,15 @@ func (access *BookingDA) Commit() error {
 //////////////////////////////////////////////////
 // Mappers
 
+func mapIdReturn(rows *sql.Rows) (interface{}, error) {
+	var id string
+	err := rows.Scan(&id)
+	if err != nil {
+		return nil, err
+	}
+	return id, err
+}
+
 func mapBooking(rows *sql.Rows) (interface{}, error) {
 	var identifier Booking
 	err := rows.Scan(
@@ -101,14 +111,15 @@ func mapMeetingRoomBooking(rows *sql.Rows) (interface{}, error) {
 // Functions
 
 // StoreIdentifier stores an identifier
-func (access *BookingDA) StoreIdentifier(identifier *Booking) error {
-	_, err := access.access.Query(
-		`SELECT 1 FROM booking.identifier_store($1, $2, $3, $4, $5, $6, $7, $8)`, nil,
+func (access *BookingDA) StoreIdentifier(identifier *Booking) (*string, error) {
+	id, err := access.access.Query(
+		`SELECT 1 FROM booking.identifier_store($1, $2, $3, $4, $5, $6, $7, $8)`, mapIdReturn,
 		identifier.Id, identifier.UserId, identifier.ResourceType, identifier.ResourcePreferenceId, identifier.ResourceId, identifier.Start, identifier.End, identifier.Booked)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	_id := fmt.Sprint(id)
+	return &_id, nil
 }
 
 //FindIdentifier finds an identifier

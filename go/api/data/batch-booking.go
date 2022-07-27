@@ -34,14 +34,13 @@ func (access *BatchBookingDA) Commit() error {
 func (access *BatchBookingDA) StoreIdentifiers(identifiers *BatchBooking) error {
 	bookingDA := NewBookingDA(access.access)
 	for _, booking := range identifiers.Bookings {
-		err := bookingDA.StoreIdentifier(booking)
+		_, err := bookingDA.StoreIdentifier(booking)
 		if err != nil {
 			return err
 		}
 	}
 	return nil
 }
-
 
 // Finds and returns bookings as specified by the identifiers in the Bookings array
 func (access *BatchBookingDA) FindIdentifiers(indentifiers *BatchBooking, permissions *Permissions) (Bookings, error) {
