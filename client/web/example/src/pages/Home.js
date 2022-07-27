@@ -3,7 +3,7 @@ import Footer from '../components/Footer'
 import BookingTicket from '../components/BookingTicket/BookingTicket';
 import { useState, useEffect } from 'react';
 
-const Home = ({userData}) =>
+const Home = () =>
 {
   const [bookings, setBookings] = useState([])
   
@@ -75,6 +75,7 @@ const Home = ({userData}) =>
   return (
     <div className='page-container'>
       <div className='content'>
+        <Navbar />
         <div className='booking-container'>
           <h2 className='white'>{DayOne.getDate() + " " + monthNames[DayOne.getMonth()]}</h2> <hr></hr>
           {bookings.length > 0 && (
