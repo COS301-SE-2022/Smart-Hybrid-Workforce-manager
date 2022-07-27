@@ -46,6 +46,17 @@ function Profile()
           SetStartTime(data[0].preferred_start_time);
           SetEndTime(data[0].preferred_end_time);
         });
+    // SetIdentifier(sessionStorage.getItem("auth-data").email);
+    // SetFirstName(sessionStorage.getItem("auth-data").first_name);
+    // SetLastName(sessionStorage.getItem("auth-data").last_name);
+    // SetEmail(sessionStorage.getItem("auth-data").email);
+    // SetPicture(sessionStorage.getItem("auth-data").picture);
+    // SetDateCreated("");
+    // SetWorkFromHome("");
+    // SetParking("");
+    // SetOfficeDays("");
+    // SetStartTime("");
+    // SetEndTime("");
   }
 
   //POST request

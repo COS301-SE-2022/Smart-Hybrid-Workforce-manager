@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import PropTypes from 'prop-types';
@@ -44,6 +44,8 @@ export default function Login({setUserData})
     }).then((data) => {
       var json_object = JSON.parse(JSON.stringify(data))
       console.log(data["token"])
+      data["isLoggedIn"] = true;
+      setUserData(data);
       sessionStorage.setItem("auth_data", json_object);
       // window.location.assign("./bookings");
     }).catch((err) => {
