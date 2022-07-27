@@ -2,6 +2,8 @@ import { Stage, Layer } from 'react-konva'
 import { useRef, useState, useEffect, useCallback } from 'react'
 import Desk from '../components/Map/Desk'
 import MeetingRoom from '../components/Map/MeetingRoom'
+import { BsBuilding } from 'react-icons/bs'
+import Button from 'react-bootstrap/Button'
 
 const Layout = () =>
 {
@@ -83,6 +85,27 @@ const Layout = () =>
         if(clickedEmpty)
         {
             SelectShape(null);
+        }
+    }
+
+    //Add building
+    const AddBuilding = () =>
+    {
+        window.location.assign("./building");
+    }
+
+    //Edit selected building
+    let EditBuilding = async (e) =>
+    {
+        if(currBuilding !== "")
+        {
+            e.preventDefault();
+            window.sessionStorage.setItem("BuildingID", currBuilding);
+            window.location.assign("./building-edit");
+        }
+        else
+        {
+            window.alert("Please select a building to edit")
         }
     }
 
@@ -468,6 +491,9 @@ const Layout = () =>
                                 ))
                             )}
                         </select>
+
+                        <Button className='button-resource' variant='primary' onClick={AddBuilding}>Add Building</Button>
+                        <Button className='button-resource' variant='primary' onClick={EditBuilding}>Edit Building</Button>
                     </div>
 
                     <div className='room-container'>

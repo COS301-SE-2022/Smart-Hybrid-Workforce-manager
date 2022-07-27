@@ -10,11 +10,12 @@ export default function ProtectedPage({children}){
 
     const isLoggedIn = token;
     return(
-        <>
+        <></>
+        /*<>
             {!isLoggedIn ? (
                 <Navigate to="/login"/>
             ):({children})}
-        </>
+        </>*/
     )
 }
 

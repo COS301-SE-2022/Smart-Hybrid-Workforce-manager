@@ -442,21 +442,6 @@
     color: #919191;
 }
 
-.combo-grid
-{
-    display: grid;
-    grid-template-columns: 50vw 50vw;
-    grid-template-rows: 10vh;
-    grid-template-areas: "building" "room";
-}
-
-.building-container
-{
-    grid-area: 'building';
-    margin-top: 3vh;
-    margin-left: 4vw;
-}
-
 .button-resource-container
 {
     margin-top: 2vh;
@@ -513,13 +498,6 @@
 {
     cursor: pointer;
     background-color: #03639b;
-}
-
-.room-container
-{
-    grid-area: 'room';
-    margin-top: 3vh;
-    margin-left: 4vw;
 }
 
 .combo-box
@@ -939,6 +917,29 @@
 {
     min-height: 100vh;
     background-color: #252525;
+    overflow-x: hidden;
+}
+
+.combo-grid
+{
+    display: grid;
+    grid-template-columns: 50vw 50vw;
+    grid-template-rows: 10vh;
+    grid-template-areas: "building" "room";
+}
+
+.building-container
+{
+    grid-area: 'building';
+    margin-top: 3vh;
+    margin-left: 4vw;
+}
+
+.room-container
+{
+    grid-area: 'room';
+    margin-top: 3vh;
+    margin-left: 4vw;
 }
 
 .canvas-container
@@ -947,9 +948,10 @@
     width: 70vw;
     height: 80vh;
     margin-left: 15vw;
-    margin-top: 10vh;
+    margin-top: 8vh;
     border-radius: 2vh;
 }
+
 /* Customize the label (the container) */
 .container {
     color: white;
