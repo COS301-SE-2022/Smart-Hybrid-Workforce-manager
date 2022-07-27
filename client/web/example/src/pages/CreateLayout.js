@@ -13,7 +13,7 @@ const Layout = () =>
     const meetingRoomPropsRef = useRef([]);
     const deskCount = useRef(0);
     const meetingRoomCount = useRef(0);
-    const deletePressed = KeyPress("Delete");
+    const deletedResources = useRef([]);
 
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
@@ -103,7 +103,8 @@ const Layout = () =>
                     y : y,
                     width : width,
                     height : height,
-                    rotation : rotation
+                    rotation : rotation,
+                    edited : false
                 }
             ];
 
@@ -128,7 +129,8 @@ const Layout = () =>
                     y : (-stageRef.current.y() + stageRef.current.height() / 2.0) / stageRef.current.scaleY(),
                     width : 60,
                     height : 55,
-                    rotation : 0
+                    rotation : 0,
+                    edited : false
                 }
             ]);
         }
@@ -233,6 +235,11 @@ const Layout = () =>
                 {
                     if(deskProps[i].key === selectedId)
                     {
+                        if(deskProps[i].id !== null)
+                        {
+                            deletedResources.current.push(deskProps[i]);
+                        }
+
                         var newDesk = [...deskProps];
                         newDesk.splice(i, 1);
                         SetDeskProps(newDesk);
@@ -247,6 +254,11 @@ const Layout = () =>
                 {
                     if(meetingRoomProps[i].key === selectedId)
                     {
+                        if(meetingRoomProps[i].id !== null)
+                        {
+                            deletedResources.current.push(meetingRoomProps[i]);
+                        }
+
                         var newMeetingRoom = [...meetingRoomProps];
                         newMeetingRoom.splice(i, 1);
                         SetMeetingRoomProps(newMeetingRoom);
@@ -313,7 +325,12 @@ const Layout = () =>
     const SaveLayout = () =>
     {
         window.alert("Building: " + currBuilding + "\nRoom: " + currRoom);
-        console.log(resources);
+        console.log(deskProps);
+
+        if(deletedResources.current.length > 0)
+        {
+            console.log(deletedResources.current);
+        }
     }
 
     //Effect on the loading of the web page
@@ -324,6 +341,7 @@ const Layout = () =>
     },[]);
 
     //Effect to monitor if delete key is pressed
+    const deletePressed = KeyPress("Delete");
     useEffect(() =>
     {
         if(deletePressed)
@@ -400,7 +418,7 @@ const Layout = () =>
                 </div>                                          
 
                 <div ref={canvasRef} className='canvas-container'>
-                    <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onTouchStart={CheckDeselect} draggable onDragEnd={canvasDrag} onWheel={ZoomInOut} ref={stageRef}>
+                    <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onTouchStart={CheckDeselect} draggable onWheel={ZoomInOut} ref={stageRef}>
                         <Layer>
                             {deskProps.length > 0 && (
                                 deskProps.map((desk, i) => (
