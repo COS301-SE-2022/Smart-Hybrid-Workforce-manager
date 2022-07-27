@@ -13,6 +13,7 @@ const Layout = () =>
     const meetingRoomPropsRef = useRef([]);
     const deskCount = useRef(0);
     const meetingRoomCount = useRef(0);
+    const deletePressed = KeyPress("Delete");
 
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
@@ -76,7 +77,7 @@ const Layout = () =>
 
     //Canvas functions
     //Check if canvas is clicked and deselect the selected resource
-    const checkDeselect = (e) =>
+    const CheckDeselect = (e) =>
     {
         const clickedEmpty = e.target === e.target.getStage();
         if(clickedEmpty)
@@ -181,16 +182,14 @@ const Layout = () =>
         }
     };
 
-    //Check if resource is selected and delete key is pressed
-    const deletePressed = useKeyPress("Delete")
-
-    function useKeyPress(targetKey)
+    //Function to monitor when a key is pressed. Returns true if target key is pressed and false when target key is released
+    const KeyPress = ((targetKey) =>
     {
         // State for keeping track of whether key is pressed
         const [keyPressed, SetKeyPressed] = useState(false);
 
         // If pressed key is our target key then set to true
-        const downHandler = useCallback(({ key }) =>
+        const downHandler = useCallback((key) =>
         {
             if (key === targetKey)
             {
@@ -199,7 +198,7 @@ const Layout = () =>
         },[targetKey]);
 
         // If released key is our target key then set to false
-        const upHandler = useCallback(({ key }) =>
+        const upHandler = useCallback((key) =>
         {
             if (key === targetKey)
             {
@@ -207,23 +206,24 @@ const Layout = () =>
             }
         },[targetKey]);
         
-        // Add event listeners
+        //Event listeners for key press
         useEffect(() =>
         {
             window.addEventListener("keydown", downHandler);
             window.addEventListener("keyup", upHandler);
 
             // Remove event listeners on cleanup
-            return () => {
+            return () => 
+            {
                 window.removeEventListener("keydown", downHandler);
                 window.removeEventListener("keyup", upHandler);
             };
         }, [downHandler, upHandler]);
 
         return keyPressed;
-    }
+    });
 
-    const handleDelete = useCallback(() =>
+    const HandleDelete = useCallback(() =>
     {
         if(selectedId !== null)
         {
@@ -236,6 +236,8 @@ const Layout = () =>
                         var newDesk = [...deskProps];
                         newDesk.splice(i, 1);
                         SetDeskProps(newDesk);
+                        SelectShape(null);
+                        break;
                     }
                 }
             }
@@ -248,6 +250,8 @@ const Layout = () =>
                         var newMeetingRoom = [...meetingRoomProps];
                         newMeetingRoom.splice(i, 1);
                         SetMeetingRoomProps(newMeetingRoom);
+                        SelectShape(null);
+                        break;
                     }
                 }
             }
@@ -255,20 +259,15 @@ const Layout = () =>
     }, [deskProps, meetingRoomProps, selectedId])
 
     //Adjusts the canvas size for difference screen sizes
-    const handleResize = () =>
+    const HandleResize = () =>
     {
         SetStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
     }
 
-    window.addEventListener('resize', handleResize);
-
-    const canvasDrag = () =>
-    {
-
-    }
+    window.addEventListener('resize', HandleResize);
 
     //Ensures that the zooming in/out is oriented with the center of viewable canvas
-    const zoomInOut = (event) =>
+    const ZoomInOut = (event) =>
     {
         if(stageRef.current !== null)
         {
@@ -317,19 +316,21 @@ const Layout = () =>
         console.log(resources);
     }
 
+    //Effect on the loading of the web page
     useEffect(() =>
     {
         SetStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
         FetchBuildings();
     },[]);
 
+    //Effect to monitor if delete key is pressed
     useEffect(() =>
     {
         if(deletePressed)
         {
-            handleDelete();
+            HandleDelete();
         }
-    }, [deletePressed, handleDelete]);
+    }, [deletePressed, HandleDelete]);
 
     //Loads desks and meeting rooms from database after room is selected
     useEffect(() =>
@@ -345,8 +346,11 @@ const Layout = () =>
         {
             if(resources[i].resource_type === "DESK")
             {
-                console.log("DESK " + resources[i].name);
                 LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation);
+            }
+            else if(resources[i].resource_type === "MEETINGROOM")
+            {
+                LoadMeetingRoom(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation);
             }
         }
 
@@ -396,7 +400,7 @@ const Layout = () =>
                 </div>                                          
 
                 <div ref={canvasRef} className='canvas-container'>
-                    <Stage width={stage.width} height={stage.height} onMouseDown={checkDeselect} onTouchStart={checkDeselect} draggable onDragEnd={canvasDrag} onWheel={zoomInOut} ref={stageRef}>
+                    <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onTouchStart={CheckDeselect} draggable onDragEnd={canvasDrag} onWheel={ZoomInOut} ref={stageRef}>
                         <Layer>
                             {deskProps.length > 0 && (
                                 deskProps.map((desk, i) => (
