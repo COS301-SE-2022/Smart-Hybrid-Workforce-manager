@@ -510,15 +510,29 @@ const Layout = () =>
         <div className='page-container'>
             <div className='canvas-content'>
                 <div className='resource-pane'>
-                    <div className='add-desk' onClick={AddDesk}>
-                        <img src={desk_white} className='add-desk-img'></img>
-                        <p className='add-desk-label'>+</p>
-                    </div>
+                    <select className='combo-box-building' name='building' onChange={UpdateRooms.bind(this)}>
+                        <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
+                        {buildings.length > 0 && (
+                            buildings.map(building => (
+                                <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
+                            ))
+                        )}
+                    </select>
 
-                    <div className='add-meetingroom' onClick={AddMeetingRoom}>
-                        <img src={meetingroom_white} className='add-meetingroom-img'></img>
-                        <p className='add-meetingroom-label'>+</p>
-                    </div>
+                    <Button className='button-layout' variant='primary' onClick={AddBuilding}>Add Building</Button>
+                    <Button className='button-layout' variant='primary' onClick={EditBuilding}>Edit Building</Button>
+
+                    <select className='combo-box-room' name='room' onChange={UpdateResources.bind(this)}>
+                        <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
+                        {rooms.length > 0 && (
+                            rooms.map(room => (
+                                <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>
+                            ))
+                        )}
+                    </select>
+
+                    <Button className='button-layout' variant='primary' onClick={AddRoom}>Add Room</Button>
+                    <Button className='button-layout' variant='primary' onClick={EditRoom}>Edit Room</Button>
                 </div>
 
                 <div className='properties-pane'>
@@ -527,39 +541,16 @@ const Layout = () =>
 
                 <div className='actions-pane'>
                     <FaSave className='save-icon' size={30} onClick={SaveLayout}/>
+                    <img src={desk_white} alt='Add Desk' className='add-desk-img' onClick={AddDesk}></img>
+                    <img src={meetingroom_white} alt='Add Meeting Room' className='add-meetingroom-img' onClick={AddMeetingRoom}></img>
 
-                    <div className='building-container'>
-                        <select className='combo-box' name='building' onChange={UpdateRooms.bind(this)}>
-                            <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
-                            {buildings.length > 0 && (
-                                buildings.map(building => (
-                                    <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
-                                ))
-                            )}
-                        </select>
-
-                        <Button className='button-resource' variant='primary' onClick={AddBuilding}>Add Building</Button>
-                        <Button className='button-resource' variant='primary' onClick={EditBuilding}>Edit Building</Button>
-                    </div>
                 </div>
                 
 
                 <div className='combo-grid'>
 
 
-                    <div className='room-container'>
-                        <select className='combo-box' name='room' onChange={UpdateResources.bind(this)}>
-                            <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
-                            {rooms.length > 0 && (
-                                rooms.map(room => (
-                                    <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>
-                                ))
-                            )}
-                        </select>
-
-                        <Button className='button-resource' variant='primary' onClick={AddRoom}>Add Room</Button>
-                        <Button className='button-resource' variant='primary' onClick={EditRoom}>Edit Room</Button>
-                    </div>
+            
                 </div>                                          
 
                 <div ref={canvasRef} className='canvas-container'>

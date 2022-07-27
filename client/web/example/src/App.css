@@ -928,20 +928,6 @@
     grid-template-areas: "building" "room";
 }
 
-.building-container
-{
-    grid-area: 'building';
-    margin-top: 3vh;
-    margin-left: 4vw;
-}
-
-.room-container
-{
-    grid-area: 'room';
-    margin-top: 3vh;
-    margin-left: 4vw;
-}
-
 .canvas-container
 {
     background-color: #EDF3F8;
@@ -979,89 +965,88 @@
     position: absolute;
     background-color: transparent;
     width: 70vw;
-    height: 5vh;
+    height: 7vh;
     margin-left: 15vw;
-    margin-top: 10vh;
+    margin-top: 8vh;
     padding-left: 2vw;
     border-radius: 2vh;
 }
 
 .save-icon
 {
-    color: #09A4FB;
+    color: white;
 }
 
 .save-icon:hover
 {
-    color: #03639b;
     cursor: pointer;
-}
-
-.add-desk
-{
-    background-color: #09A4FB;
-    width: 10vw;
-    height: 10vw;
-    margin-left: 1.5vw;
-    margin-top: 15vh;
-    border-radius: 2vh;
 }
 
 .add-desk-img
 {
-    width: 4vw;
+    height: 5vh;
     margin-left: 3vw;
-    margin-top: 5vh;
 }
 
-.add-desk-label
+.add-desk-img:hover
 {
-    position: relative;
-    color: white;
-    bottom: 1vh;
-    text-align: center;
-    font-size: 6vh;
-}
-
-.add-desk:hover
-{
-    background-color: #03639b;
     cursor: pointer;
-}
-
-.add-meetingroom
-{
-    background-color: #09A4FB;
-    width: 10vw;
-    height: 10vw;
-    margin-left: 1.5vw;
-    margin-top: 10vh;
-    border-radius: 2vh;
 }
 
 .add-meetingroom-img
 {
-    width: 8vw;
-    margin-left: 1vw;
-    margin-top: 5vh;
+    height: 5vh;
+    margin-left: 3vw;
 }
 
-.add-meetingroom-label
+.add-meetingroom-img:hover
 {
-    position: relative;
-    color: white;
-    bottom: 1vh;
-    text-align: center;
-    font-size: 6vh;
-}
-
-.add-meetingroom:hover
-{
-    background-color: #03639b;
     cursor: pointer;
 }
 
-.button-save
+.combo-box-building
+{
+    position: absolute;
+
+    font-size: 1.5vh;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+
+    margin-left: 2vw;
+
+    width: 15vw;
+
+    border-radius: 1vh;
+    border-style: none;
+    color: white;
+    background-color: #1b1b1b;
+    text-align: center;
+}
+
+.combo-box-room
+{
+    position: absolute;
+
+    font-size: 1.5vh;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+
+    margin-left: 2vw;
+
+    width: 15vw;
+
+    border-radius: 1vh;
+    border-style: none;
+    color: white;
+    background-color: #1b1b1b;
+    text-align: center;
+}
+
+.button-layout
 {
     margin-left: 1vw;
 
@@ -1070,20 +1055,22 @@
     padding-left: 1vw;
     padding-right: 1vw;
 
-    width: 10vw;
+    width: 7vw;
 
-    background-color: #3eb147;
+    background-color: #09A4FB;
     color: white;
 
     border-style: none;
     border-radius: 1.3vh;
 
-    font-size: 2vh;
+    font-size: 1.5vh;
 }
 
-.button-save:hover
+.button-layout:hover
 {
+    background-color: #03639b;
     cursor: pointer;
+
 }
 
 /* Customize the label (the container) */
