@@ -23,6 +23,21 @@ type Booking struct {
 	DateCreated          *time.Time `json:"date_created,omitempty"`
 }
 
+// MeetingRoomBooking identifies a meeting room booking
+type MeetingRoomBooking struct {
+	Booking                  *Booking `json:"booking,omitempty"` // Consider removing, two api calls for meeting bookings
+	Id                       *string  `json:"id,omitempty"`
+	BookingId                *string  `json:"booking_id,omitempty"`
+	TeamId                   *string  `json:"team_id,omitempty"`
+	RoleId                   *string  `json:"role_id,omitempty"`
+	AdditionalAttendees      *int     `json:"additional_attendees,omitempty"`
+	DesksAttendees           *bool    `json:"desks_attendees,omitempty"`
+	DesksAdditionalAttendees *bool    `json:"desks_additional_attendees,omitempty"`
+}
+
+// MeetingRoomBookings represents a splice of BookingMeetingRooms
+type MeetingRoomBookings []*MeetingRoomBooking
+
 // Bookings represent a splice of Booking
 type Bookings []*Booking
 
@@ -65,6 +80,23 @@ func mapBooking(rows *sql.Rows) (interface{}, error) {
 	return identifier, nil
 }
 
+func mapMeetingRoomBooking(rows *sql.Rows) (interface{}, error) {
+	var meetingRoomBooking MeetingRoomBooking
+	err := rows.Scan(
+		&meetingRoomBooking.Id,
+		&meetingRoomBooking.BookingId,
+		&meetingRoomBooking.TeamId,
+		&meetingRoomBooking.RoleId,
+		&meetingRoomBooking.AdditionalAttendees,
+		&meetingRoomBooking.DesksAttendees,
+		&meetingRoomBooking.DesksAdditionalAttendees,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return meetingRoomBooking, nil
+}
+
 //////////////////////////////////////////////////
 // Functions
 
@@ -93,7 +125,7 @@ func (access *BookingDA) FindIdentifier(identifier *Booking, permissions *Permis
 		return nil, err
 	}
 	tmp := make([]*Booking, 0)
-	for r, _ := range results {
+	for r := range results {
 		if value, ok := results[r].(Booking); ok {
 			tmp = append(tmp, &value)
 		}
@@ -111,7 +143,7 @@ func (access *BookingDA) DeleteIdentifier(identifier *Booking) (*Booking, error)
 	}
 	var tmp Bookings
 	tmp = make([]*Booking, 0)
-	for r, _ := range results {
+	for r := range results {
 		if value, ok := results[r].(Booking); ok {
 			tmp = append(tmp, &value)
 		}
@@ -125,4 +157,63 @@ func (bookings Bookings) FindHead() *Booking {
 		return nil
 	}
 	return bookings[0]
+}
+
+// StoreBookingMeetingRoom stores or updates a meeting room booking
+func (access *BookingDA) StoreBookingMeetingRoom(meetingRoomBooking *MeetingRoomBooking) error {
+	_, err := access.access.Query(
+		`SELECT 1 FROM booking.identifier_store($1, $2, $3, $4, $5, $6, $7)`, nil,
+		meetingRoomBooking.Id, meetingRoomBooking.BookingId, meetingRoomBooking.TeamId, meetingRoomBooking.RoleId, meetingRoomBooking.AdditionalAttendees, meetingRoomBooking.DesksAttendees, meetingRoomBooking.DesksAdditionalAttendees)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// FindMeeetingRoomBooking finds an identifier
+func (access *BookingDA) FindMeeetingRoomBooking(meetingRoomBooking *MeetingRoomBooking, permissions *Permissions) (MeetingRoomBookings, error) {
+	permissionContent, err := json.Marshal(*permissions)
+	if err != nil {
+		return nil, err
+	}
+	results, err := access.access.Query(
+		`SELECT * FROM booking.meeting_room_find($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, mapMeetingRoomBooking,
+		meetingRoomBooking.Id, meetingRoomBooking.BookingId, meetingRoomBooking.TeamId, meetingRoomBooking.RoleId,
+		meetingRoomBooking.AdditionalAttendees, meetingRoomBooking.DesksAttendees, meetingRoomBooking.DesksAdditionalAttendees, permissionContent)
+	if err != nil {
+		return nil, err
+	}
+	tmp := make([]*MeetingRoomBooking, 0)
+	for r := range results {
+		if value, ok := results[r].(MeetingRoomBooking); ok {
+			tmp = append(tmp, &value)
+		}
+	}
+	return tmp, nil
+}
+
+//DeleteIdentifier finds an identifier
+func (access *BookingDA) DeleteMeetingRoomBooking(meetingRoomBooking *Booking) (*MeetingRoomBooking, error) {
+	results, err := access.access.Query(
+		`SELECT * FROM booking.meeting_room_remove($1)`, mapMeetingRoomBooking,
+		meetingRoomBooking.Id)
+	if err != nil {
+		return nil, err
+	}
+	var tmp MeetingRoomBookings
+	tmp = make([]*MeetingRoomBooking, 0)
+	for r := range results {
+		if value, ok := results[r].(MeetingRoomBooking); ok {
+			tmp = append(tmp, &value)
+		}
+	}
+	return tmp.FindHead(), nil
+}
+
+//FindHead returns the first Booking
+func (meetingRoomBookings MeetingRoomBookings) FindHead() *MeetingRoomBooking {
+	if len(meetingRoomBookings) == 0 {
+		return nil
+	}
+	return meetingRoomBookings[0]
 }
