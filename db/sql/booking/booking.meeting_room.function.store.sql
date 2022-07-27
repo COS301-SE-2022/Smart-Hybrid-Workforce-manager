@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION booking.meeting_room_store(
 	_role_id uuid,
 	_additional_attendees INT,
 	_desks_attendees BOOLEAN,
-	_desks_additional_attendees uuid,
+	_desks_additional_attendees BOOLEAN
 )
 RETURNS uuid AS
 $$
