@@ -5,7 +5,7 @@ import MeetingRoom from '../components/Map/MeetingRoom'
 import { BsBuilding } from 'react-icons/bs'
 import Button from 'react-bootstrap/Button'
 import desk_white from '../img/desk_white.svg';
-import useImage from 'use-image';
+import meetingroom_white from '../img/meetingroom_white.svg';
 
 const Layout = () =>
 {
@@ -18,7 +18,6 @@ const Layout = () =>
     const deskCount = useRef(0);
     const meetingRoomCount = useRef(0);
     const deletedResources = useRef([]);
-    const [image] = useImage(desk_white);
 
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
@@ -512,8 +511,13 @@ const Layout = () =>
                 <div className='resource-pane'>
                     <div className='add-desk' onClick={AddDesk}>
                         <img src={desk_white} className='add-desk-img'></img>
+                        <p className='add-desk-label'>+</p>
                     </div>
-                    <button onClick={AddMeetingRoom}>Add Meeting Room</button>
+
+                    <div className='add-meetingroom' onClick={AddMeetingRoom}>
+                        <img src={meetingroom_white} className='add-meetingroom-img'></img>
+                        <p className='add-meetingroom-label'>+</p>
+                    </div>
                 </div>
                 
 
