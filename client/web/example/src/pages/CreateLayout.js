@@ -1,49 +1,23 @@
 import { Stage, Layer } from 'react-konva'
-import { useRef, useState, useEffect, useCallback, useReducer } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import Desk from '../components/Map/Desk'
 import MeetingRoom from '../components/Map/MeetingRoom'
 
 const Layout = () =>
 {
-    //Reducer initialState
-    const initialState = {
-        counter : 0
-    }
-
-    //Reducer function
-    const reducer = (state, action) =>
-    {
-        var newState;
-        if(action.type === "increase")
-        {
-            newState = 
-            {
-                counter : state.counter + 1
-            };
-        }
-        else
-        {
-            newState = 
-            {
-                counter : state.counter - 1
-            };
-        }
-
-        return newState;
-    }
-
     //Canvas references
     const canvasRef = useRef(null);
     const stageRef = useRef(null);
     const scaleFactor = 1.3;
     const deskPropsRef = useRef([]);
-    const count = useRef(0);
+    const meetingRoomPropsRef = useRef([]);
+    const deskCount = useRef(0);
+    const meetingRoomCount = useRef(0);
 
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
     const [meetingRoomProps, SetMeetingRoomProps] = useState([]);
     const [stage, SetStage] = useState({width : 100, height : 100});
-    const [state, dispatch] = useReducer(reducer, initialState);
     const [selectedId, SelectShape] = useState(null);
 
     //API fetch variables
@@ -111,16 +85,17 @@ const Layout = () =>
         }
     }
 
-    //Add a desk to the array with default props
+    //Load desks from the database
     const LoadDesk = useCallback((id, name, x, y, width, height, rotation) =>
     {
+        //Uses a reference array to prevent state dependency and infinite loop
         if(stageRef.current !== null)
         {
             deskPropsRef.current =
             [
                 ...deskPropsRef.current,
                 {
-                    key : "desk" + count.current,
+                    key : "desk" + deskCount.current,
                     id : id,
                     name : name,
                     x : x,
@@ -131,10 +106,12 @@ const Layout = () =>
                 }
             ];
 
+            //Set the state using the reference array
             SetDeskProps(deskPropsRef.current);
         }
     },[]);
 
+    //Add a new desk to the state
     const AddDesk = () =>
     {
         if(stageRef.current !== null)
@@ -143,9 +120,9 @@ const Layout = () =>
             [
                 ...deskProps,
                 {
-                    key : "desk" + count.current,
+                    key : "desk" + deskCount.current,
                     id : null,
-                    name : "Desk " + count.current,
+                    name : "Desk " + deskCount.current,
                     x : (-stageRef.current.x() + stageRef.current.width() / 2.0) / stageRef.current.scaleX(),
                     y : (-stageRef.current.y() + stageRef.current.height() / 2.0) / stageRef.current.scaleY(),
                     width : 60,
@@ -156,24 +133,53 @@ const Layout = () =>
         }
     };
 
-    //Add a meeting room to the array with default props
+    //Load desks from the database
+    const LoadMeetingRoom = useCallback((id, name, x, y, width, height, rotation) =>
+    {
+        //Uses a reference array to prevent state dependency and infinite loop
+        if(stageRef.current !== null)
+        {
+            meetingRoomPropsRef.current =
+            [
+                ...meetingRoomPropsRef.current,
+                {
+                    key : "meetingroom" + meetingRoomCount.current,
+                    id : id,
+                    name : name,
+                    x : x,
+                    y : y,
+                    width : width,
+                    height : height,
+                    rotation : rotation
+                }
+            ];
+
+            //Set the state using the reference array
+            SetMeetingRoomProps(meetingRoomPropsRef.current);
+        }
+    },[]);
+
+    //Add a new desk to the state
     const AddMeetingRoom = () =>
     {
-        SetMeetingRoomProps(
-        [
-            ...meetingRoomProps,
-            {
-                key : "meetingroom" + state.counter,
-                x : (-stageRef.current.x() + stageRef.current.width() / 2.0) / stageRef.current.scaleX(),
-                y : (-stageRef.current.y() + stageRef.current.height() / 2.0) / stageRef.current.scaleY(),
-                width : 200,
-                height : 200,
-                rotation : 0
-            }
-        ]);
-
-        dispatch({type : "increase"});
-    }
+        if(stageRef.current !== null)
+        {
+            SetMeetingRoomProps(
+            [
+                ...meetingRoomProps,
+                {
+                    key : "meetingroom" + meetingRoomCount.current,
+                    id : null,
+                    name : "Meeting Room " + meetingRoomCount.current,
+                    x : (-stageRef.current.x() + stageRef.current.width() / 2.0) / stageRef.current.scaleX(),
+                    y : (-stageRef.current.y() + stageRef.current.height() / 2.0) / stageRef.current.scaleY(),
+                    width : 200,
+                    height : 200,
+                    rotation : 0
+                }
+            ]);
+        }
+    };
 
     //Check if resource is selected and delete key is pressed
     const deletePressed = useKeyPress("Delete")
@@ -325,10 +331,16 @@ const Layout = () =>
         }
     }, [deletePressed, handleDelete]);
 
+    //Loads desks and meeting rooms from database after room is selected
     useEffect(() =>
     {
+        //Reset reference array and counters
         deskPropsRef.current = [];
-        count.current = 0;
+        deskCount.current = 0;
+        meetingRoomPropsRef.current = [];
+        meetingRoomCount.current = 0;
+
+        //Loop through resources and load desks and meeting rooms respectively
         for(var i = 0; i < resources.length; i++)
         {
             if(resources[i].resource_type === "DESK")
@@ -338,13 +350,19 @@ const Layout = () =>
             }
         }
 
-    }, [resources, LoadDesk]);
+    }, [resources, LoadDesk, LoadMeetingRoom]);
 
+    //Update the desk counter when a new desk is added or removed
     useEffect(() =>
     {
-        console.log(deskProps);
-        count.current = deskProps.length;
-    }, [deskProps]);
+        deskCount.current = deskProps.length;
+    }, [deskProps.length]);
+
+    //Update the meeting room counter when a new meeting room is added or removed
+    useEffect(() =>
+    {
+        meetingRoomCount.current = meetingRoomProps.length;
+    }, [meetingRoomProps.length]);
 
 
     return (
