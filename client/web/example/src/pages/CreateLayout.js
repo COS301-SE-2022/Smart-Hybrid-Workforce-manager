@@ -96,7 +96,7 @@ const Layout = () =>
             [
                 ...deskPropsRef.current,
                 {
-                    key : "desk" + deskCount.current,
+                    key : "desk" + id,
                     id : id,
                     name : name,
                     x : x,
@@ -153,7 +153,8 @@ const Layout = () =>
                     y : y,
                     width : width,
                     height : height,
-                    rotation : rotation
+                    rotation : rotation,
+                    edited : false
                 }
             ];
 
@@ -178,7 +179,8 @@ const Layout = () =>
                     y : (-stageRef.current.y() + stageRef.current.height() / 2.0) / stageRef.current.scaleY(),
                     width : 200,
                     height : 200,
-                    rotation : 0
+                    rotation : 0,
+                    edited : false
                 }
             ]);
         }
@@ -322,10 +324,73 @@ const Layout = () =>
     }
 
     //Saves the current layout to the database
-    const SaveLayout = () =>
+    const SaveLayout = async () =>
     {
-        window.alert("Building: " + currBuilding + "\nRoom: " + currRoom);
-        console.log(deskProps);
+        var resources = [];
+
+        for(var i = 0; i < deskProps.length; i++)
+        {
+            var currDesk = deskProps[i];
+            
+            if(currDesk.edited)
+            {
+                resources.push(
+                {
+                    id : currDesk.id,
+                    room_id: currRoom,
+                    name: currDesk.name,
+                    xcoord: currDesk.x,
+                    ycoord: currDesk.y,
+                    width: currDesk.width,
+                    height: currDesk.height,
+                    rotation: currDesk.rotation,
+                    role_id: null,
+                    resource_type: 'DESK',
+                    decorations: '{"computer": true}',
+                })
+            }
+        }
+
+        for(i = 0; i < meetingRoomProps.length; i++)
+        {
+            var currMeetingRoom = meetingRoomProps[i];
+            
+            if(currMeetingRoom.edited)
+            {
+                resources.push(
+                {
+                    id : currMeetingRoom.id,
+                    room_id: currRoom,
+                    name: currMeetingRoom.name,
+                    xcoord: currMeetingRoom.x,
+                    ycoord: currMeetingRoom.y,
+                    width: currMeetingRoom.width,
+                    height: currMeetingRoom.height,
+                    rotation: currMeetingRoom.rotation,
+                    role_id: null,
+                    resource_type: 'MEETINGROOM',
+                    decorations: '{}',
+                })
+            }
+        }
+
+        try
+        {
+            let res = await fetch("http://localhost:8100/api/resource/batch-create", 
+            {
+                method: "POST",
+                body: JSON.stringify(resources)
+            });
+
+            if(res.status === 200)
+            {
+                alert("Saved!");
+            }
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
 
         if(deletedResources.current.length > 0)
         {
