@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION booking.identifier_store(
+CREATE OR REPLACE FUNCTION booking.meeting_room_store(
 	_id uuid, -- NULLABLE, If supplied try update else insert
 	_booking_id uuid,
 	_team_id uuid,
