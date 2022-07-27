@@ -948,7 +948,7 @@
     width: 70vw;
     height: 80vh;
     margin-left: 15vw;
-    margin-top: 8vh;
+    margin-top: 5vh;
     border-radius: 2vh;
 }
 
@@ -959,8 +959,42 @@
     width: 13vw;
     height: 80vh;
     margin-left: 1vw;
-    margin-top: 18vh;
+    margin-top: 15vh;
     border-radius: 2vh;
+}
+
+.properties-pane
+{
+    position: absolute;
+    background-color: #1b1b1b;
+    width: 13vw;
+    height: 80vh;
+    margin-left: 86vw;
+    margin-top: 15vh;
+    border-radius: 2vh;
+}
+
+.actions-pane
+{
+    position: absolute;
+    background-color: transparent;
+    width: 70vw;
+    height: 5vh;
+    margin-left: 15vw;
+    margin-top: 10vh;
+    padding-left: 2vw;
+    border-radius: 2vh;
+}
+
+.save-icon
+{
+    color: #09A4FB;
+}
+
+.save-icon:hover
+{
+    color: #03639b;
+    cursor: pointer;
 }
 
 .add-desk
@@ -1016,14 +1050,39 @@
 {
     position: relative;
     color: white;
-    bottom: 0vh;
+    bottom: 1vh;
     text-align: center;
-    font-size: 5vh;
+    font-size: 6vh;
 }
 
 .add-meetingroom:hover
 {
     background-color: #03639b;
+    cursor: pointer;
+}
+
+.button-save
+{
+    margin-left: 1vw;
+
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+
+    width: 10vw;
+
+    background-color: #3eb147;
+    color: white;
+
+    border-style: none;
+    border-radius: 1.3vh;
+
+    font-size: 2vh;
+}
+
+.button-save:hover
+{
     cursor: pointer;
 }
 

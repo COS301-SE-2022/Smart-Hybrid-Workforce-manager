@@ -3,6 +3,7 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import Desk from '../components/Map/Desk'
 import MeetingRoom from '../components/Map/MeetingRoom'
 import { BsBuilding } from 'react-icons/bs'
+import { FaSave } from 'react-icons/fa'
 import Button from 'react-bootstrap/Button'
 import desk_white from '../img/desk_white.svg';
 import meetingroom_white from '../img/meetingroom_white.svg';
@@ -519,9 +520,14 @@ const Layout = () =>
                         <p className='add-meetingroom-label'>+</p>
                     </div>
                 </div>
-                
 
-                <div className='combo-grid'>
+                <div className='properties-pane'>
+                    
+                </div>
+
+                <div className='actions-pane'>
+                    <FaSave className='save-icon' size={30} onClick={SaveLayout}/>
+
                     <div className='building-container'>
                         <select className='combo-box' name='building' onChange={UpdateRooms.bind(this)}>
                             <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
@@ -535,6 +541,11 @@ const Layout = () =>
                         <Button className='button-resource' variant='primary' onClick={AddBuilding}>Add Building</Button>
                         <Button className='button-resource' variant='primary' onClick={EditBuilding}>Edit Building</Button>
                     </div>
+                </div>
+                
+
+                <div className='combo-grid'>
+
 
                     <div className='room-container'>
                         <select className='combo-box' name='room' onChange={UpdateResources.bind(this)}>
@@ -604,7 +615,6 @@ const Layout = () =>
                         </Layer>
                     </Stage>
                 </div>
-                <button onClick={SaveLayout}>Save</button>
             </div>  
         </div>
     )
