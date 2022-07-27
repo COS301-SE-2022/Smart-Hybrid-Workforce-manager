@@ -189,6 +189,12 @@
     text-align: center;
 }
 
+.form-header-top
+{
+    color: white;
+    font-size: 7vh;
+}
+
 .form-container-login h1
 {
     color: white;
