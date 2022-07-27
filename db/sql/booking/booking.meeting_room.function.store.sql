@@ -22,7 +22,7 @@ BEGIN
             desks_attendees = _desks_attendees,
             desks_additional_attendees = _desks_additional_attendees
         WHERE id = _id
-		RETURNING identifier.id INTO __id;
+		RETURNING meeting_room.id INTO __id;
     ELSE
     	INSERT INTO booking.meeting_room(id, booking_id, team_id, role_id, additional_attendees, desks_attendees, desks_additional_attendees)
     	VALUES (COALESCE(_id, uuid_generate_v4()), _booking_id, _team_id, _role_id, _additional_attendees, _desks_attendees, _desks_additional_attendees)
