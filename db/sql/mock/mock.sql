@@ -13,7 +13,8 @@ SELECT "user".identifier_store(
     'STANDARD',
     0,
     '09:00',
-    '17:00'
+    '17:00',
+	'22222222-dc08-4a06-9983-8b374586e459' -- preferred desk
 );
 
 ------------ Booking Permissions
@@ -465,7 +466,11 @@ SELECT resource.identifier_store(
 	'22222222-dc08-4a06-9983-8b374586e459'::uuid,
 	'14141414-dc08-4a06-9983-8b374586e459'::uuid, -- Room 01
 	'115', 
-	'B2', 
+	'10',
+    '10',
+    '60',
+    '55',
+    '0', 
 	null::uuid, 
 	'DESK'::resource.type,
 	'{}'

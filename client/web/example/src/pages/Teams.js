@@ -41,7 +41,7 @@ function Teams()
           {teams.length > 0 && (
             teams.map(team => 
             {
-              return <TeamListItem id={team.id} name={team.name} description={team.description} capacity={team.capacity} picture={team.picture} lead = {team.team_lead_id} />
+              return <TeamListItem id={team.id} name={team.name} description={team.description} capacity={team.capacity} picture={team.picture} lead = {team.team_lead_id} priority={team.priority} />
             }
           )
           )}

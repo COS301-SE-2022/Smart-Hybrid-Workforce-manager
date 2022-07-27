@@ -236,7 +236,7 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
 	users, err := da.FindCredential(&userCred)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
-		logger.Error.Fatal("\nerror\n%v\n", err)
+		logger.Error.Fatalf("\nerror\n%v\n", err)
 		return
 	}
 	logger.Access.Printf("\nusers\n%v\n", users)

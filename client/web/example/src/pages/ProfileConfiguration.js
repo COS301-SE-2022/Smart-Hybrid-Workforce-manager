@@ -7,6 +7,12 @@ import '../App.css'
 
 function ProfileConfiguration()
 {
+  const [identifier, SetIdentifier] = useState("")
+  const [firstName, SetFirstName] = useState("")
+  const [lastName, SetLastName] = useState("")
+  const [email, SetEmail] = useState("")
+  const [picture, SetPicture] = useState("")
+  const [dateCreated, SetDateCreated] = useState("")
   const [workFromHome, SetWorkFromHome] = useState("")
   const [parking, SetParking] = useState("")
   const [officeDays, SetOfficeDays] = useState("")
@@ -18,10 +24,22 @@ function ProfileConfiguration()
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/", 
+      let res = await fetch("http://localhost:8100/api/user/update", 
       {
         method: "POST",
         body: JSON.stringify({
+          id: window.sessionStorage.getItem("UserID"),
+          identifier: identifier,
+          first_name: firstName,
+          last_name: lastName,
+          email: email,
+          picture: picture,
+          date_created: dateCreated,
+          work_from_home: workFromHome,
+          parking: parking,
+          office_days: parseInt(officeDays),
+          preferred_start_time: "0000-01-01T" + startTime + ":00Z",
+          preferred_end_time: "0000-01-01T" + endTime + ":00Z"
         })
       });
 
@@ -40,15 +58,13 @@ function ProfileConfiguration()
   //Using useEffect hook. This will ste the default values of the form once the components are mounted
   useEffect(() =>
   {
-    if (window.sessionStorage.getItem("Parking") === "STANDARD") {
-      SetParking(1)
-    }
-    if (window.sessionStorage.getItem("Parking") === "DISABLED") {
-      SetParking(2)
-    }
-    if (window.sessionStorage.getItem("Parking") === "NONE") {
-      SetParking(3)
-    }
+    SetParking(window.sessionStorage.getItem("Parking"))
+    SetIdentifier(window.sessionStorage.getItem("Identifier"))
+    SetFirstName(window.sessionStorage.getItem("FirstName"))
+    SetLastName(window.sessionStorage.getItem("LastName"))
+    SetEmail(window.sessionStorage.getItem("Email"))
+    SetPicture(window.sessionStorage.getItem("Picture"))
+    SetDateCreated(window.sessionStorage.getItem("DateCreated"))
     SetWorkFromHome(window.sessionStorage.getItem("WorkFromHome"))
     SetOfficeDays(window.sessionStorage.getItem("OfficeDays"))
     SetStartTime(window.sessionStorage.getItem("StartTime").substring(11,16))
@@ -71,16 +87,15 @@ function ProfileConfiguration()
             <Form.Group className='form-group' controlId="formBasicName">
               <Form.Label className='form-label'>Parking Type<br></br></Form.Label>
               <Form.Select aria-label="Default select example" className='form-input' onChange={(e) => SetParking(e.target.value)} value={parking}>
-                <option>-- Select Parking Type --</option>
-                <option value="1">Standard</option>
-                <option value="2">Disabled</option>
-                <option value="3">None</option>
+                <option value="STANDARD">Standard</option>
+                <option value="DISABLED">Disabled</option>
+                <option value="NONE">None</option>
               </Form.Select>
             </Form.Group>
 
             <Form.Group className='form-group' controlId="formBasicName">
               <Form.Label className='form-label'>Office Days<br></br></Form.Label>
-              <Form.Control name="iOfficeDays" className='form-input' type="text" placeholder="3" value={officeDays} onChange={(e) => SetOfficeDays(e.target.value)} />
+              <Form.Control name="iOfficeDays" className='form-input' type="number" placeholder="0" min="0" value={officeDays} onChange={(e) => SetOfficeDays(e.target.value)} />
             </Form.Group>
             
             <Form.Group className='form-group' controlId="formBasicName">

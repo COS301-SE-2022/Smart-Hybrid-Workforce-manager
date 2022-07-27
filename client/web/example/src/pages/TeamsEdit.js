@@ -12,9 +12,10 @@ const EditTeam = () =>
   const [teamDescription, setTeamDescription] = useState(window.sessionStorage.getItem("TeamDescription"));
   const [teamCapacity, setTeamCapacity] = useState(window.sessionStorage.getItem("TeamCapacity"));
   const [teamLead, setTeamLead] = useState(window.sessionStorage.getItem("TeamLead"));
+  const [teamPriority, setTeamPriority] = useState(window.sessionStorage.getItem("TeamPriority"));
 
   const [teamUsers, SetTeamUsers] = useState([]);
-  const [viewableUsers, SetViewableUsers] = useState([]);
+  //const [viewableUsers, SetViewableUsers] = useState([]);
 
   let handleSubmit = async (e) =>
   {
@@ -29,7 +30,8 @@ const EditTeam = () =>
           name: teamName,
           description: teamDescription,
           capacity: parseInt(teamCapacity),
-          team_lead_id: teamLead == "null" ? null : teamLead
+          priority: parseInt(teamPriority),
+          team_lead_id: teamLead === "null" ? null : teamLead
         })
       });
 
@@ -69,7 +71,7 @@ const EditTeam = () =>
           body: JSON.stringify({})
         }).then((res) => res.json()).then(data => 
         {
-          SetViewableUsers(data);
+          //SetViewableUsers(data);
         });
   }
 
@@ -80,6 +82,7 @@ const EditTeam = () =>
     setTeamDescription(window.sessionStorage.getItem("TeamDescription"));
     setTeamCapacity(window.sessionStorage.getItem("TeamCapacity"));
     setTeamLead(window.sessionStorage.getItem("TeamLead"));
+    setTeamPriority(window.sessionStorage.getItem("TeamPriority"));
 
     FetchTeamUsers();
     FetchViewableUsers();
@@ -111,6 +114,15 @@ const EditTeam = () =>
             <Form.Group className='form-group' controlId="formBasicEmail">
               <Form.Label className='form-label'>Capacity<br></br></Form.Label>
               <Form.Control className='form-input' type="text" placeholder="Enter your team capacity" value={teamCapacity} onChange={(e) => setTeamCapacity(e.target.value)} />
+            </Form.Group>
+
+            <Form.Group className='form-group' controlId="formBasicTeamPriority">
+              <Form.Label className='form-label'>Team Priority<br></br></Form.Label>
+              <select className='combo-box' name='teampriority' value={teamPriority} onChange={(e) => setTeamPriority(e.target.value)}>
+                <option value="0">low</option>
+                <option value="1">medium</option>
+                <option value="2">high</option>
+              </select>
             </Form.Group>
 
             <Form.Group className='form-group' controlId="formBasicTeamLead">

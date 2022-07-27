@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { MdDelete } from 'react-icons/md'
 
-const TeamUserList = ({id}) =>
+const TeamUserList = ({teamId}) =>
 {
   const [teamName, SetTeamName] = useState("")
 
@@ -11,13 +11,13 @@ const TeamUserList = ({id}) =>
         {
         method: "POST",
         body: JSON.stringify({
-            id: id
+            id: teamId
         })
         }).then((res) => res.json()).then(data => 
         {
             SetTeamName(data[0].name);
         });
-    }, [])
+    }, [teamId])
   
   let DeleteTeam = async (e) =>
     {
@@ -30,7 +30,7 @@ const TeamUserList = ({id}) =>
                 {
                     method: "POST",
                     body: JSON.stringify({
-                        team_id: id,
+                        team_id: teamId,
                         user_id: window.sessionStorage.getItem("UserID")
                     })
                 });

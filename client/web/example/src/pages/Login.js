@@ -43,11 +43,9 @@ export default function Login({setUserData})
         alert("Failed login");
     }).then((data) => {
       var json_object = JSON.parse(JSON.stringify(data))
-      json_object["isLoggedIn"] = true;
-      console.log(json_object);
-      setUserData(json_object);
-      sessionStorage.setItem("userData", json_object);
-      
+      console.log(data["token"])
+      sessionStorage.setItem("auth_data", json_object);
+      // window.location.assign("./bookings");
     }).catch((err) => {
       console.error(err);
     })

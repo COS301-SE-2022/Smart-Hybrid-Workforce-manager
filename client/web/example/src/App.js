@@ -1,12 +1,11 @@
-import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom'
-import React, {useState} from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 
 import Bookings from './pages/Bookings'
 import BookingsDesk from './pages/BookingsDesk'
-import BookingsDeskEdit from './pages/BookingsDeskEdit'
+//import BookingsDeskEdit from './pages/BookingsDeskEdit'
 import BookingsMeeting from './pages/BookingsMeeting'
 
 import Admin from './pages/Admin'
@@ -31,14 +30,17 @@ import ProfileConfiguration from './pages/ProfileConfiguration'
 import Users from './pages/Users'
 import EditUser from './pages/UsersEdit'
 import CreateUser from './pages/UsersCreate'
+import PermissionsUser from './pages/UsersPermissions'
 
 import Roles from './pages/Roles'
 import CreateRole from './pages/RolesCreate'
 import EditRole from './pages/RolesEdit'
 
-import userContext from './store/userContext';
-import ProtectedPage from './store/protectedPage';
-import { UserProvidor } from './store/userContext';
+import PermissionsRole from './pages/RolesPermissions'
+import Layout from './pages/CreateLayout'
+
+// import { AppContext } from "./lib/contextLib";
+// import injectContext from "./store/appContext";
 
 function App()
 {
@@ -58,8 +60,7 @@ function App()
     //   <Route path="/test1" exact element={<Login/>} />
     // </BrowserRouter>
     <Router>
-      <Routes>      
-        <Route path="/test2" exact element={<Login/>} />
+      <Routes>
         <Route path="/" exact element={<Home/>} />
         <Route path="/login" exact element={<Login/>} />
         <Route path="/signup" exact element={<Signup/>} />
@@ -67,17 +68,18 @@ function App()
         <Route path="/bookings-desk" exact element={<BookingsDesk/>} />
         <Route path="/bookings-meeting" exact element={<BookingsMeeting />} />
         <Route path="/admin" exact element={<Admin />} />
+        <Route path="/layout" exact element={<Layout />} />
 
         <Route path="/users" exact element={<Users />} />
         <Route path="/user-edit" exact element={<EditUser />} />
         <Route path="/user-create" exact element={<CreateUser />} />
+        <Route path="/user-permissions" exact element={<PermissionsUser />} />
         
         <Route path="/team" exact element={<Teams />} />
         <Route path="/team-create" exact element={<CreateTeam />} />
         <Route path="/team-edit" exact element={<EditTeam />} />
         <Route path="/team-permissions" exact element={<PermissionsTeam />} />
 
-        <Route path="/bookings-desk-edit" exact element={<BookingsDeskEdit/>} />
         <Route path="/resources" exact element={<Resources/>} />
         <Route path="/building" exact element={<CreateBuilding/>} />
         <Route path="/building-edit" exact element={<EditBuilding/>} />
@@ -93,7 +95,9 @@ function App()
 
         <Route path="/role" exact element={<Roles/>} />
         <Route path="/role-create" exact element={<CreateRole/>} />
-        <Route path="/role-edit" exact element={<EditRole/>} />
+        <Route path="/role-edit" exact element={<EditRole />} />
+        <Route path="/role-permissions" exact element={<PermissionsRole />} />
+      
       </Routes>
     </Router>
   );

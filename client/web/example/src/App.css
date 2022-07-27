@@ -748,7 +748,7 @@
     grid-template-areas: "image""text";
 
     width: 40vw;
-    height: 60vh;
+    height: 65vh;
 
     margin-left: 2.5vw;
     margin-right: 2.5vw;
@@ -929,13 +929,28 @@
     text-align: center;
 }
 
+.canvas-content
+{
+    min-height: 100vh;
+    background-color: #252525;
+}
+
+.canvas-container
+{
+    background-color: #EDF3F8;
+    width: 70vw;
+    height: 80vh;
+    margin-left: 15vw;
+    margin-top: 10vh;
+    border-radius: 2vh;
+}
 /* Customize the label (the container) */
 .container {
     color: white;
     display: block;
     position: relative;
     padding-left: 35px;
-    margin-left: 20px;
+    margin-top: 10px;
     cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -1000,4 +1015,21 @@
 .permission-category {
     color: white;
     margin-top: 50px;
+}
+
+.white {
+    color: white;
+}
+
+hr {
+    width: 75%;
+    text-align: left;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    border: 3px solid green;
 }

@@ -2,17 +2,8 @@ import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import BookingCard from "../components/BookingCard/BookingCard"
 
-import React, { useState, useEffect, useContext } from "react";
-import userContext from '../store/userContext';
-
 function Bookings()
 {
-  // const { logout, isLoggedIn } = useContext(userContext);
-  // if(!isLoggedIn){
-  //   // alert("not logged in");
-  //   // window.location.assign("./login");
-  // }
-
   return (
     <div className='page-container'>
       <div className='content'>

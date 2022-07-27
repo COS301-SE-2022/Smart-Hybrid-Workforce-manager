@@ -44,14 +44,18 @@ type RoomAssociations []*RoomAssociation
 
 // Resource identifies a Resource via common attributes
 type Resource struct {
-	Id           *string `json:"id,omitempty"`
-	RoomId       *string `json:"room_id,omitempty"`
-	Name         *string `json:"name,omitempty"`
-	Location     *string `json:"location,omitempty"`
-	RoleId       *string `json:"role_id,omitempty"`
-	ResourceType *string `json:"resource_type,omitempty"`
-	Decorations  *string `json:"decorations,omitempty"`
-	DateCreated  *string `json:"date_created,omitempty"`
+	Id           *string  `json:"id,omitempty"`
+	RoomId       *string  `json:"room_id,omitempty"`
+	Name         *string  `json:"name,omitempty"`
+	XCoord       *float64 `json:"xcoord,omitempty"`
+	YCoord       *float64 `json:"ycoord,omitempty"`
+	Width        *float64 `json:"width,omitempty"`
+	Height       *float64 `json:"height,omitempty"`
+	Rotation     *float64 `json:"rotation,omitempty"`
+	RoleId       *string  `json:"role_id,omitempty"`
+	ResourceType *string  `json:"resource_type,omitempty"`
+	Decorations  *string  `json:"decorations,omitempty"`
+	DateCreated  *string  `json:"date_created,omitempty"`
 }
 
 // Resources represent a splice of Resource
@@ -124,7 +128,11 @@ func mapResource(rows *sql.Rows) (interface{}, error) {
 		&identifier.Id,
 		&identifier.RoomId,
 		&identifier.Name,
-		&identifier.Location,
+		&identifier.XCoord,
+		&identifier.YCoord,
+		&identifier.Width,
+		&identifier.Height,
+		&identifier.Rotation,
 		&identifier.RoleId,
 		&identifier.ResourceType,
 		&identifier.DateCreated,
@@ -328,11 +336,28 @@ func (RoomAssociations RoomAssociations) FindHead() *RoomAssociation {
 // StoreIdentifier stores a Resource Identifier
 func (access *ResourceDA) StoreIdentifier(identifier *Resource) error {
 	_, err := access.access.Query(
-		`SELECT 1 FROM resource.identifier_store($1, $2, $3, $4, $5, $6, $7)`, nil,
-		identifier.Id, identifier.RoomId, identifier.Name, identifier.Location, identifier.RoleId, identifier.ResourceType, identifier.Decorations)
+		`SELECT 1 FROM resource.identifier_store($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`, nil,
+		identifier.Id, identifier.RoomId, identifier.Name, identifier.XCoord, identifier.YCoord, identifier.Width, identifier.Height,
+		identifier.Rotation, identifier.RoleId, identifier.ResourceType, identifier.Decorations)
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+// BatchStoreIdentifier stores many Resource Identifiers
+func (access *ResourceDA) BatchStoreIdentifier(identifiers []*Resource) error {
+	for i := 0; i < len(identifiers); i++ {
+		identifier := identifiers[i]
+		_, err := access.access.Query(
+			`SELECT 1 FROM resource.identifier_store($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`, nil,
+			identifier.Id, identifier.RoomId, identifier.Name, identifier.XCoord, identifier.YCoord, identifier.Width, identifier.Height,
+			identifier.Rotation, identifier.RoleId, identifier.ResourceType, identifier.Decorations)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -343,8 +368,9 @@ func (access *ResourceDA) FindIdentifier(identifier *Resource, permissions *Perm
 		return nil, err
 	}
 	results, err := access.access.Query(
-		`SELECT * FROM resource.identifier_find($1, $2, $3, $4, $5, $6, $7, $8)`, mapResource,
-		identifier.Id, identifier.RoomId, identifier.Name, identifier.Location, identifier.RoleId, identifier.ResourceType, identifier.DateCreated, permissionContent)
+		`SELECT * FROM resource.identifier_find($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`, mapResource,
+		identifier.Id, identifier.RoomId, identifier.Name, identifier.XCoord, identifier.YCoord, identifier.Width, identifier.Height,
+		identifier.Rotation, identifier.RoleId, identifier.ResourceType, identifier.DateCreated, permissionContent)
 	if err != nil {
 		return nil, err
 	}

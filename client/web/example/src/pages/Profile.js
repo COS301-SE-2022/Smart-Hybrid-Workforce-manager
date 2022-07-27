@@ -8,16 +8,17 @@ import TeamUserList from '../components/Team/TeamUserList'
 
 function Profile()
 {
+  const [identifier, SetIdentifier] = useState("")
   const [firstName, SetFirstName] = useState("")
   const [lastName, SetLastName] = useState("")
   const [email, SetEmail] = useState("")
-
+  const [picture, SetPicture] = useState("")
+  const [dateCreated, SetDateCreated] = useState("")
   const [workFromHome, SetWorkFromHome] = useState("")
   const [parking, SetParking] = useState("")
   const [officeDays, SetOfficeDays] = useState("")
   const [startTime, SetStartTime] = useState("")
   const [endTime, SetEndTime] = useState("")
-
 
   const [roles, SetRoles] = useState([])
   const [teams, SetTeams] = useState([])
@@ -32,16 +33,19 @@ function Profile()
             id:window.sessionStorage.getItem("UserID")
           })
         }).then((res) => res.json()).then(data => 
-          {
-            SetFirstName(data[0].first_name);
-            SetLastName(data[0].last_name);
-            SetEmail(data[0].email);
-            SetWorkFromHome(data[0].work_from_home);
-            SetParking(data[0].parking);
-            SetOfficeDays(data[0].office_days);
-            SetStartTime(data[0].preferred_start_time);
-            SetEndTime(data[0].preferred_end_time);
-          });
+        {
+          SetIdentifier(data[0].identifier)
+          SetFirstName(data[0].first_name);
+          SetLastName(data[0].last_name);
+          SetEmail(data[0].email);
+          SetPicture(data[0].picture);
+          SetDateCreated(data[0].date_created);
+          SetWorkFromHome(data[0].work_from_home);
+          SetParking(data[0].parking);
+          SetOfficeDays(data[0].office_days);
+          SetStartTime(data[0].preferred_start_time);
+          SetEndTime(data[0].preferred_end_time);
+        });
   }
 
   //POST request
@@ -86,6 +90,12 @@ function Profile()
   const ProfileConfiguration = () =>
   {
     window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
+    window.sessionStorage.setItem("Identifier", identifier);
+    window.sessionStorage.setItem("FirstName", firstName);
+    window.sessionStorage.setItem("LastName", lastName);
+    window.sessionStorage.setItem("Email", email);
+    window.sessionStorage.setItem("Picture", picture);
+    window.sessionStorage.setItem("DateCreated", dateCreated);
     window.sessionStorage.setItem("WorkFromHome", workFromHome);
     window.sessionStorage.setItem("Parking", parking);
     window.sessionStorage.setItem("OfficeDays", officeDays);
@@ -126,7 +136,7 @@ function Profile()
               <div className='list'>
                 {teams.length > 0 && (
                   teams.map(team => (
-                    <TeamUserList id={team.team_id} />
+                    <TeamUserList teamId={team.team_id} />
                   ))
                 )}
               </div>

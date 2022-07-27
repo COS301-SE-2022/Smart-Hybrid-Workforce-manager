@@ -30,6 +30,8 @@ func ResourceHandlers(router *mux.Router) error {
 	// Resource Identifier
 	router.HandleFunc("/create", security.Validate(CreateIdentifierHandler,
 		&data.Permissions{data.CreateGenericPermission("CREATE", "RESOURCE", "IDENTIFIER")})).Methods("POST")
+	router.HandleFunc("/batch-create", security.Validate(BatchCreateIdentifierHandler,
+		&data.Permissions{data.CreateGenericPermission("CREATE", "RESOURCE", "IDENTIFIER")})).Methods("POST")
 	router.HandleFunc("/information", security.Validate(InformationIdentifiersHandler,
 		&data.Permissions{data.CreateGenericPermission("VIEW", "RESOURCE", "IDENTIFIER")})).Methods("POST")
 	router.HandleFunc("/remove", security.Validate(DeleteIdentifierHandler,
@@ -103,6 +105,46 @@ func CreateIdentifierHandler(writer http.ResponseWriter, request *http.Request, 
 		return
 	}
 	logger.Access.Printf("%v created\n", identifier.Id) // TODO [KP]: Be more descriptive
+	utils.Ok(writer, request)
+}
+
+func BatchCreateIdentifierHandler(writer http.ResponseWriter, request *http.Request, permissions *data.Permissions) {
+	// Unmarshal Resource
+	var identifiers []*data.Resource
+	err := utils.UnmarshalJSON(writer, request, &identifiers)
+	if err != nil {
+		fmt.Println(err)
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	// TODO [KP]: Do more checks like if there exists a Identifier already etc
+
+	da := data.NewResourceDA(access)
+	err = da.BatchStoreIdentifier(identifiers)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	for i := 0; i < len(identifiers); i++ {
+		identifier := identifiers[i]
+		logger.Access.Printf("Resource created. ID: %v, Name: %v\n", identifier.Id, identifier.Name)
+	}
 	utils.Ok(writer, request)
 }
 

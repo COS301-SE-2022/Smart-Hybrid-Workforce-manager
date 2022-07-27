@@ -5,10 +5,10 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
 
-const TeamPermissions = () =>
+function TeamPermissions()
 {
   const [teamName, setTeamName] = useState(window.sessionStorage.getItem("TeamName"));
-  //const [teamPermissions, SetTeamPermissions] = useState([]);
+  //const [teampermissions, SetTeamPermissions] = useState([]);
 
   const [createTeamIdentifier, SetCreateTeamIdentifier] = useState("") // allows a user to update the team
   const [createTeamIdentifierId, SetCreateTeamIdentifierId] = useState("")
@@ -142,7 +142,7 @@ const TeamPermissions = () =>
           })
         }).then((res) => res.json()).then(data => 
         {
-          //SetTeamPermissions(data);
+          //SetTeamPermissions(data); [Uncomment when used]
           data.forEach(setPermissionStates);
         });
   },[]);
@@ -195,7 +195,7 @@ const TeamPermissions = () =>
     FetchTeamPermissions();
 
     setTeamName(window.sessionStorage.getItem("TeamName"));
-  }, [setTeamName, FetchTeamPermissions])
+  }, [FetchTeamPermissions])
     
   return (
     <div className='page-container'>
@@ -254,8 +254,8 @@ const TeamPermissions = () =>
                 <span className="checkmark"></span>
               </label>
             </Form.Group>
-
-            <Button className='button-submit' variant='primary' type='submit'>Update Team Permissions</Button>
+            
+            <Button className='button-submit' variant='primary' type='submit'>Update Team Permissions</Button>      
           </Form>
           
         </div>

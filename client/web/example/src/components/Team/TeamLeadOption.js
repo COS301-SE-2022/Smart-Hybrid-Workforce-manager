@@ -1,12 +1,11 @@
-import { useState, useEffect } from 'react';
-import { MdDelete } from 'react-icons/md'
+import { useState, useEffect, useCallback } from 'react';
 
 const TeamLeadOption = ({id, teamLeadId}) =>
 {  
     const [name, setName] = useState("error");
     
   //POST request
-  const getName = () =>
+  const getName = useCallback(() =>
   {
     fetch("http://localhost:8100/api/user/information", 
         {
@@ -18,16 +17,16 @@ const TeamLeadOption = ({id, teamLeadId}) =>
         {
           setName(data[0].first_name + " " + data[0].last_name);
         });
-  }
+  },[id]);
     
   //Using useEffect hook. This will set the default values of the form once the components are mounted
   useEffect(() =>
   {
       getName();
-  }, [])
+  }, [getName])
 
     return (
-        <option value={id} selected={id == teamLeadId? "" : "selected"}>{name}</option>
+        <option value={id} selected={id === teamLeadId? "" : "selected"}>{name}</option>
     )
 }
 
