@@ -2,11 +2,14 @@ import { Stage, Layer } from 'react-konva'
 import { useRef, useState, useEffect, useCallback } from 'react'
 import Desk from '../components/Map/Desk'
 import MeetingRoom from '../components/Map/MeetingRoom'
-import { BsBuilding } from 'react-icons/bs'
 import { FaSave } from 'react-icons/fa'
 import Button from 'react-bootstrap/Button'
 import desk_white from '../img/desk_white.svg';
 import meetingroom_white from '../img/meetingroom_white.svg';
+import building_add from '../img/building_add.svg';
+import building_edit from '../img/building_edit.svg';
+import room_add from '../img/room_add.svg';
+import room_edit from '../img/room_edit.svg';
 
 const Layout = () =>
 {
@@ -510,8 +513,16 @@ const Layout = () =>
         <div className='page-container'>
             <div className='canvas-content'>
                 <div className='resource-pane'>
-                    <select className='combo-box-building' name='building' onChange={UpdateRooms.bind(this)}>
+
+                    <select className='list-box-building' name='building' size="10" onChange={UpdateRooms.bind(this)}>
                         <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
+                        <option value='A' >A</option>
+                        <option value='B' >B</option>
+                        <option value='C' >C</option>
+                        <option value='D' >D</option>
+                        <option value='E' >E</option>
+                        <option value='F' >F</option>
+                        <option value='G' >G</option>
                         {buildings.length > 0 && (
                             buildings.map(building => (
                                 <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
@@ -519,11 +530,18 @@ const Layout = () =>
                         )}
                     </select>
 
-                    <Button className='button-layout' variant='primary' onClick={AddBuilding}>Add Building</Button>
-                    <Button className='button-layout' variant='primary' onClick={EditBuilding}>Edit Building</Button>
+                    <img src={building_add} alt='Add Building' className='add-building-img' onClick={AddBuilding}></img>
+                    <img src={building_edit} alt='Edit Building' className='edit-building-img' onClick={EditBuilding}></img>
 
-                    <select className='combo-box-room' name='room' onChange={UpdateResources.bind(this)}>
+                    <select className='list-box-room' name='room' size='10' onChange={UpdateResources.bind(this)}>
                         <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
+                        <option value='A' >A</option>
+                        <option value='B' >B</option>
+                        <option value='C' >C</option>
+                        <option value='D' >D</option>
+                        <option value='E' >E</option>
+                        <option value='F' >F</option>
+                        <option value='G' >G</option>
                         {rooms.length > 0 && (
                             rooms.map(room => (
                                 <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>
@@ -531,8 +549,8 @@ const Layout = () =>
                         )}
                     </select>
 
-                    <Button className='button-layout' variant='primary' onClick={AddRoom}>Add Room</Button>
-                    <Button className='button-layout' variant='primary' onClick={EditRoom}>Edit Room</Button>
+                    <img src={room_add} alt='Add Room' className='add-room-img' onClick={AddRoom}></img>
+                    <img src={room_edit} alt='Edit Room' className='edit-room-img' onClick={EditRoom}></img>
                 </div>
 
                 <div className='properties-pane'>

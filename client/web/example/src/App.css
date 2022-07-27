@@ -941,23 +941,25 @@
 .resource-pane
 {
     position: absolute;
-    background-color: #1b1b1b;
+    background-color: #444444;
     width: 13vw;
     height: 80vh;
     margin-left: 1vw;
     margin-top: 15vh;
     border-radius: 2vh;
+    box-shadow: -1vh 1vh;
 }
 
 .properties-pane
 {
     position: absolute;
-    background-color: #1b1b1b;
+    background-color: #444444;
     width: 13vw;
     height: 80vh;
     margin-left: 86vw;
     margin-top: 15vh;
     border-radius: 2vh;
+    box-shadow: 1vh 1vh;
 }
 
 .actions-pane
@@ -1004,7 +1006,7 @@
     cursor: pointer;
 }
 
-.combo-box-building
+.list-box-building
 {
     position: absolute;
 
@@ -1014,9 +1016,12 @@
     padding-left: 1vw;
     padding-right: 1vw;
 
-    margin-left: 2vw;
+    top: 8vh;
+    left: 0;
+    margin-left: 1vw;
 
-    width: 15vw;
+    width: 11vw;
+    height: 20vh;
 
     border-radius: 1vh;
     border-style: none;
@@ -1025,7 +1030,7 @@
     text-align: center;
 }
 
-.combo-box-room
+.list-box-room
 {
     position: absolute;
 
@@ -1035,9 +1040,12 @@
     padding-left: 1vw;
     padding-right: 1vw;
 
-    margin-left: 2vw;
+    top: 40vh;
+    left: 0;
+    margin-left: 1vw;
 
-    width: 15vw;
+    width: 11vw;
+    height: 20vh;
 
     border-radius: 1vh;
     border-style: none;
