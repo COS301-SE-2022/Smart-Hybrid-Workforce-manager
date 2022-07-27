@@ -19,7 +19,7 @@ class SmartScheduler:
         self.resourceList = scheduler_data["resources"]
         self.roomList = scheduler_data["rooms"]
         self.userList = scheduler_data["users"]
-        self.bookingsList = scheduler_data["users"]
+        self.bookingsList = []
         # self.teamList = teams.fetch_team_users()
         # self.resourceList = resource.fetch_resources()
         # self.roomList = self.loadResources()
@@ -34,26 +34,30 @@ class SmartScheduler:
                 _rooms.add_resource(resource)
         return _rooms
 
+    # returns a list of team IDs sorted in descending order of team priority
+    def getSortedTeamsPriority(self):
+        return sorted(self.teamList, key=lambda t: t['priority'], reverse=True)
+
     # returns a list of team IDs sorted in descending order of the number of members in the team
-    def getSortedTeams(self):
-        # return sorted(self.teamList.teams, key=lambda t: self.teamList.team_size(t), reverse=True)
-        return sorted(self.teamList.teams, key=lambda t: self.teamList.team_size(t), reverse=True)
+    def getSortedTeamsSize(self):
+        return sorted(self.teamList, key=lambda t: len(t['user_ids']), reverse=True)
 
     def schedule(self):
-        sortedTeams = self.getSortedTeams() # gets team IDs sorted in descending order of the number of members in the team
+        sortedTeams = self.getSortedTeamsSize() # gets team IDs sorted in descending order of the number of members in the team
         for team in sortedTeams:
-            while self.teamList.teams[team]:
-                teamSize = self.teamList.team_size(team)
-                rooms = rooms = self.roomList.rooms_size(teamSize, 'ge') # gets rooms that can fir the entire team
+            while team['user_ids']:
+                # teamSize = len([t for t in self.teamList if t['id'] == team['id']]['user_ids'])
+                teamSize = team['user_ids']
+                rooms = room.room_size(self.roomList, teamSize, 'ge') # gets rooms that can fit the entire team
 
                 while not rooms: # if no room is big enough, find the largest room
                     teamSize -= 1
-                    rooms = self.roomList.rooms_size(teamSize, 'eq')
+                    rooms = room.room_size(self.roomList, teamSize, 'eq')
 
                 for i in range(teamSize):
-                    userID = self.teamList.teams[team].pop()
-                    startTime = list(filter(lambda u: u.user['id'] == userID, self.userList))[0].user['preferred_start_time'].strftime('T%H:%M:%SZ')
-                    endTime = list(filter(lambda u: u.user['id'] == userID, self.userList))[0].user['preferred_end_time'].strftime('T%H:%M:%SZ')
+                    userID = team['user_ids'].pop()
+                    startTime = list(filter(lambda u: u['id'] == userID, self.userList))[0].user['preferred_start_time'].strftime('T%H:%M:%SZ')
+                    endTime = list(filter(lambda u: u['id'] == userID, self.userList))[0].user['preferred_end_time'].strftime('T%H:%M:%SZ')
                     bookDate = date.today() + timedelta(days=7)
 
                     # create desk booking
