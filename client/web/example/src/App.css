@@ -952,6 +952,40 @@
     border-radius: 2vh;
 }
 
+.resource-pane
+{
+    position: absolute;
+    background-color: #1b1b1b;
+    width: 13vw;
+    height: 80vh;
+    margin-left: 1vw;
+    margin-top: 18vh;
+    border-radius: 2vh;
+}
+
+.add-desk
+{
+    background-color: #09A4FB;
+    width: 10vw;
+    height: 10vw;
+    margin-left: 1.5vw;
+    margin-top: 10vh;
+    border-radius: 2vh;
+}
+
+.add-desk-img
+{
+    width: 5vw;
+    margin-left: 2.5vw;
+    margin-top: 5vh;
+}
+
+.add-desk:hover
+{
+    background-color: #03639b;
+    cursor: pointer;
+}
+
 /* Customize the label (the container) */
 .container {
     color: white;
