@@ -345,6 +345,22 @@ func (access *ResourceDA) StoreIdentifier(identifier *Resource) error {
 	return nil
 }
 
+// BatchStoreIdentifier stores many Resource Identifiers
+func (access *ResourceDA) BatchStoreIdentifier(identifiers []*Resource) error {
+	for i := 0; i < len(identifiers); i++ {
+		identifier := identifiers[i]
+		_, err := access.access.Query(
+			`SELECT 1 FROM resource.identifier_store($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`, nil,
+			identifier.Id, identifier.RoomId, identifier.Name, identifier.XCoord, identifier.YCoord, identifier.Width, identifier.Height,
+			identifier.Rotation, identifier.RoleId, identifier.ResourceType, identifier.Decorations)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 //FindIdentifier finds all Resource Identifiers
 func (access *ResourceDA) FindIdentifier(identifier *Resource, permissions *Permissions) (Resources, error) {
 	permissionContent, err := json.Marshal(*permissions)
