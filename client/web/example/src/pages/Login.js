@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-// import { ReactSession } from 'react-client-session'
+import PropTypes from 'prop-types';
 
-function Login()
+export default function Login({setUserData})
 {
   const [identifier, setIdentifier] = useState("");
   const [secret, setSecret] = useState("");
@@ -22,8 +22,6 @@ function Login()
       "LastAccessed":null,
       "Identifier":null
     });
-    console.log(bod);
-    console.log("HERE")
     fetch("http://localhost:8100/api/user/login", 
     {
       method: "POST",
@@ -95,4 +93,6 @@ function Login()
   )
 }
 
-export default Login
+Login.propTypes = {
+  setUserData: PropTypes.func.isRequired
+}

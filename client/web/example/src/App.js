@@ -45,8 +45,20 @@ import Layout from './pages/CreateLayout'
 function App()
 {
   // const [isAuthenticated, userHasAuthenticated] = useState(true);
+  const [userData, setUserData] = useState({});
+  // if(sessionStorage.getItem("userData")){
+  //   console.log("Set userdata");
+  //   console.log(sessionStorage.getItem("userData").isLoggedIn);
+  //   setUserData(sessionStorage.getItem("userData"));
+  // }
+  if(!userData || !userData.isLoggedIn)
+    return <Login setUserData={setUserData}/>
 
   return(
+    // <Home />
+    // <BrowserRouter>
+    //   <Route path="/test1" exact element={<Login/>} />
+    // </BrowserRouter>
     <Router>
       <Routes>
         <Route path="/" exact element={<Home/>} />
