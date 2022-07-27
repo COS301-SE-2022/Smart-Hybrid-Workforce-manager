@@ -1006,6 +1006,36 @@
     cursor: pointer;
 }
 
+.add-building-img
+{
+    position: absolute;
+
+    top: 3vh;
+    margin-left: 8vw;
+
+    height: 4vh;
+}
+
+.add-building-img:hover
+{
+    cursor: pointer;
+}
+
+.edit-building-img
+{
+    position: absolute;
+
+    top: 3vh;
+    margin-left: 10.8vw;
+
+    height: 4vh;
+}
+
+.edit-building-img:hover
+{
+    cursor: pointer;
+}
+
 .list-box-building
 {
     position: absolute;
@@ -1028,6 +1058,36 @@
     color: white;
     background-color: #1b1b1b;
     text-align: center;
+}
+
+.add-room-img
+{
+    position: absolute;
+
+    top: 34.5vh;
+    margin-left: 8vw;
+
+    height: 5vh;
+}
+
+.add-room-img:hover
+{
+    cursor: pointer;
+}
+
+.edit-room-img
+{
+    position: absolute;
+
+    top: 34.5vh;
+    margin-left: 10.8vw;
+
+    height: 5vh;
+}
+
+.edit-room-img:hover
+{
+    cursor: pointer;
 }
 
 .list-box-room
@@ -1054,32 +1114,6 @@
     text-align: center;
 }
 
-.button-layout
-{
-    margin-left: 1vw;
-
-    padding-top: 1vh;
-    padding-bottom: 1vh;
-    padding-left: 1vw;
-    padding-right: 1vw;
-
-    width: 7vw;
-
-    background-color: #09A4FB;
-    color: white;
-
-    border-style: none;
-    border-radius: 1.3vh;
-
-    font-size: 1.5vh;
-}
-
-.button-layout:hover
-{
-    background-color: #03639b;
-    cursor: pointer;
-
-}
 
 /* Customize the label (the container) */
 .container {

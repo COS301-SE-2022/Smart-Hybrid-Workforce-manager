@@ -3,13 +3,9 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import Desk from '../components/Map/Desk'
 import MeetingRoom from '../components/Map/MeetingRoom'
 import { FaSave } from 'react-icons/fa'
-import Button from 'react-bootstrap/Button'
+import { MdEdit, MdAdd } from 'react-icons/md'
 import desk_white from '../img/desk_white.svg';
 import meetingroom_white from '../img/meetingroom_white.svg';
-import building_add from '../img/building_add.svg';
-import building_edit from '../img/building_edit.svg';
-import room_add from '../img/room_add.svg';
-import room_edit from '../img/room_edit.svg';
 
 const Layout = () =>
 {
@@ -530,8 +526,8 @@ const Layout = () =>
                         )}
                     </select>
 
-                    <img src={building_add} alt='Add Building' className='add-building-img' onClick={AddBuilding}></img>
-                    <img src={building_edit} alt='Edit Building' className='edit-building-img' onClick={EditBuilding}></img>
+                    <MdAdd className='add-building-img' size={35} color='white' onClick={AddBuilding} />
+                    <MdEdit className='edit-building-img' size={25} color='white' onClick={EditBuilding} />
 
                     <select className='list-box-room' name='room' size='10' onChange={UpdateResources.bind(this)}>
                         <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
@@ -549,8 +545,8 @@ const Layout = () =>
                         )}
                     </select>
 
-                    <img src={room_add} alt='Add Room' className='add-room-img' onClick={AddRoom}></img>
-                    <img src={room_edit} alt='Edit Room' className='edit-room-img' onClick={EditRoom}></img>
+                    <MdAdd className='add-room-img' size={35} color='white' onClick={AddRoom} />
+                    <MdEdit className='edit-room-img' size={25} color='white' onClick={EditRoom} />
                 </div>
 
                 <div className='properties-pane'>
