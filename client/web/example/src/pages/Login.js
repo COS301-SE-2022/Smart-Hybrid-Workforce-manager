@@ -12,16 +12,7 @@ export default function Login({setUserData})
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
-    console.log(identifier);
-    console.log(secret);
-    let bod = JSON.stringify({
-      "id":identifier,
-      "secret":secret,
-      "active":null,
-      "FailedAttempts":null,
-      "LastAccessed":null,
-      "Identifier":null
-    });
+
     fetch("http://localhost:8100/api/user/login", 
     {
       method: "POST",
@@ -43,23 +34,12 @@ export default function Login({setUserData})
         alert("Failed login");
     }).then((data) => {
       var json_object = JSON.parse(JSON.stringify(data))
-      console.log(data["token"])
       data["isLoggedIn"] = true;
       setUserData(data);
       sessionStorage.setItem("auth_data", json_object);
-      // window.location.assign("./bookings");
     }).catch((err) => {
       console.error(err);
     })
-    
-    // if(res.status === 200)
-    // {
-    //   console.log(res.json());
-    //   // sessionStorage.setItem("auth_data", res);
-    //   alert("Successfully Logged In!");
-
-    //   // window.location.assign("./bookings");
-    // }
   };  
 
   return (
