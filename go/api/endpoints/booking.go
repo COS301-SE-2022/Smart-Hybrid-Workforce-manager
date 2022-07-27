@@ -230,8 +230,27 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 		bookingId, err = da.StoreIdentifier(meetingRoomBooking.Booking)
 		if err != nil {
 			utils.InternalServerError(writer, request, err)
+			return
 		}
 	} else {
-
+		if meetingRoomBooking.BookingId == nil {
+			utils.BadRequest(writer, request, "no booking_id passed")
+			return
+		}
+		bookingId = meetingRoomBooking.BookingId
 	}
+
+	meetingRoomBooking.BookingId = bookingId
+	err = da.StoreBookingMeetingRoom(&meetingRoomBooking)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	logger.Access.Printf("%v meeting room booking created\n", bookingId)
 }
