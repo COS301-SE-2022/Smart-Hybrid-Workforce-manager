@@ -105,7 +105,35 @@ const Layout = () =>
         }
         else
         {
-            window.alert("Please select a building to edit")
+            window.alert("Please select a building to edit");
+        }
+    }
+
+    const AddRoom = () =>
+    {
+        if(currBuilding !== "")
+        {
+            window.sessionStorage.setItem("BuildingID", currBuilding);
+            window.location.assign("./room");
+        }
+        else
+        {
+            alert("Please select a building");
+        }
+    }
+
+    let EditRoom = async (e) =>
+    {
+        if(currRoom !== "")
+        {
+            e.preventDefault();
+            window.sessionStorage.setItem("RoomID", currRoom);
+            window.sessionStorage.setItem("BuildingID", currBuilding);
+            window.location.assign("./room-edit");
+        }
+        else
+        {
+            window.alert("Please select a room to edit");
         }
     }
 
@@ -505,6 +533,9 @@ const Layout = () =>
                                 ))
                             )}
                         </select>
+
+                        <Button className='button-resource' variant='primary' onClick={AddRoom}>Add Room</Button>
+                        <Button className='button-resource' variant='primary' onClick={EditRoom}>Edit Room</Button>
                     </div>
                 </div>                                          
 
