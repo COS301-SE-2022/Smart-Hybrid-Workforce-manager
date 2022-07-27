@@ -47,23 +47,34 @@ class SmartScheduler:
         for team in sortedTeams:
             while team['user_ids']:
                 # teamSize = len([t for t in self.teamList if t['id'] == team['id']]['user_ids'])
-                teamSize = team['user_ids']
-                rooms = room.room_size(self.roomList, teamSize, 'ge') # gets rooms that can fit the entire team
+                teamSize = len(team['user_ids'])
+                room_id = room.room_size(self.roomList, teamSize, 'ge') # gets rooms that can fit the entire team
 
-                while not rooms: # if no room is big enough, find the largest room
+                while not room_id: # if no room is big enough, find the largest room
                     teamSize -= 1
-                    rooms = room.room_size(self.roomList, teamSize, 'eq')
+                    room_id = room.room_size(self.roomList, teamSize, 'eq')
+
+                room_id = room_id[0]
+                assigned_room_resources = []
+                for r in self.roomList:
+                    if r['id'] == room_id:
+                        assigned_room_resources = r['resource_ids']
 
                 for i in range(teamSize):
                     userID = team['user_ids'].pop()
-                    startTime = list(filter(lambda u: u['id'] == userID, self.userList))[0].user['preferred_start_time'].strftime('T%H:%M:%SZ')
-                    endTime = list(filter(lambda u: u['id'] == userID, self.userList))[0].user['preferred_end_time'].strftime('T%H:%M:%SZ')
+                    current_user = list(filter(lambda u: u['id'] == userID, self.userList))[0]
+                    # assigned_desk_id = assigned_room_resources[0] if current_user.get('preferred_desk') is None else current_user.get('preferred_desk')
+                    assigned_desk_id = assigned_room_resources.pop()
+                    # startTime = current_user.get('preferred_start_time').strftime('T%H:%M:%SZ')
+                    # endTime = current_user.get('preferred_end_time').strftime('T%H:%M:%SZ')
+                    startTime = current_user.get('preferred_start_time')
+                    endTime = current_user.get('preferred_end_time')
                     bookDate = date.today() + timedelta(days=7)
 
                     # create desk booking
                     self.bookingsList.append({"user_id": userID,
                     "resource_type": "DESK",
-                    "resource_preference_id": self.roomList.rooms[rooms[0]].pop(),
+                    "resource_preference_id": assigned_desk_id,
                     "start": (bookDate.strftime('%Y-%m-%d') + startTime),
                     "end": (bookDate.strftime('%Y-%m-%d') + endTime),
                     "booked": False})
@@ -92,9 +103,9 @@ class SmartScheduler:
         return ret_str
 
     def get_bookings(self):
-        ret_arr = []
-        ret_arr.append(self.bookingsList)
-        return ret_arr
+        ret_dict = {}
+        ret_dict['bookings'] = self.bookingsList
+        return ret_dict
 
     def get_fitness(self):
         return fitness.get_fitness(self.bookingsList)
