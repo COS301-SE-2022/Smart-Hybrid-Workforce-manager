@@ -57,12 +57,12 @@ function App()
         <Routes>
           <Route element={<ProtectedRoute/>}>
             <Route path="/" exact element={<Home/>} />
-            <Route path="/bookings" exact element={<Bookings/>} />
-            <Route path="/admin" exact element={<Admin />} />
+
           </Route>       
           <Route path="/bookings-desk" exact element={<BookingsDesk/>} />
             <Route path="/bookings-meeting" exact element={<BookingsMeeting />} />
-            
+                        <Route path="/bookings" exact element={<Bookings/>} />
+            <Route path="/admin" exact element={<Admin />} />
             <Route path="/layout" exact element={<Layout />} />
 
             <Route path="/users" exact element={<Users />} />
