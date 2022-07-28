@@ -5,7 +5,9 @@ import (
 	"context"
 	"encoding/json"
 	"lib/clock"
+	"lib/logger"
 	"lib/restclient"
+	"lib/testutils"
 	"net/http"
 	"os"
 	"time"
@@ -61,8 +63,8 @@ func mayCall(scheduledDay string, lastEntry *LogEntry, now time.Time) bool {
 	return false
 }
 
-// timeOfNextWeekDay returns the date/time of the next 'weekday'
-func timeOfNextWeekDay(now time.Time, weekday string) time.Time {
+// TimeOfNextWeekDay returns the date/time of the next 'weekday'
+func TimeOfNextWeekDay(now time.Time, weekday string) time.Time {
 	day := int(DaysOfWeek[weekday])
 	currentDay := int(now.Weekday())
 	daysUntil := int((day - currentDay + 7) % 7) // +7 Is to ensure that the firs part of the expr is always >= 0
@@ -83,8 +85,8 @@ func checkAndCall(now time.Time, scheduledDay string) error {
 	}
 	if mayCall(scheduledDay, lastEntry, now) {
 		// TODO: @JonathanEnslin move this into a seperate function that uses exponential backoff
-		nextMonday := timeOfNextWeekDay(now, "Monday")            // Start of next week
-		nextSaturday := timeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
+		nextMonday := TimeOfNextWeekDay(now, "Monday")            // Start of next week
+		nextSaturday := TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
 		schedulerData, err := GetSchedulerData(nextMonday, nextSaturday)
 		if err != nil {
 			log_write_err := NewLogEntry(FAILED, &now).WriteLog()
@@ -93,7 +95,7 @@ func checkAndCall(now time.Time, scheduledDay string) error {
 			}
 			return err
 		}
-		err = call(schedulerData) // TODO: @JonathanEnslin handle the return data
+		err = Call(schedulerData) // TODO: @JonathanEnslin handle the return data
 		if err != nil {
 			return err
 		}
@@ -101,8 +103,8 @@ func checkAndCall(now time.Time, scheduledDay string) error {
 	return nil
 }
 
-// call Calls the scheduler endpoint and passes it the data
-func call(data *SchedulerData) error { // TODO: @JonathanEnslin improve this function
+// Call Calls the scheduler endpoint and passes it the data
+func Call(data *SchedulerData) error { // TODO: @JonathanEnslin improve this function
 	body, _ := json.Marshal(data)
 	bodyBytesBuff := bytes.NewBuffer(body)
 
@@ -113,6 +115,7 @@ func call(data *SchedulerData) error { // TODO: @JonathanEnslin improve this fun
 		return err
 	}
 	response, err := HTTPClient.Do(request) // TODO: @JonathanEnslin URL env param
+	logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE1"))
 	now := Clock.Now()
 	if err != nil {
 		errType := FAILED
@@ -125,9 +128,11 @@ func call(data *SchedulerData) error { // TODO: @JonathanEnslin improve this fun
 		}
 		return err
 	}
+	logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE2"))
 	defer response.Body.Close()
 	candidateBookings := &CandidateBookings{}
 	err = json.NewDecoder(response.Body).Decode(candidateBookings)
+	logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE3"))
 	if err != nil {
 		logErr := NewLogEntry(FAILED, &now).WriteLog()
 		if logErr != nil {
@@ -136,6 +141,7 @@ func call(data *SchedulerData) error { // TODO: @JonathanEnslin improve this fun
 		return err
 	}
 	err = makeBookings(*candidateBookings)
+	logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE4"))
 	if err != nil {
 		logErr := NewLogEntry(FAILED, &now).WriteLog()
 		if logErr != nil {
@@ -158,7 +164,7 @@ func callOnDay(ctx context.Context, scheduledDay string) {
 	// periodic calls
 	stopLoop := false
 	for !stopLoop {
-		nextDay := timeOfNextWeekDay(time.Now(), scheduledDay) // TODO: @JonathanEnslin, allow scheduled day to be changed
+		nextDay := TimeOfNextWeekDay(time.Now(), scheduledDay) // TODO: @JonathanEnslin, allow scheduled day to be changed
 		timer := time.NewTimer(time.Until(nextDay))
 		defer timer.Stop()
 		select {

@@ -26,7 +26,7 @@ function BookingsMeeting()
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/booking/create", 
+      let res = await fetch("http://localhost:8100/api/booking/meetingroom/create", 
       {
         method: "POST",
         body: JSON.stringify(

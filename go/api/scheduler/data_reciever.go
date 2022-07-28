@@ -2,6 +2,8 @@ package scheduler
 
 import (
 	"api/data"
+	"lib/logger"
+	"lib/testutils"
 
 	"api/db"
 )
@@ -26,7 +28,9 @@ func makeBookings(candidates CandidateBookings) error {
 	}
 
 	da := data.NewBatchBookingDA(access)
+	logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE4"))
 	err = da.StoreIdentifiers(&bookings)
+	logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE5"))
 	if err != nil {
 		return err
 	}
