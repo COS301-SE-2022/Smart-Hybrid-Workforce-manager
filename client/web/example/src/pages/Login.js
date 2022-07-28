@@ -3,17 +3,28 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import PropTypes from 'prop-types';
 import { UserContext } from '../App';
-import { useLocation, useNavigate } from 'react-router-dom';
-
+import { useLocation, useNavigate, Navigate } from 'react-router-dom';
 
 export default function Login()
 {
   const [identifier, setIdentifier] = useState("");
   const [secret, setSecret] = useState("");
-  const auth = sessionStorage.getItem("auth_data");
-  const {userData,setUserData} = useContext(UserContext);
+  const {setUserData} = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // if(auth != null && userData == null){
+  //   setUserData(auth);
+  //   alert("Previous session restored")
+  //   if (location.state?.from) {
+  //     navigate(location.state.from);
+  //   }else{
+  //     return <Navigate to="/"/>
+  //   }
+  // }
+  // console.log(auth);
+  // console.log(userData);
+
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
@@ -38,12 +49,9 @@ export default function Login()
       else
         alert("Failed login");
     }).then((data) => {
-      var json_object = JSON.parse(JSON.stringify(data))
       data["isLoggedIn"] = true;
-      console.log(data);
       setUserData(data);
-      sessionStorage.setItem("auth_data", json_object);
-      console.log(userData);
+      sessionStorage.setItem("auth_data", data);
       if (location.state?.from) {
         navigate(location.state.from);
       }else{

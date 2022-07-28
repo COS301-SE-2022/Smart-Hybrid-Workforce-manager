@@ -1,13 +1,13 @@
 import React, { useContext } from 'react'
 import { UserContext } from '../../App'
-import Form from 'react-bootstrap/Form'
+import "../../App.css"
 import Button from 'react-bootstrap/Button'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const LogoutButton = () =>{
     const {userData,setUserData} = useContext(UserContext);
     const navigate = useNavigate();
-    const location = useLocation();
+    // const location = useLocation();
 
     let handleSubmit = async(e) =>{
         e.preventDefault();
@@ -17,9 +17,7 @@ const LogoutButton = () =>{
     }
 
     return (
-        <Form className='form' onSubmit={handleSubmit}>
-            <Button className='button-submit' variant='primary' type='submit'></Button>
-        </Form>
+        <Button className='button-user-profile' variant='primary' onClick={handleSubmit}>Log Out</Button>
     )
 }
 

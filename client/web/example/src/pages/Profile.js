@@ -7,6 +7,7 @@ import RoleUserList from '../components/Role/RoleUserList'
 import TeamUserList from '../components/Team/TeamUserList'
 import { useContext } from 'react'
 import { UserContext } from '../App'
+import LogoutButton from '../components/Logout/LogoutButton'
 
 function Profile()
 {
@@ -25,7 +26,7 @@ function Profile()
   const [roles, SetRoles] = useState([])
   const [teams, SetTeams] = useState([])
 
-  const {userData,setUserData}=useContext(UserContext);
+  const {userData} = useContext(UserContext);
   
   //POST request
   const FetchUser = () =>
@@ -34,8 +35,11 @@ function Profile()
         {
           method: "POST",
           body: JSON.stringify({
-            id:window.sessionStorage.getItem("UserID")
-          })
+            id:userData.user_id
+          }),
+          headers:{
+            'Authorization': `bearer ${userData.token}`
+          }
         }).then((res) => res.json()).then(data => 
         {
           SetIdentifier(data[0].identifier)
@@ -50,17 +54,6 @@ function Profile()
           SetStartTime(data[0].preferred_start_time);
           SetEndTime(data[0].preferred_end_time);
         });
-    // SetIdentifier(sessionStorage.getItem("auth-data").email);
-    // SetFirstName(sessionStorage.getItem("auth-data").first_name);
-    // SetLastName(sessionStorage.getItem("auth-data").last_name);
-    // SetEmail(sessionStorage.getItem("auth-data").email);
-    // SetPicture(sessionStorage.getItem("auth-data").picture);
-    // SetDateCreated("");
-    // SetWorkFromHome("");
-    // SetParking("");
-    // SetOfficeDays("");
-    // SetStartTime("");
-    // SetEndTime("");
   }
 
   //POST request
@@ -70,10 +63,10 @@ function Profile()
         {
           method: "POST",
           body: JSON.stringify({
-            user_id:userData["user_id"]
+            user_id:userData.user_id
           }),
           headers:{
-            'Authorization': `bearer ${userData["token"]}`
+            'Authorization': `bearer ${userData.token}`
           }
         }).then((res) => res.json()).then(data => 
           {
@@ -84,17 +77,21 @@ function Profile()
   //POST request
   const FetchUserTeams = () =>
   {
+    console.log(userData.token);
+    console.log(`bearer ${userData.token}`);
     fetch("http://localhost:8100/api/team/user/information", 
         {
           method: "POST",
+          mode: "cors",
           body: JSON.stringify({
-            user_id:userData["user_id"]
+            user_id:userData.user_id
           }),
-          headers:{
-            'Authorization': `bearer ${userData["token"]}`
-          }
-        }).then((res) => res.json()).then(data => 
+          headers: new Headers({
+            'Authorization': `bearer ${userData.token}`
+          })
+        }).then((res) => {return res.json()}).then(data => 
           {
+            console.log(data);
             SetTeams(data);
           });
   }
@@ -125,10 +122,10 @@ function Profile()
     window.location.assign("./profile-configuration");
   }
 
-  const LogOut = () =>
-  {
-    setUserData(null);
-  }
+  // const LogOut = () =>
+  // {
+  //   setUserData(null);
+  // }
 
   return (
     <div className='page-container'>
@@ -163,7 +160,7 @@ function Profile()
               </div>
             </div>
             <Button className='button-user-profile' variant='primary' onClick={ProfileConfiguration}>Profile Configuration</Button>
-            <Button className='button-user-profile' variant='primary' onClick={LogOut}>Log Out</Button>
+            <LogoutButton/>
           </div>
         </div>
       </div>

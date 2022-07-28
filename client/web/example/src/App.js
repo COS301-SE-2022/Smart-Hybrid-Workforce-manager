@@ -43,22 +43,13 @@ import React from 'react'
 import { useState } from 'react'
 import ProtectedRoute from './store/ProtectedRoute'
 
+
 export const UserContext = React.createContext();
 
 
 function App()
 {
   const [userData, setUserData] = useState(null);
-  // if(sessionStorage.getItem("userData")){
-  //   console.log("Set userdata");
-  //   console.log(sessionStorage.getItem("userData").isLoggedIn);
-  //   setUserData(sessionStorage.getItem("userData"));
-  // }
-
-  // if(!userData || !userData.isLoggedIn)
-  //   return <Login setUserData={setUserData}/>
-  
-  
 
   return(
     <Router>
