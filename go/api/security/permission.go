@@ -17,12 +17,20 @@ func GetUserPermissions(userId *string, access *db.Access) (data.Permissions, er
 		return nil, err
 	}
 
+	// for _, permission := range permissions {
+	// 	logger.Access.Printf("%v %v %v %v\n", *permission.PermissionIdType, *permission.PermissionType, *permission.PermissionCategory, *permission.PermissionTenant)
+	// }
+
 	// Get user roles
 	dr := data.NewRoleDA(access)
-	roles, err := dr.FindUserRole(&data.UserRole{UserId: userId}, &data.Permissions{data.CreateGenericPermission("VIEW", "USER", "ROLE")})
+	roles, err := dr.FindUserRole(&data.UserRole{UserId: userId}, &data.Permissions{data.CreateGenericPermission("VIEW", "ROLE", "USER"), data.CreateGenericPermission("VIEW", "USER", "ROLE")})
 	if err != nil {
 		return nil, err
 	}
+
+	// for _, role := range roles {
+	// 	logger.Access.Printf("ROLE: %v\n", *role.RoleId)
+	// }
 
 	// Get role permissions
 	temp = "ROLE"
@@ -38,7 +46,7 @@ func GetUserPermissions(userId *string, access *db.Access) (data.Permissions, er
 
 	// Get user teams
 	dt := data.NewTeamDA(access)
-	teams, err := dt.FindUserTeam(&data.UserTeam{UserId: userId}, &data.Permissions{data.CreateGenericPermission("VIEW", "USER", "TEAM")})
+	teams, err := dt.FindUserTeam(&data.UserTeam{UserId: userId}, &data.Permissions{data.CreateGenericPermission("VIEW", "TEAM", "USER"), data.CreateGenericPermission("VIEW", "USER", "TEAM")})
 	if err != nil {
 		return nil, err
 	}
