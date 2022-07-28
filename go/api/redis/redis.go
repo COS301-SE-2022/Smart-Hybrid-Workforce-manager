@@ -15,7 +15,7 @@ import (
 	"math"
 	"net/http"
 	"time"
-
+	"errors"
 	"api/data"
 	"github.com/go-redis/redis/v8"
 	_ "github.com/gorilla/mux"
@@ -132,9 +132,10 @@ func ValidateUserToken(token string) bool{
 
 func AddAuthUser(user data.User) AuthUserData{
 	//if user exists/has id
-	Identifier := user.Identifier
-	if(Identifier == nil){
+	Id := user.Id
+	if(Id == nil){
 		//logger.Error.Fatal(Identifier)
+
 	}
 
 	//get redis connection
@@ -142,11 +143,11 @@ func AddAuthUser(user data.User) AuthUserData{
 
 	utoken := ""
 	//check if user already has token
-	val, err := redisClient.Get(ctx, *Identifier).Result()
+	val, err := redisClient.Get(ctx, *Id).Result()
 	if(err != nil){
 		//logger.Error.Println(err)
 		utoken = GenerateUserToken()
-		id_err := redisClient.Set(ctx, *Identifier, utoken, 0).Err()
+		id_err := redisClient.Set(ctx, *Id, utoken, 0).Err()
 		if(id_err != nil){
 			fmt.Println(id_err)
 		}
@@ -162,7 +163,7 @@ func AddAuthUser(user data.User) AuthUserData{
 	}
 	fmt.Printf("val: %s", val)	
 
-	udata := RedisData{*Identifier,time.Now(), time.Now().Add(time.Hour)}
+	udata := RedisData{*Id,time.Now(), time.Now().Add(time.Hour)}
 	rdata,err := json.Marshal(udata)
 	aUserData := AuthUserData{}
 	if err != nil{
@@ -194,12 +195,12 @@ func AddAuthUser(user data.User) AuthUserData{
 	return aUserData
 }
 
-func GetAuthData(token string) *RedisData{
+func GetAuthData(token string) (*RedisData,error){
 	redisClient := GetAuthClient()
 	val, err := redisClient.Get(ctx, token).Result();
 	if(err != nil){
 		//logger.Error.Println(err)
-		return nil
+		return nil,errors.New("user does not exist")
 	}
 	var rd *RedisData
 	fmt.Println(string(val))
@@ -208,9 +209,9 @@ func GetAuthData(token string) *RedisData{
 	fmt.Println(gerr)
 	if(gerr != nil){
 		//logger.Error.Println(err)
-		return nil
+		return nil,errors.New("user does not exist")
 	}
-	return rd
+	return rd,nil
 }
 
 func GenerateUserToken() string{
@@ -224,14 +225,17 @@ func GenerateUserToken() string{
     return str[:128]
 }
 
-func GetUserInfo(request *http.Request) *RedisData{
+func GetUserInfo(request *http.Request) (*RedisData,error) {
 	token := string(request.Header.Get("Authorization"))
 	//check "bearer "
+	if(len(token) < 130){
+		return nil,errors.New("bad auth token");
+	}
 	if(token[0:7] != "bearer "){
-		return nil
+		return nil,errors.New("bad auth token");
 	}
 	token = token[7:]
-	return GetAuthData(token)
+	return GetAuthData(token);
 }
 
 // func GetUserInfo1(token string) *RedisData{
