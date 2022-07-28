@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "37e9260a-973b-44c9-b101-24f7ec53d914",
+		"_postman_id": "a72041b1-fd8b-4977-8868-c51a51a2ca72",
 		"name": "Smart Hybrid Workforce Manager",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15560435"
 	},
 	"item": [
 		{
@@ -502,6 +503,78 @@
 										"api",
 										"booking",
 										"information"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "MeetingRoom",
+					"item": [
+						{
+							"name": "Information",
+							"item": [
+								{
+									"name": "All",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8100/api/booking/meetingroom/information",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8100",
+											"path": [
+												"api",
+												"booking",
+												"meetingroom",
+												"information"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Create Meetingroom Booking",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"booking\": {\r\n        \"user_id\": \"11111111-3333-4a06-9983-8b374586e459\",\r\n        \"resource_type\": \"MEETINGROOM\",\r\n        \"resource_preference_id\": null,\r\n        \"start\": \"2012-04-23T18:25:43.511Z\",\r\n        \"end\": \"2012-04-23T18:25:43.511Z\",\r\n        \"booked\": false\r\n    },\r\n    \"team_id\": \"12121212-dc08-4a06-9983-8b374586e459\",\r\n    \"additional_attendees\": 2,\r\n    \"desks_attendees\": true,\r\n    \"desks_additional_attendees\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8100/api/booking/meetingroom/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8100",
+									"path": [
+										"api",
+										"booking",
+										"meetingroom",
+										"create"
 									]
 								}
 							},
