@@ -23,10 +23,28 @@ function BookingsMeeting()
 
   let handleSubmit = async (e) =>
   {
+    console.log(JSON.stringify(
+      {
+        "booking": {
+          id: null,
+          user_id: "11111111-1111-4a06-9983-8b374586e459",
+          resource_type: "MEETINGROOM",
+          resource_preference_id: null,
+          resource_id: null,
+          start: startDate + "T" + startTime + ":43.511Z",
+          end: startDate + "T" + endTime + ":43.511Z",
+          booked: false
+        },
+        team_id: teamSelectedId,
+        role_id: roleSelectedId,
+        additional_attendees: aditionalAttendees,
+        desks_attendees: attendeesDesks,
+        desks_aditional_attendees: aditionalAttendeesDesks,
+      }))
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/booking/create", 
+      let res = await fetch("http://localhost:8100/api/booking/meetingroom/create", 
       {
         method: "POST",
         body: JSON.stringify(
