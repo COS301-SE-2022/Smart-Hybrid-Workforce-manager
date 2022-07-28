@@ -2,6 +2,10 @@ import { Stage, Layer } from 'react-konva'
 import { useRef, useState, useEffect, useCallback } from 'react'
 import Desk from '../components/Map/Desk'
 import MeetingRoom from '../components/Map/MeetingRoom'
+import { FaSave } from 'react-icons/fa'
+import { MdEdit, MdAdd } from 'react-icons/md'
+import desk_white from '../img/desk_white.svg';
+import meetingroom_white from '../img/meetingroom_white.svg';
 
 const Layout = () =>
 {
@@ -14,6 +18,10 @@ const Layout = () =>
     const deskCount = useRef(0);
     const meetingRoomCount = useRef(0);
     const deletedResources = useRef([]);
+    const propertiesPaneRef = useRef(true);
+
+    //Pane states
+    const [propertiesPaneLeft, SetPropertiesPaneLeft] = useState(0.85*window.innerWidth);
 
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
@@ -86,6 +94,70 @@ const Layout = () =>
         }
     }
 
+    //Collapse Properties pane
+    const PropertiesCollapse = () =>
+    {
+        if(propertiesPaneRef.current)
+        {
+            SetPropertiesPaneLeft(0.985*window.innerWidth);
+            propertiesPaneRef.current = false;
+        }
+        else
+        {
+            SetPropertiesPaneLeft(0.85*window.innerWidth);
+            propertiesPaneRef.current = true;
+        }
+    }
+
+    //Add building
+    const AddBuilding = () =>
+    {
+        window.location.assign("./building");
+    }
+
+    //Edit selected building
+    let EditBuilding = async (e) =>
+    {
+        if(currBuilding !== "")
+        {
+            e.preventDefault();
+            window.sessionStorage.setItem("BuildingID", currBuilding);
+            window.location.assign("./building-edit");
+        }
+        else
+        {
+            window.alert("Please select a building to edit");
+        }
+    }
+
+    const AddRoom = () =>
+    {
+        if(currBuilding !== "")
+        {
+            window.sessionStorage.setItem("BuildingID", currBuilding);
+            window.location.assign("./room");
+        }
+        else
+        {
+            alert("Please select a building");
+        }
+    }
+
+    let EditRoom = async (e) =>
+    {
+        if(currRoom !== "")
+        {
+            e.preventDefault();
+            window.sessionStorage.setItem("RoomID", currRoom);
+            window.sessionStorage.setItem("BuildingID", currBuilding);
+            window.location.assign("./room-edit");
+        }
+        else
+        {
+            window.alert("Please select a room to edit");
+        }
+    }
+
     //Load desks from the database
     const LoadDesk = useCallback((id, name, x, y, width, height, rotation) =>
     {
@@ -116,6 +188,12 @@ const Layout = () =>
     //Add a new desk to the state
     const AddDesk = () =>
     {
+        if(currBuilding === "" || currRoom === "")
+        {
+            window.alert("Please select a building and room");
+            return;
+        }
+
         if(stageRef.current !== null)
         {
             SetDeskProps(
@@ -166,6 +244,12 @@ const Layout = () =>
     //Add a new desk to the state
     const AddMeetingRoom = () =>
     {
+        if(currBuilding === "" || currRoom === "")
+        {
+            window.alert("Please select a building and room");
+            return;
+        }
+
         if(stageRef.current !== null)
         {
             SetMeetingRoomProps(
@@ -326,6 +410,12 @@ const Layout = () =>
     //Saves the current layout to the database
     const SaveLayout = async () =>
     {
+        if(currBuilding === "" || currRoom === "")
+        {
+            window.alert("Please select a building and room");
+            return;
+        }
+
         var resources = [];
 
         for(var i = 0; i < deskProps.length; i++)
@@ -455,32 +545,70 @@ const Layout = () =>
     return (
         <div className='page-container'>
             <div className='canvas-content'>
-                <button onClick={AddDesk}>Add Desk</button><br></br>
-                <button onClick={AddMeetingRoom}>Add Meeting Room</button>
 
-                <div className='combo-grid'>
-                    <div className='building-container'>
-                        <select className='combo-box' name='building' onChange={UpdateRooms.bind(this)}>
-                            <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
-                            {buildings.length > 0 && (
-                                buildings.map(building => (
-                                    <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
-                                ))
-                            )}
-                        </select>
+                <div className='properties-pane' style={{left: propertiesPaneLeft}}>
+                    <div className='properties-pane-label-container' onClick={PropertiesCollapse} >
+                        <p>Properties</p>
                     </div>
 
-                    <div className='room-container'>
-                        <select className='combo-box' name='room' onChange={UpdateResources.bind(this)}>
-                            <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
-                            {rooms.length > 0 && (
-                                rooms.map(room => (
-                                    <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>
-                                ))
-                            )}
-                        </select>
+                    <div className='building-pane'>
+                        <p className='building-label'>Buildings</p>
+                        <MdAdd className='add-building-img' size={35} onClick={AddBuilding} />
+                        <MdEdit className='edit-building-img' size={25} onClick={EditBuilding} />
+
+                            <select className='list-box-building' name='building' size="10" onChange={UpdateRooms.bind(this)}>
+                                <option value='A' >A</option>
+                                <option value='B' >B</option>
+                                <option value='C' >C</option>
+                                <option value='D' >D</option>
+                                <option value='E' >E</option>
+                                <option value='F' >F</option>
+                                <option value='G' >G</option>
+                                {buildings.length > 0 && (
+                                    buildings.map(building => (
+                                        <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
+                                    ))
+                                )}
+                            </select>
                     </div>
-                </div>                                          
+
+                    <div className='room-pane'>
+                        <p className='room-label'>Rooms</p>
+                        <MdAdd className='add-room-img' size={35} onClick={AddRoom} />
+                        <MdEdit className='edit-room-img' size={25} onClick={EditRoom} />
+
+                            <select className='list-box-room' name='room' size="10" onChange={UpdateResources.bind(this)}>
+                                <option value='A' >A</option>
+                                <option value='B' >B</option>
+                                <option value='C' >C</option>
+                                <option value='D' >D</option>
+                                <option value='E' >E</option>
+                                <option value='F' >F</option>
+                                <option value='G' >G</option>
+                                {rooms.length > 0 && (
+                                    rooms.map(room => (
+                                        <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>
+                                    ))
+                                )}
+                            </select>
+                    </div>
+                </div>
+
+                <div className='actions-pane'>
+                    <div className='save-container' onClick={SaveLayout}>
+                        <FaSave className='save-icon' size={30}/>
+                    </div>
+
+                    <div className='add-desk-container' onClick={AddDesk}>
+                        <img src={desk_white} alt='Add Desk' className='add-desk-img'></img>
+                    </div>
+
+                    <div className='add-meetingroom-container' onClick={AddMeetingRoom}>
+                        <img src={meetingroom_white} alt='Add Meeting Room' className='add-meetingroom-img'></img>
+                    </div>
+                                       
+
+                </div>                                       
 
                 <div ref={canvasRef} className='canvas-container'>
                     <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onTouchStart={CheckDeselect} draggable onWheel={ZoomInOut} ref={stageRef}>
@@ -535,7 +663,6 @@ const Layout = () =>
                         </Layer>
                     </Stage>
                 </div>
-                <button onClick={SaveLayout}>Save</button>
             </div>  
         </div>
     )
