@@ -67,6 +67,11 @@ Smart Hybrid Workforce Manager is a system that aims to provide companies an eas
   ➛ Technical Installation Manual v1.0<br>
 </a> 
 
+### Permission Flow Guide
+
+<a href="https://drive.google.com/file/d/1eiyuevQBveD41sLYmI3Sp1Gdl3zlBqpx/view?usp=sharing" target="_blank">
+  ➛ Permission Flow Guide v1.0<br>
+</a> 
 
 <br>
 
