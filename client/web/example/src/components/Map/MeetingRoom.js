@@ -30,6 +30,11 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, stage}) =>
         }
     }, [isSelected]);
 
+    useEffect(() =>
+    {
+        calculateCenter(shapeRef.current.x(), shapeRef.current.offsetX(), shapeRef.current.y(), shapeRef.current.offsetY(), shapeRef.current.width(), shapeRef.current.height(), shapeRef.current.getAbsoluteRotation());
+    }, []);
+
     return (
         <Fragment> 
             <Rect 
@@ -49,7 +54,8 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, stage}) =>
                     onChange({
                         ...shapeProps,
                         x : e.target.x(),
-                        y : e.target.y()
+                        y : e.target.y(),
+                        edited : true
                     })
 
                     calculateCenter(e.target.x(), e.target.offsetX(), e.target.y(), e.target.offsetY(), e.target.width(), e.target.height(), e.target.getAbsoluteRotation());
@@ -69,7 +75,8 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, stage}) =>
                         y : e.target.y(),
                         width : e.target.width() * scaleX,
                         height : e.target.height() * scaleY,
-                        rotation : e.target.rotation()
+                        rotation : e.target.rotation(),
+                        edited : true
                     });
                 }}
 
