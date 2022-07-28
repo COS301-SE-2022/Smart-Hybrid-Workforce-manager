@@ -99,8 +99,6 @@ func main() {
 	headers := handlers.AllowedHeaders([]string{"X-Requested-With","Authorization"})
 	origins := handlers.AllowedOrigins([]string{os.Getenv("ORIGIN_ALLOWED")})
 	methods := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
-	// ttl := handlers.MaxAge(3600)
-	// origins := handlers.AllowedOrigins([]string{"www.example.com"})
 
 	// Start API on port 8080 in its docker container
 	logger.Info.Println("Starting API on 8080")
