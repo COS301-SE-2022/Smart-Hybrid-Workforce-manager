@@ -18,10 +18,10 @@ const Layout = () =>
     const deskCount = useRef(0);
     const meetingRoomCount = useRef(0);
     const deletedResources = useRef([]);
-    const resourcePaneRef = useRef(null);
+    const propertiesPaneRef = useRef(true);
 
     //Pane states
-    const [resourcePaneWidth, SetResourcePaneWidth] = useState(0);
+    const [propertiesPaneLeft, SetPropertiesPaneLeft] = useState(0.85*window.innerWidth);
 
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
@@ -94,10 +94,19 @@ const Layout = () =>
         }
     }
 
-    //Collapse Resource panel
-    const ResourceCollapse = () =>
+    //Collapse Properties pane
+    const PropertiesCollapse = () =>
     {
-        SetResourcePaneWidth(-0.135*window.innerWidth);
+        if(propertiesPaneRef.current)
+        {
+            SetPropertiesPaneLeft(0.985*window.innerWidth);
+            propertiesPaneRef.current = false;
+        }
+        else
+        {
+            SetPropertiesPaneLeft(0.85*window.innerWidth);
+            propertiesPaneRef.current = true;
+        }
     }
 
     //Add building
@@ -537,16 +546,16 @@ const Layout = () =>
         <div className='page-container'>
             <div className='canvas-content'>
 
-                <div className='properties-pane'>
-                    <div className='resource-pane-label-container' onClick={ResourceCollapse}>
-                        <p>Resources</p>
+                <div className='properties-pane' style={{left: propertiesPaneLeft}}>
+                    <div className='properties-pane-label-container' onClick={PropertiesCollapse} >
+                        <p>Properties</p>
                     </div>
+
                     <div className='building-pane'>
                         <p className='building-label'>Buildings</p>
                         <MdAdd className='add-building-img' size={35} onClick={AddBuilding} />
                         <MdEdit className='edit-building-img' size={25} onClick={EditBuilding} />
 
-                        <div className='building-container'>
                             <select className='list-box-building' name='building' size="10" onChange={UpdateRooms.bind(this)}>
                                 <option value='A' >A</option>
                                 <option value='B' >B</option>
@@ -561,7 +570,6 @@ const Layout = () =>
                                     ))
                                 )}
                             </select>
-                        </div>
                     </div>
 
                     <div className='room-pane'>
@@ -569,7 +577,6 @@ const Layout = () =>
                         <MdAdd className='add-room-img' size={35} onClick={AddRoom} />
                         <MdEdit className='edit-room-img' size={25} onClick={EditRoom} />
 
-                        <div className='room-container'>
                             <select className='list-box-room' name='room' size="10" onChange={UpdateResources.bind(this)}>
                                 <option value='A' >A</option>
                                 <option value='B' >B</option>
@@ -584,7 +591,6 @@ const Layout = () =>
                                     ))
                                 )}
                             </select>
-                        </div>
                     </div>
                 </div>
 
@@ -602,14 +608,7 @@ const Layout = () =>
                     </div>
                                        
 
-                </div>
-                
-
-                <div className='combo-grid'>
-
-
-            
-                </div>                                          
+                </div>                                       
 
                 <div ref={canvasRef} className='canvas-container'>
                     <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onTouchStart={CheckDeselect} draggable onWheel={ZoomInOut} ref={stageRef}>

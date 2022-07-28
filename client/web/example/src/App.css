@@ -932,32 +932,28 @@
 {
     position: absolute;
     background-color: #EDF3F8;
-    width: 85vw;
+    width: 100vw;
     height: 95vh;
     left: 0;
     top: 5vh;
 }
 
-.resource-pane
-{
-    position: fixed;
-    background-color: #444444;
-    width: 15vw;
-    height: 93vh;
-    top: 7vh;
-    left: 0;
-    z-index: 1;
-    overflow-x: hidden;
-}
-
 .properties-pane
 {
     position: fixed;
+
+    display: grid;
+    grid-template-columns: 1.5vw 13.5vw;
+    grid-template-rows: 40vh 40vh;
+    grid-template-areas: 'collapse-label data-building' 'collapse-label data-room';
+
     background-color: #444444;
     width: 15vw;
-    height: 93vh;
-    top: 7vh;
+    height: 95vh;
+    top: 5vh;
     left: 85vw;
+
+    z-index: 1;
 }
 
 .actions-pane
@@ -974,7 +970,6 @@
     border-radius: 1vh;
     z-index: 1;
     box-shadow: 0.2vw 0.2vh 1vh #1b1b1b;
-
 }
 
 .save-container
@@ -1056,31 +1051,34 @@
     cursor: pointer;
 }
 
-.resource-pane-label-container
+.properties-pane-label-container
 {
-    margin-top: 0vh;
-    margin-left: 13vw;
+    grid-area: 'collapse-label';
 
-    padding-top: 1vh;
-    padding-bottom: 1vh;
-    padding-left: 0.3vw;
-    padding-right: 0.3vw;
+    padding-top: 40vh;
 
-    color: #09A4FB;
+    height: 95vh;
+
+    color: #d8d8d8;
+    background-color: #252525;
 
     writing-mode: vertical-rl;
     transform: rotate(180deg);
+
+    z-index: 2;
 }
 
-.resource-pane-label-container:hover
+.properties-pane-label-container:hover
 {
-    cursor: pointer;
+    cursor: w-resize;
     color: #03639b;
 }
 
 .building-pane
 {
     margin-top: 2vh;
+    grid-area: 'data-building';
+    width: 13.5vw;
 }
 
 .building-label
@@ -1097,10 +1095,10 @@
 .add-building-img
 {
     float: left;
-    margin-left: 3vw;
+    margin-left: 2vw;
     margin-top: 1vh;
 
-    color: rgb(216, 216, 216);
+    color: #09A4FB;
 
     height: 4vh;
 }
@@ -1108,7 +1106,7 @@
 .add-building-img:hover
 {
     cursor: pointer;
-    color: #09A4FB;
+    color: #03639b;
 }
 
 .edit-building-img
@@ -1116,7 +1114,7 @@
     margin-left: 1vw;
     margin-top: 1vh;
 
-    color: #d8d8d8;
+    color: #09A4FB;
 
     height: 4vh;
 }
@@ -1124,7 +1122,7 @@
 .edit-building-img:hover
 {
     cursor: pointer;
-    color: #09A4FB;
+    color: #03639b;
 }
 
 .building-container
@@ -1141,24 +1139,28 @@
     padding-bottom: 1vh;
     padding-left: 1vw;
     padding-right: 1vw;
+    margin-left: 0.7vw;
 
-    width: 15vw;
+    width: 12vw;
     height: 30vh;
 
     color: white;
+    border-style: none;
     background-color: #252525;
     text-align: center;
 }
 
 .room-pane
 {
-    margin-top: 5vh;
+    grid-area: 'data-room';
+    width: 13.5vw;
+    margin-left: 1.5vw;
 }
 
 .room-label
 {
     float: left;
-    color: rgb(216, 216, 216);
+    color: #d8d8d8;
     text-align: left;
     font-size: 3vh;
     margin-top: 1vh;
@@ -1169,10 +1171,10 @@
 .add-room-img
 {
     float: left;
-    margin-left: 3vw;
+    margin-left: 2vw;
     margin-top: 1vh;
 
-    color: rgb(216, 216, 216);
+    color: #09A4FB;
 
     height: 4vh;
 }
@@ -1180,7 +1182,7 @@
 .add-room-img:hover
 {
     cursor: pointer;
-    color: #09A4FB;
+    color: #03639b;
 }
 
 .edit-room-img
@@ -1188,7 +1190,7 @@
     margin-left: 1vw;
     margin-top: 1vh;
 
-    color: #d8d8d8;
+    color: #09A4FB;
 
     height: 4vh;
 }
@@ -1196,7 +1198,7 @@
 .edit-room-img:hover
 {
     cursor: pointer;
-    color: #09A4FB;
+    color: #03639b;
 }
 
 .room-container
@@ -1213,8 +1215,9 @@
     padding-bottom: 1vh;
     padding-left: 1vw;
     padding-right: 1vw;
+    margin-left: 0.7vw;
 
-    width: 15vw;
+    width: 12vw;
     height: 30vh;
 
     border-top: black;
