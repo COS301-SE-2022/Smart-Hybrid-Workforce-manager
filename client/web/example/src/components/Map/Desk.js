@@ -23,8 +23,6 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange}) =>
         <Fragment> 
             <Image
                 image = {image}
-                width = {60}
-                height = {55}
                 offsetX = {30}
                 offsetY = {27.5}
                 {...shapeProps}
@@ -39,7 +37,8 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange}) =>
                     onChange({
                         ...shapeProps,
                         x : e.target.x(),
-                        y : e.target.y()
+                        y : e.target.y(),
+                        edited : true
                     })
                 }}
 
@@ -49,7 +48,8 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange}) =>
                         ...shapeProps,
                         x : e.target.x(),
                         y : e.target.y(),
-                        rotation : e.target.rotation()
+                        rotation : e.target.rotation(),
+                        edited : true
                     });
                 }}
 

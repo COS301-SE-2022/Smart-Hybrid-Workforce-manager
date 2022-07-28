@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 const Home = () =>
 {
   const [bookings, setBookings] = useState([])
+  
 
   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
