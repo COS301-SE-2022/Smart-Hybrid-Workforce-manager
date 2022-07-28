@@ -103,7 +103,7 @@ func main() {
 
 	// Setup CORS for the API
 	credentials := handlers.AllowCredentials()
-	headers := handlers.AllowedHeaders([]string{"X-Requested-With","Authorization"})
+	headers := handlers.AllowedHeaders([]string{"Access-Control-Allow-Origin","X-Requested-With","Authorization"})
 	origins := handlers.AllowedOrigins([]string{os.Getenv("ORIGIN_ALLOWED")})
 	methods := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
 

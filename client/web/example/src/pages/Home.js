@@ -57,7 +57,6 @@ const Home = () =>
             end: endDate.toISOString()
           }),
           headers:{
-            'Content-Type': 'application/json',
             'Authorization': `bearer ${userData.token}`
           }
         }).then((res) => res.json()).then(data => 

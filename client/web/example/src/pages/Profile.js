@@ -8,6 +8,7 @@ import TeamUserList from '../components/Team/TeamUserList'
 import { useContext } from 'react'
 import { UserContext } from '../App'
 import LogoutButton from '../components/Logout/LogoutButton'
+import { Navigate, useNavigate } from 'react-router-dom'
 
 function Profile()
 {
@@ -26,8 +27,10 @@ function Profile()
   const [roles, SetRoles] = useState([])
   const [teams, SetTeams] = useState([])
 
+  const navigate = useNavigate();
+
   const {userData} = useContext(UserContext);
-  
+  console.log(userData);
   //POST request
   const FetchUser = () =>
   {
@@ -99,7 +102,7 @@ function Profile()
   //Using useEffect hook. This will ste the default values of the form once the components are mounted
   useEffect(() =>
   {
-    window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
+    window.sessionStorage.setItem("UserID", userData.user_id);
     FetchUser();
     FetchUserRoles();
     FetchUserTeams();
@@ -107,7 +110,7 @@ function Profile()
 
   const ProfileConfiguration = () =>
   {
-    window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
+    window.sessionStorage.setItem("UserID", userData.user_id);
     window.sessionStorage.setItem("Identifier", identifier);
     window.sessionStorage.setItem("FirstName", firstName);
     window.sessionStorage.setItem("LastName", lastName);
@@ -119,7 +122,7 @@ function Profile()
     window.sessionStorage.setItem("OfficeDays", officeDays);
     window.sessionStorage.setItem("StartTime", startTime);
     window.sessionStorage.setItem("EndTime", endTime);
-    window.location.assign("./profile-configuration");
+    navigate("/profile-configuration")
   }
 
   // const LogOut = () =>

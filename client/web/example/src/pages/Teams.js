@@ -1,13 +1,16 @@
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import Button from 'react-bootstrap/Button'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import TeamListItem from '../components/Team/TeamListItem';
+import { UserContext } from "../App";
+import { useNavigate } from "react-router-dom";
 
 function Teams()
 {
   const [teams, SetTeams] = useState([])
-
+  const {userData} = useContext(UserContext)
+  const navigate = useNavigate();
   //POST request
   const FetchTeams = () =>
   {
@@ -15,6 +18,9 @@ function Teams()
         {
           method: "POST",
           body: JSON.stringify({
+          }),
+          headers: new Headers({
+            'Authorization': `bearer ${userData.token}`
           })
         }).then((res) => res.json()).then(data => 
           {
@@ -24,7 +30,8 @@ function Teams()
 
   const AddTeam = () =>
   {
-    window.location.assign("./team-create");
+    navigate("/team-create");
+    // window.location.assign("./team-create");
   }
 
   //Using useEffect hook. This will send the POST request once the component is mounted

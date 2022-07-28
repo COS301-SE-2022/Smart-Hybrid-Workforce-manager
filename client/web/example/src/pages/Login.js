@@ -8,7 +8,7 @@ export default function Login()
 {
   const [identifier, setIdentifier] = useState("");
   const [secret, setSecret] = useState("");
-  const {setUserData} = useContext(UserContext);
+  const {userData,setUserData} = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -26,6 +26,11 @@ export default function Login()
 
   let handleSubmit = async (e) =>
   {
+    console.log(userData)
+    sessionStorage.removeItem("auth_data")
+    sessionStorage.removeItem("UserID")
+    setUserData(null);
+
     e.preventDefault();
 
     fetch("http://localhost:8100/api/user/login", 
@@ -39,6 +44,9 @@ export default function Login()
         "FailedAttempts":null,
         "LastAccessed":null,
         "Identifier":null
+      }),
+      headers: new Headers({
+        'Access-Control-Allow-Origin': "*"
       })
     }).then((res) => {
       if(res.status === 200){
