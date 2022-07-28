@@ -4,6 +4,8 @@ import (
 	"api/data"
 	"api/db"
 	"api/utils"
+	"lib/logger"
+	"api/redis"
 	"fmt"
 	"net/http"
 )
@@ -27,15 +29,15 @@ func Validate(function HandlerFunc, permissionRequired *data.Permissions) Handle
 			return
 		}
 
-		// userInfo,err := redis.GetUserInfo(request)
-		// if err != nil{
-		// 	logger.Error.Println(err)
-		// 	utils.BadRequest(writer, request, "Invalid Authorization Token")
-		// 	return
-		// }
-		// // Check if user data is null
-		// user_id := userInfo.User_id
-		user_id := "00000000-0000-0000-0000-000000000000"
+		redisUserData,err := redis.GetRequestRedisData(request)
+		if err != nil{
+			logger.Error.Println(err)
+			utils.BadRequest(writer, request, "Invalid Authorization Token")
+			return
+		}
+		// Check if user data is null
+		user_id := redisUserData.User_id
+		// user_id := "00000000-0000-0000-0000-000000000000"
 		permissions, err := GetUserPermissions(&user_id, access)
 		if err != nil {
 			utils.InternalServerError(writer, request, err)

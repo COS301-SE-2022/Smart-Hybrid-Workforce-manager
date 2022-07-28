@@ -1,4 +1,5 @@
 import React from 'react'
+import LogoutButton from '../Logout/LogoutButton'
 import { Nav, NavHeader, NavLink, Bars, NavMenu } from './NavbarElements'
 
 const Navbar = () => {
@@ -22,6 +23,7 @@ const Navbar = () => {
                 <NavLink to="/profile" activeStyle>
                     PROFILE
                 </NavLink>
+                <LogoutButton/>
             </NavMenu>
         </Nav>
     </div>

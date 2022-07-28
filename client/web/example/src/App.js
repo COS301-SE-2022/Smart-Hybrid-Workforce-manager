@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
@@ -39,69 +39,63 @@ import EditRole from './pages/RolesEdit'
 import PermissionsRole from './pages/RolesPermissions'
 import Layout from './pages/CreateLayout'
 
+import React from 'react'
 import { useState } from 'react'
+import ProtectedRoute from './store/ProtectedRoute'
 
-// import { AppContext } from "./lib/contextLib";
-// import injectContext from "./store/appContext";
+
+export const UserContext = React.createContext();
+
 
 function App()
 {
-  // const [isAuthenticated, userHasAuthenticated] = useState(true);
-  const [userData, setUserData] = useState({});
-  // if(sessionStorage.getItem("userData")){
-  //   console.log("Set userdata");
-  //   console.log(sessionStorage.getItem("userData").isLoggedIn);
-  //   setUserData(sessionStorage.getItem("userData"));
-  // }
-  
-  if(!userData || !userData.isLoggedIn)
-    return <Login setUserData={setUserData}/>
+  const [userData, setUserData] = useState(null);
 
   return(
-    // <Home />
-    // <BrowserRouter>
-    //   <Route path="/test1" exact element={<Login/>} />
-    // </BrowserRouter>
     <Router>
-      <Routes>
-        <Route path="/" exact element={<Home/>} />
-        <Route path="/login" exact element={<Login/>} />
-        <Route path="/signup" exact element={<Signup/>} />
-        <Route path="/bookings" exact element={<Bookings/>} />
-        <Route path="/bookings-desk" exact element={<BookingsDesk/>} />
-        <Route path="/bookings-meeting" exact element={<BookingsMeeting />} />
-        <Route path="/admin" exact element={<Admin />} />
-        <Route path="/layout" exact element={<Layout />} />
+      <UserContext.Provider value={{userData, setUserData}}>
+        <Routes>
+          <Route element={<ProtectedRoute/>}>
+          <Route path="/" exact element={<Home/>} />
 
-        <Route path="/users" exact element={<Users />} />
-        <Route path="/user-edit" exact element={<EditUser />} />
-        <Route path="/user-create" exact element={<CreateUser />} />
-        <Route path="/user-permissions" exact element={<PermissionsUser />} />
-        
-        <Route path="/team" exact element={<Teams />} />
-        <Route path="/team-create" exact element={<CreateTeam />} />
-        <Route path="/team-edit" exact element={<EditTeam />} />
-        <Route path="/team-permissions" exact element={<PermissionsTeam />} />
+          </Route>       
+          <Route path="/bookings-desk" exact element={<BookingsDesk/>} />
+            <Route path="/bookings-meeting" exact element={<BookingsMeeting />} />
+                        <Route path="/bookings" exact element={<Bookings/>} />
+            <Route path="/admin" exact element={<Admin />} />
+            <Route path="/layout" exact element={<Layout />} />
 
-        <Route path="/resources" exact element={<Resources/>} />
-        <Route path="/building" exact element={<CreateBuilding/>} />
-        <Route path="/building-edit" exact element={<EditBuilding/>} />
-        <Route path="/room" exact element={<CreateRoom/>} />
-        <Route path="/room-edit" exact element={<EditRoom/>} />
-        <Route path="/desk" exact element={<CreateDesk/>} />
-        <Route path="/resources-desk-edit" exact element={<EditDesk/>} />
-        <Route path="/resources-meeting-room-edit" exact element={<EditMeetingRoom/>} />
-        <Route path="/meetingroom" exact element={<CreateMeetingRoom />} />
+            <Route path="/users" exact element={<Users />} />
+            <Route path="/user-edit" exact element={<EditUser />} />
+            <Route path="/user-create" exact element={<CreateUser />} />
+            <Route path="/user-permissions" exact element={<PermissionsUser />} />
+            
+            <Route path="/team" exact element={<Teams />} />
+            <Route path="/team-create" exact element={<CreateTeam />} />
+            <Route path="/team-edit" exact element={<EditTeam />} />
+            <Route path="/team-permissions" exact element={<PermissionsTeam />} />
 
-        <Route path="/profile" exact element={<Profile />} />
-        <Route path="/profile-configuration" exact element={<ProfileConfiguration />} />
+            <Route path="/resources" exact element={<Resources/>} />
+            <Route path="/building" exact element={<CreateBuilding/>} />
+            <Route path="/building-edit" exact element={<EditBuilding/>} />
+            <Route path="/room" exact element={<CreateRoom/>} />
+            <Route path="/room-edit" exact element={<EditRoom/>} />
+            <Route path="/desk" exact element={<CreateDesk/>} />
+            <Route path="/resources-desk-edit" exact element={<EditDesk/>} />
+            <Route path="/resources-meeting-room-edit" exact element={<EditMeetingRoom/>} />
+            <Route path="/meetingroom" exact element={<CreateMeetingRoom />} />
 
-        <Route path="/role" exact element={<Roles/>} />
-        <Route path="/role-create" exact element={<CreateRole/>} />
-        <Route path="/role-edit" exact element={<EditRole />} />
-        <Route path="/role-permissions" exact element={<PermissionsRole />} />
-      
-      </Routes>
+            <Route path="/profile" exact element={<Profile />} />
+            <Route path="/profile-configuration" exact element={<ProfileConfiguration />} />
+
+            <Route path="/role" exact element={<Roles/>} />
+            <Route path="/role-create" exact element={<CreateRole/>} />
+            <Route path="/role-edit" exact element={<EditRole />} />
+            <Route path="/role-permissions" exact element={<PermissionsRole />} /> 
+          <Route path="/login" exact element={<Login />} />
+          <Route path="/signup" exact element={<Signup/>} />
+        </Routes>          
+      </UserContext.Provider>          
     </Router>
   );
 }
