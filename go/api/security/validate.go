@@ -5,7 +5,6 @@ import (
 	"api/db"
 	"api/utils"
 	"fmt"
-	"lib/logger"
 	"net/http"
 )
 
@@ -40,7 +39,7 @@ func Validate(function HandlerFunc, permissionRequired *data.Permissions) Handle
 		// filter permissions based on the permission required
 		var filteredPermissions data.Permissions
 		for _, permission := range permissions {
-			logger.Access.Printf("%v %v %v %v\n", *permission.PermissionIdType, *permission.PermissionType, *permission.PermissionCategory, *permission.PermissionTenant)
+			//logger.Access.Printf("%v %v %v %v\n", *permission.PermissionIdType, *permission.PermissionType, *permission.PermissionCategory, *permission.PermissionTenant)
 			if permissionRequired.CompareTo(permission) {
 				filteredPermissions = append(filteredPermissions, permission)
 			}

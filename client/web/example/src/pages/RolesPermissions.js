@@ -287,19 +287,19 @@ function RolePermissions() {
     // Booking
     if (permission.permission_category === 'BOOKING'){
       if (permission.permission_type === "CREATE") {
-        if (permission.permission_tenant === "USER") {
+        if (permission.permission_tenant === "ROLE") {
           SetCreateBookingIdentifier(true);
           SetCreateBookingIdentifierId(permission.id);
         }
       }
       if (permission.permission_type === "VIEW") {
-        if (permission.permission_tenant === "USER") {
+        if (permission.permission_tenant === "ROLE") {
           SetViewBookingIdentifier(true);
           SetViewBookingIdentifierId(permission.id);
         }
       }
       if (permission.permission_type === "DELETE") {
-        if (permission.permission_tenant === "USER") {
+        if (permission.permission_tenant === "ROLE") {
           SetDeleteBookingIdentifier(true);
           SetDeleteBookingIdentifierId(permission.id);
         }
