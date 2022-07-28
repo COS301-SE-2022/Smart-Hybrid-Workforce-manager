@@ -47,7 +47,7 @@ export default function Login({setUserData})
       <div className='content-login'>
         <div className='login-grid'>
           <div className='form-container-login'>
-            <p className='form-header'><h1>WELCOME BACK</h1>Please enter your details.</p>
+            <p className='form-header'><p className="form-header-top">WELCOME BACK</p>Please enter your details.</p>
             {auth===undefined?console.log("logged In"):console.log("not logged in")}
             <Form className='form' onSubmit={handleSubmit}>
               <Form.Group className='form-group' controlId="formBasicEmail">

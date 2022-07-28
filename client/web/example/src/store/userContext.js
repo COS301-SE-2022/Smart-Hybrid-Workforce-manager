@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext } from 'react' //[Removed useEffect and useState. Add back when used in the code]
 
 const userContext = React.createContext();
 export const useUser = () => {useContext(userContext)}
