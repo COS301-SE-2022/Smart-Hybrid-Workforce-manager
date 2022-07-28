@@ -37,6 +37,7 @@ func Validate(function HandlerFunc, permissionRequired *data.Permissions) Handle
 		}
 		// Check if user data is null
 		user_id := userInfo.User_id
+		user_id = "00000000-0000-0000-0000-000000000000"
 		permissions, err := GetUserPermissions(&user_id, access)
 		if err != nil {
 			utils.InternalServerError(writer, request, err)

@@ -135,6 +135,7 @@ func AddAuthUser(user data.User) AuthUserData{
 	Id := user.Id
 	if(Id == nil){
 		//logger.Error.Fatal(Identifier)
+
 	}
 
 	//get redis connection
