@@ -140,8 +140,9 @@ func Call(data *SchedulerData) error { // TODO: @JonathanEnslin improve this fun
 		}
 		return err
 	}
+	logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE4.1"))
 	err = makeBookings(*candidateBookings)
-	logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE4"))
+	logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE4.2"))
 	if err != nil {
 		logErr := NewLogEntry(FAILED, &now).WriteLog()
 		if logErr != nil {
