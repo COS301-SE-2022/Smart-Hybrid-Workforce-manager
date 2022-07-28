@@ -56,7 +56,7 @@ function App()
       <UserContext.Provider value={{userData, setUserData}}>
         <Routes>
           <Route element={<ProtectedRoute/>}>
-            <Route path="/" exact element={<Home/>} />
+          <Route path="/" exact element={<Home/>} />
 
           </Route>       
           <Route path="/bookings-desk" exact element={<BookingsDesk/>} />
