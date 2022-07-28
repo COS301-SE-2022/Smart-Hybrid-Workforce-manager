@@ -211,27 +211,38 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 		for _, permission := range *permissions {
 			// A permission tenant id of nil means the user is allowed to perform the action on all tenants of the type
 			if permission.PermissionTenantId == meetingRoomBooking.Booking.UserId || permission.PermissionTenantId == nil {
-				authorized = authorized && true
+				authorized = true
 			}
 		}
 	}
+	if !authorized {
+		utils.AccessDenied(writer, request, fmt.Errorf("doesn't have permission to execute query"))
+		return
+	}
+
+	authorized = false
 	if meetingRoomBooking.RoleId != nil {
 		for _, permission := range *permissions {
 			// A permission tenant id of nil means the user is allowed to perform the action on all tenants of the type
 			if permission.PermissionTenantId == meetingRoomBooking.RoleId || permission.PermissionTenantId == nil {
-				authorized = authorized && true
+				authorized = true
 			}
 		}
 	}
+	if !authorized {
+		utils.AccessDenied(writer, request, fmt.Errorf("doesn't have permission to execute query"))
+		return
+	}
+
+	authorized = false
 	if meetingRoomBooking.TeamId != nil {
 		for _, permission := range *permissions {
 			// A permission tenant id of nil means the user is allowed to perform the action on all tenants of the type
 			if permission.PermissionTenantId == meetingRoomBooking.TeamId || permission.PermissionTenantId == nil {
-				authorized = authorized && true
+				authorized = true
 			}
 		}
 	}
-
 	if !authorized {
 		utils.AccessDenied(writer, request, fmt.Errorf("doesn't have permission to execute query"))
 		return

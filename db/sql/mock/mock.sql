@@ -365,6 +365,43 @@ SELECT permission.identifier_store(
 	'ASSOCIATION'::permission.tenant,
 	null::uuid -- All users
 );
+
+SELECT permission.identifier_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
+	'CREATE'::permission.type,
+	'BOOKING'::permission.category,
+	'USER'::permission.tenant,
+	null::uuid -- All users
+);
+
+SELECT permission.identifier_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
+	'CREATE'::permission.type,
+	'BOOKING'::permission.category,
+	'TEAM'::permission.tenant,
+	null::uuid -- All users
+);
+
+SELECT permission.identifier_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
+	'CREATE'::permission.type,
+	'BOOKING'::permission.category,
+	'ROLE'::permission.tenant,
+	null::uuid -- All users
+);
+
+SELECT permission.identifier_store(
+	'00000000-0000-0000-0000-000000000000'::uuid, -- Admin
+	'USER'::permission.id_type,
+	'VIEW'::permission.type,
+	'BOOKING'::permission.category,
+	'ROLE'::permission.tenant,
+	null::uuid -- All users
+);
+
 ----------------------------------
 -- User
 
