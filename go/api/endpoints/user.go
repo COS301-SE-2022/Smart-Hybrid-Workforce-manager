@@ -5,6 +5,7 @@ import (
 	"api/db"
 	"api/redis"
 	"api/utils"
+	// "errors"
 	"fmt"
 	"lib/logger"
 	"net/http"
@@ -263,7 +264,11 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
 	//IF users == [] return error
 
 	//After user login create auth token
-	authData := redis.AddAuthUser(*(users[0]))
+	authData, err := redis.UserLogin(*users[0].Id)
+	if err != nil{
+		logger.Error.Println("Error user login endpoint")
+		utils.InternalServerError(writer, request, err)
+	}
 	// logger.Access.Printf("\nauthdata\n%v\n", authData)
 	utils.JSONResponse(writer, request, authData)
 }
