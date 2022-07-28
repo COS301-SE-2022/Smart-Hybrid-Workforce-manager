@@ -1,14 +1,19 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import PropTypes from 'prop-types';
+import { UserContext } from '../App';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-export default function Login({setUserData})
+
+export default function Login()
 {
   const [identifier, setIdentifier] = useState("");
   const [secret, setSecret] = useState("");
   const auth = sessionStorage.getItem("auth_data");
-
+  const {userData,setUserData} = useContext(UserContext);
+  const navigate = useNavigate();
+  const location = useLocation();
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
@@ -35,8 +40,15 @@ export default function Login({setUserData})
     }).then((data) => {
       var json_object = JSON.parse(JSON.stringify(data))
       data["isLoggedIn"] = true;
+      console.log(data);
       setUserData(data);
       sessionStorage.setItem("auth_data", json_object);
+      console.log(userData);
+      if (location.state?.from) {
+        navigate(location.state.from);
+      }else{
+        navigate("/");
+      }
     }).catch((err) => {
       console.error(err);
     })
@@ -48,7 +60,6 @@ export default function Login({setUserData})
         <div className='login-grid'>
           <div className='form-container-login'>
             <p className='form-header'><h1>WELCOME BACK</h1>Please enter your details.</p>
-            {auth===undefined?console.log("logged In"):console.log("not logged in")}
             <Form className='form' onSubmit={handleSubmit}>
               <Form.Group className='form-group' controlId="formBasicEmail">
                 <Form.Label className='form-label'>Email<br></br></Form.Label>
@@ -73,8 +84,4 @@ export default function Login({setUserData})
       </div>
     </div>
   )
-}
-
-Login.propTypes = {
-  setUserData: PropTypes.func.isRequired
 }

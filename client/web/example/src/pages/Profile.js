@@ -5,6 +5,8 @@ import '../App.css'
 import Button from 'react-bootstrap/Button'
 import RoleUserList from '../components/Role/RoleUserList'
 import TeamUserList from '../components/Team/TeamUserList'
+import { useContext } from 'react'
+import { UserContext } from '../App'
 
 function Profile()
 {
@@ -22,6 +24,8 @@ function Profile()
 
   const [roles, SetRoles] = useState([])
   const [teams, SetTeams] = useState([])
+
+  const {userData,setUserData}=useContext(UserContext);
   
   //POST request
   const FetchUser = () =>
@@ -66,8 +70,11 @@ function Profile()
         {
           method: "POST",
           body: JSON.stringify({
-            user_id:window.sessionStorage.getItem("UserID")
-          })
+            user_id:userData["user_id"]
+          }),
+          headers:{
+            'Authorization': `bearer ${userData["token"]}`
+          }
         }).then((res) => res.json()).then(data => 
           {
             SetRoles(data);
@@ -81,8 +88,11 @@ function Profile()
         {
           method: "POST",
           body: JSON.stringify({
-            user_id:window.sessionStorage.getItem("UserID")
-          })
+            user_id:userData["user_id"]
+          }),
+          headers:{
+            'Authorization': `bearer ${userData["token"]}`
+          }
         }).then((res) => res.json()).then(data => 
           {
             SetTeams(data);
@@ -117,7 +127,7 @@ function Profile()
 
   const LogOut = () =>
   {
-    window.location.assign("./login");
+    setUserData(null);
   }
 
   return (
