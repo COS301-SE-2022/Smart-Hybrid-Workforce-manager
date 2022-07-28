@@ -134,8 +134,12 @@ func Call(data *SchedulerData) error { // TODO: @JonathanEnslin improve this fun
 	err = json.NewDecoder(response.Body).Decode(candidateBookings)
 	logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE3"))
 	if err != nil {
+		logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE4.12"))
 		logErr := NewLogEntry(FAILED, &now).WriteLog()
+		logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE4.112"))
+
 		if logErr != nil {
+			logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE4.1122"))
 			return logErr
 		}
 		return err
@@ -146,6 +150,7 @@ func Call(data *SchedulerData) error { // TODO: @JonathanEnslin improve this fun
 	if err != nil {
 		logErr := NewLogEntry(FAILED, &now).WriteLog()
 		if logErr != nil {
+
 			return logErr
 		}
 		return err
