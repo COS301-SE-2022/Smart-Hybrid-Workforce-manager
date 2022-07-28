@@ -10,7 +10,9 @@ RETURNS TABLE (
 	start TIMESTAMP,
 	"end" TIMESTAMP,
     booked BOOLEAN,
-    date_created TIMESTAMP
+    automated BOOLEAN,
+    date_created TIMESTAMP,
+    dependent uuid
 ) AS 
 $$
 BEGIN

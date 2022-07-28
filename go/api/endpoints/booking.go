@@ -150,6 +150,7 @@ func DeleteBookingHandler(writer http.ResponseWriter, request *http.Request, per
 	// Get booking information if no user is defined
 	da := data.NewBookingDA(access)
 	if booking.UserId == nil {
+		// TODO: fix call when non existent booking is deleted
 		temp, err := da.FindIdentifier(&booking, &data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "USER")})
 		booking = *temp.FindHead()
 		if err != nil {
@@ -254,6 +255,18 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 		utils.InternalServerError(writer, request, err)
 		return
 	}
+
+	// // Add desks for role/team members in meeting
+	// teamUsers := data.UserTeams{}
+	// roleUsers := data.UserRoles{}
+
+	// if meetingRoomBooking.TeamId != nil {
+	// 	teamUsers, err = GetUserTeams(meetingRoomBooking.TeamId)
+	// }
+	// if meetingRoomBooking.RoleId != nil {
+	// 	roleUsers, err = GetUserRoles(meetingRoomBooking.RoleId)
+	// }
+
 	err = access.Commit()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
@@ -321,4 +334,60 @@ func InformationMeetingRoomBookingHandler(writer http.ResponseWriter, request *h
 	}
 	logger.Access.Printf("%v meetingroom booking information requested\n", meetingRoomBooking.Id) // TODO [KP]: Be more descriptive
 	utils.JSONResponse(writer, request, bookings)
+}
+
+// GetUserTeams will return all the userteam pairs
+func GetUserTeams(teamId *string) (data.UserTeams, error) {
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		return nil, err
+	}
+	defer access.Close()
+	da := data.NewTeamDA(access)
+
+	userTeam := data.UserTeam{
+		TeamId: teamId,
+	}
+	permissions := &data.Permissions{data.CreateGenericPermission("VIEW", "TEAM", "USER"),
+		data.CreateGenericPermission("VIEW", "USER", "TEAM")}
+	userTeams, err := da.FindUserTeam(&userTeam, permissions)
+	if err != nil {
+		return nil, err
+	}
+
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		return nil, err
+	}
+	return userTeams, nil
+}
+
+// GetUserRoles will return all the userteam pairs
+func GetUserRoles(roleId *string) (data.UserRoles, error) {
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		return nil, err
+	}
+	defer access.Close()
+	da := data.NewRoleDA(access)
+
+	userRole := data.UserRole{
+		RoleId: roleId,
+	}
+	permissions := &data.Permissions{data.CreateGenericPermission("VIEW", "ROLE", "USER"),
+		data.CreateGenericPermission("VIEW", "USER", "ROLE")}
+	userRoles, err := da.FindUserRole(&userRole, permissions)
+	if err != nil {
+		return nil, err
+	}
+
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		return nil, err
+	}
+	return userRoles, nil
 }

@@ -8,7 +8,7 @@ CREATE OR REPLACE FUNCTION booking.identifier_store(
 	_end TIMESTAMP WITHOUT TIME ZONE,
 	_booked BOOLEAN DEFAULT NULL, -- Defaults to false and is not considered for creation
 	_automated BOOLEAN DEFAULT NULL,
-	_dependent BOOLEAN DEFAULT NULL
+	_dependent uuid DEFAULT NULL
 )
 RETURNS uuid AS
 $$
