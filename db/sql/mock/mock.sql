@@ -4,10 +4,10 @@
 -- Admin User
 SELECT "user".identifier_store(
 	'00000000-0000-0000-0000-000000000000'::uuid,
-	'admin@example.com', 
+	'admin@admin.com', 
 	'Admin', 
 	'Admin', 
-	'admin@example.com', 
+	'admin@admin.com', 
 	'/picture',
     false,
     'STANDARD',
@@ -15,6 +15,12 @@ SELECT "user".identifier_store(
     '09:00',
     '17:00',
 	'22222222-dc08-4a06-9983-8b374586e459' -- preferred desk
+);
+
+SELECT "user".credential_store(
+	'local.admin@admin.com',
+	'admin',
+	'admin@admin.com'
 );
 
 ------------ Booking Permissions
