@@ -179,6 +179,12 @@ const Layout = () =>
     //Add a new desk to the state
     const AddDesk = () =>
     {
+        if(currBuilding === "" || currRoom === "")
+        {
+            window.alert("Please select a building and room");
+            return;
+        }
+
         if(stageRef.current !== null)
         {
             SetDeskProps(
@@ -229,6 +235,12 @@ const Layout = () =>
     //Add a new desk to the state
     const AddMeetingRoom = () =>
     {
+        if(currBuilding === "" || currRoom === "")
+        {
+            window.alert("Please select a building and room");
+            return;
+        }
+
         if(stageRef.current !== null)
         {
             SetMeetingRoomProps(
@@ -389,6 +401,12 @@ const Layout = () =>
     //Saves the current layout to the database
     const SaveLayout = async () =>
     {
+        if(currBuilding === "" || currRoom === "")
+        {
+            window.alert("Please select a building and room");
+            return;
+        }
+
         var resources = [];
 
         for(var i = 0; i < deskProps.length; i++)
@@ -571,16 +589,16 @@ const Layout = () =>
                 </div>
 
                 <div className='actions-pane'>
-                    <div className='save-container'>
-                        <FaSave className='save-icon' size={30} onClick={SaveLayout}/>
+                    <div className='save-container' onClick={SaveLayout}>
+                        <FaSave className='save-icon' size={30}/>
                     </div>
 
-                    <div className='add-desk-container'>
-                        <img src={desk_white} alt='Add Desk' className='add-desk-img' onClick={AddDesk}></img>
+                    <div className='add-desk-container' onClick={AddDesk}>
+                        <img src={desk_white} alt='Add Desk' className='add-desk-img'></img>
                     </div>
 
-                    <div className='add-meetingroom-container'>
-                        <img src={meetingroom_white} alt='Add Meeting Room' className='add-meetingroom-img' onClick={AddMeetingRoom}></img>
+                    <div className='add-meetingroom-container' onClick={AddMeetingRoom}>
+                        <img src={meetingroom_white} alt='Add Meeting Room' className='add-meetingroom-img'></img>
                     </div>
                                        
 

@@ -933,9 +933,9 @@
     position: absolute;
     background-color: #EDF3F8;
     width: 85vw;
-    height: 93vh;
+    height: 95vh;
     left: 0;
-    top: 7vh;
+    top: 5vh;
 }
 
 .resource-pane
@@ -973,6 +973,8 @@
     margin-left: 2vw;
     border-radius: 1vh;
     z-index: 1;
+    box-shadow: 0.2vw 0.2vh 1vh #1b1b1b;
+
 }
 
 .save-container
@@ -986,7 +988,7 @@
 
 .save-container:hover
 {
-    background-color: #09A4FB;
+    background-color: #03639b;
     cursor: pointer;
 }
 
@@ -1013,7 +1015,7 @@
 
 .add-desk-container:hover
 {
-    background-color: #09A4FB;
+    background-color: #03639b;
     cursor: pointer;
 }
 
@@ -1039,7 +1041,7 @@
 
 .add-meetingroom-container:hover
 {
-    background-color: #09A4FB;
+    background-color: #03639b;
     cursor: pointer;
 }
 
