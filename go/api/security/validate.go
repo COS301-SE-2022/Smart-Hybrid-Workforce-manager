@@ -5,7 +5,6 @@ import (
 	"api/db"
 	"api/utils"
 	"fmt"
-	"lib/logger"
 	"net/http"
 )
 
