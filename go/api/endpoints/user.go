@@ -167,7 +167,15 @@ func addDefaultPermissions(user string, access *db.Access) error {
 	if err != nil {
 		return err
 	}
-	err = dp.StorePermission(data.CreatePermission(user, "USER", "VIEW", "TEAM", "USER", user))
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "CREATE", "BOOKING", "USER", ""))
+	if err != nil {
+		return err
+	}
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "CREATE", "BOOKING", "TEAM", ""))
+	if err != nil {
+		return err
+	}
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "CREATE", "BOOKING", "ROLE", ""))
 	if err != nil {
 		return err
 	}

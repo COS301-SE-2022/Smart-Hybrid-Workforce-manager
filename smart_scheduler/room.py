@@ -83,6 +83,33 @@ class Rooms:
             rooms_str += f'"{_key}": {_val},\n'
         return rooms_str + '}'
 
+def room_size(room_list: List[Dict[str, str]], size: int, compare_with: str = 'eq') -> Dict[str, List[str]]:
+        """
+        Returns a list of room ids that have the specified number of resources contained in them
+        :param room_list: The list of rooms to search
+        :param size: The size room that should be used while searching
+        :param compare_with: The type of comparison to use, 'eq' for exact size matches, 'lt' for rooms with
+         size less than the specified size or 'gt' for rooms greater than the specified size, or le for <= and ge for >=
+         to 'eq' if an invalid operator is passed
+        """
+        comparator: operator
+        comparators: Dict[str, any] = {
+            'eq': operator.eq,
+            'gt': operator.gt,
+            'lt': operator.lt,
+            'le': operator.le,
+            'ge': operator.ge,
+        }
+        if compare_with not in comparators:
+            comparator = comparators['eq']
+        else:
+            comparator = comparators[compare_with]
+
+        rooms: Dict[str, List[str]] = []
+        for _room in room_list:
+            if comparator(len(_room['resource_ids']), size):
+                rooms.append(_room['id'])
+        return rooms
 
 if __name__ == '__main__':
     # resource.ENDPOINT = 'http://localhost:8100/api/resource/information'

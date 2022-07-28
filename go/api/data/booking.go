@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"lib/testutils"
 	"time"
 )
 
@@ -21,6 +22,8 @@ type Booking struct {
 	Start                *time.Time `json:"start,omitempty"`
 	End                  *time.Time `json:"end,omitempty"`
 	Booked               *bool      `json:"booked,omitempty"`
+	Automated            *bool      `json:"automated,omitempty"`
+	Dependent            *string    `json:"dependent,omitempty"`
 	DateCreated          *time.Time `json:"date_created,omitempty"`
 }
 
@@ -97,7 +100,9 @@ func mapBooking(rows *sql.Rows) (interface{}, error) {
 		&identifier.Start,
 		&identifier.End,
 		&identifier.Booked,
+		&identifier.Automated,
 		&identifier.DateCreated,
+		&identifier.Dependent,
 	)
 	if err != nil {
 		return nil, err
@@ -128,8 +133,9 @@ func mapMeetingRoomBooking(rows *sql.Rows) (interface{}, error) {
 // StoreIdentifier stores an identifier
 func (access *BookingDA) StoreIdentifier(identifier *Booking) (*string, error) {
 	id, err := access.access.Query(
-		`SELECT * FROM booking.identifier_store($1, $2, $3, $4, $5, $6, $7, $8)`, mapIdReturn,
-		identifier.Id, identifier.UserId, identifier.ResourceType, identifier.ResourcePreferenceId, identifier.ResourceId, identifier.Start, identifier.End, identifier.Booked)
+		`SELECT * FROM booking.identifier_store($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, mapIdReturn,
+		identifier.Id, identifier.UserId, identifier.ResourceType, identifier.ResourcePreferenceId,
+		identifier.ResourceId, identifier.Start, identifier.End, identifier.Booked, identifier.Automated, identifier.Dependent)
 	if err != nil {
 		return nil, err
 	}
@@ -161,9 +167,11 @@ func (access *BookingDA) FindIdentifier(identifier *Booking, permissions *Permis
 
 //DeleteIdentifier finds an identifier
 func (access *BookingDA) DeleteIdentifier(identifier *Booking) (*Booking, error) {
+	fmt.Println(testutils.Scolour(testutils.RED, "HERE1"))
 	results, err := access.access.Query(
 		`SELECT * FROM booking.identifier_remove($1)`, mapBooking,
 		identifier.Id)
+	fmt.Println(testutils.Scolour(testutils.RED, "HERE2"))
 	if err != nil {
 		return nil, err
 	}

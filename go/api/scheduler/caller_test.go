@@ -231,6 +231,6 @@ func Test_timeOfNextWeekDay(t *testing.T) {
 	}
 	assert := assert.New(t)
 	for i, tt := range tests {
-		assert.Equal(tt.want, timeOfNextWeekDay(tt.args.now, tt.args.weekday), tt.name+" Case: "+fmt.Sprint(i))
+		assert.Equal(tt.want, TimeOfNextWeekDay(tt.args.now, tt.args.weekday), tt.name+" Case: "+fmt.Sprint(i))
 	}
 }

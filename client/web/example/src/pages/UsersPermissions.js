@@ -251,6 +251,7 @@ function UserPermissions() {
     }
 
     alert("Permissions successfully updated.")
+    window.location.assign("./user-permissions");
   };
 
   async function AddPermission(id, idType, type, category, tenant, tenant_id) {
@@ -291,6 +292,7 @@ function UserPermissions() {
         });
 
       if (res.status === 200) {
+
       }
     }
     catch (err) {

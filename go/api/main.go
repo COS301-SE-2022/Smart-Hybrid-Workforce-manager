@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gorilla/mux"
 	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -21,10 +21,9 @@ func main() {
 		os.Exit(-1)
 	}
 
-
 	// Create Redis clients
 	rediserr := redis.InitializeRedisClients()
-	if rediserr != nil{
+	if rediserr != nil {
 		logger.Error.Fatal(err)
 		os.Exit(-1)
 	}
@@ -94,6 +93,14 @@ func main() {
 		logger.Error.Fatal(err)
 		os.Exit(-1)
 	}
+
+	schedulerRouter := router.PathPrefix("/api/scheduler").Subrouter()
+	err = endpoints.SchedulerHandlers(schedulerRouter)
+	if err != nil {
+		logger.Error.Fatal(err)
+		os.Exit(-1)
+	}
+
 	// Setup CORS for the API
 	credentials := handlers.AllowCredentials()
 	headers := handlers.AllowedHeaders([]string{"X-Requested-With","Authorization"})
