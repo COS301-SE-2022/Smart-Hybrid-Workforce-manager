@@ -1,6 +1,7 @@
 from audioop import reverse
 from xml.etree.ElementTree import QName
 import docker
+from flask import jsonify
 import requests
 import json 
 from datetime import date, timedelta
@@ -103,9 +104,10 @@ class SmartScheduler:
         return ret_str
 
     def get_bookings(self):
-        ret_dict = {}
-        ret_dict['bookings'] = self.bookingsList
-        return ret_dict
+        ret_json = []
+        ret_json.append(self.bookingsList)
+        # return json.dumps(ret_json)
+        return jsonify(ret_json)
 
     def get_fitness(self):
         return fitness.get_fitness(self.bookingsList)
