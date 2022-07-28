@@ -28,10 +28,12 @@ func BookingHandlers(router *mux.Router) error {
 		&data.Permissions{data.CreateGenericPermission("DELETE", "BOOKING", "USER")})).Methods("POST")
 
 	router.HandleFunc("/meetingroom/create", security.Validate(CreateMeetingRoomBookingHandler,
-		&data.Permissions{data.CreateGenericPermission("CREATE", "BOOKING", "MEETINGROOM")})).Methods("POST")
+		&data.Permissions{data.CreateGenericPermission("CREATE", "BOOKING", "USER"),
+			data.CreateGenericPermission("CREATE", "BOOKING", "TEAM"),
+			data.CreateGenericPermission("CREATE", "BOOKING", "ROLE")})).Methods("POST")
 
 	router.HandleFunc("/meetingroom/information", security.Validate(InformationMeetingRoomBookingHandler,
-		&data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "MEETINGROOM")})).Methods("POST")
+		&data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "USER")})).Methods("POST")
 
 	return nil
 }
@@ -205,16 +207,27 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 	// Check if the user has permission to create or update a booking for the incoming meeting room
 	// TODO: @JonathanEnslin fix these permissions, add perms for creating bookings for certain teams, roles etc... Or leave it up to the scheduler
 	authorized := false
-	if meetingRoomBooking.Id != nil {
+	if meetingRoomBooking.Booking.UserId != nil {
 		for _, permission := range *permissions {
-			if meetingRoomBooking.Id == permission.PermissionTenantId || permission.PermissionTenantId == nil {
-				authorized = true
+			// A permission tenant id of nil means the user is allowed to perform the action on all tenants of the type
+			if permission.PermissionTenantId == meetingRoomBooking.Booking.UserId || permission.PermissionTenantId == nil {
+				authorized = authorized && true
 			}
 		}
-	} else {
+	}
+	if meetingRoomBooking.RoleId != nil {
 		for _, permission := range *permissions {
-			if permission.PermissionTenantId == nil {
-				authorized = true
+			// A permission tenant id of nil means the user is allowed to perform the action on all tenants of the type
+			if permission.PermissionTenantId == meetingRoomBooking.RoleId || permission.PermissionTenantId == nil {
+				authorized = authorized && true
+			}
+		}
+	}
+	if meetingRoomBooking.TeamId != nil {
+		for _, permission := range *permissions {
+			// A permission tenant id of nil means the user is allowed to perform the action on all tenants of the type
+			if permission.PermissionTenantId == meetingRoomBooking.TeamId || permission.PermissionTenantId == nil {
+				authorized = authorized && true
 			}
 		}
 	}
