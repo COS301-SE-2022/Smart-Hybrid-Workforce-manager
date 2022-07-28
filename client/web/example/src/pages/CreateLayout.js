@@ -518,7 +518,8 @@ const Layout = () =>
     return (
         <div className='page-container'>
             <div className='canvas-content'>
-                <div className='resource-pane' ref={resourcePaneRef} style={{left:resourcePaneWidth}}>
+
+                <div className='properties-pane'>
                     <div className='resource-pane-label-container' onClick={ResourceCollapse}>
                         <p>Resources</p>
                     </div>
@@ -569,14 +570,19 @@ const Layout = () =>
                     </div>
                 </div>
 
-                <div className='properties-pane'>
-                    
-                </div>
-
                 <div className='actions-pane'>
-                    <FaSave className='save-icon' size={30} onClick={SaveLayout}/>
-                    <img src={desk_white} alt='Add Desk' className='add-desk-img' onClick={AddDesk}></img>
-                    <img src={meetingroom_white} alt='Add Meeting Room' className='add-meetingroom-img' onClick={AddMeetingRoom}></img>
+                    <div className='save-container'>
+                        <FaSave className='save-icon' size={30} onClick={SaveLayout}/>
+                    </div>
+
+                    <div className='add-desk-container'>
+                        <img src={desk_white} alt='Add Desk' className='add-desk-img' onClick={AddDesk}></img>
+                    </div>
+
+                    <div className='add-meetingroom-container'>
+                        <img src={meetingroom_white} alt='Add Meeting Room' className='add-meetingroom-img' onClick={AddMeetingRoom}></img>
+                    </div>
+                                       
 
                 </div>
                 

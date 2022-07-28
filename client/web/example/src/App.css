@@ -932,9 +932,9 @@
 {
     position: absolute;
     background-color: #EDF3F8;
-    width: 70vw;
+    width: 85vw;
     height: 93vh;
-    left: 15vw;
+    left: 0;
     top: 7vh;
 }
 
@@ -952,7 +952,7 @@
 
 .properties-pane
 {
-    position: absolute;
+    position: fixed;
     background-color: #444444;
     width: 15vw;
     height: 93vh;
@@ -962,28 +962,65 @@
 
 .actions-pane
 {
-    position: absolute;
+    position: fixed;
     background-color: #252525;
-    width: 100vw;
+    width: 7vw;
+    height: 25vh;
+    padding-left: 0.5vw;
+    padding-right: 2vw;
+    padding-top: 2vh;
+    margin-top: 10vh;
+    margin-left: 2vw;
+    border-radius: 1vh;
+    z-index: 1;
+}
+
+.save-container
+{ 
+    border-radius: 1vh;
+    padding: 1vh;
+    left: 0;
+    width: 6vw;
     height: 7vh;
-    padding-left: 2vw;
-    padding-top: 1vh;
+}
+
+.save-container:hover
+{
+    background-color: #09A4FB;
+    cursor: pointer;
 }
 
 .save-icon
 {
     color: white;
+    margin-left: 1.7vw;
+    margin-top: 0.5vh;
 }
 
-.save-icon:hover
+.save-icon:hover .save-container
 {
+    cursor: pointer;
+}
+
+.add-desk-container
+{
+    border-radius: 1vh;
+    padding: 1vh;
+    left: 0;
+    width: 6vw;
+    height: 7vh;
+}
+
+.add-desk-container:hover
+{
+    background-color: #09A4FB;
     cursor: pointer;
 }
 
 .add-desk-img
 {
     height: 5vh;
-    margin-left: 3vw;
+    margin-left: 1.7vw;
 }
 
 .add-desk-img:hover
@@ -991,10 +1028,25 @@
     cursor: pointer;
 }
 
+.add-meetingroom-container
+{
+    border-radius: 1vh;
+    padding: 1vh;
+    left: 0;
+    width: 6vw;
+    height: 7vh;
+}
+
+.add-meetingroom-container:hover
+{
+    background-color: #09A4FB;
+    cursor: pointer;
+}
+
 .add-meetingroom-img
 {
     height: 5vh;
-    margin-left: 3vw;
+    margin-left: 0.2vw;
 }
 
 .add-meetingroom-img:hover
