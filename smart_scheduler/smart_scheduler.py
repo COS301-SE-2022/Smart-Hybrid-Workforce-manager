@@ -4,7 +4,7 @@ import docker
 from flask import jsonify
 import requests
 import json 
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 import booking
 import user
@@ -68,9 +68,10 @@ class SmartScheduler:
                     assigned_desk_id = assigned_room_resources.pop()
                     # startTime = current_user.get('preferred_start_time').strftime('T%H:%M:%SZ')
                     # endTime = current_user.get('preferred_end_time').strftime('T%H:%M:%SZ')
-                    startTime = current_user.get('preferred_start_time')
-                    endTime = current_user.get('preferred_end_time')
-                    bookDate = date.today() + timedelta(days=7)
+                    startTime = current_user.get('preferred_start_time')[10:]
+                    endTime = current_user.get('preferred_end_time')[10:]
+                    bookDate = date.today() + timedelta(days=3)
+                    # bookDate = date.today()
 
                     # create desk booking
                     self.bookingsList.append({"user_id": userID,
@@ -108,6 +109,9 @@ class SmartScheduler:
         ret_json.append(self.bookingsList)
         # return json.dumps(ret_json)
         return jsonify(ret_json)
+        # return ret_json
+        # return self.bookingsList
+        # return jsonify(self.bookingsList)
 
     def get_fitness(self):
         return fitness.get_fitness(self.bookingsList)
