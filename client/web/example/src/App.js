@@ -59,7 +59,8 @@ function App()
             <Route path="/" exact element={<Home/>} />
             <Route path="/bookings" exact element={<Bookings/>} />
             <Route path="/admin" exact element={<Admin />} />
-            <Route path="/bookings-desk" exact element={<BookingsDesk/>} />
+          </Route>       
+          <Route path="/bookings-desk" exact element={<BookingsDesk/>} />
             <Route path="/bookings-meeting" exact element={<BookingsMeeting />} />
             
             <Route path="/layout" exact element={<Layout />} />
@@ -90,9 +91,8 @@ function App()
             <Route path="/role" exact element={<Roles/>} />
             <Route path="/role-create" exact element={<CreateRole/>} />
             <Route path="/role-edit" exact element={<EditRole />} />
-            <Route path="/role-permissions" exact element={<PermissionsRole />} />
-          </Route>        
-          <Route path="/login" exact element={<Login setUserData={setUserData}/>} />
+            <Route path="/role-permissions" exact element={<PermissionsRole />} /> 
+          <Route path="/login" exact element={<Login />} />
           <Route path="/signup" exact element={<Signup/>} />
         </Routes>          
       </UserContext.Provider>          
