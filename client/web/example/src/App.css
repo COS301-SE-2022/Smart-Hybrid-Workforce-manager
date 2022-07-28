@@ -1002,15 +1002,37 @@
     cursor: pointer;
 }
 
+.resource-pane-label-container
+{
+    margin-top: 0vh;
+    margin-left: 13vw;
+
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 0.3vw;
+    padding-right: 0.3vw;
+
+    color: #09A4FB;
+
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+}
+
+.resource-pane-label-container:hover
+{
+    cursor: pointer;
+    color: #03639b;
+}
+
 .building-pane
 {
-    margin-top: 5vh;
+    margin-top: 2vh;
 }
 
 .building-label
 {
     float: left;
-    color: rgb(216, 216, 216);
+    color: #d8d8d8;
     text-align: left;
     font-size: 3vh;
     margin-top: 1vh;
@@ -1040,7 +1062,7 @@
     margin-left: 1vw;
     margin-top: 1vh;
 
-    color: rgb(216, 216, 216);
+    color: #d8d8d8;
 
     height: 4vh;
 }
@@ -1056,9 +1078,6 @@
     position: relative;
 
     background-color: #252525;
-
-    margin-top: 0vh;
-    padding-top: 1vh;
 }
 
 .list-box-building
@@ -1069,70 +1088,85 @@
     padding-left: 1vw;
     padding-right: 1vw;
 
-    margin-top: 1vh;
-    margin-left: 1vw;
+    width: 15vw;
+    height: 30vh;
 
-    width: 11vw;
-    height: 20vh;
-
-    border-radius: 1vh;
-    border-style: none;
     color: white;
     background-color: #252525;
     text-align: center;
 }
 
+.room-pane
+{
+    margin-top: 5vh;
+}
+
+.room-label
+{
+    float: left;
+    color: rgb(216, 216, 216);
+    text-align: left;
+    font-size: 3vh;
+    margin-top: 1vh;
+    margin-left: 1vw;
+    width: 5vw;
+}
+
 .add-room-img
 {
-    position: absolute;
+    float: left;
+    margin-left: 3vw;
+    margin-top: 1vh;
 
-    top: 34.5vh;
-    margin-left: 8vw;
+    color: rgb(216, 216, 216);
 
-    height: 5vh;
+    height: 4vh;
 }
 
 .add-room-img:hover
 {
     cursor: pointer;
+    color: #09A4FB;
 }
 
 .edit-room-img
 {
-    position: absolute;
+    margin-left: 1vw;
+    margin-top: 1vh;
 
-    top: 34.5vh;
-    margin-left: 10.8vw;
+    color: #d8d8d8;
 
-    height: 5vh;
+    height: 4vh;
 }
 
 .edit-room-img:hover
 {
     cursor: pointer;
+    color: #09A4FB;
+}
+
+.room-container
+{
+    position: relative;
+
+    background-color: #252525;
 }
 
 .list-box-room
 {
-    position: absolute;
-
     font-size: 1.5vh;
     padding-top: 1vh;
     padding-bottom: 1vh;
     padding-left: 1vw;
     padding-right: 1vw;
 
-    top: 40vh;
-    left: 0;
-    margin-left: 1vw;
+    width: 15vw;
+    height: 30vh;
 
-    width: 11vw;
-    height: 20vh;
-
-    border-radius: 1vh;
+    border-top: black;
     border-style: none;
     color: white;
-    background-color: #1b1b1b;
+    background-color: #252525;
     text-align: center;
 }
 

@@ -18,6 +18,10 @@ const Layout = () =>
     const deskCount = useRef(0);
     const meetingRoomCount = useRef(0);
     const deletedResources = useRef([]);
+    const resourcePaneRef = useRef(null);
+
+    //Pane states
+    const [resourcePaneWidth, SetResourcePaneWidth] = useState(0);
 
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
@@ -88,6 +92,12 @@ const Layout = () =>
         {
             SelectShape(null);
         }
+    }
+
+    //Collapse Resource panel
+    const ResourceCollapse = () =>
+    {
+        SetResourcePaneWidth(-0.135*window.innerWidth);
     }
 
     //Add building
@@ -508,7 +518,10 @@ const Layout = () =>
     return (
         <div className='page-container'>
             <div className='canvas-content'>
-                <div className='resource-pane'>
+                <div className='resource-pane' ref={resourcePaneRef} style={{left:resourcePaneWidth}}>
+                    <div className='resource-pane-label-container' onClick={ResourceCollapse}>
+                        <p>Resources</p>
+                    </div>
                     <div className='building-pane'>
                         <p className='building-label'>Buildings</p>
                         <MdAdd className='add-building-img' size={35} onClick={AddBuilding} />
@@ -516,7 +529,6 @@ const Layout = () =>
 
                         <div className='building-container'>
                             <select className='list-box-building' name='building' size="10" onChange={UpdateRooms.bind(this)}>
-                                <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
                                 <option value='A' >A</option>
                                 <option value='B' >B</option>
                                 <option value='C' >C</option>
@@ -533,24 +545,28 @@ const Layout = () =>
                         </div>
                     </div>
 
-                    <select className='list-box-room' name='room' size='10' onChange={UpdateResources.bind(this)}>
-                        <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
-                        <option value='A' >A</option>
-                        <option value='B' >B</option>
-                        <option value='C' >C</option>
-                        <option value='D' >D</option>
-                        <option value='E' >E</option>
-                        <option value='F' >F</option>
-                        <option value='G' >G</option>
-                        {rooms.length > 0 && (
-                            rooms.map(room => (
-                                <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>
-                            ))
-                        )}
-                    </select>
+                    <div className='room-pane'>
+                        <p className='room-label'>Rooms</p>
+                        <MdAdd className='add-room-img' size={35} onClick={AddRoom} />
+                        <MdEdit className='edit-room-img' size={25} onClick={EditRoom} />
 
-                    <MdAdd className='add-room-img' size={35} color='white' onClick={AddRoom} />
-                    <MdEdit className='edit-room-img' size={25} color='white' onClick={EditRoom} />
+                        <div className='room-container'>
+                            <select className='list-box-room' name='room' size="10" onChange={UpdateResources.bind(this)}>
+                                <option value='A' >A</option>
+                                <option value='B' >B</option>
+                                <option value='C' >C</option>
+                                <option value='D' >D</option>
+                                <option value='E' >E</option>
+                                <option value='F' >F</option>
+                                <option value='G' >G</option>
+                                {rooms.length > 0 && (
+                                    rooms.map(room => (
+                                        <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>
+                                    ))
+                                )}
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <div className='properties-pane'>
