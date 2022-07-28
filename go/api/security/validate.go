@@ -43,12 +43,12 @@ func Validate(function HandlerFunc, permissionRequired *data.Permissions) Handle
 			return
 		}
 
-		// TODO [KP]: unpack permissions
-
 		// filter permissions based on the permission required
 		var filteredPermissions data.Permissions
 		for _, permission := range permissions {
-			logger.Access.Printf("%v %v %v %v\n", *permission.PermissionIdType, *permission.PermissionType, *permission.PermissionCategory, *permission.PermissionTenant)
+
+			//logger.Access.Printf("%v %v %v %v\n", *permission.PermissionIdType, *permission.PermissionType, *permission.PermissionCategory, *permission.PermissionTenant)
+
 			if permissionRequired.CompareTo(permission) {
 				filteredPermissions = append(filteredPermissions, permission)
 			}

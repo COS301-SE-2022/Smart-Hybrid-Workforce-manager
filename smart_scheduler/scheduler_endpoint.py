@@ -12,10 +12,10 @@ app.logger.setLevel(logging.DEBUG)
 @app.route('/', methods=['POST'])
 def scheduler_call():
     scheduler_data = request.json  # This is holds the data send by the scheduler
-    scheduler = smart_scheduler.SmartScheduler()
+    scheduler = smart_scheduler.SmartScheduler(scheduler_data)
     scheduler.schedule()
-    scheduler.createBookings()
-    return scheduler.printBookings()
+    # scheduler.createBookings()
+    return scheduler.get_bookings()
 
 
 @app.route('/echo', methods=['POST'])  # This endpoint is used for testing purposes

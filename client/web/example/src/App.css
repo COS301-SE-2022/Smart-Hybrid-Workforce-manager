@@ -189,6 +189,12 @@
     text-align: center;
 }
 
+.form-header-top
+{
+    color: white;
+    font-size: 7vh;
+}
+
 .form-container-login h1
 {
     color: white;
@@ -436,21 +442,6 @@
     color: #919191;
 }
 
-.combo-grid
-{
-    display: grid;
-    grid-template-columns: 50vw 50vw;
-    grid-template-rows: 10vh;
-    grid-template-areas: "building" "room";
-}
-
-.building-container
-{
-    grid-area: 'building';
-    margin-top: 3vh;
-    margin-left: 4vw;
-}
-
 .button-resource-container
 {
     margin-top: 2vh;
@@ -507,13 +498,6 @@
 {
     cursor: pointer;
     background-color: #03639b;
-}
-
-.room-container
-{
-    grid-area: 'room';
-    margin-top: 3vh;
-    margin-left: 4vw;
 }
 
 .combo-box
@@ -933,17 +917,317 @@
 {
     min-height: 100vh;
     background-color: #252525;
+    overflow-x: hidden;
+}
+
+.combo-grid
+{
+    display: grid;
+    grid-template-columns: 50vw 50vw;
+    grid-template-rows: 10vh;
+    grid-template-areas: "building" "room";
 }
 
 .canvas-container
 {
+    position: absolute;
     background-color: #EDF3F8;
-    width: 70vw;
-    height: 80vh;
-    margin-left: 15vw;
-    margin-top: 10vh;
-    border-radius: 2vh;
+    width: 100vw;
+    height: 95vh;
+    left: 0;
+    top: 5vh;
 }
+
+.properties-pane
+{
+    position: fixed;
+
+    display: grid;
+    grid-template-columns: 1.5vw 13.5vw;
+    grid-template-rows: 40vh 40vh;
+    grid-template-areas: 'collapse-label data-building' 'collapse-label data-room';
+
+    background-color: #444444;
+    width: 15vw;
+    height: 95vh;
+    top: 5vh;
+    left: 85vw;
+
+    z-index: 1;
+}
+
+.actions-pane
+{
+    position: fixed;
+    background-color: #252525;
+    width: 7vw;
+    height: 25vh;
+    padding-left: 0.5vw;
+    padding-right: 2vw;
+    padding-top: 2vh;
+    margin-top: 10vh;
+    margin-left: 2vw;
+    border-radius: 1vh;
+    z-index: 1;
+    box-shadow: 0.2vw 0.2vh 1vh #1b1b1b;
+}
+
+.save-container
+{ 
+    border-radius: 1vh;
+    padding: 1vh;
+    left: 0;
+    width: 6vw;
+    height: 7vh;
+}
+
+.save-container:hover
+{
+    background-color: #03639b;
+    cursor: pointer;
+}
+
+.save-icon
+{
+    color: white;
+    margin-left: 1.7vw;
+    margin-top: 0.5vh;
+}
+
+.save-icon:hover .save-container
+{
+    cursor: pointer;
+}
+
+.add-desk-container
+{
+    border-radius: 1vh;
+    padding: 1vh;
+    left: 0;
+    width: 6vw;
+    height: 7vh;
+}
+
+.add-desk-container:hover
+{
+    background-color: #03639b;
+    cursor: pointer;
+}
+
+.add-desk-img
+{
+    height: 5vh;
+    margin-left: 1.7vw;
+}
+
+.add-desk-img:hover
+{
+    cursor: pointer;
+}
+
+.add-meetingroom-container
+{
+    border-radius: 1vh;
+    padding: 1vh;
+    left: 0;
+    width: 6vw;
+    height: 7vh;
+}
+
+.add-meetingroom-container:hover
+{
+    background-color: #03639b;
+    cursor: pointer;
+}
+
+.add-meetingroom-img
+{
+    height: 5vh;
+    margin-left: 0.2vw;
+}
+
+.add-meetingroom-img:hover
+{
+    cursor: pointer;
+}
+
+.properties-pane-label-container
+{
+    grid-area: 'collapse-label';
+
+    padding-top: 40vh;
+
+    height: 95vh;
+
+    color: #d8d8d8;
+    background-color: #252525;
+
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+
+    z-index: 2;
+}
+
+.properties-pane-label-container:hover
+{
+    cursor: w-resize;
+    color: #03639b;
+}
+
+.building-pane
+{
+    margin-top: 2vh;
+    grid-area: 'data-building';
+    width: 13.5vw;
+}
+
+.building-label
+{
+    float: left;
+    color: #d8d8d8;
+    text-align: left;
+    font-size: 3vh;
+    margin-top: 1vh;
+    margin-left: 1vw;
+    width: 5vw;
+}
+
+.add-building-img
+{
+    float: left;
+    margin-left: 2vw;
+    margin-top: 1vh;
+
+    color: #09A4FB;
+
+    height: 4vh;
+}
+
+.add-building-img:hover
+{
+    cursor: pointer;
+    color: #03639b;
+}
+
+.edit-building-img
+{
+    margin-left: 1vw;
+    margin-top: 1vh;
+
+    color: #09A4FB;
+
+    height: 4vh;
+}
+
+.edit-building-img:hover
+{
+    cursor: pointer;
+    color: #03639b;
+}
+
+.building-container
+{
+    position: relative;
+
+    background-color: #252525;
+}
+
+.list-box-building
+{
+    font-size: 1.5vh;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    margin-left: 0.7vw;
+
+    width: 12vw;
+    height: 30vh;
+
+    color: white;
+    border-style: none;
+    background-color: #252525;
+    text-align: center;
+}
+
+.room-pane
+{
+    grid-area: 'data-room';
+    width: 13.5vw;
+    margin-left: 1.5vw;
+}
+
+.room-label
+{
+    float: left;
+    color: #d8d8d8;
+    text-align: left;
+    font-size: 3vh;
+    margin-top: 1vh;
+    margin-left: 1vw;
+    width: 5vw;
+}
+
+.add-room-img
+{
+    float: left;
+    margin-left: 2vw;
+    margin-top: 1vh;
+
+    color: #09A4FB;
+
+    height: 4vh;
+}
+
+.add-room-img:hover
+{
+    cursor: pointer;
+    color: #03639b;
+}
+
+.edit-room-img
+{
+    margin-left: 1vw;
+    margin-top: 1vh;
+
+    color: #09A4FB;
+
+    height: 4vh;
+}
+
+.edit-room-img:hover
+{
+    cursor: pointer;
+    color: #03639b;
+}
+
+.room-container
+{
+    position: relative;
+
+    background-color: #252525;
+}
+
+.list-box-room
+{
+    font-size: 1.5vh;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    margin-left: 0.7vw;
+
+    width: 12vw;
+    height: 30vh;
+
+    border-top: black;
+    border-style: none;
+    color: white;
+    background-color: #252525;
+    text-align: center;
+}
+
+
 /* Customize the label (the container) */
 .container {
     color: white;
