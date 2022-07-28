@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS booking.identifier (
     booked BOOLEAN DEFAULT(false),
     automated BOOLEAN DEFAULT(false),
     date_created TIMESTAMP WITHOUT TIME ZONE DEFAULT(now() AT TIME ZONE 'uct'),
-	
+    dependent uuid REFERENCES booking.identifier(id) ON DELETE CASCADE
+    
     PRIMARY KEY (id)
 );
 
@@ -24,6 +25,6 @@ CREATE TABLE IF NOT EXISTS booking.meeting_room (
     additional_attendees INT DEFAULT 0,
     desks_attendees BOOLEAN DEFAULT(false),
     desks_additional_attendees BOOLEAN DEFAULT(false),
-	
+    
     PRIMARY KEY (id)
-);
+)
