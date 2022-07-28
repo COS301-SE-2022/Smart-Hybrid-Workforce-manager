@@ -509,25 +509,29 @@ const Layout = () =>
         <div className='page-container'>
             <div className='canvas-content'>
                 <div className='resource-pane'>
+                    <div className='building-pane'>
+                        <p className='building-label'>Buildings</p>
+                        <MdAdd className='add-building-img' size={35} onClick={AddBuilding} />
+                        <MdEdit className='edit-building-img' size={25} onClick={EditBuilding} />
 
-                    <select className='list-box-building' name='building' size="10" onChange={UpdateRooms.bind(this)}>
-                        <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
-                        <option value='A' >A</option>
-                        <option value='B' >B</option>
-                        <option value='C' >C</option>
-                        <option value='D' >D</option>
-                        <option value='E' >E</option>
-                        <option value='F' >F</option>
-                        <option value='G' >G</option>
-                        {buildings.length > 0 && (
-                            buildings.map(building => (
-                                <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
-                            ))
-                        )}
-                    </select>
-
-                    <MdAdd className='add-building-img' size={35} color='white' onClick={AddBuilding} />
-                    <MdEdit className='edit-building-img' size={25} color='white' onClick={EditBuilding} />
+                        <div className='building-container'>
+                            <select className='list-box-building' name='building' size="10" onChange={UpdateRooms.bind(this)}>
+                                <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
+                                <option value='A' >A</option>
+                                <option value='B' >B</option>
+                                <option value='C' >C</option>
+                                <option value='D' >D</option>
+                                <option value='E' >E</option>
+                                <option value='F' >F</option>
+                                <option value='G' >G</option>
+                                {buildings.length > 0 && (
+                                    buildings.map(building => (
+                                        <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
+                                    ))
+                                )}
+                            </select>
+                        </div>
+                    </div>
 
                     <select className='list-box-room' name='room' size='10' onChange={UpdateResources.bind(this)}>
                         <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
