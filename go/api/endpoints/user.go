@@ -5,6 +5,7 @@ import (
 	"api/db"
 	"api/redis"
 	"api/utils"
+
 	// "errors"
 	"fmt"
 	"lib/logger"
@@ -176,19 +177,15 @@ func addDefaultPermissions(user string, access *db.Access) error {
 func InformationUserHandler(writer http.ResponseWriter, request *http.Request) {
 	var user data.User
 
-	resp := request.Header.Get("Authorization")
-	if resp == "" {
-		logger.Access.Printf("\nresp is empty\n")
-	}
-	// logger.Access.Printf("\nresp\n%v\n", resp)
-
 	err := utils.UnmarshalJSON(writer, request, &user)
 	if err != nil {
 		fmt.Println(err)
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
+
 	logger.Access.Printf("\nlogin user\n%v\n", user)
+
 	access, err := db.Open()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
@@ -215,7 +212,7 @@ func InformationUserHandler(writer http.ResponseWriter, request *http.Request) {
 	utils.JSONResponse(writer, request, users)
 }
 
-func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
+func LoginUserHandler(writer http.ResponseWriter, request *http.Request) { // TODO [EN]: Fix this funciton if broken
 	var userCred data.Credential
 
 	err := utils.UnmarshalJSON(writer, request, &userCred)
@@ -224,7 +221,12 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
+
+	temp := "local." + *userCred.Id
+	userCred.Id = &temp
+
 	logger.Access.Printf("\nuserCred\n%v\n", userCred)
+
 	access, err := db.Open()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
@@ -234,26 +236,26 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
 
 	da := data.NewUserDA(access)
 
-	users, err := da.FindCredential(&userCred)
+	credentials, err := da.FindCredential(&userCred)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		logger.Error.Fatalf("\nerror\n%v\n", err)
 		return
 	}
-	logger.Access.Printf("\nusers\n%v\n", users)
+
+	logger.Access.Printf("\nusers\n%v\n", credentials)
+
 	var user = data.User{
 		Identifier: userCred.Identifier,
 	}
 
 	// logger.Access.Printf("\nuser\n%v\n", user)
 
-	users, err = da.FindIdentifier(&user)
+	users, err := da.FindIdentifier(&user)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
-
-	// logger.Access.Printf("\nusers\n%v\n", users[0])
 
 	err = access.Commit()
 	if err != nil {
@@ -265,7 +267,7 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) {
 
 	//After user login create auth token
 	authData, err := redis.UserLogin(*users[0].Id)
-	if err != nil{
+	if err != nil {
 		logger.Error.Println("Error user login endpoint")
 		utils.InternalServerError(writer, request, err)
 	}
