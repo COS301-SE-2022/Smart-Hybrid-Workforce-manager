@@ -39,7 +39,7 @@ BEGIN
         SELECT permission_tenant_id FROM _permissions_table 
         WHERE permission_type = 'VIEW'::permission.type
         AND permission_category = 'BOOKING'::permission.category
-        AND permission_tenant = 'MEETINGROOM'::permission.tenant
+        AND (permission_tenant = 'USER'::permission.tenant OR permission_tenant = 'ROLE'::permission.tenant OR permission_tenant = 'TEAM'::permission.tenant)
     )
     SELECT i.id, i.booking_id, i.team_id, i.role_id, i.additional_attendees, i.desks_attendees, i.desks_additional_attendees
     FROM booking.meeting_room as i

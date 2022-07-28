@@ -7,6 +7,7 @@ import (
 	"api/utils"
 	"fmt"
 	"lib/logger"
+	"lib/testutils"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -27,10 +28,12 @@ func BookingHandlers(router *mux.Router) error {
 		&data.Permissions{data.CreateGenericPermission("DELETE", "BOOKING", "USER")})).Methods("POST")
 
 	router.HandleFunc("/meetingroom/create", security.Validate(CreateMeetingRoomBookingHandler,
-		&data.Permissions{data.CreateGenericPermission("CREATE", "BOOKING", "MEETINGROOM")})).Methods("POST")
+		&data.Permissions{data.CreateGenericPermission("CREATE", "BOOKING", "USER"),
+			data.CreateGenericPermission("CREATE", "BOOKING", "TEAM"),
+			data.CreateGenericPermission("CREATE", "BOOKING", "ROLE")})).Methods("POST")
 
 	router.HandleFunc("/meetingroom/information", security.Validate(InformationMeetingRoomBookingHandler,
-		&data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "MEETINGROOM")})).Methods("POST")
+		&data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "USER")})).Methods("POST")
 
 	return nil
 }
@@ -150,6 +153,7 @@ func DeleteBookingHandler(writer http.ResponseWriter, request *http.Request, per
 	// Get booking information if no user is defined
 	da := data.NewBookingDA(access)
 	if booking.UserId == nil {
+		// TODO: fix call when non existent booking is deleted
 		temp, err := da.FindIdentifier(&booking, &data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "USER")})
 		booking = *temp.FindHead()
 		if err != nil {
@@ -203,20 +207,42 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 	// Check if the user has permission to create or update a booking for the incoming meeting room
 	// TODO: @JonathanEnslin fix these permissions, add perms for creating bookings for certain teams, roles etc... Or leave it up to the scheduler
 	authorized := false
-	if meetingRoomBooking.Id != nil {
+	if meetingRoomBooking.Booking.UserId != nil {
 		for _, permission := range *permissions {
-			if meetingRoomBooking.Id == permission.PermissionTenantId || permission.PermissionTenantId == nil {
-				authorized = true
-			}
-		}
-	} else {
-		for _, permission := range *permissions {
-			if permission.PermissionTenantId == nil {
+			// A permission tenant id of nil means the user is allowed to perform the action on all tenants of the type
+			if permission.PermissionTenantId == meetingRoomBooking.Booking.UserId || permission.PermissionTenantId == nil {
 				authorized = true
 			}
 		}
 	}
+	if !authorized {
+		utils.AccessDenied(writer, request, fmt.Errorf("doesn't have permission to execute query"))
+		return
+	}
 
+	authorized = false
+	if meetingRoomBooking.RoleId != nil {
+		for _, permission := range *permissions {
+			// A permission tenant id of nil means the user is allowed to perform the action on all tenants of the type
+			if permission.PermissionTenantId == meetingRoomBooking.RoleId || permission.PermissionTenantId == nil {
+				authorized = true
+			}
+		}
+	}
+	if !authorized {
+		utils.AccessDenied(writer, request, fmt.Errorf("doesn't have permission to execute query"))
+		return
+	}
+
+	authorized = false
+	if meetingRoomBooking.TeamId != nil {
+		for _, permission := range *permissions {
+			// A permission tenant id of nil means the user is allowed to perform the action on all tenants of the type
+			if permission.PermissionTenantId == meetingRoomBooking.TeamId || permission.PermissionTenantId == nil {
+				authorized = true
+			}
+		}
+	}
 	if !authorized {
 		utils.AccessDenied(writer, request, fmt.Errorf("doesn't have permission to execute query"))
 		return
@@ -253,6 +279,95 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
+	}
+	fmt.Println(testutils.Scolour(testutils.RED, fmt.Sprint(meetingRoomBooking.DesksAttendees)))
+
+	// Add meetingroom bookings
+	fmt.Println(testutils.Scolour(testutils.RED, fmt.Sprint(*meetingRoomBooking.DesksAttendees)))
+	// // Add desks for role/team members in meeting
+	teamUsers := data.UserTeams{}
+	roleUsers := data.UserRoles{}
+
+	if meetingRoomBooking.TeamId != nil {
+		teamUsers, err = GetUserTeams(meetingRoomBooking.TeamId)
+		if err != nil {
+			utils.InternalServerError(writer, request, err)
+			return
+		}
+	}
+	if meetingRoomBooking.RoleId != nil {
+		roleUsers, err = GetUserRoles(meetingRoomBooking.RoleId)
+		if err != nil {
+			utils.InternalServerError(writer, request, err)
+			return
+		}
+	}
+
+	roleTeamUsersMap := make(map[string]bool)
+	for _, user := range teamUsers {
+		if user != nil {
+			roleTeamUsersMap[*user.UserId] = true
+		}
+	}
+	for _, user := range roleUsers {
+		if user != nil {
+			roleTeamUsersMap[*user.UserId] = true
+		}
+	}
+
+	bookings := data.Bookings{}
+	// Make the actual bookings
+	deskResourceType := "MEETINGROOM"
+	for key, _ := range roleTeamUsersMap {
+		bookings = append(bookings, &data.Booking{
+			UserId:       &key,
+			ResourceType: &deskResourceType,
+			Start:        meetingRoomBooking.Booking.Start,
+			End:          meetingRoomBooking.Booking.End,
+			Dependent:    bookingId,
+		})
+	}
+
+	// Store the bookings
+	batchBooking := data.BatchBooking{
+		UserId:   nil,
+		Bookings: bookings,
+	}
+
+	batchBookingDa := data.NewBatchBookingDA(access)
+	err = batchBookingDa.StoreIdentifiers(&batchBooking)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+	}
+
+	bookings = data.Bookings{}
+
+	// Add desks bookings
+	if meetingRoomBooking.DesksAttendees != nil && *meetingRoomBooking.DesksAttendees == true {
+		fmt.Println(testutils.Scolour(testutils.RED, fmt.Sprint(*meetingRoomBooking.DesksAttendees)))
+		// // Add desks for role/team members in meeting
+		// Make the actual bookings
+		deskResourceType = "DESK"
+		for key, _ := range roleTeamUsersMap {
+			bookings = append(bookings, &data.Booking{
+				UserId:       &key,
+				ResourceType: &deskResourceType,
+				Start:        meetingRoomBooking.Booking.Start,
+				End:          meetingRoomBooking.Booking.End,
+				Dependent:    bookingId,
+			})
+		}
+
+		// Store the bookings
+		batchBooking = data.BatchBooking{
+			UserId:   nil,
+			Bookings: bookings,
+		}
+
+		err = batchBookingDa.StoreIdentifiers(&batchBooking)
+		if err != nil {
+			utils.InternalServerError(writer, request, err)
+		}
 	}
 	err = access.Commit()
 	if err != nil {
@@ -304,7 +419,7 @@ func InformationMeetingRoomBookingHandler(writer http.ResponseWriter, request *h
 	}
 	defer access.Close()
 
-	// TODO [KP]: null checks etc.
+	// TODO: null checks etc.
 
 	da := data.NewBookingDA(access)
 	bookings, err := da.FindMeeetingRoomBooking(&meetingRoomBooking, security.RemoveRolePermissions(permissions))
@@ -321,4 +436,60 @@ func InformationMeetingRoomBookingHandler(writer http.ResponseWriter, request *h
 	}
 	logger.Access.Printf("%v meetingroom booking information requested\n", meetingRoomBooking.Id) // TODO [KP]: Be more descriptive
 	utils.JSONResponse(writer, request, bookings)
+}
+
+// GetUserTeams will return all the userteam pairs
+func GetUserTeams(teamId *string) (data.UserTeams, error) {
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		return nil, err
+	}
+	defer access.Close()
+	da := data.NewTeamDA(access)
+
+	userTeam := data.UserTeam{
+		TeamId: teamId,
+	}
+	permissions := &data.Permissions{data.CreateGenericPermission("VIEW", "TEAM", "USER"),
+		data.CreateGenericPermission("VIEW", "USER", "TEAM")}
+	userTeams, err := da.FindUserTeam(&userTeam, permissions)
+	if err != nil {
+		return nil, err
+	}
+
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		return nil, err
+	}
+	return userTeams, nil
+}
+
+// GetUserRoles will return all the userteam pairs
+func GetUserRoles(roleId *string) (data.UserRoles, error) {
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		return nil, err
+	}
+	defer access.Close()
+	da := data.NewRoleDA(access)
+
+	userRole := data.UserRole{
+		RoleId: roleId,
+	}
+	permissions := &data.Permissions{data.CreateGenericPermission("VIEW", "ROLE", "USER"),
+		data.CreateGenericPermission("VIEW", "USER", "ROLE")}
+	userRoles, err := da.FindUserRole(&userRole, permissions)
+	if err != nil {
+		return nil, err
+	}
+
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		return nil, err
+	}
+	return userRoles, nil
 }
