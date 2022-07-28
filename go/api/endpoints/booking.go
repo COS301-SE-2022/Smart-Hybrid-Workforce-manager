@@ -25,6 +25,13 @@ func BookingHandlers(router *mux.Router) error {
 
 	router.HandleFunc("/remove", security.Validate(DeleteBookingHandler,
 		&data.Permissions{data.CreateGenericPermission("DELETE", "BOOKING", "USER")})).Methods("POST")
+
+	router.HandleFunc("/meetingroom/create", security.Validate(CreateMeetingRoomBookingHandler,
+		&data.Permissions{data.CreateGenericPermission("CREATE", "BOOKING", "MEETINGROOM")})).Methods("POST")
+
+	router.HandleFunc("/meetingroom/information", security.Validate(InformationMeetingRoomBookingHandler,
+		&data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "MEETINGROOM")})).Methods("POST")
+
 	return nil
 }
 
@@ -67,7 +74,7 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 	// TODO [KP]: Do more checks like if they already have a booking etc
 
 	da := data.NewBookingDA(access)
-	err = da.StoreIdentifier(&booking)
+	_, err = da.StoreIdentifier(&booking)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
@@ -180,4 +187,138 @@ func DeleteBookingHandler(writer http.ResponseWriter, request *http.Request, per
 	}
 	logger.Access.Printf("%v booking removed\n", booking.Id) // TODO [KP]: Be more descriptive
 	utils.JSONResponse(writer, request, bookingRemoved)
+}
+
+// TODO: @JonathanEnslin create bookings for role and team members
+// CreateMeetingRoomBookingHandler creates or updates a booking
+func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.Request, permissions *data.Permissions) {
+	// Unmarshall MeetingRoomBooking
+	var meetingRoomBooking data.MeetingRoomBooking
+	err := utils.UnmarshalJSON(writer, request, &meetingRoomBooking)
+	if err != nil {
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	// Check if the user has permission to create or update a booking for the incoming meeting room
+	// TODO: @JonathanEnslin fix these permissions, add perms for creating bookings for certain teams, roles etc... Or leave it up to the scheduler
+	authorized := false
+	if meetingRoomBooking.Id != nil {
+		for _, permission := range *permissions {
+			if meetingRoomBooking.Id == permission.PermissionTenantId || permission.PermissionTenantId == nil {
+				authorized = true
+			}
+		}
+	} else {
+		for _, permission := range *permissions {
+			if permission.PermissionTenantId == nil {
+				authorized = true
+			}
+		}
+	}
+
+	if !authorized {
+		utils.AccessDenied(writer, request, fmt.Errorf("doesn't have permission to execute query"))
+		return
+	}
+
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	da := data.NewBookingDA(access)
+
+	var bookingId *string
+	// TODO: @JonathanEnslin check if booking exists first
+	if meetingRoomBooking.Booking != nil {
+		bookingId, err = da.StoreIdentifier(meetingRoomBooking.Booking)
+		if err != nil {
+			utils.InternalServerError(writer, request, err)
+			return
+		}
+	} else {
+		if meetingRoomBooking.BookingId == nil {
+			utils.BadRequest(writer, request, "no booking_id passed")
+			return
+		}
+		bookingId = meetingRoomBooking.BookingId
+	}
+
+	meetingRoomBooking.BookingId = bookingId
+	err = da.StoreBookingMeetingRoom(&meetingRoomBooking)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	logger.Access.Printf("%v meeting room booking created\n", bookingId)
+}
+
+// TODO: @JonathanEnslin determine if unnecessary because db has on delete cascade
+// DeleteMeetingRoomBookingHandler deletes a meeting room booking
+// func DeleteMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.Request, permissions *data.Permissions) {
+// 	// Unmarshall MeetingRoomBooking
+// 	var meetingRoomBooking data.MeetingRoomBooking
+// 	err := utils.UnmarshalJSON(writer, request, &meetingRoomBooking)
+// 	if err != nil {
+// 		utils.BadRequest(writer, request, "invalid_request")
+// 		return
+// 	}
+
+// 	// Create a database connection
+// 	access, err := db.Open()
+// 	if err != nil {
+// 		utils.InternalServerError(writer, request, err)
+// 		return
+// 	}
+// 	defer access.Close()
+
+// 	// Check if user has permission to delete a booking for the incoming meeting room booking
+
+// }
+
+func InformationMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.Request, permissions *data.Permissions) {
+	// Unmarshal MeetingRoomBooking
+	var meetingRoomBooking data.MeetingRoomBooking
+	err := utils.UnmarshalJSON(writer, request, &meetingRoomBooking)
+	if err != nil {
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	// No check for permissions the database handles information permissions
+
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	// TODO [KP]: null checks etc.
+
+	da := data.NewBookingDA(access)
+	bookings, err := da.FindMeeetingRoomBooking(&meetingRoomBooking, security.RemoveRolePermissions(permissions))
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	logger.Access.Printf("%v meetingroom booking information requested\n", meetingRoomBooking.Id) // TODO [KP]: Be more descriptive
+	utils.JSONResponse(writer, request, bookings)
 }
