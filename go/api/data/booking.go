@@ -36,6 +36,21 @@ type MeetingRoomBooking struct {
 	DesksAdditionalAttendees *bool    `json:"desks_additional_attendees,omitempty"`
 }
 
+func fancyStr(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
+}
+
+func (b *MeetingRoomBooking) String() string {
+	bookingStr := fmt.Sprint("Booking: ", b.Booking)
+	idStr := "Id: " + fancyStr(b.Id)
+	bookingIdStr := "BookingId: " + fancyStr(b.BookingId)
+	teamIdStr := "TeamId: " + fancyStr(b.TeamId)
+	return "\n========================\n" + bookingStr + "\n" + idStr + "\n" + bookingIdStr + "\n" + teamIdStr + "\n========================\n"
+}
+
 // MeetingRoomBookings represents a splice of BookingMeetingRooms
 type MeetingRoomBookings []*MeetingRoomBooking
 
@@ -113,12 +128,12 @@ func mapMeetingRoomBooking(rows *sql.Rows) (interface{}, error) {
 // StoreIdentifier stores an identifier
 func (access *BookingDA) StoreIdentifier(identifier *Booking) (*string, error) {
 	id, err := access.access.Query(
-		`SELECT 1 FROM booking.identifier_store($1, $2, $3, $4, $5, $6, $7, $8)`, mapIdReturn,
+		`SELECT * FROM booking.identifier_store($1, $2, $3, $4, $5, $6, $7, $8)`, mapIdReturn,
 		identifier.Id, identifier.UserId, identifier.ResourceType, identifier.ResourcePreferenceId, identifier.ResourceId, identifier.Start, identifier.End, identifier.Booked)
 	if err != nil {
 		return nil, err
 	}
-	_id := fmt.Sprint(id)
+	_id := fmt.Sprint(id[0])
 	return &_id, nil
 }
 
@@ -173,7 +188,7 @@ func (bookings Bookings) FindHead() *Booking {
 // StoreBookingMeetingRoom stores or updates a meeting room booking
 func (access *BookingDA) StoreBookingMeetingRoom(meetingRoomBooking *MeetingRoomBooking) error {
 	_, err := access.access.Query(
-		`SELECT 1 FROM booking.identifier_store($1, $2, $3, $4, $5, $6, $7)`, nil,
+		`SELECT 1 FROM booking.meeting_room_store($1, $2, $3, $4, $5, $6, $7)`, nil,
 		meetingRoomBooking.Id, meetingRoomBooking.BookingId, meetingRoomBooking.TeamId, meetingRoomBooking.RoleId, meetingRoomBooking.AdditionalAttendees, meetingRoomBooking.DesksAttendees, meetingRoomBooking.DesksAdditionalAttendees)
 	if err != nil {
 		return err
@@ -188,7 +203,7 @@ func (access *BookingDA) FindMeeetingRoomBooking(meetingRoomBooking *MeetingRoom
 		return nil, err
 	}
 	results, err := access.access.Query(
-		`SELECT * FROM booking.meeting_room_find($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, mapMeetingRoomBooking,
+		`SELECT * FROM booking.meeting_room_find($1, $2, $3, $4, $5, $6, $7, $8)`, mapMeetingRoomBooking,
 		meetingRoomBooking.Id, meetingRoomBooking.BookingId, meetingRoomBooking.TeamId, meetingRoomBooking.RoleId,
 		meetingRoomBooking.AdditionalAttendees, meetingRoomBooking.DesksAttendees, meetingRoomBooking.DesksAdditionalAttendees, permissionContent)
 	if err != nil {

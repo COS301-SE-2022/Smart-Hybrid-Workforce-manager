@@ -43,7 +43,7 @@ BEGIN
     )
     SELECT i.id, i.booking_id, i.team_id, i.role_id, i.additional_attendees, i.desks_attendees, i.desks_additional_attendees
     FROM booking.meeting_room as i
-    WHERE (EXISTS(SELECT 1 FROM permitted_users WHERE permission_tenant_id is null) OR i.id = ANY(SELECT * FROM permitted_meeting_rooms))
+    WHERE (EXISTS(SELECT 1 FROM permitted_meeting_rooms WHERE permission_tenant_id is null) OR i.id = ANY(SELECT * FROM permitted_meeting_rooms))
     AND (_id IS NULL OR i.id = _id)
     AND (_booking_id IS NULL OR i.booking_id = _booking_id)
     AND (_team_id IS NULL OR i.team_id = _team_id)

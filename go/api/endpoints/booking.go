@@ -26,6 +26,12 @@ func BookingHandlers(router *mux.Router) error {
 	router.HandleFunc("/remove", security.Validate(DeleteBookingHandler,
 		&data.Permissions{data.CreateGenericPermission("DELETE", "BOOKING", "USER")})).Methods("POST")
 
+	router.HandleFunc("/meetingroom/create", security.Validate(CreateMeetingRoomBookingHandler,
+		&data.Permissions{data.CreateGenericPermission("CREATE", "BOOKING", "MEETINGROOM")})).Methods("POST")
+
+	router.HandleFunc("/meetingroom/information", security.Validate(InformationMeetingRoomBookingHandler,
+		&data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "MEETINGROOM")})).Methods("POST")
+
 	return nil
 }
 
@@ -248,7 +254,6 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 		utils.InternalServerError(writer, request, err)
 		return
 	}
-
 	err = access.Commit()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
