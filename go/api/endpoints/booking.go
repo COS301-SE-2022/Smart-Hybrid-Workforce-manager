@@ -7,6 +7,7 @@ import (
 	"api/utils"
 	"fmt"
 	"lib/logger"
+	"lib/testutils"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -255,18 +256,65 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 		utils.InternalServerError(writer, request, err)
 		return
 	}
+	fmt.Println(testutils.Scolour(testutils.RED, fmt.Sprint(meetingRoomBooking.DesksAttendees)))
+	if meetingRoomBooking.DesksAttendees != nil && *meetingRoomBooking.DesksAttendees == true {
+		fmt.Println(testutils.Scolour(testutils.RED, fmt.Sprint(*meetingRoomBooking.DesksAttendees)))
+		// // Add desks for role/team members in meeting
+		teamUsers := data.UserTeams{}
+		roleUsers := data.UserRoles{}
 
-	// // Add desks for role/team members in meeting
-	// teamUsers := data.UserTeams{}
-	// roleUsers := data.UserRoles{}
+		if meetingRoomBooking.TeamId != nil {
+			teamUsers, err = GetUserTeams(meetingRoomBooking.TeamId)
+			if err != nil {
+				utils.InternalServerError(writer, request, err)
+				return
+			}
+		}
+		if meetingRoomBooking.RoleId != nil {
+			roleUsers, err = GetUserRoles(meetingRoomBooking.RoleId)
+			if err != nil {
+				utils.InternalServerError(writer, request, err)
+				return
+			}
+		}
 
-	// if meetingRoomBooking.TeamId != nil {
-	// 	teamUsers, err = GetUserTeams(meetingRoomBooking.TeamId)
-	// }
-	// if meetingRoomBooking.RoleId != nil {
-	// 	roleUsers, err = GetUserRoles(meetingRoomBooking.RoleId)
-	// }
+		roleTeamUsersMap := make(map[string]bool)
+		for _, user := range teamUsers {
+			if user != nil {
+				roleTeamUsersMap[*user.UserId] = true
+			}
+		}
+		for _, user := range roleUsers {
+			if user != nil {
+				roleTeamUsersMap[*user.UserId] = true
+			}
+		}
 
+		bookings := data.Bookings{}
+		// Make the actual bookings
+		deskResourceType := "DESK"
+		for key, _ := range roleTeamUsersMap {
+			bookings = append(bookings, &data.Booking{
+				UserId:       &key,
+				ResourceType: &deskResourceType,
+				Start:        meetingRoomBooking.Booking.Start,
+				End:          meetingRoomBooking.Booking.End,
+				Dependent:    bookingId,
+			})
+		}
+
+		// Store the bookings
+		batchBooking := data.BatchBooking{
+			UserId:   nil,
+			Bookings: bookings,
+		}
+
+		batchBookingDa := data.NewBatchBookingDA(access)
+		err = batchBookingDa.StoreIdentifiers(&batchBooking)
+		if err != nil {
+			utils.InternalServerError(writer, request, err)
+		}
+	}
 	err = access.Commit()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
@@ -317,7 +365,7 @@ func InformationMeetingRoomBookingHandler(writer http.ResponseWriter, request *h
 	}
 	defer access.Close()
 
-	// TODO [KP]: null checks etc.
+	// TODO: null checks etc.
 
 	da := data.NewBookingDA(access)
 	bookings, err := da.FindMeeetingRoomBooking(&meetingRoomBooking, security.RemoveRolePermissions(permissions))
