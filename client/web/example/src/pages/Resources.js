@@ -5,7 +5,7 @@ const Resources = () =>
 
     useEffect(() =>
     {
-        window.location.replace('http://localhost:3000/layout');
+        window.location.replace('http://localhost/layout');
     }, [])
 
   return (

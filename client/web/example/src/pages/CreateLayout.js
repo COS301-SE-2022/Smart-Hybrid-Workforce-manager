@@ -52,6 +52,13 @@ const Layout = () =>
             });
     }
 
+    /*useEffect(() =>
+    {
+        console.log("Resources: " + resources)
+        console.log(deskProps);
+        console.log(deskPropsRef.current);
+    },[resources, deskProps])*/
+
     const UpdateRooms = (e) =>
     {
         fetch("http://localhost:8100/api/resource/room/information", 
@@ -234,7 +241,7 @@ const Layout = () =>
                     width : width,
                     height : height,
                     rotation : rotation,
-                    edited : false
+                    edited : true
                 }
             ];
 
@@ -266,39 +273,40 @@ const Layout = () =>
                     width : 200,
                     height : 200,
                     rotation : 0,
-                    edited : false
+                    edited : true
                 }
             ]);
         }
     };
 
     //Function to monitor when a key is pressed. Returns true if target key is pressed and false when target key is released
-    const KeyPress = ((targetKey) =>
+    const deletePressed = useKeyPress("Delete");
+    function useKeyPress(targetKey)
     {
         // State for keeping track of whether key is pressed
         const [keyPressed, SetKeyPressed] = useState(false);
-
-        // If pressed key is our target key then set to true
-        const downHandler = useCallback((key) =>
-        {
-            if (key === targetKey)
-            {
-                SetKeyPressed(true);
-            }
-        },[targetKey]);
-
-        // If released key is our target key then set to false
-        const upHandler = useCallback((key) =>
-        {
-            if (key === targetKey)
-            {
-                SetKeyPressed(false);
-            }
-        },[targetKey]);
         
         //Event listeners for key press
         useEffect(() =>
         {
+            // If pressed key is our target key then set to true
+            function downHandler({key})
+            {
+                if (key === targetKey)
+                {
+                    SetKeyPressed(true);
+                }
+            };
+
+            // If released key is our target key then set to false
+            function upHandler({key})
+            {
+                if (key === targetKey)
+                {
+                    SetKeyPressed(false);
+                }
+            };
+
             window.addEventListener("keydown", downHandler);
             window.addEventListener("keyup", upHandler);
 
@@ -308,10 +316,10 @@ const Layout = () =>
                 window.removeEventListener("keydown", downHandler);
                 window.removeEventListener("keyup", upHandler);
             };
-        }, [downHandler, upHandler]);
+        }, [targetKey]);
 
         return keyPressed;
-    });
+    };
 
     const HandleDelete = useCallback(() =>
     {
@@ -510,11 +518,12 @@ const Layout = () =>
     },[]);
 
     //Effect to monitor if delete key is pressed
-    const deletePressed = KeyPress("Delete");
+    
     useEffect(() =>
     {
         if(deletePressed)
         {
+            console.log("D")
             HandleDelete();
         }
     }, [deletePressed, HandleDelete]);
@@ -527,6 +536,9 @@ const Layout = () =>
         deskCount.current = 0;
         meetingRoomPropsRef.current = [];
         meetingRoomCount.current = 0;
+
+        SetDeskProps(deskPropsRef.current);
+        SetMeetingRoomProps(meetingRoomPropsRef.current);
 
         //Loop through resources and load desks and meeting rooms respectively
         for(var i = 0; i < resources.length; i++)
@@ -586,14 +598,8 @@ const Layout = () =>
                         <MdAdd className='add-building-img' size={35} onClick={AddBuilding} />
                         <MdEdit className='edit-building-img' size={25} onClick={EditBuilding} />
 
-                            <select className='list-box-building' name='building' size="10" onChange={UpdateRooms.bind(this)}>
-                                <option value='A' >A</option>
-                                <option value='B' >B</option>
-                                <option value='C' >C</option>
-                                <option value='D' >D</option>
-                                <option value='E' >E</option>
-                                <option value='F' >F</option>
-                                <option value='G' >G</option>
+                            <select className='list-box-building' name='building' size='10' onChange={UpdateRooms.bind(this)}>
+                                <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
                                 {buildings.length > 0 && (
                                     buildings.map(building => (
                                         <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
@@ -609,13 +615,7 @@ const Layout = () =>
                         <MdEdit className='edit-room-img' size={25} onClick={EditRoom} />
 
                             <select className='list-box-room' name='room' size="10" onChange={UpdateResources.bind(this)}>
-                                <option value='A' >A</option>
-                                <option value='B' >B</option>
-                                <option value='C' >C</option>
-                                <option value='D' >D</option>
-                                <option value='E' >E</option>
-                                <option value='F' >F</option>
-                                <option value='G' >G</option>
+                                <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
                                 {rooms.length > 0 && (
                                     rooms.map(room => (
                                         <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>
