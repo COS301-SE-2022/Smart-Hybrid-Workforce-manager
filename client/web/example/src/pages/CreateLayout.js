@@ -2,7 +2,7 @@ import { Stage, Layer } from 'react-konva'
 import { useRef, useState, useEffect, useCallback } from 'react'
 import Desk from '../components/Map/Desk'
 import MeetingRoom from '../components/Map/MeetingRoom'
-import { FaSave } from 'react-icons/fa'
+import { FaSave, FaQuestion } from 'react-icons/fa'
 import { MdEdit, MdAdd } from 'react-icons/md'
 import desk_white from '../img/desk_white.svg';
 import meetingroom_white from '../img/meetingroom_white.svg';
@@ -188,11 +188,11 @@ const Layout = () =>
     //Add a new desk to the state
     const AddDesk = () =>
     {
-        if(currBuilding === "" || currRoom === "")
+        /*if(currBuilding === "" || currRoom === "")
         {
             window.alert("Please select a building and room");
             return;
-        }
+        }*/
 
         if(stageRef.current !== null)
         {
@@ -244,11 +244,11 @@ const Layout = () =>
     //Add a new desk to the state
     const AddMeetingRoom = () =>
     {
-        if(currBuilding === "" || currRoom === "")
+        /*if(currBuilding === "" || currRoom === "")
         {
             window.alert("Please select a building and room");
             return;
-        }
+        }*/
 
         if(stageRef.current !== null)
         {
@@ -552,6 +552,7 @@ const Layout = () =>
                     </div>
 
                     <div className='building-pane'>
+                        <span className='tooltip' style={{width: 0.15*window.innerWidth, top: 0.04*window.innerHeight, left: -0.16*window.innerWidth}}>Select a building to edit or add a new one.</span>
                         <p className='building-label'>Buildings</p>
                         <MdAdd className='add-building-img' size={35} onClick={AddBuilding} />
                         <MdEdit className='edit-building-img' size={25} onClick={EditBuilding} />
@@ -573,6 +574,7 @@ const Layout = () =>
                     </div>
 
                     <div className='room-pane'>
+                        <span className='tooltip' style={{width: 0.15*window.innerWidth, top: 0.43*window.innerHeight, left: -0.16*window.innerWidth}}>Select a room to edit or add a new one.</span>
                         <p className='room-label'>Rooms</p>
                         <MdAdd className='add-room-img' size={35} onClick={AddRoom} />
                         <MdEdit className='edit-room-img' size={25} onClick={EditRoom} />
@@ -597,14 +599,17 @@ const Layout = () =>
                 <div className='actions-pane'>
                     <div className='save-container' onClick={SaveLayout}>
                         <FaSave className='save-icon' size={30}/>
+                        <span className='tooltip'>Save</span>
                     </div>
 
                     <div className='add-desk-container' onClick={AddDesk}>
                         <img src={desk_white} alt='Add Desk' className='add-desk-img'></img>
+                        <span className='tooltip' style={{width: 0.06*window.innerWidth, top: 0.1*window.innerHeight}}>Add Desk</span>
                     </div>
 
                     <div className='add-meetingroom-container' onClick={AddMeetingRoom}>
                         <img src={meetingroom_white} alt='Add Meeting Room' className='add-meetingroom-img'></img>
+                        <span className='tooltip' style={{width: 0.08*window.innerWidth, top: 0.16*window.innerHeight}}>Add Meeting Room</span>
                     </div>
                                        
 

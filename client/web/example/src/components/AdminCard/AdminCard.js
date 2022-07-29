@@ -1,14 +1,15 @@
 import React from 'react'
 import { FaLongArrowAltRight } from 'react-icons/fa'
-import { useNavigate } from 'react-router-dom'
+//import { useNavigate } from 'react-router-dom'
 import { MdAccountCircle, MdSupervisedUserCircle, MdHomeFilled, MdPermIdentity } from 'react-icons/md'
 
 const AdminCard = ({name, description, path, type}) =>
 {
-    let navigate = useNavigate();
+    //let navigate = useNavigate();
     const route = () =>
     {
-        navigate(path);
+        //navigate(path);
+        window.open(path);
     }
 
     function icon()

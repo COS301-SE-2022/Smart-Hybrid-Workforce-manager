@@ -981,10 +981,29 @@
     height: 7vh;
 }
 
+.tooltip
+{
+    visibility: hidden;
+    background-color: #444444;
+    color: white;
+    border-radius: 1vh;
+    padding: 1vh;
+
+    left: 7vw;
+
+    position: absolute;
+    z-index: 2;
+}
+
 .save-container:hover
 {
     background-color: #03639b;
     cursor: pointer;
+}
+
+.save-container:hover .tooltip
+{
+    visibility: visible;
 }
 
 .save-icon
@@ -1014,6 +1033,11 @@
     cursor: pointer;
 }
 
+.add-desk-container:hover .tooltip
+{
+    visibility: visible;
+}
+
 .add-desk-img
 {
     height: 5vh;
@@ -1038,6 +1062,11 @@
 {
     background-color: #03639b;
     cursor: pointer;
+}
+
+.add-meetingroom-container:hover .tooltip
+{
+    visibility: visible;
 }
 
 .add-meetingroom-img
@@ -1079,6 +1108,11 @@
     margin-top: 2vh;
     grid-area: 'data-building';
     width: 13.5vw;
+}
+
+.building-pane:hover .tooltip
+{
+    visibility: visible;
 }
 
 .building-label
@@ -1157,6 +1191,11 @@
     margin-left: 1.5vw;
 }
 
+.room-pane:hover .tooltip
+{
+    visibility: visible;
+}
+
 .room-label
 {
     float: left;
@@ -1226,7 +1265,6 @@
     background-color: #252525;
     text-align: center;
 }
-
 
 /* Customize the label (the container) */
 .container {
