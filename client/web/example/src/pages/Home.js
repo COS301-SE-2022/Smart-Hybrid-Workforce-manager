@@ -7,7 +7,7 @@ import { UserContext } from '../App';
 const Home = () =>
 {
   const [bookings, setBookings] = useState([])
-  const {userData} = useContext(UserContext);
+  
 
   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -37,7 +37,7 @@ const Home = () =>
   let DaySeven = new Date()
   DaySeven.setHours(23, 59, 59, 59)
   DaySeven.setDate(DaySeven.getDate() + 6);
-
+  const {userData} = useContext(UserContext)
   //POST request
   const fetchData = () =>
   {
@@ -47,18 +47,16 @@ const Home = () =>
     let endDate = new Date()
     endDate.setHours(26, 0, 0, 0)
     endDate.setDate(endDate.getDate() + 1 * 7);
+    
 
     fetch("http://localhost:8100/api/booking/information", 
         {
           method: "POST",
-          mode: "cors",
           body: JSON.stringify({
             start: startDate.toISOString(),
             end: endDate.toISOString()
-          }),
-          headers:{
-            'Authorization': `bearer ${userData.token}`
-          }
+          })
+
         }).then((res) => res.json()).then(data => 
           {
             setBookings(data);
@@ -80,7 +78,7 @@ const Home = () =>
   return (
     <div className='page-container'>
       <div className='content'>
-        <Navbar />
+        <Navbar/>
         <div className='booking-container'>
           <h2 className='white'>{DayOne.getDate() + " " + monthNames[DayOne.getMonth()]}</h2> <hr></hr>
           {bookings.length > 0 && (

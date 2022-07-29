@@ -1,10 +1,9 @@
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
-import { UserContext } from "../App"
 import { useNavigate } from "react-router-dom"
 
 function ProfileConfiguration()
@@ -21,9 +20,8 @@ function ProfileConfiguration()
   const [startTime, SetStartTime] = useState("")
   const [endTime, SetEndTime] = useState("")
 
-  const {userData}=useContext(UserContext)
   const navigate=useNavigate();
-  console.log(userData)
+
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
@@ -33,7 +31,7 @@ function ProfileConfiguration()
       {
         method: "POST",
         body: JSON.stringify({
-          id: userData.user_id,
+          id: window.sessionStorage.getItem("UserID"),
           identifier: identifier,
           first_name: firstName,
           last_name: lastName,
@@ -51,7 +49,7 @@ function ProfileConfiguration()
       if(res.status === 200)
       {
         alert("Profile Configuration Succesfully Updated!");
-        navigate("/");
+        navigate("/")
         // window.location.assign("./");
       }
     }
@@ -87,7 +85,7 @@ function ProfileConfiguration()
           <Form className='form' onSubmit={handleSubmit}>
             <Form.Group className='form-group' controlId="formBasicName">
               <Form.Label className='form-label'>Work From Home&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</Form.Label>
-              <input type="checkbox" defaultChecked={ false } checked={workFromHome} onChange={(e) => SetWorkFromHome(e.target.checked)}/>
+              <input type="checkbox" defaultChecked={workFromHome} onChange={(e) => SetWorkFromHome(e.target.checked)}/>
             </Form.Group>
 
             <Form.Group className='form-group' controlId="formBasicName">
