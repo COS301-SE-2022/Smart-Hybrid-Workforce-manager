@@ -19,7 +19,9 @@ RETURNS TABLE (
 	start TIMESTAMP,
 	"end" TIMESTAMP,
     booked BOOLEAN,
-    date_created TIMESTAMP
+    automated BOOLEAN,
+    date_created TIMESTAMP,
+    dependent uuid
 ) AS 
 $$
 BEGIN
@@ -45,7 +47,7 @@ BEGIN
         AND permission_category = 'BOOKING'::permission.category
         AND permission_tenant = 'USER'::permission.tenant
     )
-    SELECT i.id, i.user_id, i.resource_type, i.resource_preference_id, i.resource_id, i.start, i."end", i.booked, i.date_created
+    SELECT i.id, i.user_id, i.resource_type, i.resource_preference_id, i.resource_id, i.start, i."end", i.booked, i.automated, i.date_created, i.dependent
     FROM booking.identifier as i
     WHERE (EXISTS(SELECT 1 FROM permitted_users WHERE permission_tenant_id is null) OR i.user_id = ANY(SELECT * FROM permitted_users))
     AND (_id IS NULL OR i.id = _id)

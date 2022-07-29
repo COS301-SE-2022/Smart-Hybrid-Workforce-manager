@@ -22,6 +22,7 @@ function ProfileConfiguration()
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
+    alert(workFromHome)
     try
     {
       let res = await fetch("http://localhost:8100/api/user/update", 
@@ -81,7 +82,7 @@ function ProfileConfiguration()
           <Form className='form' onSubmit={handleSubmit}>
             <Form.Group className='form-group' controlId="formBasicName">
               <Form.Label className='form-label'>Work From Home&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</Form.Label>
-              <input type="checkbox" defaultChecked={workFromHome} onChange={(e) => SetWorkFromHome(e.target.checked)}/>
+              <input type="checkbox" defaultChecked={ false } checked={workFromHome} onChange={(e) => SetWorkFromHome(e.target.checked)}/>
             </Form.Group>
 
             <Form.Group className='form-group' controlId="formBasicName">

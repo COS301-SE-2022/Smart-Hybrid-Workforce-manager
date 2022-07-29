@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gorilla/mux"
 	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -21,10 +21,9 @@ func main() {
 		os.Exit(-1)
 	}
 
-
 	// Create Redis clients
 	rediserr := redis.InitializeRedisClients()
-	if rediserr != nil{
+	if rediserr != nil {
 		logger.Error.Fatal(err)
 		os.Exit(-1)
 	}
@@ -94,13 +93,21 @@ func main() {
 		logger.Error.Fatal(err)
 		os.Exit(-1)
 	}
+
+	schedulerRouter := router.PathPrefix("/api/scheduler").Subrouter()
+	err = endpoints.SchedulerHandlers(schedulerRouter)
+	if err != nil {
+		logger.Error.Fatal(err)
+		os.Exit(-1)
+	}
+
 	// Setup CORS for the API
 	credentials := handlers.AllowCredentials()
-	methods := handlers.AllowedMethods([]string{"POST"})
-	// ttl := handlers.MaxAge(3600)
-	// origins := handlers.AllowedOrigins([]string{"www.example.com"})
+	headers := handlers.AllowedHeaders([]string{"X-Requested-With","Authorization"})
+	origins := handlers.AllowedOrigins([]string{os.Getenv("ORIGIN_ALLOWED")})
+	methods := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
 
 	// Start API on port 8080 in its docker container
 	logger.Info.Println("Starting API on 8080")
-	logger.Error.Fatal(http.ListenAndServe(":8080", handlers.CORS(credentials, methods) (router)))
+	logger.Error.Fatal(http.ListenAndServe(":8080", handlers.CORS(credentials, methods, headers, origins) (router)))
 }

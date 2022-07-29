@@ -1,12 +1,13 @@
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import BookingTicket from '../components/BookingTicket/BookingTicket';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { UserContext } from '../App';
 
 const Home = () =>
 {
   const [bookings, setBookings] = useState([])
-  
+  const {userData} = useContext(UserContext);
 
   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -50,10 +51,15 @@ const Home = () =>
     fetch("http://localhost:8100/api/booking/information", 
         {
           method: "POST",
+          mode: "cors",
           body: JSON.stringify({
             start: startDate.toISOString(),
             end: endDate.toISOString()
-          })
+          }),
+          headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}`
+          }
         }).then((res) => res.json()).then(data => 
           {
             setBookings(data);
