@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"lib/testutils"
 	"time"
 )
 
@@ -167,11 +166,9 @@ func (access *BookingDA) FindIdentifier(identifier *Booking, permissions *Permis
 
 //DeleteIdentifier finds an identifier
 func (access *BookingDA) DeleteIdentifier(identifier *Booking) (*Booking, error) {
-	fmt.Println(testutils.Scolour(testutils.RED, "HERE1"))
 	results, err := access.access.Query(
 		`SELECT * FROM booking.identifier_remove($1)`, mapBooking,
 		identifier.Id)
-	fmt.Println(testutils.Scolour(testutils.RED, "HERE2"))
 	if err != nil {
 		return nil, err
 	}
