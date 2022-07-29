@@ -26,7 +26,7 @@ function BookingsDesk()
         method: "POST",
         body: JSON.stringify({
           id: null,
-          user_id: userData.user_id,
+          user_id: window.sessionStorage.getItem("UserID"),
           resource_type: "DESK",
           resource_preference_id: null,
           resource_id: null,
