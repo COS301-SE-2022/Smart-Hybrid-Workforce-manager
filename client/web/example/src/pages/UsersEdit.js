@@ -33,9 +33,6 @@ function EditUser()
           method: "POST",
           body: JSON.stringify({
             user_id: window.sessionStorage.getItem("UserID")
-          }),
-          headers: new Headers({
-            'Authorization': `bearer ${userData.token}`
           })
         }).then((res) => res.json()).then(data => 
           {
@@ -51,9 +48,6 @@ function EditUser()
           method: "POST",
           body: JSON.stringify({
             user_id: window.sessionStorage.getItem("UserID")
-          }),
-          headers: new Headers({
-            'Authorization': `bearer ${userData.token}`
           })
         }).then((res) => res.json()).then(data => 
           {
@@ -68,9 +62,6 @@ function EditUser()
             {
             method: "POST",
             body: JSON.stringify({
-            }),
-            headers: new Headers({
-              'Authorization': `bearer ${userData.token}`
             })
             }).then((res) => res.json()).then(data => 
             {
@@ -94,17 +85,14 @@ function EditUser()
                 body: JSON.stringify({
                     role_id: currRole,
                     user_id: window.sessionStorage.getItem("UserID")
-                }),
-                headers: new Headers({
-                  'Authorization': `bearer ${userData.token}`
                 })
             });
 
             if(res.status === 200)
             {
               alert("Role Successfully Added!");
-              navigate("/user-edit");
-              // window.location.reload();
+              navigate(0);
+              window.location.reload();
             }
         }
         catch (err)
@@ -120,9 +108,6 @@ function EditUser()
             {
             method: "POST",
             body: JSON.stringify({
-            }),
-            headers: new Headers({
-              'Authorization': `bearer ${userData.token}`
             })
             }).then((res) => res.json()).then(data => 
             {

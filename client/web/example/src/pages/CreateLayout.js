@@ -48,9 +48,6 @@ const Layout = () =>
             {
             method: "POST",
             body: JSON.stringify({
-            }),
-            headers: new Headers({
-              'Authorization': `bearer ${userData.token}`
             })
             }).then((res) => res.json()).then(data => 
             {
@@ -65,9 +62,6 @@ const Layout = () =>
             method: "POST",
             body: JSON.stringify({
                 building_id: e.target.value
-            }),
-            headers: new Headers({
-              'Authorization': `bearer ${userData.token}`
             })
             }).then((res) => res.json()).then(data => 
             {
@@ -86,9 +80,6 @@ const Layout = () =>
             method: "POST",
             body: JSON.stringify({
                 room_id: e.target.value
-            }),
-            headers: new Headers({
-              'Authorization': `bearer ${userData.token}`
             })
             }).then((res) => res.json()).then(data => 
             {

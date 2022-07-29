@@ -18,9 +18,6 @@ function Teams()
         {
           method: "POST",
           body: JSON.stringify({
-          }),
-          headers: new Headers({
-            'Authorization': `bearer ${userData.token}`
           })
         }).then((res) => res.json()).then(data => 
           {
