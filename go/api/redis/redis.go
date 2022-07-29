@@ -33,7 +33,6 @@ import (
 
 type RedisData struct{
 	User_id 			string		`json:"user_id"`
-	Email				string		`json:"email"`
 	Token 				string 		`json:"token"`
 	CreationTime 		time.Time 	`json:"CreationTime"`
 	ExpirationTime 		time.Time	`json:"ExpirationTime"`

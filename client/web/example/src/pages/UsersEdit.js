@@ -1,12 +1,10 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import '../App.css'
 import RoleUserList from '../components/Role/RoleUserList'
 import TeamUserList from '../components/Team/TeamUserList'
 import Button from 'react-bootstrap/Button'
-import { UserContext } from '../App'
-import { useNavigate } from 'react-router-dom'
 
 function EditUser()
 {
@@ -22,9 +20,6 @@ function EditUser()
     const [userRoles, SetUserRoles] = useState([])
     const [userTeams, SetUserTeams] = useState([])
 
-    const {userData} = useContext(UserContext)
-    const navigate = useNavigate();
-
   //POST request
   const FetchUserRoles = () =>
   {
@@ -33,9 +28,6 @@ function EditUser()
           method: "POST",
           body: JSON.stringify({
             user_id: window.sessionStorage.getItem("UserID")
-          }),
-          headers: new Headers({
-            'Authorization': `bearer ${userData.token}`
           })
         }).then((res) => res.json()).then(data => 
           {
@@ -51,9 +43,6 @@ function EditUser()
           method: "POST",
           body: JSON.stringify({
             user_id: window.sessionStorage.getItem("UserID")
-          }),
-          headers: new Headers({
-            'Authorization': `bearer ${userData.token}`
           })
         }).then((res) => res.json()).then(data => 
           {
@@ -68,9 +57,6 @@ function EditUser()
             {
             method: "POST",
             body: JSON.stringify({
-            }),
-            headers: new Headers({
-              'Authorization': `bearer ${userData.token}`
             })
             }).then((res) => res.json()).then(data => 
             {
@@ -94,17 +80,13 @@ function EditUser()
                 body: JSON.stringify({
                     role_id: currRole,
                     user_id: window.sessionStorage.getItem("UserID")
-                }),
-                headers: new Headers({
-                  'Authorization': `bearer ${userData.token}`
                 })
             });
 
             if(res.status === 200)
             {
               alert("Role Successfully Added!");
-              navigate("/user-edit");
-              // window.location.reload();
+              window.location.reload();
             }
         }
         catch (err)
@@ -120,9 +102,6 @@ function EditUser()
             {
             method: "POST",
             body: JSON.stringify({
-            }),
-            headers: new Headers({
-              'Authorization': `bearer ${userData.token}`
             })
             }).then((res) => res.json()).then(data => 
             {
@@ -152,7 +131,6 @@ function EditUser()
             if(res.status === 200)
             {
                 alert("Team Successfully Added!");
-                navigate(0);
                 window.location.reload();
             }
         }

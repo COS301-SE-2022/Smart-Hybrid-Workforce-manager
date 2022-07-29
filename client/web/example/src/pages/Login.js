@@ -1,63 +1,64 @@
-import React, { useContext, useState } from 'react'
+import React, { useState, useContext } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import PropTypes from 'prop-types';
 import { UserContext } from '../App';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Login()
 {
   const [identifier, setIdentifier] = useState("");
   const [secret, setSecret] = useState("");
-  const auth = sessionStorage.getItem("auth_data");
-  const {setUserData}=useContext(UserContext)
-  const navigate=useNavigate();
+  const {setUserData} = useContext(UserContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // if(auth != null && userData == null){
+  //   setUserData(auth);
+  //   alert("Previous session restored")
+  //   if (location.state?.from) {
+  //     navigate(location.state.from);
+  //   }else{
+  //     return <Navigate to="/"/>
+  //   }
+  // }
+  // console.log(auth);
+  // console.log(userData);
 
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
-    console.log(JSON.stringify({
-      identifier:identifier,
-      secret:secret,
-      id: null,
-      type:null,
-      active:null
-    }))
+
     fetch("http://localhost:8100/api/user/login", 
     {
       method: "POST",
+      mode: "cors",
       body: JSON.stringify({
-        identifier:identifier,
-        secret:secret,
-        id: null,
-        type:null,
-        active:null
+        "id":identifier,
+        "secret":secret,
+        "active":null,
+        "FailedAttempts":null,
+        "LastAccessed":null,
+        "Identifier":null
       })
     }).then((res) => {
       if(res.status === 200){
         alert("Successfully Logged In!")
         return res.json();        
       }
-      else{
-        console.log(res)
+      else
         alert("Failed login");
-      }        
     }).then((data) => {
-      setUserData(data)
+      data["isLoggedIn"] = true;
+      setUserData(data);
       sessionStorage.setItem("auth_data", data);
-      navigate("/");
+      if (location.state?.from) {
+        navigate(location.state.from);
+      }else{
+        navigate("/");
+      }
     }).catch((err) => {
       console.error(err);
     })
-    
-    // if(res.status === 200)
-    // {
-    //   console.log(res.json());
-    //   // sessionStorage.setItem("auth_data", res);
-    //   alert("Successfully Logged In!");
-
-    //   // window.location.assign("./bookings");
-    // }
   };  
 
   return (
@@ -66,7 +67,6 @@ export default function Login()
         <div className='login-grid'>
           <div className='form-container-login'>
             <p className='form-header'><h1>WELCOME BACK</h1>Please enter your details.</p>
-            {auth===undefined?console.log("logged In"):console.log("not logged in")}
             <Form className='form' onSubmit={handleSubmit}>
               <Form.Group className='form-group' controlId="formBasicEmail">
                 <Form.Label className='form-label'>Email<br></br></Form.Label>

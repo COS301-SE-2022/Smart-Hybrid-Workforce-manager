@@ -1,17 +1,12 @@
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import UserListItem from '../components/Profile/UserListItem';
 import Button from 'react-bootstrap/Button'
-import { UserContext } from "../App";
-import { useNavigate } from "react-router-dom";
 
 function Users()
 {
   const [users, setUsers] = useState([])
-
-  const {userData} = useContext(UserContext)
-  const navigate = useNavigate();
 
   //POST request
   const FetchUsers = () =>
@@ -20,9 +15,6 @@ function Users()
         {
           method: "POST",
           body: JSON.stringify({
-          }),
-          headers: new Headers({
-            'Authorization': `bearer ${userData.token}`
           })
         }).then((res) => res.json()).then(data => 
           {
@@ -38,8 +30,7 @@ function Users()
 
   const AddUser = () =>
   {
-    navigate("/user-create");
-    // window.location.assign("./user-create");
+    window.location.assign("./user-create");
   }
 
   return (

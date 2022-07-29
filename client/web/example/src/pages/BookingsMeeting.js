@@ -2,10 +2,8 @@ import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect } from 'react'
 import '../App.css'
-import { UserContext } from "../App"
-import { useNavigate } from "react-router-dom"
 
 function BookingsMeeting()
 {
@@ -23,8 +21,6 @@ function BookingsMeeting()
   const [attendeesDesks, SetAttendeesDesks] = useState(false) // Use a bool
   const [aditionalAttendeesDesks, SetAditionalAttendeesDesks] = useState(false) // Use a bool
 
-  const {userData} = useContext(UserContext)
-  const navigate = useNavigate();
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
@@ -37,7 +33,7 @@ function BookingsMeeting()
           {
             "booking": {
               id: null,
-              user_id: userData.user_id,
+              user_id: "11111111-1111-4a06-9983-8b374586e459",
               resource_type: "MEETINGROOM",
               resource_preference_id: null,
               resource_id: null,
@@ -50,17 +46,13 @@ function BookingsMeeting()
             additional_attendees: Number(aditionalAttendees),
             desks_attendees: attendeesDesks,
             desks_aditional_attendees: aditionalAttendeesDesks,
-          }),
-          headers: new Headers({
-            'Authorization': `bearer ${userData.token}`
           })
       });
 
       if(res.status === 200)
       {
         alert("Booking Successfully Created!");
-        navigate("/bookings-meeting");
-        // window.location.reload();
+        window.location.reload();
       }
     }
     catch(err)
@@ -76,9 +68,6 @@ function BookingsMeeting()
         {
           method: "POST",
           body: JSON.stringify({
-          }),
-          headers: new Headers({
-            'Authorization': `bearer ${userData.token}`
           })
         }).then((res) => res.json()).then(data => 
         {
@@ -93,9 +82,6 @@ function BookingsMeeting()
         {
           method: "POST",
           body: JSON.stringify({
-          }),
-          headers: new Headers({
-            'Authorization': `bearer ${userData.token}`
           })
         }).then((res) => res.json()).then(data => 
         {

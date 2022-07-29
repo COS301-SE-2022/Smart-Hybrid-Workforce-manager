@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
-import { useNavigate } from "react-router-dom"
 
 function ProfileConfiguration()
 {
@@ -20,11 +19,10 @@ function ProfileConfiguration()
   const [startTime, SetStartTime] = useState("")
   const [endTime, SetEndTime] = useState("")
 
-  const navigate=useNavigate();
-
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
+    alert(workFromHome)
     try
     {
       let res = await fetch("http://localhost:8100/api/user/update", 
@@ -49,8 +47,7 @@ function ProfileConfiguration()
       if(res.status === 200)
       {
         alert("Profile Configuration Succesfully Updated!");
-        navigate("/")
-        // window.location.assign("./");
+        window.location.assign("./");
       }
     }
     catch(err)
@@ -85,7 +82,7 @@ function ProfileConfiguration()
           <Form className='form' onSubmit={handleSubmit}>
             <Form.Group className='form-group' controlId="formBasicName">
               <Form.Label className='form-label'>Work From Home&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</Form.Label>
-              <input type="checkbox" defaultChecked={workFromHome} onChange={(e) => SetWorkFromHome(e.target.checked)}/>
+              <input type="checkbox" defaultChecked={ false } checked={workFromHome} onChange={(e) => SetWorkFromHome(e.target.checked)}/>
             </Form.Group>
 
             <Form.Group className='form-group' controlId="formBasicName">

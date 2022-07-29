@@ -1,11 +1,9 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
-import { useNavigate } from 'react-router-dom'
-import { UserContext } from '../App'
 
 function Teams()
 {
@@ -14,8 +12,7 @@ function Teams()
   const [capacity, setCapacity] = useState("");
   const [priority, setPriority] = useState("");
   const [picture, setPicture] = useState("");
-  const {userData} = useContext(UserContext)
-  const navigate = useNavigate();
+
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
@@ -30,17 +27,13 @@ function Teams()
           capacity: parseInt(capacity),
           priority: parseInt(priority),
           picture: picture
-        }),
-        headers: new Headers({
-          'Authorization': `bearer ${userData.token}`
         })
       });
 
       if(res.status === 200)
       {
         alert("Team Successfully Created!");
-        navigate("/team");
-        // window.location.assign("./team");
+        window.location.assign("./team");
       }
     }
     catch(err)

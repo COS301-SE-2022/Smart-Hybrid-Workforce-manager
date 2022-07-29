@@ -1,12 +1,13 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import '../App.css'
 import Button from 'react-bootstrap/Button'
 import RoleUserList from '../components/Role/RoleUserList'
 import TeamUserList from '../components/Team/TeamUserList'
+import { useContext } from 'react'
 import { UserContext } from '../App'
-import { useNavigate } from 'react-router-dom'
+import LogoutButton from '../components/Logout/LogoutButton'
 
 function Profile()
 {
@@ -24,11 +25,9 @@ function Profile()
 
   const [roles, SetRoles] = useState([])
   const [teams, SetTeams] = useState([])
+
+  const {userData} = useContext(UserContext);
   
-  const {userData}=useContext(UserContext)
-
-  const navigate=useNavigate();
-
   //POST request
   const FetchUser = () =>
   {
@@ -36,11 +35,13 @@ function Profile()
         {
           method: "POST",
           body: JSON.stringify({
-            identifier:userData.user_id.substring(6)
-          })
+            id:userData.user_id
+          }),
+          headers:{
+            'Authorization': `bearer ${userData.token}`
+          }
         }).then((res) => res.json()).then(data => 
         {
-          sessionStorage.setItem("UserID",data[0].id)
           SetIdentifier(data[0].identifier)
           SetFirstName(data[0].first_name);
           SetLastName(data[0].last_name);
@@ -55,9 +56,6 @@ function Profile()
         });
   }
 
-  console.log(window.sessionStorage.getItem("UserID"))
-  console.log(userData)
-  console.log(userData.user_id.substring(6))
   //POST request
   const FetchUserRoles = () =>
   {
@@ -65,8 +63,11 @@ function Profile()
         {
           method: "POST",
           body: JSON.stringify({
-            identifier:userData.user_id.substring(6)
-          })
+            user_id:userData.user_id
+          }),
+          headers:{
+            'Authorization': `bearer ${userData.token}`
+          }
         }).then((res) => res.json()).then(data => 
           {
             SetRoles(data);
@@ -76,14 +77,21 @@ function Profile()
   //POST request
   const FetchUserTeams = () =>
   {
+    console.log(userData.token);
+    console.log(`bearer ${userData.token}`);
     fetch("http://localhost:8100/api/team/user/information", 
         {
           method: "POST",
+          mode: "cors",
           body: JSON.stringify({
-            identifier:userData.user_id.substring(6)
+            user_id:userData.user_id
+          }),
+          headers: new Headers({
+            'Authorization': `bearer ${userData.token}`
           })
-        }).then((res) => res.json()).then(data => 
+        }).then((res) => {return res.json()}).then(data => 
           {
+            console.log(data);
             SetTeams(data);
           });
   }
@@ -91,7 +99,7 @@ function Profile()
   //Using useEffect hook. This will ste the default values of the form once the components are mounted
   useEffect(() =>
   {
-    // window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
+    window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
     FetchUser();
     FetchUserRoles();
     FetchUserTeams();
@@ -99,7 +107,7 @@ function Profile()
 
   const ProfileConfiguration = () =>
   {
-    // window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
+    window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
     window.sessionStorage.setItem("Identifier", identifier);
     window.sessionStorage.setItem("FirstName", firstName);
     window.sessionStorage.setItem("LastName", lastName);
@@ -111,15 +119,13 @@ function Profile()
     window.sessionStorage.setItem("OfficeDays", officeDays);
     window.sessionStorage.setItem("StartTime", startTime);
     window.sessionStorage.setItem("EndTime", endTime);
-    navigate("/profile-configuration")
-    // window.location.assign("./profile-configuration");
+    window.location.assign("./profile-configuration");
   }
 
-  const LogOut = () =>
-  {
-
-    window.location.assign("./login");
-  }
+  // const LogOut = () =>
+  // {
+  //   setUserData(null);
+  // }
 
   return (
     <div className='page-container'>
@@ -154,7 +160,7 @@ function Profile()
               </div>
             </div>
             <Button className='button-user-profile' variant='primary' onClick={ProfileConfiguration}>Profile Configuration</Button>
-            <Button className='button-user-profile' variant='primary' onClick={LogOut}>Log Out</Button>
+            <LogoutButton/>
           </div>
         </div>
       </div>

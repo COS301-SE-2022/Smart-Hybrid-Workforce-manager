@@ -1,9 +1,7 @@
 import React from 'react'
 import { MdEdit, MdDelete } from 'react-icons/md'
-import { useNavigate } from 'react-router-dom'
 
 const BookingTicket = ({id, startDate, startTime, endDate, endTime, confirmed, type}) => {
-    const navigate = useNavigate();
 
     let EditBooking = async (e) =>
     {
@@ -13,7 +11,7 @@ const BookingTicket = ({id, startDate, startTime, endDate, endTime, confirmed, t
         window.sessionStorage.setItem("StartTime", startTime);
         window.sessionStorage.setItem("EndDate", endDate);
         window.sessionStorage.setItem("EndTime", endTime);
-        navigate("/bookings-desk-edit");
+        window.location.assign("./bookings-desk-edit");
     }
 
     let DeleteBooking = async (e) =>
@@ -34,7 +32,7 @@ const BookingTicket = ({id, startDate, startTime, endDate, endTime, confirmed, t
                 if(res.status === 200)
                 {
                     alert("Booking Successfully Deleted!");
-                    navigate("/");
+                    window.location.assign("./");
                 }
             }
             catch (err)

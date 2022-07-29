@@ -1,20 +1,15 @@
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
-import { UserContext } from "../App"
-import { useNavigate } from "react-router-dom"
 
 function BookingsDesk()
 {
   const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-
-  const {userData} = useContext(UserContext)
-  const navigate = useNavigate();
 
   let handleSubmit = async (e) =>
   {
@@ -26,16 +21,13 @@ function BookingsDesk()
         method: "POST",
         body: JSON.stringify({
           id: null,
-          user_id: userData.user_id,
+          user_id: "11111111-1111-4a06-9983-8b374586e459",
           resource_type: "DESK",
           resource_preference_id: null,
           resource_id: null,
           start: startDate + "T" + startTime + ":43.511Z",
           end: startDate + "T" + endTime + ":43.511Z",
           booked: false
-        }),
-        headers: new Headers({
-          'Authorization': `bearer ${userData.token}`
         })
       });
 
@@ -50,17 +42,13 @@ function BookingsDesk()
             sTime: startTime,
             eDate: startDate,
             eTime: endTime
-          }),
-          headers: new Headers({
-            'Authorization': `bearer ${userData.token}`
           })
         });
 
         if(res.status === 200)
         {
           alert("Booking Successfully Created!");
-          navigate("/");
-          // window.location.assign("./");
+          window.location.assign("./");
         }
       }
     }

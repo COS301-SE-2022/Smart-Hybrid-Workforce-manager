@@ -3,7 +3,6 @@ import Footer from "../components/Footer"
 import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import { UserContext } from "../App"
 
 function BookingsDeskEdit()
 {
@@ -11,8 +10,6 @@ function BookingsDeskEdit()
   const [startTime, setStartTime] = useState("");
   const [endDate, setEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
-
-  const {userData}=UserContext(UserContext)
 
   let handleSubmit = async (e) =>
   {
@@ -24,7 +21,7 @@ function BookingsDeskEdit()
         method: "POST",
         body: JSON.stringify({
           id: window.sessionStorage.getItem("BookingID"),
-          user_id: userData.user_id,
+          user_id: "11111111-1111-4a06-9983-8b374586e459",
           resource_type: "DESK",
           resource_preference_id: null,
           resource_id: null,
