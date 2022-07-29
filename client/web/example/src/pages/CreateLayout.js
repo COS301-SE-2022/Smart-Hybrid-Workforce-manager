@@ -565,9 +565,9 @@ const Layout = () =>
                         -Welcome to the office layout creation page.<br></br>
                         -Use the toolbar on the left to add desks and meeting rooms to the floor plan.<br></br>
                         -The properties pane on the right is used to choose the building and room that you are working in.<br></br>
-                        -New buildings and rooms can be added using the plus icon by each label respectively. The pencil icon allows for editing the currently selected building/room<br></br><br></br>
+                        -New buildings and rooms can be added using the plus icon by each label respectively. The pencil icon allows for editing the currently selected building/room.<br></br><br></br>
                         -Desks/Meeting Rooms can be moved around by clicking and dragging them.<br></br>
-                        -Left click a desk/meeting room once to bring up the transformation gizmo which allows rotation and scaling<br></br>
+                        -Left click a desk/meeting room once to bring up the transformation gizmo which allows rotation and scaling.<br></br>
                         -Click and drag on the canvas to pan the entire view.<br></br>
                         -The scroll wheel can be used to zoom in and out.<br></br><br></br>
                         Click this help box to close it. It can be reopened by clicking the question mark at the top.

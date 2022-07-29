@@ -1001,6 +1001,8 @@
     left: 85vw;
 
     z-index: 1;
+
+    transition: all 0.5s ease;    
 }
 
 .actions-pane
