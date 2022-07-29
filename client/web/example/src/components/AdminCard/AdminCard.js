@@ -8,7 +8,14 @@ const AdminCard = ({name, description, path, type}) =>
     let navigate = useNavigate();
     const route = () =>
     {
-        navigate(path);
+        if(path === '/resources')
+        {
+            window.open(path);
+        }
+        else
+        {
+            navigate(path);
+        }
     }
 
     function icon()
