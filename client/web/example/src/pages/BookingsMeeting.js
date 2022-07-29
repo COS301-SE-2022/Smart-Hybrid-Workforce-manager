@@ -50,9 +50,6 @@ function BookingsMeeting()
             additional_attendees: Number(aditionalAttendees),
             desks_attendees: attendeesDesks,
             desks_aditional_attendees: aditionalAttendeesDesks,
-          }),
-          headers: new Headers({
-            'Authorization': `bearer ${userData.token}`
           })
       });
 
@@ -76,9 +73,6 @@ function BookingsMeeting()
         {
           method: "POST",
           body: JSON.stringify({
-          }),
-          headers: new Headers({
-            'Authorization': `bearer ${userData.token}`
           })
         }).then((res) => res.json()).then(data => 
         {
@@ -93,9 +87,6 @@ function BookingsMeeting()
         {
           method: "POST",
           body: JSON.stringify({
-          }),
-          headers: new Headers({
-            'Authorization': `bearer ${userData.token}`
           })
         }).then((res) => res.json()).then(data => 
         {

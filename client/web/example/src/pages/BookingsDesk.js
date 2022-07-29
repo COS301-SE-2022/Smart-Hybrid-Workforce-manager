@@ -33,9 +33,6 @@ function BookingsDesk()
           start: startDate + "T" + startTime + ":43.511Z",
           end: startDate + "T" + endTime + ":43.511Z",
           booked: false
-        }),
-        headers: new Headers({
-          'Authorization': `bearer ${userData.token}`
         })
       });
 
@@ -50,9 +47,6 @@ function BookingsDesk()
             sTime: startTime,
             eDate: startDate,
             eTime: endTime
-          }),
-          headers: new Headers({
-            'Authorization': `bearer ${userData.token}`
           })
         });
 
