@@ -1,11 +1,13 @@
 import { Stage, Layer } from 'react-konva'
-import { useRef, useState, useEffect, useCallback } from 'react'
+import { useRef, useState, useEffect, useCallback, useContext } from 'react'
 import Desk from '../components/Map/Desk'
 import MeetingRoom from '../components/Map/MeetingRoom'
 import { FaSave, FaQuestion } from 'react-icons/fa'
 import { MdEdit, MdAdd } from 'react-icons/md'
 import desk_white from '../img/desk_white.svg';
 import meetingroom_white from '../img/meetingroom_white.svg';
+import { UserContext } from '../App'
+import { useNavigate } from 'react-router-dom'
 
 const Layout = () =>
 {
@@ -38,6 +40,9 @@ const Layout = () =>
     const [currRoom, SetCurrRoom] = useState("");
     const [resources, SetResources] = useState([]);
 
+    const {userData} = useContext(UserContext)
+    const navigate = useNavigate();
+
     //POST requests
     const FetchBuildings = () =>
     {
@@ -45,6 +50,9 @@ const Layout = () =>
             {
             method: "POST",
             body: JSON.stringify({
+            }),
+            headers: new Headers({
+              'Authorization': `bearer ${userData.token}`
             })
             }).then((res) => res.json()).then(data => 
             {
@@ -66,6 +74,9 @@ const Layout = () =>
             method: "POST",
             body: JSON.stringify({
                 building_id: e.target.value
+            }),
+            headers: new Headers({
+              'Authorization': `bearer ${userData.token}`
             })
             }).then((res) => res.json()).then(data => 
             {
@@ -84,6 +95,9 @@ const Layout = () =>
             method: "POST",
             body: JSON.stringify({
                 room_id: e.target.value
+            }),
+            headers: new Headers({
+              'Authorization': `bearer ${userData.token}`
             })
             }).then((res) => res.json()).then(data => 
             {
@@ -121,7 +135,8 @@ const Layout = () =>
     //Add building
     const AddBuilding = () =>
     {
-        window.location.assign("./building");
+        navigate("/building");
+        // window.location.assign(".");
     }
 
     //Edit selected building
@@ -131,7 +146,8 @@ const Layout = () =>
         {
             e.preventDefault();
             window.sessionStorage.setItem("BuildingID", currBuilding);
-            window.location.assign("./building-edit");
+            navigate("/building-edit");
+            // window.location.assign("./building-edit");
         }
         else
         {
@@ -144,7 +160,8 @@ const Layout = () =>
         if(currBuilding !== "")
         {
             window.sessionStorage.setItem("BuildingID", currBuilding);
-            window.location.assign("./room");
+            navigate("/room");
+            // window.location.assign("./room");
         }
         else
         {
@@ -159,7 +176,8 @@ const Layout = () =>
             e.preventDefault();
             window.sessionStorage.setItem("RoomID", currRoom);
             window.sessionStorage.setItem("BuildingID", currBuilding);
-            window.location.assign("./room-edit");
+            navigate("/room-edit");
+            // window.location.assign("./room-edit");
         }
         else
         {
