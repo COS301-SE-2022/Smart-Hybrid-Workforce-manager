@@ -19,6 +19,8 @@ const Layout = () =>
     const meetingRoomCount = useRef(0);
     const deletedResources = useRef([]);
     const propertiesPaneRef = useRef(true);
+    const helpRef = useRef(null);
+    const helpToolRef = useRef(null);
 
     //Pane states
     const [propertiesPaneLeft, SetPropertiesPaneLeft] = useState(0.85*window.innerWidth);
@@ -488,6 +490,18 @@ const Layout = () =>
         }
     }
 
+    const ViewHelp = () =>
+    {
+        helpRef.current.style.visibility = 'visible';
+        helpToolRef.current.style.visibility = 'visible';
+    }
+
+    const CloseHelp = () =>
+    {
+        helpRef.current.style.visibility = 'hidden';
+        helpToolRef.current.style.visibility = 'hidden';
+    }
+
     //Effect on the loading of the web page
     useEffect(() =>
     {
@@ -545,6 +559,21 @@ const Layout = () =>
     return (
         <div className='page-container'>
             <div className='canvas-content'>
+                <FaQuestion className='help' size={20} onClick={ViewHelp} />
+                <div ref={helpRef} className='help-container'>
+                    <span ref={helpToolRef} className='help-tooltip' onClick={CloseHelp}>
+                        -Welcome to the office layout creation page.<br></br>
+                        -Use the toolbar on the left to add desks and meeting rooms to the floor plan.<br></br>
+                        -The properties pane on the right is used to choose the building and room that you are working in.<br></br>
+                        -New buildings and rooms can be added using the plus icon by each label respectively. The pencil icon allows for editing the currently selected building/room<br></br><br></br>
+                        -Desks/Meeting Rooms can be moved around by clicking and dragging them.<br></br>
+                        -Left click a desk/meeting room once to bring up the transformation gizmo which allows rotation and scaling<br></br>
+                        -Click and drag on the canvas to pan the entire view.<br></br>
+                        -The scroll wheel can be used to zoom in and out.<br></br><br></br>
+                        Click this help box to close it. It can be reopened by clicking the question mark at the top.
+
+                    </span>
+                </div>
 
                 <div className='properties-pane' style={{left: propertiesPaneLeft}}>
                     <div className='properties-pane-label-container' onClick={PropertiesCollapse} >

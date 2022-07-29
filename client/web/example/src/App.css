@@ -920,6 +920,53 @@
     overflow-x: hidden;
 }
 
+.help
+{
+    color: white;
+    position: absolute;
+    top: 1vh;
+    left: 95vw;
+}
+
+.help-container
+{
+    visibility: visible;
+    width: 100vw;
+    height: 100vh;
+
+    background-color: rgba(0, 0, 0, 0.726);
+
+    position: absolute;
+    z-index: 2;
+}
+
+.help-tooltip
+{
+    visibility: visible;
+    background-color: #1b1b1b;
+    color: white;
+    border-radius: 1vh;
+    padding: 2vh;
+
+    left: 30vw;
+    top: 20vh;
+    width: 40vw;
+
+    position: absolute;
+    z-index: 3;
+}
+
+.help:hover
+{
+    cursor: pointer;
+    color: #03639b;
+}
+
+.help:hover .help-tooltip
+{
+    visibility: visible;
+}
+
 .combo-grid
 {
     display: grid;
