@@ -2,7 +2,7 @@ import { Stage, Layer } from 'react-konva'
 import { useRef, useState, useEffect, useCallback, useContext } from 'react'
 import Desk from '../components/Map/Desk'
 import MeetingRoom from '../components/Map/MeetingRoom'
-import { FaSave } from 'react-icons/fa'
+import { FaSave, FaQuestion } from 'react-icons/fa'
 import { MdEdit, MdAdd } from 'react-icons/md'
 import desk_white from '../img/desk_white.svg';
 import meetingroom_white from '../img/meetingroom_white.svg';
@@ -21,6 +21,8 @@ const Layout = () =>
     const meetingRoomCount = useRef(0);
     const deletedResources = useRef([]);
     const propertiesPaneRef = useRef(true);
+    const helpRef = useRef(null);
+    const helpToolRef = useRef(null);
 
     //Pane states
     const [propertiesPaneLeft, SetPropertiesPaneLeft] = useState(0.85*window.innerWidth);
@@ -54,6 +56,13 @@ const Layout = () =>
                 SetBuildings(data);
             });
     }
+
+    /*useEffect(() =>
+    {
+        console.log("Resources: " + resources)
+        console.log(deskProps);
+        console.log(deskPropsRef.current);
+    },[resources, deskProps])*/
 
     const UpdateRooms = (e) =>
     {
@@ -197,11 +206,11 @@ const Layout = () =>
     //Add a new desk to the state
     const AddDesk = () =>
     {
-        if(currBuilding === "" || currRoom === "")
+        /*if(currBuilding === "" || currRoom === "")
         {
             window.alert("Please select a building and room");
             return;
-        }
+        }*/
 
         if(stageRef.current !== null)
         {
@@ -241,7 +250,7 @@ const Layout = () =>
                     width : width,
                     height : height,
                     rotation : rotation,
-                    edited : false
+                    edited : true
                 }
             ];
 
@@ -253,11 +262,11 @@ const Layout = () =>
     //Add a new desk to the state
     const AddMeetingRoom = () =>
     {
-        if(currBuilding === "" || currRoom === "")
+        /*if(currBuilding === "" || currRoom === "")
         {
             window.alert("Please select a building and room");
             return;
-        }
+        }*/
 
         if(stageRef.current !== null)
         {
@@ -273,39 +282,40 @@ const Layout = () =>
                     width : 200,
                     height : 200,
                     rotation : 0,
-                    edited : false
+                    edited : true
                 }
             ]);
         }
     };
 
     //Function to monitor when a key is pressed. Returns true if target key is pressed and false when target key is released
-    const KeyPress = ((targetKey) =>
+    const deletePressed = useKeyPress("Delete");
+    function useKeyPress(targetKey)
     {
         // State for keeping track of whether key is pressed
         const [keyPressed, SetKeyPressed] = useState(false);
-
-        // If pressed key is our target key then set to true
-        const downHandler = useCallback((key) =>
-        {
-            if (key === targetKey)
-            {
-                SetKeyPressed(true);
-            }
-        },[targetKey]);
-
-        // If released key is our target key then set to false
-        const upHandler = useCallback((key) =>
-        {
-            if (key === targetKey)
-            {
-                SetKeyPressed(false);
-            }
-        },[targetKey]);
         
         //Event listeners for key press
         useEffect(() =>
         {
+            // If pressed key is our target key then set to true
+            function downHandler({key})
+            {
+                if (key === targetKey)
+                {
+                    SetKeyPressed(true);
+                }
+            };
+
+            // If released key is our target key then set to false
+            function upHandler({key})
+            {
+                if (key === targetKey)
+                {
+                    SetKeyPressed(false);
+                }
+            };
+
             window.addEventListener("keydown", downHandler);
             window.addEventListener("keyup", upHandler);
 
@@ -315,10 +325,10 @@ const Layout = () =>
                 window.removeEventListener("keydown", downHandler);
                 window.removeEventListener("keyup", upHandler);
             };
-        }, [downHandler, upHandler]);
+        }, [targetKey]);
 
         return keyPressed;
-    });
+    };
 
     const HandleDelete = useCallback(() =>
     {
@@ -497,6 +507,18 @@ const Layout = () =>
         }
     }
 
+    const ViewHelp = () =>
+    {
+        helpRef.current.style.visibility = 'visible';
+        helpToolRef.current.style.visibility = 'visible';
+    }
+
+    const CloseHelp = () =>
+    {
+        helpRef.current.style.visibility = 'hidden';
+        helpToolRef.current.style.visibility = 'hidden';
+    }
+
     //Effect on the loading of the web page
     useEffect(() =>
     {
@@ -505,11 +527,12 @@ const Layout = () =>
     },[]);
 
     //Effect to monitor if delete key is pressed
-    const deletePressed = KeyPress("Delete");
+    
     useEffect(() =>
     {
         if(deletePressed)
         {
+            console.log("D")
             HandleDelete();
         }
     }, [deletePressed, HandleDelete]);
@@ -522,6 +545,9 @@ const Layout = () =>
         deskCount.current = 0;
         meetingRoomPropsRef.current = [];
         meetingRoomCount.current = 0;
+
+        SetDeskProps(deskPropsRef.current);
+        SetMeetingRoomProps(meetingRoomPropsRef.current);
 
         //Loop through resources and load desks and meeting rooms respectively
         for(var i = 0; i < resources.length; i++)
@@ -554,6 +580,21 @@ const Layout = () =>
     return (
         <div className='page-container'>
             <div className='canvas-content'>
+                <FaQuestion className='help' size={20} onClick={ViewHelp} />
+                <div ref={helpRef} className='help-container'>
+                    <span ref={helpToolRef} className='help-tooltip' onClick={CloseHelp}>
+                        -Welcome to the office layout creation page.<br></br>
+                        -Use the toolbar on the left to add desks and meeting rooms to the floor plan.<br></br>
+                        -The properties pane on the right is used to choose the building and room that you are working in.<br></br>
+                        -New buildings and rooms can be added using the plus icon by each label respectively. The pencil icon allows for editing the currently selected building/room.<br></br><br></br>
+                        -Desks/Meeting Rooms can be moved around by clicking and dragging them.<br></br>
+                        -Left click a desk/meeting room once to bring up the transformation gizmo which allows rotation and scaling.<br></br>
+                        -Click and drag on the canvas to pan the entire view.<br></br>
+                        -The scroll wheel can be used to zoom in and out.<br></br><br></br>
+                        Click this help box to close it. It can be reopened by clicking the question mark at the top.
+
+                    </span>
+                </div>
 
                 <div className='properties-pane' style={{left: propertiesPaneLeft}}>
                     <div className='properties-pane-label-container' onClick={PropertiesCollapse} >
@@ -561,18 +602,13 @@ const Layout = () =>
                     </div>
 
                     <div className='building-pane'>
+                        <span className='tooltip' style={{width: 0.15*window.innerWidth, top: 0.04*window.innerHeight, left: -0.16*window.innerWidth}}>Select a building to edit or add a new one.</span>
                         <p className='building-label'>Buildings</p>
                         <MdAdd className='add-building-img' size={35} onClick={AddBuilding} />
                         <MdEdit className='edit-building-img' size={25} onClick={EditBuilding} />
 
-                            <select className='list-box-building' name='building' size="10" onChange={UpdateRooms.bind(this)}>
-                                <option value='A' >A</option>
-                                <option value='B' >B</option>
-                                <option value='C' >C</option>
-                                <option value='D' >D</option>
-                                <option value='E' >E</option>
-                                <option value='F' >F</option>
-                                <option value='G' >G</option>
+                            <select className='list-box-building' name='building' size='10' onChange={UpdateRooms.bind(this)}>
+                                <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
                                 {buildings.length > 0 && (
                                     buildings.map(building => (
                                         <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
@@ -582,18 +618,13 @@ const Layout = () =>
                     </div>
 
                     <div className='room-pane'>
+                        <span className='tooltip' style={{width: 0.15*window.innerWidth, top: 0.43*window.innerHeight, left: -0.16*window.innerWidth}}>Select a room to edit or add a new one.</span>
                         <p className='room-label'>Rooms</p>
                         <MdAdd className='add-room-img' size={35} onClick={AddRoom} />
                         <MdEdit className='edit-room-img' size={25} onClick={EditRoom} />
 
                             <select className='list-box-room' name='room' size="10" onChange={UpdateResources.bind(this)}>
-                                <option value='A' >A</option>
-                                <option value='B' >B</option>
-                                <option value='C' >C</option>
-                                <option value='D' >D</option>
-                                <option value='E' >E</option>
-                                <option value='F' >F</option>
-                                <option value='G' >G</option>
+                                <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
                                 {rooms.length > 0 && (
                                     rooms.map(room => (
                                         <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>
@@ -606,14 +637,17 @@ const Layout = () =>
                 <div className='actions-pane'>
                     <div className='save-container' onClick={SaveLayout}>
                         <FaSave className='save-icon' size={30}/>
+                        <span className='tooltip'>Save</span>
                     </div>
 
                     <div className='add-desk-container' onClick={AddDesk}>
                         <img src={desk_white} alt='Add Desk' className='add-desk-img'></img>
+                        <span className='tooltip' style={{width: 0.06*window.innerWidth, top: 0.1*window.innerHeight}}>Add Desk</span>
                     </div>
 
                     <div className='add-meetingroom-container' onClick={AddMeetingRoom}>
                         <img src={meetingroom_white} alt='Add Meeting Room' className='add-meetingroom-img'></img>
+                        <span className='tooltip' style={{width: 0.08*window.innerWidth, top: 0.16*window.innerHeight}}>Add Meeting Room</span>
                     </div>
                                        
 
