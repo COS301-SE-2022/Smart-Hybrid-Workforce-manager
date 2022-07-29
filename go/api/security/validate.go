@@ -27,12 +27,13 @@ func Validate(function HandlerFunc, permissionRequired *data.Permissions) Handle
 			return
 		}
 
-		/*redisUserData, err := redis.GetRequestRedisData(request)
-		if err != nil {
-			logger.Error.Println(err)
-			utils.BadRequest(writer, request, "Invalid Authorization Token")
-			return
-		}*/
+		// redisUserData,err := redis.GetRequestRedisData(request)
+		// if err != nil{
+		// 	// logger.Error.Println(err)
+		// 	// utils.BadRequest(writer, request, "Invalid Authorization Token")
+		// 	return
+		// }
+		// logger.Access.Printf("redisUserData: %v",redisUserData)
 		// Check if user data is null
 		//user_id := redisUserData.User_id
 		user_id := "00000000-0000-0000-0000-000000000000"
