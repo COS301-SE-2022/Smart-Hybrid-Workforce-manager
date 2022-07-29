@@ -14,12 +14,12 @@ function BookingsMeeting()
   const [teams, SetTeams] = useState([]);
   const [roles, SetRoles] = useState([]);
 
-  const [teamSelectedId, SetTeamSelectedId] = useState("")
-  const [roleSelectedId, SetRoleSelectedId] = useState("")
+  const [teamSelectedId, SetTeamSelectedId] = useState(null) // explicit nulling
+  const [roleSelectedId, SetRoleSelectedId] = useState(null) // explicit nulling
 
-  const [aditionalAttendees, SetAditionalAttendees] = useState("")
-  const [attendeesDesks, SetAttendeesDesks] = useState("")
-  const [aditionalAttendeesDesks, SetAditionalAttendeesDesks] = useState("")
+  const [aditionalAttendees, SetAditionalAttendees] = useState(0) // Use a number not string
+  const [attendeesDesks, SetAttendeesDesks] = useState(false) // Use a bool
+  const [aditionalAttendeesDesks, SetAditionalAttendeesDesks] = useState(false) // Use a bool
 
   let handleSubmit = async (e) =>
   {
@@ -43,7 +43,7 @@ function BookingsMeeting()
             },
             team_id: teamSelectedId,
             role_id: roleSelectedId,
-            additional_attendees: aditionalAttendees,
+            additional_attendees: Number(aditionalAttendees),
             desks_attendees: attendeesDesks,
             desks_aditional_attendees: aditionalAttendeesDesks,
           })
