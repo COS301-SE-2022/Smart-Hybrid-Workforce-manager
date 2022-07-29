@@ -45,8 +45,8 @@ function BookingsMeeting()
               end: startDate + "T" + endTime + ":43.511Z",
               booked: false
             },
-            team_id: teamSelectedId,
-            role_id: roleSelectedId,
+            team_id: (teamSelectedId === "null") ? null : teamSelectedId,
+            role_id: (roleSelectedId === "null") ? null : roleSelectedId,
             additional_attendees: Number(aditionalAttendees),
             desks_attendees: attendeesDesks,
             desks_aditional_attendees: aditionalAttendeesDesks,
