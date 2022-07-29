@@ -65,7 +65,7 @@ function Profile()
         {
           method: "POST",
           body: JSON.stringify({
-            identifier:userData.user_id.substring(6)
+            user_id:window.sessionStorage.getItem("UserID")
           })
         }).then((res) => res.json()).then(data => 
           {
@@ -80,7 +80,7 @@ function Profile()
         {
           method: "POST",
           body: JSON.stringify({
-            identifier:userData.user_id.substring(6)
+            user_id:window.sessionStorage.getItem("UserID")
           })
         }).then((res) => res.json()).then(data => 
           {
@@ -91,7 +91,7 @@ function Profile()
   //Using useEffect hook. This will ste the default values of the form once the components are mounted
   useEffect(() =>
   {
-    // window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
+    window.sessionStorage.setItem("UserID", "00000000-0000-0000-0000-000000000000");
     FetchUser();
     FetchUserRoles();
     FetchUserTeams();
