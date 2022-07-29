@@ -1,8 +1,10 @@
 import React from 'react'
 import { MdEdit } from 'react-icons/md'
 import { MdAccountCircle } from 'react-icons/md'
+import { useNavigate } from 'react-router-dom'
 
 const UserListItem = ({id, name, email}) => {
+    const navigate = useNavigate();
 
     let EditUser = async (e) =>
     {
@@ -10,7 +12,8 @@ const UserListItem = ({id, name, email}) => {
         window.sessionStorage.setItem("UserID", id);
         window.sessionStorage.setItem("UserName", name);
         window.sessionStorage.setItem("UserEmail", email);
-        window.location.assign("./user-edit");
+        navigate("/user-edit");
+        // window.location.assign("./user-edit");
     }
 
     return (
