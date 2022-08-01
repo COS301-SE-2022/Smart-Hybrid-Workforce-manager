@@ -7,7 +7,6 @@ import (
 	"api/utils"
 	"fmt"
 	"lib/logger"
-	"lib/testutils"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -228,6 +227,8 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 				authorized = true
 			}
 		}
+	} else {
+		authorized = true
 	}
 	if !authorized {
 		utils.AccessDenied(writer, request, fmt.Errorf("doesn't have permission to execute query"))
@@ -242,6 +243,8 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 				authorized = true
 			}
 		}
+	} else {
+		authorized = true
 	}
 	if !authorized {
 		utils.AccessDenied(writer, request, fmt.Errorf("doesn't have permission to execute query"))
@@ -280,10 +283,6 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 		utils.InternalServerError(writer, request, err)
 		return
 	}
-	fmt.Println(testutils.Scolour(testutils.RED, fmt.Sprint(meetingRoomBooking.DesksAttendees)))
-
-	// Add meetingroom bookings
-	fmt.Println(testutils.Scolour(testutils.RED, fmt.Sprint(*meetingRoomBooking.DesksAttendees)))
 	// // Add desks for role/team members in meeting
 	teamUsers := data.UserTeams{}
 	roleUsers := data.UserRoles{}
@@ -344,7 +343,6 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 
 	// Add desks bookings
 	if meetingRoomBooking.DesksAttendees != nil && *meetingRoomBooking.DesksAttendees == true {
-		fmt.Println(testutils.Scolour(testutils.RED, fmt.Sprint(*meetingRoomBooking.DesksAttendees)))
 		// // Add desks for role/team members in meeting
 		// Make the actual bookings
 		deskResourceType = "DESK"

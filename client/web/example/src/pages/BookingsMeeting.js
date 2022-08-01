@@ -16,12 +16,12 @@ function BookingsMeeting()
   const [teams, SetTeams] = useState([]);
   const [roles, SetRoles] = useState([]);
 
-  const [teamSelectedId, SetTeamSelectedId] = useState("")
-  const [roleSelectedId, SetRoleSelectedId] = useState("")
+  const [teamSelectedId, SetTeamSelectedId] = useState(null) // explicit nulling
+  const [roleSelectedId, SetRoleSelectedId] = useState(null) // explicit nulling
 
-  const [aditionalAttendees, SetAditionalAttendees] = useState("")
-  const [attendeesDesks, SetAttendeesDesks] = useState("")
-  const [aditionalAttendeesDesks, SetAditionalAttendeesDesks] = useState("")
+  const [aditionalAttendees, SetAditionalAttendees] = useState(0) // Use a number not string
+  const [attendeesDesks, SetAttendeesDesks] = useState(false) // Use a bool
+  const [aditionalAttendeesDesks, SetAditionalAttendeesDesks] = useState(false) // Use a bool
 
   const {userData} = useContext(UserContext)
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ function BookingsMeeting()
           {
             "booking": {
               id: null,
-              user_id: userData.user_id,
+              user_id: window.sessionStorage.getItem("UserID"),
               resource_type: "MEETINGROOM",
               resource_preference_id: null,
               resource_id: null,
@@ -45,14 +45,11 @@ function BookingsMeeting()
               end: startDate + "T" + endTime + ":43.511Z",
               booked: false
             },
-            team_id: teamSelectedId,
-            role_id: roleSelectedId,
-            additional_attendees: aditionalAttendees,
+            team_id: (teamSelectedId === "null") ? null : teamSelectedId,
+            role_id: (roleSelectedId === "null") ? null : roleSelectedId,
+            additional_attendees: Number(aditionalAttendees),
             desks_attendees: attendeesDesks,
             desks_aditional_attendees: aditionalAttendeesDesks,
-          }),
-          headers: new Headers({
-            'Authorization': `bearer ${userData.token}`
           })
       });
 
@@ -76,9 +73,6 @@ function BookingsMeeting()
         {
           method: "POST",
           body: JSON.stringify({
-          }),
-          headers: new Headers({
-            'Authorization': `bearer ${userData.token}`
           })
         }).then((res) => res.json()).then(data => 
         {
@@ -93,9 +87,6 @@ function BookingsMeeting()
         {
           method: "POST",
           body: JSON.stringify({
-          }),
-          headers: new Headers({
-            'Authorization': `bearer ${userData.token}`
           })
         }).then((res) => res.json()).then(data => 
         {

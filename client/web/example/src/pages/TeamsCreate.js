@@ -30,9 +30,6 @@ function Teams()
           capacity: parseInt(capacity),
           priority: parseInt(priority),
           picture: picture
-        }),
-        headers: new Headers({
-          'Authorization': `bearer ${userData.token}`
         })
       });
 

@@ -45,7 +45,7 @@ Smart Hybrid Workforce Manager is a system that aims to provide companies an eas
 
 ### User Manual
 
-<a href="https://drive.google.com/file/d/1Nn8iWty2ChC2auBH4YT4mFuYyOf-awlo/view?usp=sharing" target="_blank">
+<a href="https://drive.google.com/file/d/1ffPNxu-At3yxPxNehlCiKJTz4YlE-Hch/view?usp=sharing" target="_blank">
   ➛ User Manual v1.0<br>
 </a> 
 
@@ -93,8 +93,11 @@ Smart Hybrid Workforce Manager is a system that aims to provide companies an eas
 <a href="https://drive.google.com/file/d/1AmSAFxEOtFoHWTqlOaQfrDKmoL14LMdL/view?usp=sharing" target="_blank">
   ➛ Demo 2 Presentation<br>
 </a> 
-<a href="#" target="_blank">
-  ➛ Demo 3<br>
+<a href="https://drive.google.com/file/d/14GtmmR7CfU4cjkP7pQLsYBsmp1_XCl79/view?usp=sharing" target="_blank">
+  ➛ Demo 3 Video<br>
+</a> 
+<a href="https://drive.google.com/file/d/16MVNC376IDKsWTVUmix485ZuWWRV_El2/view?usp=sharing" target="_blank">
+  ➛ Demo 3 Presentation<br>
 </a> 
 <a href="#" target="_blank">
   ➛ Demo 4<br>
