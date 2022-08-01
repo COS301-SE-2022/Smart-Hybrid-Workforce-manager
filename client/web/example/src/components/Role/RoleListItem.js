@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
 import { MdEdit, MdDelete } from 'react-icons/md'
 import { MdPermIdentity } from 'react-icons/md'
+import { useNavigate } from 'react-router-dom'
 
 const RoleListItem = ({id, name, color, lead}) =>
 {
+    const navigate=useNavigate();
     let EditRole = async (e) =>
     {
         e.preventDefault();
@@ -11,7 +13,8 @@ const RoleListItem = ({id, name, color, lead}) =>
         window.sessionStorage.setItem("RoleName", name);
         window.sessionStorage.setItem("RoleColor", color);
         window.sessionStorage.setItem("RoleLead", lead);
-        window.location.assign("./role-edit");
+        navigate("/role-edit");
+        // window.location.assign("./role-edit");
     }
 
     let DeleteRole = async (e) =>
@@ -32,7 +35,8 @@ const RoleListItem = ({id, name, color, lead}) =>
                 if(res.status === 200)
                 {
                     alert("Role Successfully Deleted!");
-                    window.location.assign("./role");
+                    navigate("/role");
+                    // window.location.assign("./role");
                 }
             }
             catch (err)

@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import UserTeamList from '../components/Team/UserTeamList'
 import TeamLeadOption from '../components/Team/TeamLeadOption'
+import { useNavigate } from 'react-router-dom'
 
 const EditTeam = () =>
 {
@@ -16,6 +17,8 @@ const EditTeam = () =>
 
   const [teamUsers, SetTeamUsers] = useState([]);
   //const [viewableUsers, SetViewableUsers] = useState([]);
+
+  const navigate = useNavigate();
 
   let handleSubmit = async (e) =>
   {
@@ -38,7 +41,8 @@ const EditTeam = () =>
       if(res.status === 200)
       {
         alert("Team Successfully Updated!");
-        window.location.assign("./team");
+        navigate("/team");
+        // window.location.assign("./team");
       }
     }
     catch(err)
@@ -90,7 +94,8 @@ const EditTeam = () =>
 
   const PermissionConfiguration = () =>
   {
-    window.location.assign("./team-permissions");
+    navigate("/team-permissions");
+    // window.location.assign("./team-permissions");
   }
 
   return (

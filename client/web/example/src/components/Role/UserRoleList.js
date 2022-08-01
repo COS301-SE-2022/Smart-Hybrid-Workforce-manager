@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { MdDelete } from 'react-icons/md'
+import { useNavigate } from 'react-router-dom'
 
 const UserRoleList = ({id}) =>
 {  
     const [name, setName] = useState("error");
-    
+    const navigate=useNavigate();
   let DeleteUser = async (e) =>
     {
         e.preventDefault();
@@ -24,7 +25,8 @@ const UserRoleList = ({id}) =>
                 if(res.status === 200)
                 {
                     alert("User Successfully Removed!");
-                    window.location.reload();
+                    navigate(0);
+                    // window.location.reload();
                 }
             }
             catch (err)

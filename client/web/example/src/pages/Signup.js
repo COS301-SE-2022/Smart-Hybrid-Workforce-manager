@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { useNavigate } from 'react-router-dom'
 
 function Signup()
 {
@@ -8,6 +9,8 @@ function Signup()
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigate=useNavigate();
 
   let handleSubmit = async (e) =>
   {
@@ -28,8 +31,9 @@ function Signup()
 
       if(res.status === 200)
       {
-        alert("Account Successfully Created!");
-        window.location.assign("./bookings");
+        alert("Account Successfully Created!\nPlease verify your login details");
+        navigate("/login");
+        // window.location.assign("./bookings");
       }
     }
     catch(err)

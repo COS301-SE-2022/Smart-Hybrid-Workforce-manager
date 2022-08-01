@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'
 
 const Resources = () =>
 {
-
+  const navigate = useNavigate();
     useEffect(() =>
     {
-        window.location.replace('http://localhost/layout');
+        navigate("/layout")
+        // window.location.replace('http://localhost/layout');
     }, [])
 
   return (

@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { MdDelete } from 'react-icons/md'
+import { useNavigate } from 'react-router-dom'
 
 const RoleUserList = ({id}) =>
 {
-  const [roleName, SetRoleName] = useState("")
-    
+    const [roleName, SetRoleName] = useState("")
+    navigate=useNavigate();
     useEffect(() =>
     {
         fetch("http://localhost:8100/api/role/information", 
@@ -38,7 +39,8 @@ const RoleUserList = ({id}) =>
                 if(res.status === 200)
                 {
                     alert("Role Successfully Removed!");
-                    window.location.reload();
+                    navigate(0);
+                    // window.location.reload();
                 }
             }
             catch (err)

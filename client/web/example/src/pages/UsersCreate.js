@@ -4,12 +4,14 @@ import Footer from '../components/Footer'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
+import { useNavigate } from 'react-router-dom'
 
 function CreateUser()
 {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const navigate=useNavigate();
 
   let handleSubmit = async (e) =>
   {
@@ -30,7 +32,8 @@ function CreateUser()
       if(res.status === 200)
       {
         alert("User Successfully Created!");
-        window.location.assign("./users");
+        navigate("/users");
+        // window.location.assign("./users");
       }
     }
     catch(err)

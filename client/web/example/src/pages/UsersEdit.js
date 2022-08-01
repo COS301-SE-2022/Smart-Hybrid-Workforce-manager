@@ -92,7 +92,7 @@ function EditUser()
             {
               alert("Role Successfully Added!");
               navigate(0);
-              window.location.reload();
+              // window.location.reload();
             }
         }
         catch (err)
@@ -138,7 +138,7 @@ function EditUser()
             {
                 alert("Team Successfully Added!");
                 navigate(0);
-                window.location.reload();
+                // window.location.reload();
             }
         }
         catch (err)
@@ -149,7 +149,8 @@ function EditUser()
   
   const PermissionConfiguration = () =>
   {
-    window.location.assign("./user-permissions");
+    navigate("/user-permissions");
+    // window.location.assign("./user-permissions");
   }
 
   //Using useEffect hook. This will ste the default values of the form once the components are mounted
