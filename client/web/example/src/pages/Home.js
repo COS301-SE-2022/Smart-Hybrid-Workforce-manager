@@ -53,6 +53,7 @@ const Home = () =>
         {
           method: "POST",
           body: JSON.stringify({
+            user_id: window.sessionStorage.getItem("UserID"),
             start: startDate.toISOString(),
             end: endDate.toISOString()
           })
