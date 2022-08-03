@@ -44,12 +44,12 @@ function Profile()
             {
                 method: "POST",
                 body: JSON.stringify({
-                    identifier:userData.user_id.substring(6)
+                    identifier : userData.user_id.substring(6)
                 })
             }).then((res) => res.json()).then(data => 
             {
-                sessionStorage.setItem("UserID",data[0].id)
-                SetIdentifier(data[0].identifier)
+                sessionStorage.setItem("UserID", data[0].id);
+                SetIdentifier(data[0].identifier);
                 SetFirstName(data[0].first_name);
                 SetLastName(data[0].last_name);
                 SetEmail(data[0].email);
@@ -95,7 +95,7 @@ function Profile()
         FetchUser();
         FetchUserRoles();
         FetchUserTeams();
-  }, [])
+  }, [userData.user_id])
 
   const ProfileConfiguration = () =>
   {

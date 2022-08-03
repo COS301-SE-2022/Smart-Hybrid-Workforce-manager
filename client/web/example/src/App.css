@@ -136,6 +136,26 @@
     overflow: hidden; 
 }
 
+.password-requirements
+{
+    visibility: hidden;
+
+    position: fixed;
+    background-color: #ffffff;
+    border-radius: 1vh;
+
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+    padding-left: 3vw;
+    padding-right: 3vw;
+    
+    width: 20vw;
+    top: 71vh;
+    left: 40vw;
+    text-align: center;
+    box-shadow: #000000 0px 2vw 9vh;
+}
+
 .form-container-login
 {
     grid-area: 'form-container';
@@ -239,12 +259,50 @@
     width: 25vw;
 
     background-color: #252525;
-    color: rgb(170, 170, 170);
+    color: #aaaaaa;
 
     border-style: solid;
     border-radius: 1.5vh;
 
     font-size: 2vh; 
+}
+
+.form-input:focus
+{
+    outline: none;
+}
+
+.password-input
+{
+    margin-top: 1vh;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    width: 25vw;
+
+    background-color: #252525;
+    color: #aaaaaa;
+
+    border-style: solid;
+    border-radius: 1.5vh;
+
+    font-size: 2vh; 
+}
+
+.password-input:focus
+{
+    outline: none;
+}
+
+.password-input:focus ~.password-requirements
+{
+    visibility: visible;
+}
+
+.password-strength
+{
+    margin-top: 3vh;
+    width: 25vw;
 }
 
 .form-input-textarea
