@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
+import { useNavigate } from 'react-router-dom';
 
 function RolePermissions() {
   const [roleName, setRoleName] = useState(window.sessionStorage.getItem("RoleName").substring(5, window.sessionStorage.getItem("RoleName").length));
@@ -63,6 +64,8 @@ function RolePermissions() {
   const [viewBuildingIdentifierId, SetViewBuildingIdentifierId] = useState("")
   const [deleteBuildingIdentifier, SetDeleteBuildingIdentifier] = useState("") // allows users of a role to delete the Building for everyone
   const [deleteBuildingIdentifierId, SetDeleteBuildingIdentifierId] = useState("")
+
+  const navigate = useNavigate();
 
   let handleSubmit = async (e) => {
     e.preventDefault();
@@ -221,7 +224,7 @@ function RolePermissions() {
     }
 
     alert("Permissions successfully updated.")
-    window.location.assign("./role-permissions");
+    navigate("/role-permissions");
   };
 
   async function AddPermission(id, idType, type, category, tenant, tenant_id) {

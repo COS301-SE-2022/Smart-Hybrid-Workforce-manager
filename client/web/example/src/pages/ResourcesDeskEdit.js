@@ -3,11 +3,14 @@ import Footer from "../components/Footer"
 import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { useNavigate } from 'react-router-dom';
 
 const EditDesk = () =>
 {
   const [deskName, setDeskName] = useState("");
   const [deskLocation, setDeskLocation] = useState("");
+
+  const navigate = useNavigate();
 
   let handleSubmit = async (e) =>
   {
@@ -30,7 +33,7 @@ const EditDesk = () =>
       if(res.status === 200)
       {
         alert("Desk Successfully Updated!");
-        window.location.assign("./resources");
+        navigate("/resources");
       }
     }
     catch(err)

@@ -40,7 +40,6 @@ const RoleUserList = ({id}) =>
                 {
                     alert("Role Successfully Removed!");
                     navigate(0);
-                    // window.location.reload();
                 }
             }
             catch (err)

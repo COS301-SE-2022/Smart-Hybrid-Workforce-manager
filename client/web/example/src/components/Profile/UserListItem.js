@@ -13,7 +13,6 @@ const UserListItem = ({id, name, email}) => {
         window.sessionStorage.setItem("UserName", name);
         window.sessionStorage.setItem("UserEmail", email);
         navigate("/user-edit");
-        // window.location.assign("./user-edit");
     }
 
     return (

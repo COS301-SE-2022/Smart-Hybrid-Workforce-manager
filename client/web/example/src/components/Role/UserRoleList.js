@@ -26,7 +26,6 @@ const UserRoleList = ({id}) =>
                 {
                     alert("User Successfully Removed!");
                     navigate(0);
-                    // window.location.reload();
                 }
             }
             catch (err)

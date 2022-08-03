@@ -7,7 +7,6 @@ const Resources = () =>
     useEffect(() =>
     {
         navigate("/layout")
-        // window.location.replace('http://localhost/layout');
     }, [])
 
   return (

@@ -255,7 +255,6 @@ function UserPermissions() {
 
     alert("Permissions successfully updated.")
     navigate("/user-permissions");
-    // window.location.assign("./user-permissions");
   };
 
   async function AddPermission(id, idType, type, category, tenant, tenant_id) {

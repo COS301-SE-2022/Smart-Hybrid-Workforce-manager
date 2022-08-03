@@ -54,7 +54,6 @@ function BookingsDesk()
         {
           alert("Booking Successfully Created!");
           navigate("/");
-          // window.location.assign("./");
         }
       }
     }

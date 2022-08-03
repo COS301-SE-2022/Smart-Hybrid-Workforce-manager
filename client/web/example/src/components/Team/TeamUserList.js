@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { MdDelete } from 'react-icons/md'
+import { MdDelete } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
 const TeamUserList = ({teamId}) =>
 {
-  const [teamName, SetTeamName] = useState("")
+  const [teamName, SetTeamName] = useState("");
+  const navigate = useNavigate();
 
     useEffect(() =>
     {
@@ -38,7 +40,7 @@ const TeamUserList = ({teamId}) =>
                 if(res.status === 200)
                 {
                     alert("Team Successfully Removed!");
-                    window.location.reload();
+                    navigate(0);
                 }
             }
             catch (err)

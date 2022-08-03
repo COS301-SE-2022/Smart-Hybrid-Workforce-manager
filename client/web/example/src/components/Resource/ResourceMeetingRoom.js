@@ -16,7 +16,6 @@ const ResourceMeetingRoom = ({id, name, location, capacity, roomId}) => {
         window.sessionStorage.setItem("MeetingRoomCapacity", capacity);
         window.sessionStorage.setItem("RoomID", roomId);
         navigate("/resources-meeting-room-edit");
-        // window.location.assign("./resources-meeting-room-edit");
     }
 
     let DeleteResource = async (e) =>
@@ -38,7 +37,6 @@ const ResourceMeetingRoom = ({id, name, location, capacity, roomId}) => {
                 {
                     alert("Resource Successfully Deleted!");
                     navigate("/resources");
-                    // window.location.assign("./resources");
                 }
             }
             catch (err)

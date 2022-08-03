@@ -36,7 +36,6 @@ function Users()
   const AddUser = () =>
   {
     navigate("/user-create");
-    // window.location.assign("./user-create");
   }
 
   return (

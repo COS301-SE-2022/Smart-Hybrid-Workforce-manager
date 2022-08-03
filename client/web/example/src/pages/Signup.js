@@ -33,7 +33,6 @@ function Signup()
       {
         alert("Account Successfully Created!\nPlease verify your login details");
         navigate("/login");
-        // window.location.assign("./bookings");
       }
     }
     catch(err)

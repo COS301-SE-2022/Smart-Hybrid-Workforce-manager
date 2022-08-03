@@ -127,7 +127,6 @@ const Layout = () =>
     const AddBuilding = () =>
     {
         navigate("/building");
-        // window.location.assign(".");
     }
 
     //Edit selected building
@@ -138,7 +137,6 @@ const Layout = () =>
             e.preventDefault();
             window.sessionStorage.setItem("BuildingID", currBuilding);
             navigate("/building-edit");
-            // window.location.assign("./building-edit");
         }
         else
         {
@@ -152,7 +150,6 @@ const Layout = () =>
         {
             window.sessionStorage.setItem("BuildingID", currBuilding);
             navigate("/room");
-            // window.location.assign("./room");
         }
         else
         {
@@ -168,7 +165,6 @@ const Layout = () =>
             window.sessionStorage.setItem("RoomID", currRoom);
             window.sessionStorage.setItem("BuildingID", currBuilding);
             navigate("/room-edit");
-            // window.location.assign("./room-edit");
         }
         else
         {

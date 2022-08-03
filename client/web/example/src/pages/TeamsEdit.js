@@ -42,7 +42,6 @@ const EditTeam = () =>
       {
         alert("Team Successfully Updated!");
         navigate("/team");
-        // window.location.assign("./team");
       }
     }
     catch(err)
@@ -95,7 +94,6 @@ const EditTeam = () =>
   const PermissionConfiguration = () =>
   {
     navigate("/team-permissions");
-    // window.location.assign("./team-permissions");
   }
 
   return (

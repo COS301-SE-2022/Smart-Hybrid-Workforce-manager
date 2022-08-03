@@ -50,7 +50,6 @@ function ProfileConfiguration()
       {
         alert("Profile Configuration Succesfully Updated!");
         navigate("/")
-        // window.location.assign("./");
       }
     }
     catch(err)

@@ -3,12 +3,15 @@ import Footer from "../components/Footer"
 import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { useNavigate } from 'react-router-dom';
 
 const RoomEdit = () =>
 {
   const [roomName, setRoomName] = useState("");
   const [roomLocation, setRoomLocation] = useState("");
   const [roomDimensions, setRoomDimensions] = useState("");
+
+  const navigate = useNavigate();
 
   //POST request
   const FetchRoom = () =>
@@ -47,7 +50,7 @@ const RoomEdit = () =>
       if(res.status === 200)
       {
         alert("Room Successfully Updated!");
-        window.location.assign("./resources");
+        navigate("/resources");
       }
     }
     catch(err)

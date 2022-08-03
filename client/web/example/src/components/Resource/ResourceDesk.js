@@ -13,7 +13,6 @@ const navigate=useNavigate();
         window.sessionStorage.setItem("DeskLocation", location);
         window.sessionStorage.setItem("RoomID", roomId);
         navigate("/resources-desk-edit")
-        // window.location.assign("./resources-desk-edit");
     }
 
     let DeleteResource = async (e) =>
@@ -35,7 +34,6 @@ const navigate=useNavigate();
                 {
                     alert("Resource Successfully Deleted!");
                     navigate("/resources");
-                    // window.location.assign("./resources");
                 }
             }
             catch (err)

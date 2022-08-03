@@ -33,7 +33,6 @@ function CreateUser()
       {
         alert("User Successfully Created!");
         navigate("/users");
-        // window.location.assign("./users");
       }
     }
     catch(err)

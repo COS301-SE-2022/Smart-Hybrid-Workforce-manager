@@ -4,12 +4,15 @@ import React, { useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
+import { useNavigate } from 'react-router-dom';
 
 const CreateBuilding = () =>
 {
   const [buildingName, SetBuildingName] = useState("");
   const [buildingLocation, SetBuildingLocation] = useState("");
   const [buildingDimensions, SetBuildingDimensions] = useState("");
+
+  navigate = useNavigate();
 
   let handleSubmit = async (e) =>
   {
@@ -30,7 +33,7 @@ const CreateBuilding = () =>
       if(res.status === 200)
       {
         alert("Building Successfully Created!");
-        window.location.assign("./resources");
+        navigate("/resources");
       }
     }
     catch(err)

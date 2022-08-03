@@ -54,14 +54,6 @@ export default function Login()
       console.error(err);
     })
     
-    // if(res.status === 200)
-    // {
-    //   console.log(res.json());
-    //   // sessionStorage.setItem("auth_data", res);
-    //   alert("Successfully Logged In!");
-
-    //   // window.location.assign("./bookings");
-    // }
   };  
 
   return (

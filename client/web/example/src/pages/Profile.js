@@ -112,13 +112,12 @@ function Profile()
     window.sessionStorage.setItem("StartTime", startTime);
     window.sessionStorage.setItem("EndTime", endTime);
     navigate("/profile-configuration")
-    // window.location.assign("./profile-configuration");
   }
 
   const LogOut = () =>
   {
 
-    window.location.assign("./login");
+    navigate("/login");
   }
 
   return (

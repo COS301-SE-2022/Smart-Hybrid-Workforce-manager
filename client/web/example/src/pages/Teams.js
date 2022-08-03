@@ -28,7 +28,6 @@ function Teams()
   const AddTeam = () =>
   {
     navigate("/team-create");
-    // window.location.assign("./team-create");
   }
 
   //Using useEffect hook. This will send the POST request once the component is mounted

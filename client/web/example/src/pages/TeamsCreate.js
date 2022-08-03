@@ -37,7 +37,6 @@ function Teams()
       {
         alert("Team Successfully Created!");
         navigate("/team");
-        // window.location.assign("./team");
       }
     }
     catch(err)

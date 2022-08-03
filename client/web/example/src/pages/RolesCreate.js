@@ -3,11 +3,14 @@ import Footer from "../components/Footer"
 import { useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { useNavigate } from 'react-router-dom';
 
 const CreateRole = () =>
 {
   const [roleName, setRoleName] = useState("");
   const [roleColor, setRoleColor] = useState("");
+
+  const navigate = useNavigate();
 
   let handleSubmit = async (e) =>
   {
@@ -26,7 +29,7 @@ const CreateRole = () =>
       if(res.status === 200)
       {
         alert("Role Successfully Created!");
-        window.location.assign("./role");
+        navigate("/role");
       }
     }
     catch(err)

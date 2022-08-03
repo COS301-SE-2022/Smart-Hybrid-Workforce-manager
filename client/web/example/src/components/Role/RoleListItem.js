@@ -14,7 +14,6 @@ const RoleListItem = ({id, name, color, lead}) =>
         window.sessionStorage.setItem("RoleColor", color);
         window.sessionStorage.setItem("RoleLead", lead);
         navigate("/role-edit");
-        // window.location.assign("./role-edit");
     }
 
     let DeleteRole = async (e) =>
@@ -36,7 +35,6 @@ const RoleListItem = ({id, name, color, lead}) =>
                 {
                     alert("Role Successfully Deleted!");
                     navigate("/role");
-                    // window.location.assign("./role");
                 }
             }
             catch (err)

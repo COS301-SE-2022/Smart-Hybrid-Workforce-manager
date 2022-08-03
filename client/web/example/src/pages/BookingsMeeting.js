@@ -25,6 +25,7 @@ function BookingsMeeting()
 
   const {userData} = useContext(UserContext)
   const navigate = useNavigate();
+
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
@@ -57,7 +58,6 @@ function BookingsMeeting()
       {
         alert("Booking Successfully Created!");
         navigate("/bookings-meeting");
-        // window.location.reload();
       }
     }
     catch(err)

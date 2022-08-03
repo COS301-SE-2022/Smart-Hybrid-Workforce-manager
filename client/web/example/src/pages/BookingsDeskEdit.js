@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { UserContext } from "../App"
+import { useNavigate } from 'react-router-dom';
 
 function BookingsDeskEdit()
 {
@@ -12,7 +13,8 @@ function BookingsDeskEdit()
   const [endDate, setEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
 
-  const {userData}=UserContext(UserContext)
+  const {userData} = UserContext(UserContext);
+  const navigate = useNavigate();
 
   let handleSubmit = async (e) =>
   {
@@ -51,7 +53,7 @@ function BookingsDeskEdit()
         if(res.status === 200)
         {
           alert("Booking Successfully Edited!");
-          window.location.assign("./");
+          navigate("/");
         }
       }
     }
