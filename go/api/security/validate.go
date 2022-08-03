@@ -35,7 +35,7 @@ func Validate(function HandlerFunc, permissionRequired *data.Permissions) Handle
 		// }
 		// logger.Access.Printf("redisUserData: %v",redisUserData)
 		// Check if user data is null
-		//user_id := redisUserData.User_id
+		// user_id := redisUserData.User_id
 		user_id := "00000000-0000-0000-0000-000000000000"
 		permissions, err := GetUserPermissions(&user_id, access)
 		if err != nil {
