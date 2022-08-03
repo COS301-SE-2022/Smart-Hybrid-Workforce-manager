@@ -27,74 +27,74 @@ function Profile()
   
   const {userData}=useContext(UserContext)
 
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
-  //POST request
-  const FetchUser = () =>
-  {
-    fetch("http://localhost:8100/api/user/information", 
-        {
-          method: "POST",
-          body: JSON.stringify({
-            identifier:userData.user_id.substring(6)
-          })
-        }).then((res) => res.json()).then(data => 
-        {
-          sessionStorage.setItem("UserID",data[0].id)
-          SetIdentifier(data[0].identifier)
-          SetFirstName(data[0].first_name);
-          SetLastName(data[0].last_name);
-          SetEmail(data[0].email);
-          SetPicture(data[0].picture);
-          SetDateCreated(data[0].date_created);
-          SetWorkFromHome(data[0].work_from_home);
-          SetParking(data[0].parking);
-          SetOfficeDays(data[0].office_days);
-          SetStartTime(data[0].preferred_start_time);
-          SetEndTime(data[0].preferred_end_time);
-        });
-  }
-
-  console.log(window.sessionStorage.getItem("UserID"))
+  /*console.log(window.sessionStorage.getItem("UserID"))
   console.log(userData)
-  console.log(userData.user_id.substring(6))
-  //POST request
-  const FetchUserRoles = () =>
-  {
-    fetch("http://localhost:8100/api/role/user/information", 
-        {
-          method: "POST",
-          body: JSON.stringify({
-            identifier:userData.user_id.substring(6)
-          })
-        }).then((res) => res.json()).then(data => 
-          {
-            SetRoles(data);
-          });
-  }
-
-  //POST request
-  const FetchUserTeams = () =>
-  {
-    fetch("http://localhost:8100/api/team/user/information", 
-        {
-          method: "POST",
-          body: JSON.stringify({
-            identifier:userData.user_id.substring(6)
-          })
-        }).then((res) => res.json()).then(data => 
-          {
-            SetTeams(data);
-          });
-  }
+  console.log(userData.user_id.substring(6))*/
+  
 
   //Using useEffect hook. This will ste the default values of the form once the components are mounted
-  useEffect(() =>
-  {
-    // window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
-    FetchUser();
-    FetchUserRoles();
-    FetchUserTeams();
+    useEffect(() =>
+    {
+        //POST requests
+        const FetchUser = () =>
+        {
+            fetch("http://localhost:8100/api/user/information", 
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    identifier:userData.user_id.substring(6)
+                })
+            }).then((res) => res.json()).then(data => 
+            {
+                sessionStorage.setItem("UserID",data[0].id)
+                SetIdentifier(data[0].identifier)
+                SetFirstName(data[0].first_name);
+                SetLastName(data[0].last_name);
+                SetEmail(data[0].email);
+                SetPicture(data[0].picture);
+                SetDateCreated(data[0].date_created);
+                SetWorkFromHome(data[0].work_from_home);
+                SetParking(data[0].parking);
+                SetOfficeDays(data[0].office_days);
+                SetStartTime(data[0].preferred_start_time);
+                SetEndTime(data[0].preferred_end_time);
+            });
+        };
+
+        const FetchUserRoles = () =>
+        {
+            fetch("http://localhost:8100/api/role/user/information", 
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    identifier:userData.user_id.substring(6)
+                })
+            }).then((res) => res.json()).then(data => 
+            {
+                SetRoles(data);
+            });
+        };
+
+        const FetchUserTeams = () =>
+        {
+            fetch("http://localhost:8100/api/team/user/information", 
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    identifier:userData.user_id.substring(6)
+                })
+            }).then((res) => res.json()).then(data => 
+            {
+                SetTeams(data);
+            });
+        }
+
+        // window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
+        FetchUser();
+        FetchUserRoles();
+        FetchUserTeams();
   }, [])
 
   const ProfileConfiguration = () =>

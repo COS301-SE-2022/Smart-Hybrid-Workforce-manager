@@ -12,7 +12,7 @@ const CreateBuilding = () =>
   const [buildingLocation, SetBuildingLocation] = useState("");
   const [buildingDimensions, SetBuildingDimensions] = useState("");
 
-  navigate = useNavigate();
+  const navigate = useNavigate();
 
   let handleSubmit = async (e) =>
   {
