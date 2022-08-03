@@ -1,9 +1,8 @@
 import React, { useContext, useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import PropTypes from 'prop-types';
 import { UserContext } from '../App';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Login()
 {
@@ -12,6 +11,7 @@ export default function Login()
   const auth = sessionStorage.getItem("auth_data");
   const {setUserData}=useContext(UserContext)
   const navigate=useNavigate();
+  const location=useLocation();
 
   let handleSubmit = async (e) =>
   {
@@ -45,7 +45,11 @@ export default function Login()
     }).then((data) => {
       setUserData(data)
       localStorage.setItem("auth_data", data);
-      navigate("/");
+      if (location.state?.from) {
+        navigate(location.state.from);
+      }else{
+        navigate("/");
+      }
     }).catch((err) => {
       console.error(err);
     })

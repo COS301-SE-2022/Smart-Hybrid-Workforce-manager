@@ -68,10 +68,8 @@ function App()
       <UserContext.Provider value={{userData, setUserData}}>
         <Routes>
           <Route element={<ProtectedRoute/>}>
-          <Route path="/" exact element={<Home/>} />
-
-          </Route>       
-          <Route path="/bookings-desk" exact element={<BookingsDesk/>} />
+            <Route path="/" exact element={<Home/>} />
+            <Route path="/bookings-desk" exact element={<BookingsDesk/>} />
             <Route path="/bookings-meeting" exact element={<BookingsMeeting />} />
             <Route path="/bookings" exact element={<Bookings/>} />
             <Route path="/admin" exact element={<Admin />} />
@@ -104,6 +102,7 @@ function App()
             <Route path="/role-create" exact element={<CreateRole/>} />
             <Route path="/role-edit" exact element={<EditRole />} />
             <Route path="/role-permissions" exact element={<PermissionsRole />} /> 
+          </Route>          
           <Route path="/login" exact element={<Login />} />
           <Route path="/signup" exact element={<Signup/>} />
         </Routes>          
