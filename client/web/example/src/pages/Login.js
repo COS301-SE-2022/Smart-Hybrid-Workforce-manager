@@ -44,7 +44,7 @@ export default function Login()
       }        
     }).then((data) => {
       setUserData(data)
-      sessionStorage.setItem("auth_data", data);
+      localStorage.setItem("auth_data", data);
       navigate("/");
     }).catch((err) => {
       console.error(err);

@@ -39,7 +39,7 @@ import EditRole from './pages/RolesEdit'
 import PermissionsRole from './pages/RolesPermissions'
 import Layout from './pages/CreateLayout'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import ProtectedRoute from './store/ProtectedRoute'
 
@@ -49,7 +49,19 @@ export const UserContext = React.createContext();
 
 function App()
 {
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState(() => {
+    const sessionData = localStorage.getItem("auth_data");
+    try{
+      const val = JSON.parse(sessionData);
+      return val;
+    }catch(error){
+      return sessionData;
+    }
+  });
+  useEffect(() => {
+    const stringVal = JSON.stringify(userData);
+    localStorage.setItem("auth_data",stringVal);
+  },[userData]);
 
   return(
     <Router>

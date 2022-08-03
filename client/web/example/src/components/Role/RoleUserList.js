@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { MdDelete } from 'react-icons/md'
-import { useNavigate } from 'react-router-dom'
+import { MdDelete } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
 const RoleUserList = ({id}) =>
 {
     const [roleName, SetRoleName] = useState("")
-    navigate=useNavigate();
+    const navigate=useNavigate();
     useEffect(() =>
     {
         fetch("http://localhost:8100/api/role/information", 
