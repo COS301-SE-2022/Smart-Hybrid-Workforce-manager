@@ -2,6 +2,14 @@ package data
 
 import "time"
 
+type Config struct {
+	Seed          int     `json:"seed"`
+	Size          int     `json:"size"`
+	Generations   int     `json:"generations"`
+	MutationRate  float64 `json:"mutationRate"`
+	CrossOverRate float64 `json:"crossOverRate"`
+}
+
 type SchedulerData struct {
 	Users     Users           `json:"users"`
 	Teams     []*TeamInfo     `json:"teams"`
