@@ -1,21 +1,52 @@
 package ga
 
-import "scheduler/data"
+import (
+	"lib/utils"
+	"math/rand"
+	"scheduler/data"
+)
 
-type Crossover func(individuals []*Individual, offspring int) []*Individual
-type Fitness func(individuals []*Individual) []float64
-type Mutate func(individuals []*Individual) []*Individual
-type Selection func(individuals []*Individual, fitness []float64, count int) []*Individual
-type PopulationGenerator func(schedulerData data.SchedulerData) []*Individual
+type Crossover func(domain Domain, individuals Individuals, selectionFunc Selection, fitnii []float64, offspring int) Individuals
+type Fitness func(domain Domain, individuals Individuals) []float64
+type Mutate func(domain Domain, individuals Individuals) Individuals
+type Selection func(domain Domain, individuals Individuals, fitness []float64, count int) Individuals
+type PopulationGenerator func(domain Domain, schedulerData data.SchedulerData, popSize int) Individuals
 
-type Individual struct {
-	gene []string
+type Domain struct {
+	Terminals []string
 }
 
-func GA(schedulerData data.SchedulerData, config data.Config, crossover Crossover, fitness Fitness, mutate Mutate, selection Selection, populationGenerator PopulationGenerator) {
+func (domain *Domain) GetRandomTerminal() string {
+	return domain.Terminals[utils.RandInt(0, len(domain.Terminals))]
+}
+
+type Individual struct {
+	Gene    []string
+	Fitness int
+}
+
+type Individuals []*Individual
+
+func (individual *Individual) Clone() *Individual {
+	newIndividual := &Individual{Gene: individual.Gene}
+	return newIndividual
+}
+
+func (population Individuals) ClonePopulation() []*Individual {
+	cloned := make([]*Individual, 0)
+	for _, individual := range population {
+		cloned = append(cloned, individual.Clone())
+	}
+	return cloned
+}
+
+func GA(schedulerData data.SchedulerData, config data.Config, domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, selection Selection, populationGenerator PopulationGenerator) Individuals {
+	// Seed
+	rand.Seed(int64(config.Seed))
+
 	// Create initial pop and calculate fitnesses
-	population := populationGenerator(schedulerData)
-	fitnii := fitness(population) // TODO Change to useful individuals
+	population := populationGenerator(domain, schedulerData, 1)
+	fitnii := fitness(domain, population) // TODO Change to useful individuals
 
 	// Run ga
 	stoppingCondition := true
@@ -23,17 +54,18 @@ func GA(schedulerData data.SchedulerData, config data.Config, crossover Crossove
 		crossOverAmount := (config.Size * int(config.CrossOverRate))
 		mutateAmount := (config.Size * int(config.MutationRate))
 		carryAmount := config.Size - crossOverAmount - mutateAmount // TODO: Find out Anna if is guicci
-
 		// evolve
-		individualsOffspring := crossover(selection(population, fitnii, crossOverAmount), 2)
-		individualsMutated := mutate(selection(population, fitnii, mutateAmount))
-		individualsCarry := selection(population, fitnii, carryAmount)
+		individualsOffspring := crossover(domain, selection(domain, population, fitnii, crossOverAmount), selection, fitnii, 2)
+		individualsMutated := mutate(domain, selection(domain, population, fitnii, mutateAmount))
+		individualsCarry := selection(domain, population, fitnii, carryAmount)
 
 		population := append(individualsOffspring, individualsMutated...)
 		population = append(population, individualsCarry...)
 
-		fitnii = fitness(population)
+		fitnii = fitness(domain, population)
 	}
+
+	return nil
 }
 
 //       Monday   -   Tuesday   -  Wednesday

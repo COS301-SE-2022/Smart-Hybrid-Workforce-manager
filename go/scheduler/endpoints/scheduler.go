@@ -11,6 +11,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
+var weekdays = []string{"Mon", "Tue", "Wed"}
+
 /////////////////////////////////////////////
 // Endpoints
 
@@ -36,10 +38,21 @@ func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
+	var config data.Config
+
 	// Perform Magic
 	var bookings []data.Bookings
 
-	bookings = ga.GA(schedulerData)
+	// Create domain
+	var domain ga.Domain
+	domain.Terminals = weekdays
+
+	results := ga.GA(schedulerData, config, domain, ga.StubCrossOver, ga.StubFitness, ga.StubMutate, ga.StubSelection, ga.StubPopulationGenerator)
+
+	if len(results) == 0 {
+
+	}
+	// parse results as bookings
 
 	utils.JSONResponse(writer, request, bookings)
 }
