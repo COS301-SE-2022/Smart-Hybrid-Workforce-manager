@@ -9,6 +9,7 @@ type Selection func(individuals []*Individual, fitness []float64, count int) []*
 type PopulationGenerator func(schedulerData data.SchedulerData) []*Individual
 
 type Individual struct {
+	gene []string
 }
 
 func GA(schedulerData data.SchedulerData, config data.Config, crossover Crossover, fitness Fitness, mutate Mutate, selection Selection, populationGenerator PopulationGenerator) {

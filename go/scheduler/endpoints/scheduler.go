@@ -1,9 +1,12 @@
 package endpoints
 
 import (
+	"encoding/json"
 	"lib/utils"
 	"net/http"
+	"os"
 	"scheduler/data"
+	"scheduler/ga"
 
 	"github.com/gorilla/mux"
 )
@@ -34,8 +37,10 @@ func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	// Perform Magic
-
 	var bookings []data.Bookings
+
+	bookings = ga.GA(schedulerData)
+
 	utils.JSONResponse(writer, request, bookings)
 }
 
@@ -52,4 +57,19 @@ func dailyScheduler(writer http.ResponseWriter, request *http.Request) {
 
 	var bookings []data.Bookings
 	utils.JSONResponse(writer, request, bookings)
+}
+
+func parseConfig(path string) (*data.Config, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	decoder := json.NewDecoder(file)
+	Config := data.Config{}
+	err = decoder.Decode(&Config)
+	if err != nil {
+		return nil, err
+	}
+	return &Config, nil
 }

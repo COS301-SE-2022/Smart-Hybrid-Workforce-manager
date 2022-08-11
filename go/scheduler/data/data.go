@@ -11,12 +11,13 @@ type Config struct {
 }
 
 type SchedulerData struct {
-	Users     Users           `json:"users"`
-	Teams     []*TeamInfo     `json:"teams"`
-	Buildings []*BuildingInfo `json:"buildings"`
-	Rooms     []*RoomInfo     `json:"rooms"`
-	Resources Resources       `json:"resources"`
-	Bookings  *BookingInfo    `json:"bookings"`
+	Users           Users           `json:"users"`
+	Teams           []*TeamInfo     `json:"teams"`
+	Buildings       []*BuildingInfo `json:"buildings"`
+	Rooms           []*RoomInfo     `json:"rooms"`
+	Resources       Resources       `json:"resources"`
+	CurrentBookings *Bookings       `json:"current_bookings"`
+	PastBookings    *Bookings       `json:"past_bookings"`
 }
 
 type BookingInfo struct {
