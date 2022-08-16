@@ -3,11 +3,12 @@ package data
 import "time"
 
 type Config struct {
-	Seed          int     `json:"seed"`
-	Size          int     `json:"size"`
-	Generations   int     `json:"generations"`
-	MutationRate  float64 `json:"mutationRate"`
-	CrossOverRate float64 `json:"crossOverRate"`
+	Seed           int     `json:"seed"`
+	Size           int     `json:"size"`
+	Generations    int     `json:"generations"`
+	MutationRate   float64 `json:"mutationRate"`
+	CrossOverRate  float64 `json:"crossOverRate"`
+	TournamentSize int     `json:"tournamentSize"`
 }
 
 type SchedulerData struct {
@@ -125,4 +126,11 @@ type Room struct {
 	Name       *string `json:"name,omitempty"`
 	Location   *string `json:"location,omitempty"`
 	Dimension  *string `json:"dimension,omitempty"`
+}
+
+// =======================
+// ====    Methods    ====
+// =======================
+func (b *Booking) getWeekday() time.Weekday {
+	return b.Start.Weekday()
 }

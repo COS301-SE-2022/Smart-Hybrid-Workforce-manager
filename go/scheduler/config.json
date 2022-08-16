@@ -3,5 +3,6 @@
     "size": 8,
     "generations": 10,
     "mutationRate": 0.4,
-    "crossOverRate": 0.4
+    "crossOverRate": 0.4,
+    "tournamentSize": 10
 }
