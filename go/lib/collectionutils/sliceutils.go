@@ -28,3 +28,14 @@ func IntSliceIntersection(slice1, slice2 []int) []int {
 	}
 	return intersection
 }
+
+// Removes the ONLY THE FIRST matching element from the slice without preserving ordering
+func RemoveElementNoOrder(slice []int, element int) []int {
+	for i := range slice {
+		if slice[i] == element {
+			slice[i] = slice[len(slice)-1] // replace with last element
+			return slice[:len(slice)-1]
+		}
+	}
+	return slice // not found
+}
