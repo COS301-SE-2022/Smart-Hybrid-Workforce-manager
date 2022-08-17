@@ -39,3 +39,12 @@ func RemoveElementNoOrder(slice []int, element int) []int {
 	}
 	return slice // not found
 }
+
+// Removes the element at the specified index. If the element does not exist, nothing is done
+func RemElemenAtI(slice []int, index int) []int {
+	if index >= len(slice) {
+		return slice
+	}
+	slice[index] = slice[len(slice)-1]
+	return slice[:len(slice)-1]
+}

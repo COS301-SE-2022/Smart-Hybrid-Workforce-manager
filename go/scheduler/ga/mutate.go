@@ -1,11 +1,43 @@
 package ga
 
+import "math/rand"
+
 func StubMutate(domain *Domain, individuals Individuals) Individuals {
 	return individuals.ClonePopulation()
 }
 
-func mutate(domain *Domain, individual Individuals) {
+func DayVResourceMutateSwap(domain *Domain, individuals Individuals) Individuals {
+	var results Individuals
+	// Mutate each individual
+	for _, individual := range individuals {
+		copiedIndividual := individual.Clone()
+		// Pick random slot, swap with another random slot
+		randDay1 := rand.Intn(len(copiedIndividual.Gene)) // First mutation point
+		randDay2 := rand.Intn(len(copiedIndividual.Gene))
 
+		randSloti1 := rand.Intn(len(copiedIndividual.Gene[randDay1]))
+		randSloti2 := rand.Intn(len(copiedIndividual.Gene[randDay2]))
+
+		copiedIndividual.Gene[randDay1][randSloti1], copiedIndividual.Gene[randDay2][randSloti2] =
+			copiedIndividual.Gene[randDay2][randSloti2], copiedIndividual.Gene[randDay1][randSloti1]
+		results = append(results, copiedIndividual)
+	}
+	return results
 }
 
-func mutateIndividual()
+func DayVResouceMutate(domain *Domain, individuals Individuals) Individuals {
+	var results Individuals
+	for _, individual := range individuals {
+		copiedIndividual := individual.Clone()
+		for i := range individual.Gene {
+			// randDay1 := rand.Intn(len(individual.Gene)) // First mutation point
+			randSloti := rand.Intn(len(copiedIndividual.Gene[i]))
+			// mutate everything
+			for j := randSloti; j < len(copiedIndividual.Gene[i]); j++ {
+				copiedIndividual.Gene[i][j] = domain.GetRandomTerminal()
+			}
+		}
+		results = append(results, copiedIndividual)
+	}
+	return results
+}

@@ -35,6 +35,7 @@ type Individual struct {
 	Fitness float64
 }
 
+// TODO: @JonathanEnslin update the clone function to be a deep copy
 // Clone clones an individual
 func (individual *Individual) Clone() *Individual {
 	newIndividual := &Individual{Gene: individual.Gene}
@@ -72,7 +73,7 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 		carryAmount := domain.Config.Size - crossOverAmount - mutateAmount // TODO: Find out Anna if is guicci
 
 		// evolve
-		individualsOffspring := crossover(&domain, selection(&domain, population, crossOverAmount), selection, 2)
+		individualsOffspring := crossover(&domain, population, selection, crossOverAmount)
 		individualsMutated := mutate(&domain, selection(&domain, population, mutateAmount))
 		individualsCarry := selection(&domain, population, carryAmount)
 

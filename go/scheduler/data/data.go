@@ -131,6 +131,16 @@ type Room struct {
 // =======================
 // ====    Methods    ====
 // =======================
-func (b *Booking) getWeekday() time.Weekday {
+func (b *Booking) GetWeekday() time.Weekday {
 	return b.Start.Weekday()
+}
+
+func ExtractUserIdsDuplicates(schedulerData *SchedulerData) []string {
+	var results []string
+	for _, user := range schedulerData.Users {
+		for i := 0; i < *user.OfficeDays; i++ {
+			results = append(results, *user.Id)
+		}
+	}
+	return results
 }

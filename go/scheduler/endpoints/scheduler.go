@@ -45,10 +45,11 @@ func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 
 	// Create domain
 	var domain ga.Domain
-	domain.Terminals = weekdays
+	domain.Terminals = data.ExtractUserIdsDuplicates(&schedulerData)
 	domain.Config = &config
+	domain.SchedulerData = &schedulerData
 
-	results := ga.GA(domain, ga.StubCrossOver, ga.StubFitness, ga.StubMutate, ga.TournamentSelection, ga.StubPopulationGenerator)
+	results := ga.GA(domain, ga.DayVResourceCrossover, ga.StubFitness, ga.DayVResouceMutate, ga.TournamentSelection, ga.DayVResourcePopulationGenerator)
 
 	if len(results) == 0 {
 
