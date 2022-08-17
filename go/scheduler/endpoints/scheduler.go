@@ -36,7 +36,14 @@ func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
+	// Set configurations
 	var config data.Config
+	config.Seed = 1
+	config.PopulationSize = 8
+	config.Generations = 10
+	config.MutationRate = 0.4
+	config.CrossOverRate = 0.4
+	config.TournamentSize = 10
 
 	// Perform Magic
 	var bookings []data.Bookings

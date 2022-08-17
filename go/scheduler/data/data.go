@@ -4,7 +4,7 @@ import "time"
 
 type Config struct {
 	Seed           int     `json:"seed"`
-	Size           int     `json:"size"`
+	PopulationSize int     `json:"populationSize"`
 	Generations    int     `json:"generations"`
 	MutationRate   float64 `json:"mutationRate"`
 	CrossOverRate  float64 `json:"crossOverRate"`
