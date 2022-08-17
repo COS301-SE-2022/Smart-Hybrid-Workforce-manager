@@ -8,12 +8,13 @@ import (
 )
 
 type SchedulerData struct {
-	Users     data.Users      `json:"users"`
-	Teams     []*TeamInfo     `json:"teams"`
-	Buildings []*BuildingInfo `json:"buildings"`
-	Rooms     []*RoomInfo     `json:"rooms"`
-	Resources data.Resources  `json:"resources"`
-	Bookings  *BookingInfo    `json:"bookings"`
+	Users           data.Users      `json:"users"`
+	Teams           []*TeamInfo     `json:"teams"`
+	Buildings       []*BuildingInfo `json:"buildings"`
+	Rooms           []*RoomInfo     `json:"rooms"`
+	Resources       data.Resources  `json:"resources"`
+	CurrentBookings *data.Bookings  `json:"current_bookings"`
+	PastBookings    *data.Bookings  `json:"past_bookings"`
 }
 
 type BookingInfo struct {
@@ -327,13 +328,23 @@ func GetSchedulerData(from time.Time, to time.Time) (*SchedulerData, error) {
 		return nil, err
 	}
 
+	// schedulerData := SchedulerData{
+	// 	Users:     users,
+	// 	Teams:     teams,
+	// 	Buildings: buildings,
+	// 	Rooms:     rooms,
+	// 	Resources: resources,
+	// 	Bookings:  bookingsInfo,
+	// }
+
 	schedulerData := SchedulerData{
-		Users:     users,
-		Teams:     teams,
-		Buildings: buildings,
-		Rooms:     rooms,
-		Resources: resources,
-		Bookings:  bookingsInfo,
+		Users:           users,
+		Teams:           teams,
+		Buildings:       buildings,
+		Rooms:           rooms,
+		Resources:       resources,
+		CurrentBookings: &bookingsInfo.Bookings,
+		PastBookings:    nil,
 	}
 
 	return &schedulerData, nil
