@@ -1,10 +1,8 @@
 package endpoints
 
 import (
-	"encoding/json"
 	"lib/utils"
 	"net/http"
-	"os"
 	"scheduler/data"
 	"scheduler/ga"
 
@@ -74,17 +72,25 @@ func dailyScheduler(writer http.ResponseWriter, request *http.Request) {
 	utils.JSONResponse(writer, request, bookings)
 }
 
-func parseConfig(path string) (*data.Config, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-	decoder := json.NewDecoder(file)
-	Config := data.Config{}
-	err = decoder.Decode(&Config)
-	if err != nil {
-		return nil, err
-	}
-	return &Config, nil
-}
+// TODO: FIX THIS FUNCTION SOMEBODY
+// func parseConfig(path string) (*data.Config, error) {
+// 	filePath := filepath.Clean(path)
+// 	file, err := os.Open(filePath)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	defer func() {
+// 		err := file.Close()
+// 		if err != nil {
+// Log stuff
+// 			panic(err)
+// 		}
+// 	}()
+// 	decoder := json.NewDecoder(file)
+// 	Config := data.Config{}
+// 	err = decoder.Decode(&Config)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return &Config, nil
+// }

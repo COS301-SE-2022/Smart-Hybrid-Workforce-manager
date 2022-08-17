@@ -2,7 +2,7 @@ package ga
 
 import (
 	cu "lib/collectionutils"
-	"math/rand"
+	"lib/utils"
 )
 
 func StubPopulationGenerator(domain *Domain, popSize int) Individuals {
@@ -94,9 +94,9 @@ func DayVResourcePopulationGenerator(domain *Domain, popSize int) Individuals {
 		// Randomly assign employees to slots
 		for _, userId := range usersToAdd {
 			availableDaysIntersection := cu.IntSliceIntersection(daysAvailable[userId], openDaysCopy)
-			randDay := availableDaysIntersection[rand.Intn(len(availableDaysIntersection))]
+			randDay := availableDaysIntersection[utils.RandInt(0, len(availableDaysIntersection))]
 			// Get random slot index
-			randSloti := rand.Intn(len(openSlotsCopy[randDay]))
+			randSloti := utils.RandInt(0, len(openSlotsCopy[randDay]))
 			randSlot := openSlotsCopy[randDay][randSloti]
 
 			individual.Gene[randDay][randSlot] = userId // Assign the slot
