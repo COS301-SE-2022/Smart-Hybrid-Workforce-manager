@@ -36,7 +36,37 @@
 {
     min-height: 100vh;
     padding-bottom: 20vh;
-    background-color: #252525;
+    /*background-color: #252525;*/
+    background: linear-gradient(-45deg, rgba(209,184,254,0.4) 0%, rgba(160,174,253,0.4) 100%);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+}
+
+.circle
+{
+    position: fixed;
+    left: 10vw;
+    top: 60vh;
+    height: 80vh;
+    width: 80vh;
+    border-radius: 50%;
+    background-color: #ddcbfe;
+}
+
+@keyframes gradient
+{
+    0%
+    {
+        background-position: 0% 50%;
+    }
+    50%
+    {
+        background-position: 100% 50%;
+    }
+    100%
+    {
+        background-position: 0% 50%;
+    }
 }
 
 .content-login
@@ -50,9 +80,10 @@
     bottom: 0;
     width: 100%;
     height: 10vh;
-    background-color: #1b1b1b;
+    
+    background: rgba(255, 255, 255, 0.6);
 
-    color: white;
+    color: #374146;
     text-align: center;
     padding-top: 2vh;
 
@@ -182,6 +213,36 @@
     width: 50vw;
 }
 
+.form-container-desk-booking
+{
+    grid-area: 'form-container';
+    display: grid;
+    grid-template-columns: 50vw;
+    grid-template-rows: 15vh auto;
+    grid-template-areas: "header" "form";
+
+    margin-top: 3vh;
+    margin-left: 25vw;
+
+    padding-top: 3vh;
+    padding-bottom: 3vh;
+
+    width: 50vw;
+
+    animation: fadeIn ease 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-style: solid;
+    border-color: #ffffff78;
+    border-width: 0.5px;
+    border-radius: 3vh;
+}
+
 .form-container-team
 {
     grid-area: 'form-container';
@@ -203,7 +264,7 @@
 .form-header
 {
     grid-area: header;
-    color: rgb(170, 170, 170);
+    color: #374146;
 
     font-size: 2.5vh;
     text-align: center;
@@ -211,7 +272,7 @@
 
 .form-header-top
 {
-    color: white;
+    color: #374146;
     font-size: 7vh;
 }
 
@@ -229,7 +290,7 @@
 
 .form-container-team h1
 {
-    color: white;
+    color: #374146;
     font-size: 7vh;
 }
 
@@ -246,7 +307,7 @@
 
 .form-label
 {
-    color: white;
+    color: #374146;
     font-size: 3vh;
 }
 
@@ -258,11 +319,16 @@
     padding-bottom: 1vh;
     width: 25vw;
 
-    background-color: #252525;
-    color: #aaaaaa;
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 
-    border-style: solid;
+    color: #374146;
+
+    border-style: none;
     border-radius: 1.5vh;
+    outline: none;
 
     font-size: 2vh; 
 }
@@ -346,7 +412,8 @@
     width: 25vw;
     height: 5.5vh;
 
-    background-color: #09A4FB;
+    /*background-color: #09A4FB;*/
+    background: #09a2fb;
     color: white;
 
     border-style: none;
@@ -358,7 +425,7 @@
 .button-submit:hover
 {
     cursor: pointer;
-    background-color: #03639b;
+    background: #03639b;
 }
 
 .signup-prompt

@@ -38,6 +38,9 @@ function BookingsDesk()
 
       if(res.status === 200)
       {
+        alert("Booking Successfully Created!");
+        navigate("/");
+
         let res = await fetch("http://localhost:8100/api/notification/send", 
         {
           method: "POST",
@@ -49,12 +52,6 @@ function BookingsDesk()
             eTime: endTime
           })
         });
-
-        if(res.status === 200)
-        {
-          alert("Booking Successfully Created!");
-          navigate("/");
-        }
       }
     }
     catch(err)
@@ -67,7 +64,8 @@ function BookingsDesk()
     <div className='page-container'>
       <div className='content'>
         <Navbar />
-        <div className='form-container-team'>
+        <div className="circle"></div>
+        <div className='form-container-desk-booking'>
           <p className='form-header'><h1>CREATE YOUR DESK BOOKING</h1>Please enter your booking details.</p>
           
           <Form className='form' onSubmit={handleSubmit}>
