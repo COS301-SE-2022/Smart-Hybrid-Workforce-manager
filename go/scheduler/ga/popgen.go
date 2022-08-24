@@ -149,7 +149,7 @@ func DayVResourcePopulationGenerator(domain *Domain, popSize int) Individuals {
 	// logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
 	// END DEBUG ================
 	openDaysCopy := make([]int, len(openDays))
-	population := make([]*Individual, domain.Config.PopulationSize)
+	population := make([]*Individual, popSize)
 	daysAvailableCopy := make(map[string][]int)
 	for i := 0; i < popSize; i++ {
 		// make copy of days available map
@@ -231,9 +231,9 @@ func DayVResourcePopulationGenerator(domain *Domain, popSize int) Individuals {
 	}
 
 	// DEBUG ================
-	// logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
-	// logger.Error.Println(testutils.Scolour(testutils.GREEN, "Done"))
-	// logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
+	logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
+	logger.Error.Println(testutils.Scolour(testutils.GREEN, "Done"))
+	logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
 	// time.Sleep(100 * time.Millisecond)
 	// END DEBUG ================
 
