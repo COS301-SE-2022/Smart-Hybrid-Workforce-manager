@@ -48,3 +48,13 @@ func RemElemenAtI(slice []int, index int) []int {
 	slice[index] = slice[len(slice)-1]
 	return slice[:len(slice)-1]
 }
+
+// Contains slice
+func Contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
