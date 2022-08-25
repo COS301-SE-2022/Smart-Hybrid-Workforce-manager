@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS booking.identifier (
     resource_id uuid REFERENCES resource.identifier(id) ON DELETE CASCADE,
     start TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     "end" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    booked BOOLEAN DEFAULT(false),
+    booked BOOLEAN DEFAULT(null),
     automated BOOLEAN DEFAULT(false),
     date_created TIMESTAMP WITHOUT TIME ZONE DEFAULT(now() AT TIME ZONE 'uct'),
     dependent uuid REFERENCES booking.identifier(id) ON DELETE CASCADE,
