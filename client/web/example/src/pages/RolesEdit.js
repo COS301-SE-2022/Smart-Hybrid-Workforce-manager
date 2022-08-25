@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import UserRoleList from '../components/Role/UserRoleList'
 import RoleLeadOption from '../components/Role/RoleLeadOption'
+import { useNavigate } from 'react-router-dom';
 
 const EditRole = () =>
 {
@@ -13,6 +14,7 @@ const EditRole = () =>
   const [roleLead, setRoleLead] = useState(window.sessionStorage.getItem("RoleLead"));
 
   const [roleUsers, SetRoleUsers] = useState([]);
+  const navigate = useNavigate();
 
   let handleSubmit = async (e) =>
   {
@@ -32,7 +34,7 @@ const EditRole = () =>
       if(res.status === 200)
       {
         alert("Role Successfully Updated!");
-        window.location.assign("./role");
+        navigate("/role");
       }
     }
     catch(err)
@@ -58,7 +60,7 @@ const EditRole = () =>
 
   const PermissionConfiguration = () =>
   {
-    window.location.assign("./role-permissions");
+    navigate("/role-permissions");
   }
 
   //Using useEffect hook. This will ste the default values of the form once the components are mounted

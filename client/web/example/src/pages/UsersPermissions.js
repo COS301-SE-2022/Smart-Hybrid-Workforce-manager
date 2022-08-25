@@ -4,10 +4,13 @@ import { useState, useEffect, useCallback } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
+import { useNavigate } from 'react-router-dom'
 
 function UserPermissions() {
   const [userName, setUserName] = useState(window.sessionStorage.getItem("UserName"));
   //const [userPermissions, SetUserPermissions] = useState([]);
+  
+  const navigate = useNavigate();
 
   // Bookings
   const [createBookingIdentifierUser, SetCreateBookingIdentifierUser] = useState("") // allows a user to update the Booking for themselves
@@ -251,7 +254,7 @@ function UserPermissions() {
     }
 
     alert("Permissions successfully updated.")
-    window.location.assign("./user-permissions");
+    navigate("/user-permissions");
   };
 
   async function AddPermission(id, idType, type, category, tenant, tenant_id) {

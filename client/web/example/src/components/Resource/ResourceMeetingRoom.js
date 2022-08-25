@@ -1,8 +1,11 @@
 import React from 'react'
 import { MdEdit, MdDelete } from 'react-icons/md'
 import { MdSupervisorAccount } from 'react-icons/md'
+import { useNavigate } from 'react-router-dom'
 
 const ResourceMeetingRoom = ({id, name, location, capacity, roomId}) => {
+
+    const navigate=useNavigate();
 
     let EditResource = async (e) =>
     {
@@ -12,7 +15,7 @@ const ResourceMeetingRoom = ({id, name, location, capacity, roomId}) => {
         window.sessionStorage.setItem("MeetingRoomLocation", location);
         window.sessionStorage.setItem("MeetingRoomCapacity", capacity);
         window.sessionStorage.setItem("RoomID", roomId);
-        window.location.assign("./resources-meeting-room-edit");
+        navigate("/resources-meeting-room-edit");
     }
 
     let DeleteResource = async (e) =>
@@ -33,7 +36,7 @@ const ResourceMeetingRoom = ({id, name, location, capacity, roomId}) => {
                 if(res.status === 200)
                 {
                     alert("Resource Successfully Deleted!");
-                    window.location.assign("./resources");
+                    navigate("/resources");
                 }
             }
             catch (err)

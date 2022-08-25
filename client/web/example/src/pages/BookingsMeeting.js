@@ -2,8 +2,10 @@ import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import '../App.css'
+import { UserContext } from "../App"
+import { useNavigate } from "react-router-dom"
 
 function BookingsMeeting()
 {
@@ -20,6 +22,9 @@ function BookingsMeeting()
   const [aditionalAttendees, SetAditionalAttendees] = useState(0) // Use a number not string
   const [attendeesDesks, SetAttendeesDesks] = useState(false) // Use a bool
   const [aditionalAttendeesDesks, SetAditionalAttendeesDesks] = useState(false) // Use a bool
+
+  const {userData} = useContext(UserContext)
+  const navigate = useNavigate();
 
   let handleSubmit = async (e) =>
   {
@@ -52,7 +57,7 @@ function BookingsMeeting()
       if(res.status === 200)
       {
         alert("Booking Successfully Created!");
-        window.location.reload();
+        navigate("/bookings-meeting");
       }
     }
     catch(err)

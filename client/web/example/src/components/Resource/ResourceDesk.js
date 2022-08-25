@@ -1,9 +1,10 @@
 import React from 'react'
 import { MdEdit, MdDelete } from 'react-icons/md'
 import { MdDesktopWindows } from 'react-icons/md'
+import { useNavigate } from 'react-router-dom'
 
 const ResourceDesk = ({id, name, location, roomId}) => {
-
+const navigate=useNavigate();
     let EditResource = async (e) =>
     {
         e.preventDefault();
@@ -11,7 +12,7 @@ const ResourceDesk = ({id, name, location, roomId}) => {
         window.sessionStorage.setItem("DeskName", name);
         window.sessionStorage.setItem("DeskLocation", location);
         window.sessionStorage.setItem("RoomID", roomId);
-        window.location.assign("./resources-desk-edit");
+        navigate("/resources-desk-edit")
     }
 
     let DeleteResource = async (e) =>
@@ -32,7 +33,7 @@ const ResourceDesk = ({id, name, location, roomId}) => {
                 if(res.status === 200)
                 {
                     alert("Resource Successfully Deleted!");
-                    window.location.assign("./resources");
+                    navigate("/resources");
                 }
             }
             catch (err)

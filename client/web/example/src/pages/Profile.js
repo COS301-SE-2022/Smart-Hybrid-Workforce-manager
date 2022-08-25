@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import '../App.css'
 import Button from 'react-bootstrap/Button'
 import RoleUserList from '../components/Role/RoleUserList'
 import TeamUserList from '../components/Team/TeamUserList'
-import { useContext } from 'react'
 import { UserContext } from '../App'
-import LogoutButton from '../components/Logout/LogoutButton'
+import { useNavigate } from 'react-router-dom'
 
 function Profile()
 {
@@ -25,89 +24,82 @@ function Profile()
 
   const [roles, SetRoles] = useState([])
   const [teams, SetTeams] = useState([])
-
-  const {userData} = useContext(UserContext);
   
-  //POST request
-  const FetchUser = () =>
-  {
-    fetch("http://localhost:8100/api/user/information", 
-        {
-          method: "POST",
-          body: JSON.stringify({
-            id:userData.user_id
-          }),
-          headers:{
-            'Authorization': `bearer ${userData.token}`
-          }
-        }).then((res) => res.json()).then(data => 
-        {
-          SetIdentifier(data[0].identifier)
-          SetFirstName(data[0].first_name);
-          SetLastName(data[0].last_name);
-          SetEmail(data[0].email);
-          SetPicture(data[0].picture);
-          SetDateCreated(data[0].date_created);
-          SetWorkFromHome(data[0].work_from_home);
-          SetParking(data[0].parking);
-          SetOfficeDays(data[0].office_days);
-          SetStartTime(data[0].preferred_start_time);
-          SetEndTime(data[0].preferred_end_time);
-        });
-  }
+  const {userData}=useContext(UserContext)
 
-  //POST request
-  const FetchUserRoles = () =>
-  {
-    fetch("http://localhost:8100/api/role/user/information", 
-        {
-          method: "POST",
-          body: JSON.stringify({
-            user_id:userData.user_id
-          }),
-          headers:{
-            'Authorization': `bearer ${userData.token}`
-          }
-        }).then((res) => res.json()).then(data => 
-          {
-            SetRoles(data);
-          });
-  }
+  const navigate = useNavigate();
 
-  //POST request
-  const FetchUserTeams = () =>
-  {
-    console.log(userData.token);
-    console.log(`bearer ${userData.token}`);
-    fetch("http://localhost:8100/api/team/user/information", 
-        {
-          method: "POST",
-          mode: "cors",
-          body: JSON.stringify({
-            user_id:userData.user_id
-          }),
-          headers: new Headers({
-            'Authorization': `bearer ${userData.token}`
-          })
-        }).then((res) => {return res.json()}).then(data => 
-          {
-            console.log(data);
-            SetTeams(data);
-          });
-  }
+  /*console.log(window.sessionStorage.getItem("UserID"))
+  console.log(userData)
+  console.log(userData.user_id.substring(6))*/
+  
 
   //Using useEffect hook. This will ste the default values of the form once the components are mounted
-  useEffect(() =>
-  {
-    window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
-    FetchUser();
-    FetchUserRoles();
-    FetchUserTeams();
-  }, [])
+    useEffect(() =>
+    {
+        //POST requests
+        const FetchUser = () =>
+        {
+            fetch("http://localhost:8100/api/user/information", 
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    identifier : userData.user_id.substring(6)
+                })
+            }).then((res) => res.json()).then(data => 
+            {
+                sessionStorage.setItem("UserID", data[0].id);
+                SetIdentifier(data[0].identifier);
+                SetFirstName(data[0].first_name);
+                SetLastName(data[0].last_name);
+                SetEmail(data[0].email);
+                SetPicture(data[0].picture);
+                SetDateCreated(data[0].date_created);
+                SetWorkFromHome(data[0].work_from_home);
+                SetParking(data[0].parking);
+                SetOfficeDays(data[0].office_days);
+                SetStartTime(data[0].preferred_start_time);
+                SetEndTime(data[0].preferred_end_time);
+            });
+        };
+
+        const FetchUserRoles = () =>
+        {
+            fetch("http://localhost:8100/api/role/user/information", 
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    identifier:userData.user_id.substring(6)
+                })
+            }).then((res) => res.json()).then(data => 
+            {
+                SetRoles(data);
+            });
+        };
+
+        const FetchUserTeams = () =>
+        {
+            fetch("http://localhost:8100/api/team/user/information", 
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    identifier:userData.user_id.substring(6)
+                })
+            }).then((res) => res.json()).then(data => 
+            {
+                SetTeams(data);
+            });
+        }
+
+        // window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
+        FetchUser();
+        FetchUserRoles();
+        FetchUserTeams();
+  }, [userData.user_id])
 
   const ProfileConfiguration = () =>
   {
-    window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
+    // window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
     window.sessionStorage.setItem("Identifier", identifier);
     window.sessionStorage.setItem("FirstName", firstName);
     window.sessionStorage.setItem("LastName", lastName);
@@ -119,13 +111,14 @@ function Profile()
     window.sessionStorage.setItem("OfficeDays", officeDays);
     window.sessionStorage.setItem("StartTime", startTime);
     window.sessionStorage.setItem("EndTime", endTime);
-    window.location.assign("./profile-configuration");
+    navigate("/profile-configuration")
   }
 
-  // const LogOut = () =>
-  // {
-  //   setUserData(null);
-  // }
+  const LogOut = () =>
+  {
+
+    navigate("/login");
+  }
 
   return (
     <div className='page-container'>
@@ -160,7 +153,7 @@ function Profile()
               </div>
             </div>
             <Button className='button-user-profile' variant='primary' onClick={ProfileConfiguration}>Profile Configuration</Button>
-            <LogoutButton/>
+            <Button className='button-user-profile' variant='primary' onClick={LogOut}>Log Out</Button>
           </div>
         </div>
       </div>

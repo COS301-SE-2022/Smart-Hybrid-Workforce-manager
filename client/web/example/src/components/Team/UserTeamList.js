@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import { MdDelete } from 'react-icons/md'
+import { MdDelete } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
 const UserTeamList = ({id}) =>
 {  
     const [name, setName] = useState("error");
+    const navigate = useNavigate();
     
   let DeleteUser = async (e) =>
     {
@@ -24,7 +26,7 @@ const UserTeamList = ({id}) =>
                 if(res.status === 200)
                 {
                     alert("User Successfully Removed!");
-                    window.location.reload();
+                    navigate(0);
                 }
             }
             catch (err)

@@ -14,9 +14,12 @@
     "react-dom": "^18.0.0",
     "react-icons": "^4.3.1",
     "react-konva": "^18.2.1",
+    "react-password-strength-bar": "^0.4.1",
     "react-router-dom": "^6.3.0",
     "react-scripts": "^5.0.1",
+    "react-tsparticles": "^2.2.3",
     "styled-components": "^5.3.5",
+    "tsparticles": "^2.2.3",
     "use-image": "^1.0.12",
     "web-vitals": "^2.1.4"
   },
@@ -47,9 +50,9 @@
   "devDependencies": {
     "jest-watch-typeahead": "^0.6.5"
   },
-  "jest":{
+  "jest": {
     "transformIgnorePatterns": [
-        "node_modules/(?!@ngrx|(?!deck.gl)|ng-dynamic)"
-      ]
+      "node_modules/(?!@ngrx|(?!deck.gl)|ng-dynamic)"
+    ]
   }
 }

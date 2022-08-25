@@ -1,8 +1,11 @@
 import React from 'react'
 import { MdEdit, MdDelete } from 'react-icons/md'
 import { MdSupervisedUserCircle } from 'react-icons/md'
+import { useNavigate } from 'react-router-dom';
 
-const TeamListItem = ({id, name, description, capacity, picture, lead, priority}) => {
+const TeamListItem = ({id, name, description, capacity, picture, lead, priority}) =>
+{
+    const navigate = useNavigate();
 
     let EditTeam = async (e) =>
     {
@@ -14,7 +17,7 @@ const TeamListItem = ({id, name, description, capacity, picture, lead, priority}
         window.sessionStorage.setItem("TeamPriority", priority);
         window.sessionStorage.setItem("TeamPicture", picture);
         window.sessionStorage.setItem("TeamLead", lead);
-        window.location.assign("./team-edit");
+        navigate("/team-edit");
     }
 
     let DeleteTeam = async (e) =>
@@ -35,7 +38,7 @@ const TeamListItem = ({id, name, description, capacity, picture, lead, priority}
                 if(res.status === 200)
                 {
                     alert("Team Successfully Deleted!");
-                    window.location.assign("./team");
+                    navigate("/team");
                 }
             }
             catch (err)

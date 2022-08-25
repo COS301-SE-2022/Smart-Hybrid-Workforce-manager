@@ -3,6 +3,8 @@ import Footer from "../components/Footer"
 import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { UserContext } from "../App"
+import { useNavigate } from 'react-router-dom';
 
 function BookingsDeskEdit()
 {
@@ -10,6 +12,9 @@ function BookingsDeskEdit()
   const [startTime, setStartTime] = useState("");
   const [endDate, setEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
+
+  const {userData} = UserContext(UserContext);
+  const navigate = useNavigate();
 
   let handleSubmit = async (e) =>
   {
@@ -21,7 +26,7 @@ function BookingsDeskEdit()
         method: "POST",
         body: JSON.stringify({
           id: window.sessionStorage.getItem("BookingID"),
-          user_id: "11111111-1111-4a06-9983-8b374586e459",
+          user_id: userData.user_id,
           resource_type: "DESK",
           resource_preference_id: null,
           resource_id: null,
@@ -48,7 +53,7 @@ function BookingsDeskEdit()
         if(res.status === 200)
         {
           alert("Booking Successfully Edited!");
-          window.location.assign("./");
+          navigate("/");
         }
       }
     }

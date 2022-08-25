@@ -11,19 +11,19 @@
 ::-webkit-scrollbar
 {
     width: 12px;
-    background-color: #252525;
+    background-color: #ffffff;
 }
 
 ::-webkit-scrollbar-thumb
 {
     border-radius: 10px;
-    background-color: rgb(61, 61, 61);
+    background-color: #afb3ca;
 }
 
 ::-webkit-scrollbar-thumb:hover
 {
     border-radius: 10px;
-    background-color: rgb(17, 17, 17);
+    background-color: #888b9b;
 }
 
 .page-container
@@ -36,7 +36,14 @@
 {
     min-height: 100vh;
     padding-bottom: 20vh;
-    background-color: #252525;
+}
+
+.circle-container
+{
+    position: fixed;
+    min-height: 100vh;
+    min-width: 100vw;
+    z-index: -1;
 }
 
 .content-login
@@ -50,9 +57,10 @@
     bottom: 0;
     width: 100%;
     height: 10vh;
-    background-color: #1b1b1b;
+    
+    background: #dadffe;
 
-    color: white;
+    color: #374146;
     text-align: center;
     padding-top: 2vh;
 
@@ -136,6 +144,26 @@
     overflow: hidden; 
 }
 
+.password-requirements
+{
+    visibility: hidden;
+
+    position: fixed;
+    background-color: #ffffff;
+    border-radius: 1vh;
+
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+    padding-left: 3vw;
+    padding-right: 3vw;
+    
+    width: 20vw;
+    top: 71vh;
+    left: 40vw;
+    text-align: center;
+    box-shadow: #000000 0px 2vw 9vh;
+}
+
 .form-container-login
 {
     grid-area: 'form-container';
@@ -162,6 +190,36 @@
     width: 50vw;
 }
 
+.form-container-desk-booking
+{
+    grid-area: 'form-container';
+    display: grid;
+    grid-template-columns: 50vw;
+    grid-template-rows: 15vh auto;
+    grid-template-areas: "header" "form";
+
+    margin-top: 3vh;
+    margin-left: 25vw;
+
+    padding-top: 3vh;
+    padding-bottom: 3vh;
+
+    width: 50vw;
+
+    animation: fadeIn ease 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-style: solid;
+    border-color: #ffffff78;
+    border-width: 0.5px;
+    border-radius: 3vh;
+}
+
 .form-container-team
 {
     grid-area: 'form-container';
@@ -183,7 +241,7 @@
 .form-header
 {
     grid-area: header;
-    color: rgb(170, 170, 170);
+    color: #374146;
 
     font-size: 2.5vh;
     text-align: center;
@@ -191,7 +249,7 @@
 
 .form-header-top
 {
-    color: white;
+    color: #374146;
     font-size: 7vh;
 }
 
@@ -209,7 +267,7 @@
 
 .form-container-team h1
 {
-    color: white;
+    color: #374146;
     font-size: 7vh;
 }
 
@@ -226,7 +284,7 @@
 
 .form-label
 {
-    color: white;
+    color: #374146;
     font-size: 3vh;
 }
 
@@ -238,13 +296,56 @@
     padding-bottom: 1vh;
     width: 25vw;
 
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+
+    color: #374146;
+
+    border-style: none;
+    border-radius: 1.5vh;
+    outline: none;
+
+    font-size: 2vh; 
+}
+
+.form-input:focus
+{
+    outline: none;
+}
+
+.password-input
+{
+    margin-top: 1vh;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    width: 25vw;
+
     background-color: #252525;
-    color: rgb(170, 170, 170);
+    color: #aaaaaa;
 
     border-style: solid;
     border-radius: 1.5vh;
 
     font-size: 2vh; 
+}
+
+.password-input:focus
+{
+    outline: none;
+}
+
+.password-input:focus ~.password-requirements
+{
+    visibility: visible;
+}
+
+.password-strength
+{
+    margin-top: 3vh;
+    width: 25vw;
 }
 
 .form-input-textarea
@@ -288,7 +389,8 @@
     width: 25vw;
     height: 5.5vh;
 
-    background-color: #09A4FB;
+    /*background-color: #09A4FB;*/
+    background: #09a2fb;
     color: white;
 
     border-style: none;
@@ -300,7 +402,7 @@
 .button-submit:hover
 {
     cursor: pointer;
-    background-color: #03639b;
+    background: #03639b;
 }
 
 .signup-prompt

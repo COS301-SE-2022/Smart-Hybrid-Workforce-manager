@@ -3,12 +3,15 @@ import Footer from "../components/Footer"
 import { useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { useNavigate } from 'react-router-dom';
 
 const CreateRoom = () =>
 {
   const [roomName, SetRoomName] = useState("");
   const [roomLocation, SetRoomLocation] = useState("");
   const [roomDimensions, SetRoomDimensions] = useState("");
+
+  const navigate = useNavigate();
 
   let handleSubmit = async (e) =>
   {
@@ -30,7 +33,7 @@ const CreateRoom = () =>
       if(res.status === 200)
       {
         alert("Room Successfully Created!");
-        window.location.assign("./resources");
+        navigate("/resources");
       }
     }
     catch(err)

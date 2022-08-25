@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import '../App.css'
 import RoleUserList from '../components/Role/RoleUserList'
 import TeamUserList from '../components/Team/TeamUserList'
 import Button from 'react-bootstrap/Button'
+import { UserContext } from '../App'
+import { useNavigate } from 'react-router-dom'
 
 function EditUser()
 {
@@ -19,6 +21,9 @@ function EditUser()
 
     const [userRoles, SetUserRoles] = useState([])
     const [userTeams, SetUserTeams] = useState([])
+
+    const {userData} = useContext(UserContext)
+    const navigate = useNavigate();
 
   //POST request
   const FetchUserRoles = () =>
@@ -87,7 +92,6 @@ function EditUser()
             {
               alert("Role Successfully Added!");
               navigate(0);
-              window.location.reload();
             }
         }
         catch (err)
@@ -132,7 +136,7 @@ function EditUser()
             if(res.status === 200)
             {
                 alert("Team Successfully Added!");
-                window.location.reload();
+                navigate(0);
             }
         }
         catch (err)
@@ -143,7 +147,7 @@ function EditUser()
   
   const PermissionConfiguration = () =>
   {
-    window.location.assign("./user-permissions");
+    navigate("/user-permissions");
   }
 
   //Using useEffect hook. This will ste the default values of the form once the components are mounted

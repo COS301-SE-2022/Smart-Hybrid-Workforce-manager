@@ -39,7 +39,7 @@ import EditRole from './pages/RolesEdit'
 import PermissionsRole from './pages/RolesPermissions'
 import Layout from './pages/CreateLayout'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import ProtectedRoute from './store/ProtectedRoute'
 
@@ -49,17 +49,27 @@ export const UserContext = React.createContext();
 
 function App()
 {
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState(() => {
+    const sessionData = localStorage.getItem("auth_data");
+    try{
+      const val = JSON.parse(sessionData);
+      return val;
+    }catch(error){
+      return sessionData;
+    }
+  });
+  useEffect(() => {
+    const stringVal = JSON.stringify(userData);
+    localStorage.setItem("auth_data",stringVal);
+  },[userData]);
 
   return(
     <Router>
       <UserContext.Provider value={{userData, setUserData}}>
         <Routes>
           <Route element={<ProtectedRoute/>}>
-          <Route path="/" exact element={<Home/>} />
-
-          </Route>       
-          <Route path="/bookings-desk" exact element={<BookingsDesk/>} />
+            <Route path="/" exact element={<Home/>} />
+            <Route path="/bookings-desk" exact element={<BookingsDesk/>} />
             <Route path="/bookings-meeting" exact element={<BookingsMeeting />} />
                         <Route path="/bookings" exact element={<Bookings/>} />
             <Route path="/admin" exact element={<Admin />} />
@@ -92,6 +102,7 @@ function App()
             <Route path="/role-create" exact element={<CreateRole/>} />
             <Route path="/role-edit" exact element={<EditRole />} />
             <Route path="/role-permissions" exact element={<PermissionsRole />} /> 
+          </Route>          
           <Route path="/login" exact element={<Login />} />
           <Route path="/signup" exact element={<Signup/>} />
         </Routes>          

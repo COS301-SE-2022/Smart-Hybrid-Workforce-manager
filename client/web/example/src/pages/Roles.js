@@ -3,10 +3,13 @@ import Footer from "../components/Footer"
 import Button from 'react-bootstrap/Button'
 import { useState, useEffect } from 'react';
 import RoleListItem from '../components/Role/RoleListItem';
+import { useNavigate } from 'react-router-dom';
 
 function Roles()
 {
-  const [roles, SetRoles] = useState([])
+  const [roles, SetRoles] = useState([]);
+
+  const navigate = useNavigate();
 
   //POST request
   const FetchRoles = () =>
@@ -24,7 +27,7 @@ function Roles()
 
   const AddRole = () =>
   {
-    window.location.assign("./role-create");
+    navigate("/role-create");
   }
 
   //Using useEffect hook. This will send the POST request once the component is mounted
