@@ -37,6 +37,7 @@ func DayVResouceMutate(domain *Domain, individuals Individuals) Individuals {
 			randSloti := utils.RandInt(0, len(copiedIndividual.Gene[i]))
 			// mutate everything
 			for j := randSloti; j < len(copiedIndividual.Gene[i]); j++ {
+				// TODO set chance to be empty
 				copiedIndividual.Gene[i][j] = domain.GetRandomTerminal()
 			}
 		}

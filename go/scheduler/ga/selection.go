@@ -19,7 +19,7 @@ func tournamentSelection(domain *Domain, individuals Individuals) *Individual {
 		tournament = append(tournament, individuals.GetRandomIndividual().Clone())
 	}
 
-	var winner *Individual
+	var winner *Individual = tournament[0]
 
 	for _, competitor := range tournament {
 		if competitor.Fitness >= winner.Fitness {

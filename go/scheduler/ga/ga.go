@@ -2,10 +2,12 @@ package ga
 
 import (
 	"fmt"
+	"lib/testutils"
 	"lib/utils"
 	"math/rand"
 	"scheduler/data"
 	"strings"
+	"time"
 )
 
 // Individuals is a collection of solutions to the domain problem
@@ -66,29 +68,45 @@ func (population Individuals) GetRandomIndividual() *Individual {
 func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, selection Selection, populationGenerator PopulationGenerator) Individuals {
 	// Seed
 	rand.Seed(int64(domain.Config.Seed))
-
+	start := time.Now()
 	// Create initial pop and calculate fitnesses
-	population := populationGenerator(&domain, 5)
+	population := populationGenerator(&domain, domain.Config.PopulationSize)
+	for _, indiv := range population {
+		fmt.Printf("Initial population %v\n\n\n", indiv)
+	}
 	fitness(&domain, population) // TODO Change to useful individuals
 
 	// Run ga
 	stoppingCondition := true
 	for i := 0; i < domain.Config.Generations && stoppingCondition; i++ {
-		crossOverAmount := (domain.Config.PopulationSize * int(domain.Config.CrossOverRate))
-		mutateAmount := (domain.Config.PopulationSize * int(domain.Config.MutationRate))
+		crossOverAmount := int(float64(domain.Config.PopulationSize) * domain.Config.CrossOverRate)
+		mutateAmount := int(float64(domain.Config.PopulationSize) * domain.Config.MutationRate)
 		carryAmount := domain.Config.PopulationSize - crossOverAmount - mutateAmount // TODO: Find out Anna if is guicci
 
 		// evolve
 		individualsOffspring := crossover(&domain, population, selection, crossOverAmount)
+		// for _, indiv := range individualsOffspring {
+		// 	fmt.Printf("Offsprings \n %v\n\n\n", indiv)
+		// }
 		individualsMutated := mutate(&domain, selection(&domain, population, mutateAmount))
+		// for _, indiv := range individualsMutated {
+		// 	fmt.Printf("Mutated \n %v\n\n\n", indiv)
+		// }
 		individualsCarry := selection(&domain, population, carryAmount)
+		// for _, indiv := range individualsMutated {
+		// 	fmt.Printf("Carry \n %v\n\n\n", indiv)
+		// }
 
-		population := append(individualsOffspring, individualsMutated...)
+		population = append(individualsOffspring, individualsMutated...)
 		population = append(population, individualsCarry...)
 
 		fitness(&domain, population)
 	}
-
+	end := time.Now()
+	for _, indiv := range population {
+		fmt.Printf("Final population %v\n\n\n", indiv)
+	}
+	fmt.Printf(testutils.Scolour(testutils.BLUE, "+++++++Exec time: %v\n"), end.Sub(start))
 	return population
 }
 

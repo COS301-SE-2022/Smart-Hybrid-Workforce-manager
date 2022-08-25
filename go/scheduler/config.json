@@ -1,8 +1,8 @@
 {
     "seed" : 1,
-    "populationSize": 8,
-    "generations": 10,
+    "populationSize": 4,
+    "generations": 1000,
     "mutationRate": 0.4,
     "crossOverRate": 0.4,
-    "tournamentSize": 10
+    "tournamentSize": 2
 }

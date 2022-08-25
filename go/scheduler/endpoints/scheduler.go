@@ -39,8 +39,8 @@ func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 	// Set configurations
 	var config data.Config
 	config.Seed = 1
-	config.PopulationSize = 8
-	config.Generations = 10
+	config.PopulationSize = 5
+	config.Generations = 1000
 	config.MutationRate = 0.4
 	config.CrossOverRate = 0.4
 	config.TournamentSize = 10
@@ -54,7 +54,7 @@ func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 	domain.Config = &config
 	domain.SchedulerData = &schedulerData
 
-	results := ga.GA(domain, ga.DayVResourceCrossover, ga.StubFitness, ga.DayVResouceMutate, ga.TournamentSelection, ga.DayVResourcePopulationGenerator)
+	results := ga.GA(domain, ga.DayVResourceCrossover, ga.DayVResourceFitness, ga.DayVResourceMutateSwap, ga.TournamentSelection, ga.DayVResourcePopulationGenerator)
 
 	if len(results) == 0 {
 
@@ -79,7 +79,7 @@ func dailyScheduler(writer http.ResponseWriter, request *http.Request) {
 	utils.JSONResponse(writer, request, bookings)
 }
 
-// TODO: FIX THIS FUNCTION SOMEBODY
+// TODO: FIX THIS FUNCTION SOMEBODY PLEASE UWU
 // func parseConfig(path string) (*data.Config, error) {
 // 	filePath := filepath.Clean(path)
 // 	file, err := os.Open(filePath)
