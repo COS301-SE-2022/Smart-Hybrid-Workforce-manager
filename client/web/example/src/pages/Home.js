@@ -57,10 +57,10 @@ const Home = () =>
             start: startDate.toISOString(),
             end: endDate.toISOString()
           }),
-          headers:{
+          /*headers:{
             'Content-Type': 'application/json',
             'Authorization': `bearer ${userData.token}`
-          }
+          }*/
         }).then((res) => res.json()).then(data => 
           {
             setBookings(data);

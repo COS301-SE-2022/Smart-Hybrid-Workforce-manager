@@ -17,9 +17,9 @@ const BookingCard = ({name, description, path, image}) =>
                     style={{
                         gridArea : 'image',
                         background : 'linear-gradient(#fff0 0%, #fff0 70%, #1d1d1d 100%), url(' + image + ')',
-                        'background-size': 'cover',
-                        'border-top-left-radius': '4vh',
-                        'border-top-right-radius': '4vh'
+                        'backgroundSize': 'cover',
+                        'borderTopLeftRadius': '4vh',
+                        'borderTopRightRadius': '4vh'
                         }}>
                 </div>
                 

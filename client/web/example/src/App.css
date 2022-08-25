@@ -220,6 +220,36 @@
     border-radius: 3vh;
 }
 
+.form-container-meetingroom-booking
+{
+    grid-area: 'form-container';
+    display: grid;
+    grid-template-columns: 50vw;
+    grid-template-rows: 15vh auto;
+    grid-template-areas: "header" "form";
+
+    margin-top: 3vh;
+    margin-left: 25vw;
+
+    padding-top: 3vh;
+    padding-bottom: 3vh;
+
+    width: 50vw;
+
+    animation: fadeIn ease 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-style: solid;
+    border-color: #ffffff78;
+    border-width: 0.5px;
+    border-radius: 3vh;
+}
+
 .form-container-team
 {
     grid-area: 'form-container';
@@ -610,12 +640,20 @@
     padding-left: 1vw;
     padding-right: 1vw;
 
-    width: 22vw;
+    width: 25vw;
 
-    border-radius: 1vh;
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+
+    color: #374146;
+
     border-style: none;
-    color: white;
-    background-color: #1b1b1b;
+    border-radius: 1.5vh;
+    outline: none;
+
+
     text-align: center;
 }
 
@@ -1419,7 +1457,7 @@
 
 /* Customize the label (the container) */
 .container {
-    color: white;
+    color: #374146;
     display: block;
     position: relative;
     padding-left: 35px;
