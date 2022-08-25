@@ -2,7 +2,7 @@ package endpoints
 
 import (
 	"api/scheduler"
-	"api/utils"
+	"lib/utils"
 	"net/http"
 	"time"
 

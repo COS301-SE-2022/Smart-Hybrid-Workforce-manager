@@ -4,7 +4,8 @@ import (
 	"api/data"
 	"api/db"
 	"api/redis"
-	"api/utils"
+	"lib/utils"
+	"errors"
 
 	// "errors"
 	"fmt"
@@ -229,10 +230,12 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) { // TO
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
-
-	temp := "local." + *userCred.Id
-	userCred.Id = &temp
-
+	logger.Access.Printf("userCred: %v",userCred)
+	logger.Access.Printf("userCred Sec: %v",*userCred.Secret)
+	logger.Access.Printf("userCred Idnt: %v",*userCred.Identifier)
+	temp := "local." + *userCred.Identifier
+	// userCred.Identifier = &temp
+	logger.Access.Printf("temp: %v",temp)
 	logger.Access.Printf("\nuserCred\n%v\n", userCred)
 
 	access, err := db.Open()
@@ -252,18 +255,17 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) { // TO
 	}
 
 	logger.Access.Printf("\nusers\n%v\n", credentials)
-
-	var user = data.User{
-		Identifier: userCred.Identifier,
-	}
-
-	// logger.Access.Printf("\nuser\n%v\n", user)
-
-	users, err := da.FindIdentifier(&user)
-	if err != nil {
-		utils.InternalServerError(writer, request, err)
+	// logger.Access.Printf("\nuser\n%v\n", *credentials[0])
+	if(len(credentials) == 0){
+		utils.AccessDenied(writer, request, errors.New("incorrect email password combination"))
 		return
 	}
+	
+	// var user = data.User{
+	// 	Identifier: userCred.Identifier,
+	// }
+
+	// logger.Access.Printf("\nuser\n%v\n", user)
 
 	err = access.Commit()
 	if err != nil {
@@ -274,7 +276,7 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) { // TO
 	//IF users == [] return error
 
 	//After user login create auth token
-	authData, err := redis.UserLogin(*users[0].Id)
+	authData, err := redis.UserLogin(*credentials[0].Id)
 	if err != nil {
 		logger.Error.Println("Error user login endpoint")
 		utils.InternalServerError(writer, request, err)

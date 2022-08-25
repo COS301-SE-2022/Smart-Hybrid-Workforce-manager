@@ -3,7 +3,7 @@ package endpoints
 import (
 	"api/data"
 	"api/db"
-	"api/utils"
+	"lib/utils"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"

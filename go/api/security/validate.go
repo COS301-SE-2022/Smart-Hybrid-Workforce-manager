@@ -3,7 +3,7 @@ package security
 import (
 	"api/data"
 	"api/db"
-	"api/utils"
+	"lib/utils"
 	"fmt"
 	"net/http"
 )
