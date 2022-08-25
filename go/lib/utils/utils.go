@@ -32,7 +32,6 @@ func UnmarshalJSON(writer http.ResponseWriter, request *http.Request, input inte
 /////////////////////////////////////////////
 // Authorization
 
-
 /////////////////////////////////////////////
 // Responses
 

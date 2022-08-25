@@ -2,7 +2,7 @@ package endpoints
 
 import (
 	"api/data"
-	"api/utils"
+	"lib/utils"
 	"fmt"
 	"net/http"
 	"net/smtp"
