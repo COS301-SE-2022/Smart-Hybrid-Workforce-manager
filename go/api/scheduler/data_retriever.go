@@ -328,6 +328,14 @@ func GetSchedulerData(from time.Time, to time.Time) (*SchedulerData, error) {
 		return nil, err
 	}
 
+	// Get past weeks bookings
+	weekAgoFrom := from.Add(-1 * time.Hour * 24 * 7) // subtract a week
+	weekAgoTo := to.Add(-1 * time.Hour * 24 * 7)     // subtract a week
+	pastBookingsInfo, err := GetBookings(weekAgoFrom, weekAgoTo)
+	if err != nil {
+		return nil, err
+	}
+
 	// schedulerData := SchedulerData{
 	// 	Users:     users,
 	// 	Teams:     teams,
@@ -344,7 +352,7 @@ func GetSchedulerData(from time.Time, to time.Time) (*SchedulerData, error) {
 		Rooms:           rooms,
 		Resources:       resources,
 		CurrentBookings: &bookingsInfo.Bookings,
-		PastBookings:    nil,
+		PastBookings:    &pastBookingsInfo.Bookings,
 	}
 
 	return &schedulerData, nil
