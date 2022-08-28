@@ -39,7 +39,7 @@ func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 	// Set configurations
 	var config data.Config
 	config.Seed = 1
-	config.PopulationSize = 5
+	config.PopulationSize = 300
 	config.Generations = 1000
 	config.MutationRate = 0.4
 	config.CrossOverRate = 0.4
@@ -54,7 +54,7 @@ func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 	domain.Config = &config
 	domain.SchedulerData = &schedulerData
 
-	results := ga.GA(domain, ga.DayVResourceCrossover, ga.DayVResourceFitness, ga.DayVResourceMutateSwap, ga.TournamentSelection, ga.DayVResourcePopulationGenerator)
+	results := ga.GA(domain, ga.DayVResourceCrossover, ga.DayVResourceFitness, ga.DayVResouceMutate, ga.TournamentSelection, ga.DayVResourcePopulationGenerator)
 
 	if len(results) == 0 {
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"lib/testutils"
 	"lib/utils"
+	"math"
 	"math/rand"
 	"scheduler/data"
 	"strings"
@@ -71,10 +72,28 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 	start := time.Now()
 	// Create initial pop and calculate fitnesses
 	population := populationGenerator(&domain, domain.Config.PopulationSize)
-	for _, indiv := range population {
-		fmt.Printf("Initial population %v\n\n\n", indiv)
-	}
+	// for _, indiv := range population {
+	// 	fmt.Printf("Initial population\n%v\n\n\n", indiv)
+	// }
+
 	fitness(&domain, population) // TODO Change to useful individuals
+
+	selectPrint := selection(&domain, population, 5)
+	for _, indiv := range selectPrint {
+		fmt.Printf("Initial population\n%v\n\n\n", indiv)
+	}
+
+	// Get max and avg fitness
+	totalFitness := 0.0
+	maxFitness := math.Inf(-1)
+	minFitness := math.Inf(1)
+	for _, indiv := range population {
+		maxFitness = math.Max(maxFitness, indiv.Fitness)
+		minFitness = math.Min(minFitness, indiv.Fitness)
+		totalFitness += indiv.Fitness
+	}
+
+	fmt.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f\n", maxFitness, minFitness, totalFitness/float64(len(population)))
 
 	// Run ga
 	stoppingCondition := true
@@ -104,8 +123,26 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 	}
 	end := time.Now()
 	for _, indiv := range population {
-		fmt.Printf("Final population %v\n\n\n", indiv)
+		fmt.Printf("Final population\n%v\n\n\n", indiv)
 	}
+
+	selectPrint = selection(&domain, population, 5)
+	for _, indiv := range selectPrint {
+		fmt.Printf("Final population\n%v\n\n\n", indiv)
+	}
+
+	// Get max and avg fitness
+	totalFitness = 0.0
+	maxFitness = math.Inf(-1)
+	minFitness = math.Inf(1)
+	for _, indiv := range population {
+		maxFitness = math.Max(maxFitness, indiv.Fitness)
+		minFitness = math.Min(minFitness, indiv.Fitness)
+		totalFitness += indiv.Fitness
+	}
+
+	fmt.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f\n", maxFitness, minFitness, totalFitness/float64(len(population)))
+
 	fmt.Printf(testutils.Scolour(testutils.BLUE, "+++++++Exec time: %v\n"), end.Sub(start))
 	return population
 }

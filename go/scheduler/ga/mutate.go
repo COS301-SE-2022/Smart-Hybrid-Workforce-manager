@@ -40,8 +40,9 @@ func DayVResouceMutate(domain *Domain, individuals Individuals) Individuals {
 				// TODO set chance to be empty
 				if utils.RandInt(0, 100) > 50 {
 					copiedIndividual.Gene[i][j] = ""
+				} else {
+					copiedIndividual.Gene[i][j] = domain.GetRandomTerminal()
 				}
-				copiedIndividual.Gene[i][j] = domain.GetRandomTerminal()
 			}
 		}
 		results = append(results, copiedIndividual)
