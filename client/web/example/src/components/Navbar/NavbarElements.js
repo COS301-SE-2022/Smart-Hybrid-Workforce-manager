@@ -10,6 +10,9 @@ export const Nav =  styled.nav`
     z-index: 10;
     padding-top: 3vh;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top : 0;
+    width: 99.5vw;
 `
 
 export const NavHeader =  styled.nav`

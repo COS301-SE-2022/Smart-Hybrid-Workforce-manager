@@ -4,9 +4,6 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 
 import Bookings from './pages/Bookings'
-import BookingsDesk from './pages/BookingsDesk'
-//import BookingsDeskEdit from './pages/BookingsDeskEdit'
-import BookingsMeeting from './pages/BookingsMeeting'
 
 import Admin from './pages/Admin'
 
@@ -69,9 +66,7 @@ function App()
         <Routes>
           <Route element={<ProtectedRoute/>}>
             <Route path="/" exact element={<Home/>} />
-            <Route path="/bookings-desk" exact element={<BookingsDesk/>} />
-            <Route path="/bookings-meeting" exact element={<BookingsMeeting />} />
-                        <Route path="/bookings" exact element={<Bookings/>} />
+            <Route path="/bookings" exact element={<Bookings/>} />
             <Route path="/admin" exact element={<Admin />} />
             <Route path="/layout" exact element={<Layout />} />
 
