@@ -1,6 +1,7 @@
 package ga
 
 import (
+	"fmt"
 	"scheduler/data"
 )
 
@@ -153,7 +154,10 @@ func (individual *Individual) getUserCountMapsPerDay() []map[string]int {
 	for _, day := range individual.Gene {
 		freq := make(map[string]int)
 		for _, entry := range day {
-			freq[entry] = freq[entry] + 1
+			if entry != "" {
+				fmt.Println(freq[entry])
+				freq[entry] = freq[entry] + 1
+			}
 		}
 		result = append(result, freq)
 	}
