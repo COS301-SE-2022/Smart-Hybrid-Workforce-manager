@@ -121,9 +121,6 @@ const Bookings = () =>
             <div className='content'>
                 <Navbar />
 
-                <div className="circle-container">
-                    <Background />
-                </div>
 
                 <div className='card-container'>
                     <div ref={deskCardRef} className="card" onClick={ShowDeskForm}>
@@ -170,7 +167,7 @@ const Bookings = () =>
                 </div>
                 <DeskBooking ref={deskRef}/>
                 <MeetingRoomBooking ref={meetingRoomRef} />
-                
+
                 <div ref={backRef} className='back-button' onClick={GoBack}>
                     <FaLongArrowAltLeft size={50} color={'#374146'}/>
                 </div>
