@@ -91,7 +91,7 @@ func (individual *Individual) DifferentUsersCount(domain *Domain) int {
 
 // TeamsAttendingSameDays loops over all teams and tallys the following:
 // team_priority x ([%users that come in on same days] / [number of different days])
-func (individual *Individual) TeamsAttendingSameDays(domain *Domain, dailyMaps []map[string]*int) float64 {
+func (individual *Individual) TeamsAttendingSameDays(domain *Domain, dailyMaps []map[string]int) float64 {
 	total := 0.0
 	for _, team := range domain.SchedulerData.Teams {
 		total += float64(*team.Priority) * percentageUsersOnSameDayInTeam(team, dailyMaps)
@@ -100,7 +100,7 @@ func (individual *Individual) TeamsAttendingSameDays(domain *Domain, dailyMaps [
 }
 
 //percentageUsersOnSameDayInTeam calculates the amount of users as a percentage that come in together
-func percentageUsersOnSameDayInTeam(team *data.TeamInfo, dailyMaps []map[string]*int) float64 {
+func percentageUsersOnSameDayInTeam(team *data.TeamInfo, dailyMaps []map[string]int) float64 {
 	if len(team.UserIds) == 0 {
 		return 0.0
 	}
@@ -108,7 +108,7 @@ func percentageUsersOnSameDayInTeam(team *data.TeamInfo, dailyMaps []map[string]
 	for _, day := range dailyMaps {
 		usersTogether := 0
 		for _, teamMember := range team.UserIds {
-			if *day[teamMember] > 0 {
+			if day[teamMember] > 0 {
 				usersTogether++
 			}
 		}
@@ -120,11 +120,11 @@ func percentageUsersOnSameDayInTeam(team *data.TeamInfo, dailyMaps []map[string]
 }
 
 // DoubleBookingsCount counts the amount of users double booked for the entire week
-func (individual *Individual) DoubleBookingsCount(domain *Domain, dailyMaps []map[string]*int) int {
+func (individual *Individual) DoubleBookingsCount(domain *Domain, dailyMaps []map[string]int) int {
 	count := 0
 	for _, day := range dailyMaps {
 		for _, value := range day {
-			if *value >= 2 {
+			if value >= 2 {
 				count++
 			}
 		}
@@ -133,12 +133,12 @@ func (individual *Individual) DoubleBookingsCount(domain *Domain, dailyMaps []ma
 }
 
 // UsersNotCommingInTheirSpecifiedAmountCount Counts the amount of users that do not come in their specified amounts
-func (individual *Individual) UsersNotCommingInTheirSpecifiedAmountCount(domain *Domain, dailyMaps []map[string]*int) int {
+func (individual *Individual) UsersNotCommingInTheirSpecifiedAmountCount(domain *Domain, dailyMaps []map[string]int) int {
 	count := 0
 	for _, user := range domain.SchedulerData.Users {
 		total := 0
 		for _, day := range dailyMaps {
-			total += *day[*user.Id]
+			total += day[*user.Id]
 		}
 		if total != *user.OfficeDays {
 			count++
@@ -148,12 +148,12 @@ func (individual *Individual) UsersNotCommingInTheirSpecifiedAmountCount(domain 
 }
 
 // GetUserCountMapsPerDay returns the frequencies that users attend each day at
-func (individual *Individual) getUserCountMapsPerDay() []map[string]*int {
-	var result []map[string]*int
+func (individual *Individual) getUserCountMapsPerDay() []map[string]int {
+	var result []map[string]int
 	for _, day := range individual.Gene {
-		freq := make(map[string]*int)
+		freq := make(map[string]int)
 		for _, entry := range day {
-			*freq[entry] = *freq[entry] + 1
+			freq[entry] = freq[entry] + 1
 		}
 		result = append(result, freq)
 	}
