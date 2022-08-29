@@ -1,7 +1,6 @@
 package ga
 
 import (
-	"fmt"
 	"scheduler/data"
 )
 
@@ -57,32 +56,37 @@ func (individual *Individual) DifferentUsersCount(domain *Domain) int {
 	// fmt.Println("+++++++++++++++++++ NUM DAYS IN WEEK: ", numDaysInWeek)
 	schedulerData := domain.SchedulerData
 	// Create map containg days a user comes in
-	comesInPrevWeek := make(map[string]([]bool)) // map[userId]{array representing a week, true means user comes in on day}
-	comesInThisWeek := make(map[string]([]bool)) // map[userId]{array representing a week, true means user comes in on day}
+	prevWeek := make(map[string]([]bool)) // map[userId]{array representing a week, true means user comes in on day}
+	thisWeek := make(map[string]([]bool)) // map[userId]{array representing a week, true means user comes in on day}
 
 	// Find what days users came in previously
 	for _, booking := range *schedulerData.PastBookings {
-		// if len(comesInPrevWeek[*booking.UserId]) == 0 {
-		// 	comesInPrevWeek[*booking.UserId] = make([]bool, numDaysInWeek)
-		// }
-		comesInPrevWeek[*booking.UserId][booking.GetWeekday()] = true
+		if len(prevWeek[*booking.UserId]) == 0 {
+			prevWeek[*booking.UserId] = make([]bool, numDaysInWeek)
+		}
+		prevWeek[*booking.UserId][booking.GetWeekday()] = true
 	}
 	// Find which days they come in this week
 	for dayi, day := range individual.Gene {
 		for _, uid := range day {
 			// fmt.Printf("... %d <<<<<< %d\n", numDaysInWeek, dayi)
-			if len(comesInThisWeek[uid]) == 0 {
-				comesInThisWeek[uid] = make([]bool, numDaysInWeek)
+			if len(thisWeek[uid]) == 0 {
+				thisWeek[uid] = make([]bool, numDaysInWeek)
 			}
-			// fmt.Printf("%d <<<<<< %d  len(%d)\n", numDaysInWeek, dayi, len(comesInThisWeek[uid]))
-			comesInThisWeek[uid][dayi] = true
+			// fmt.Printf("%d <<<<<< %d  len(%d)\n", numDaysInWeek, dayi, len(thisWeek[uid]))
+			thisWeek[uid][dayi] = true
 		}
 	}
 	dissimilarityCount := 0
 	// Count how many days don't overlap
-	for key := range comesInPrevWeek {
+	for key := range prevWeek {
 		for i := 0; i < numDaysInWeek; i++ {
-			if comesInPrevWeek[key][i] != comesInThisWeek[key][i] {
+			// fmt.Println(len(prevWeek[key]), "   ", thisWeek[key])
+			// Check if how many days the come in where they did not come in on the same day in the previous week
+			if len(prevWeek[key]) == len(thisWeek[key]) && prevWeek[key][i] != thisWeek[key][i] {
+				dissimilarityCount += 1
+			}
+			if len(prevWeek[key]) != len(thisWeek[key]) && len(prevWeek[key]) == 0 {
 				dissimilarityCount += 1
 			}
 		}
@@ -155,7 +159,7 @@ func (individual *Individual) getUserCountMapsPerDay() []map[string]int {
 		freq := make(map[string]int)
 		for _, entry := range day {
 			if entry != "" {
-				fmt.Println(freq[entry])
+				// //fmt.Println(freq[entry])
 				freq[entry] = freq[entry] + 1
 			}
 		}
