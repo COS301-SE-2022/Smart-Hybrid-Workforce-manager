@@ -1,13 +1,18 @@
 package ga
 
-import "lib/utils"
+import (
+	"lib/collectionutils"
+	"lib/utils"
+)
 
 // Makes an individual valid
 func ValidateIndividual(domain *Domain, indiv *Individual) {
 	// First remove duplicates on a single day, at the same time, build maps
 	usersComingInOnDay := make([]map[string]int, len(indiv.Gene)) // map[user id] (index of their slot)
 	daysThatUsersComeIn := make(map[string][]int)                 // map[user id] {int array, where int corresponds to the day a user comes in}
+	openSlots := make([][]int, len(indiv.Gene))                   // Used to keep track of open spots throughout the individual
 	for i := 0; i < len(indiv.Gene); i++ {
+		openSlots[i] = []int{}
 		usersComingInOnDay[i] = make(map[string]int)
 		for sloti, userid := range indiv.Gene[i] {
 			_, userIdAlreadyIn := usersComingInOnDay[i][userid]
@@ -19,6 +24,8 @@ func ValidateIndividual(domain *Domain, indiv *Individual) {
 				usersComingInOnDay[i][userid] = sloti // false here has no meaning
 			} else if userIdAlreadyIn {
 				indiv.Gene[i][sloti] = "" // Remove duplicate user
+			} else if userid == "" {
+				openSlots[i] = append(openSlots[i], sloti)
 			}
 		}
 	}
@@ -39,10 +46,31 @@ func ValidateIndividual(domain *Domain, indiv *Individual) {
 				for sloti, uid := range indiv.Gene[randDay] {
 					if uid == userid {
 						indiv.Gene[randDay][sloti] = ""
+						openSlots[randDay] = append(openSlots[randDay], sloti)
 						break
 					}
 				}
 			}
+		} else if numTimesToComeIn > len(daysThatUsersComeIn[userid]) { // user not comingin enough times
+			// get random open slot
+			randDay := utils.RandInt(0, len(openSlots))
+			// choose day with most open slots
+			if len(openSlots[randDay]) == 0 {
+				maxOpen := len(openSlots[0])
+				maxIndex := 0
+				for i := 1; i < len(openSlots); i++ {
+					if len(openSlots[i]) > maxOpen {
+						maxOpen = len(openSlots[i])
+						maxIndex = i
+					}
+				}
+				randDay = maxIndex
+			}
+			randSloti := utils.RandInt(0, len(openSlots[randDay]))
+			// add user to select slot
+			indiv.Gene[randDay][randSloti] = userid
+			// remove random slot
+			openSlots[randDay] = collectionutils.RemElemenAtI(openSlots[randDay], randSloti)
 		}
 	}
 }
