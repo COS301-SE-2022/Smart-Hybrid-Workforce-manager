@@ -34,7 +34,7 @@
 
     top: 0;
 
-    padding-left: 1.5vw;
+    padding-left: 2vw;
 
     text-align: left;
 
@@ -51,12 +51,13 @@
 .navlink-container
 {
     margin-top: 6vh;
-    font-size: 1.5vw;
+    font-size: 1vw;
 }
 
 .navlink
 {
     margin-bottom: 5vh;
+    letter-spacing: 0.5vh;
 }
 
 .navlink:hover
