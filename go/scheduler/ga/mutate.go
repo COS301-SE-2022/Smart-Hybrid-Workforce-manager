@@ -4,8 +4,68 @@ import (
 	"lib/utils"
 )
 
+func MapContainsKey(_map map[any]any, key any) bool {
+	if _, ok := _map[key]; ok {
+		return true
+	}
+	return false
+}
+
 func StubMutate(domain *Domain, individuals Individuals) Individuals {
 	return individuals.ClonePopulation()
+}
+
+// Performs of a version of swap mutation, where users are shifted around between days, but are kept valid
+func DayVResourceMutateSwapValid(domain *Domain, individuals Individuals) Individuals {
+	var results Individuals
+	for _, individual := range individuals {
+		copiedIndiv := individual.Clone()
+
+		results = append(results, copiedIndiv)
+	}
+	return results
+}
+
+// Swap random users to differnt days, but keep the individual valid
+func validSwap(indiv *Individual, mutationDegree int) *Individual {
+	// An array of maps, where each map contains the counts that users come in on a certain day
+	// the index of the day corresponds to the day
+	var usersComingInOnDay []map[string]bool // map[user id]# of times a users id appears on that day
+	usersComingInOnDay = make([]map[string]bool, len(indiv.Gene))
+	// initialise map
+	for i := 0; i < len(usersComingInOnDay); i++ {
+		usersComingInOnDay[i] = make(map[string]bool)
+		for _, userid := range indiv.Gene[i] {
+			if userid != "" {
+				usersComingInOnDay[i][userid] = false
+			}
+		}
+	}
+	// Perform mutations
+	for i := 0; i < mutationDegree; i++ {
+		dayi1, sloti1 := randSlot(indiv)
+		// select a day that is not the same day as dayi1
+		dayi2, sloti2 := randSlot(indiv)
+		for dayi2 == dayi1 {
+			dayi2, sloti2 = randSlot(indiv)
+		}
+
+		performSwap(indiv, dayi1, dayi2, sloti1, sloti2)
+
+	}
+	return indiv
+}
+
+func performSwap(indiv *Individual, day1, day2, sloti1, sloti2 int) {
+	indiv.Gene[day1][sloti1], indiv.Gene[day2][sloti2] =
+		indiv.Gene[day2][sloti2], indiv.Gene[day1][sloti1]
+}
+
+// Returns the day and index of a random slot in an individual
+func randSlot(indiv *Individual) (randDay int, randSlot int) {
+	randDay = utils.RandInt(0, len(indiv.Gene)) // First mutation point
+	randSlot = utils.RandInt(0, len(indiv.Gene[randDay]))
+	return
 }
 
 func DayVResourceMutateSwap(domain *Domain, individuals Individuals) Individuals {
