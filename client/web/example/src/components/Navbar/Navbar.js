@@ -15,71 +15,83 @@ const Navbar = (props, ref) =>
     const statisticsRef = useRef(null);
 
     const [currLocation, setCurrLocation] = useState("");
+    const [dropDown, setDropDown] = useState();
 
     const navigate = useNavigate();
 
     const NavigateHome = () =>
     {
-        setCurrLocation("/")
         navigate("/");
-        dropdownRef.current.style.display = "none";
     }
 
-    const NavigateBookings = () =>
+    const ShowBookings = () =>
     {
-        setCurrLocation("/bookings");
-        navigate("/bookings");
+        if(!dropDown)
+        {
+            dropdownRef.current.style.display = "block";
+            setDropDown(true);
+        }
+        else
+        {
+            dropdownRef.current.style.display = "none";
+            setDropDown(false);
+        }
+    }
+
+    const NavigateDesk = () =>
+    {
+        navigate("/bookings-desk");
+    }
+
+    const NavigateMeeting = () =>
+    {
+        navigate("/bookings-meetingroom");
     }
 
     const NavigateMap = () =>
     {
-        setCurrLocation("/map")
         navigate("/map");
-        dropdownRef.current.style.display = "none";
     }
 
     const NavigateStatistics = () =>
     {
-        setCurrLocation("/statistics")
         navigate("/statistics");
-        dropdownRef.current.style.display = "none";
     }
 
     useEffect(() =>
     {
-        if(homeRef.current)
+        if(currLocation === "/")
         {
-            if(currLocation === "/")
-            {
-                homeRef.current.style.color = "#09a2fb";
-            }
+            dropdownRef.current.style.display = "none";
+            homeRef.current.style.color = "#09a2fb";
         }
 
-        if(bookingsRef.current)
+        if(currLocation === "/bookings-desk")
         {
-            if(currLocation === "/bookings")
-            {
-                bookingsRef.current.style.color = "#09a2fb";
-                dropdownRef.current.style.display = "block";
-                deskRef.current.style.color = "#09a2fb";
-            }
+            bookingsRef.current.style.color = "#09a2fb";
+            dropdownRef.current.style.display = "block";
+            deskRef.current.style.color = "#09a2fb";
         }
 
-        if(mapRef.current)
+        if(currLocation === "/bookings-meetingroom")
         {
-            if(currLocation === "/map")
-            {
-                mapRef.current.style.color = "#09a2fb";
-            }
+            bookingsRef.current.style.color = "#09a2fb";
+            dropdownRef.current.style.display = "block";
+            meetingRef.current.style.color = "#09a2fb";
         }
 
-        if(statisticsRef.current)
+        if(currLocation === "/map")
         {
-            if(currLocation === "/statistics")
-            {
-                statisticsRef.current.style.color = "#09a2fb";
-            }
+            dropdownRef.current.style.display = "none";
+            mapRef.current.style.color = "#09a2fb";
         }
+
+        if(currLocation === "/statistics")
+        {
+            dropdownRef.current.style.display = "none";
+            statisticsRef.current.style.color = "#09a2fb";
+        }
+
     },[currLocation])
 
     useEffect(() =>
@@ -98,16 +110,16 @@ const Navbar = (props, ref) =>
                     &nbsp;
                     Calendar
                 </div>
-                <div ref={bookingsRef} className='navlink' onClick={NavigateBookings}>
+                <div ref={bookingsRef} className='navlink' onClick={ShowBookings}>
                     <FaTicketAlt />
                     &nbsp;
                     Bookings
                 </div>
                 <div ref={dropdownRef} className='navlink-dropdown-container'>
-                    <div ref={deskRef} className='navlink-dropdown'>
+                    <div ref={deskRef} className='navlink-dropdown' onClick={NavigateDesk}>
                         Desk
                     </div>
-                    <div ref={meetingRef} className='navlink-dropdown'>
+                    <div ref={meetingRef} className='navlink-dropdown' onClick={NavigateMeeting}>
                         Meeting Room
                     </div>
                 </div>

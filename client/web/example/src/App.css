@@ -68,8 +68,8 @@
 .navlink-dropdown-container
 {
     display: none;
-    margin-left: 3vw;
-    font-size: 0.8vw;
+    margin-left: 2.5vw;
+    font-size: 0.9vw;
 }
 
 .navlink-dropdown
@@ -96,20 +96,21 @@
     min-height: 100vh;
     /*background-image: url('img/tile.png');
     background-repeat: repeat;*/
-    background-color: #dadffe;
+    background-color: #dadffe9f;
 }
 
 .main-container
 {
     position: relative;
     overflow-x: hidden;
-    background-color: #ffffff;
+    background-image: url('img/tile.png');
+    background-repeat: repeat;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
 
     margin-left: 15vw;
     margin-top: 15vh;
 
-    padding-bottom: 10vh;
+    padding-bottom: 5vh;
 
     width: 85vw;
     min-height: 85vh;
@@ -305,7 +306,8 @@
     grid-template-rows: 15vh auto;
     grid-template-areas: "header" "form";
 
-    margin-left: 25vw;
+    margin-left: 17.5vw;
+    margin-top: 5vh;
 
     padding-top: 3vh;
     padding-bottom: 3vh;
@@ -334,7 +336,8 @@
     grid-template-rows: 15vh auto;
     grid-template-areas: "header" "form";
 
-    margin-left: 25vw;
+    margin-left: 17.5vw;
+    margin-top: 5vh;
 
     padding-top: 3vh;
     padding-bottom: 3vh;
