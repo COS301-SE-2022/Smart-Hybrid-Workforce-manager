@@ -4,6 +4,8 @@ import BookingTicket from '../components/BookingTicket/BookingTicket';
 import { useState, useEffect, useContext } from 'react';
 import { UserContext } from '../App';
 
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+
 const Home = () =>
 {
   const [bookings, setBookings] = useState([])
@@ -72,77 +74,50 @@ const Home = () =>
           });
   }
 
-  //Using useEffect hook. This will send the POST request once the component is mounted
-  useEffect(() =>
-  {
-    fetchData()
-  }, [])
+    //Using useEffect hook. This will send the POST request once the component is mounted
+    useEffect(() =>
+    {
+        fetchData();
+    }, [])
   
 
-  return (
-    <div className='page-container'>
-      <div className='content'>
-        <Navbar />
-        <div className='booking-container'>
-          <h2 className='white'>{DayOne.getDate() + " " + monthNames[DayOne.getMonth()]}</h2> <hr></hr>
-          {bookings.length > 0 && (
-            bookings.filter(booking => (booking.start < DayOne.toISOString())).map(booking => (
-              <BookingTicket id={booking.id} startDate={booking.start.substring(0,10)} startTime={booking.start.substring(11,16)} endDate={booking.end.substring(0,10)} endTime={booking.end.substring(11,16)} confirmed={booking.booked} type={booking.resource_type}/>
-            ))
-          )}
+    return (
+        <div className='page-container'>
+            <div className='content'>
+                <Navbar />
 
-          <br></br>
-          <h2 className='white'>{DayTwo.getDate() + " " + monthNames[DayTwo.getMonth()]}</h2> <hr></hr>
-          {bookings.length > 0 && (
-            bookings.filter(booking => (booking.start < DayTwo.toISOString() && booking.start > DayOne.toISOString())).map(booking => (
-              <BookingTicket id={booking.id} startDate={booking.start.substring(0,10)} startTime={booking.start.substring(11,16)} endDate={booking.end.substring(0,10)} endTime={booking.end.substring(11,16)} confirmed={booking.booked} type={booking.resource_type}/>
-            ))
-          )}
+                <div className='main-container'>
+                    <div className='calendar-container'>
+                        <div className='top-bar'>
+                            <div className='calendar-title'>
+                                August
+                            </div>
 
-          <br></br>
-          <h2 className='white'>{DayThree.getDate() + " " + monthNames[DayThree.getMonth()]}</h2> <hr></hr>
-          {bookings.length > 0 && (
-            bookings.filter(booking => (booking.start < DayThree.toISOString() && booking.start > DayTwo.toISOString())).map(booking => (
-              <BookingTicket id={booking.id} startDate={booking.start.substring(0,10)} startTime={booking.start.substring(11,16)} endDate={booking.end.substring(0,10)} endTime={booking.end.substring(11,16)} confirmed={booking.booked} type={booking.resource_type}/>
-            ))
-          )}
+                            <div className='context-container'>
+                                <div className='month-selector'>
+                                    Month
+                                </div>
+                                <div className='week-selector'>
+                                    Week
+                                </div>
+                            </div>
 
-          <br></br>
-          <h2 className='white'>{DayFour.getDate() + " " + monthNames[DayFour.getMonth()]}</h2> <hr></hr>
-          {bookings.length > 0 && (
-            bookings.filter(booking => (booking.start < DayFour.toISOString() && booking.start > DayThree.toISOString())).map(booking => (
-              <BookingTicket id={booking.id} startDate={booking.start.substring(0,10)} startTime={booking.start.substring(11,16)} endDate={booking.end.substring(0,10)} endTime={booking.end.substring(11,16)} confirmed={booking.booked} type={booking.resource_type}/>
-            ))
-          )}
+                            <div className='nav-container'>
+                                <div className='prev'>
+                                    <IoIosArrowBack />
+                                </div>
+                                <div className='next'>
+                                    <IoIosArrowForward />
+                                </div>
+                            </div>
+                        </div>
 
-          <br></br>
-          <h2 className='white'>{DayFive.getDate() + " " + monthNames[DayFive.getMonth()]}</h2> <hr></hr>
-          {bookings.length > 0 && (
-            bookings.filter(booking => (booking.start < DayFive.toISOString() && booking.start > DayFour.toISOString())).map(booking => (
-              <BookingTicket id={booking.id} startDate={booking.start.substring(0,10)} startTime={booking.start.substring(11,16)} endDate={booking.end.substring(0,10)} endTime={booking.end.substring(11,16)} confirmed={booking.booked} type={booking.resource_type}/>
-            ))
-          )}
 
-          <br></br>
-          <h2 className='white'>{DaySix.getDate() + " " + monthNames[DaySix.getMonth()]}</h2> <hr></hr>
-          {bookings.length > 0 && (
-            bookings.filter(booking => (booking.start < DaySix.toISOString() && booking.start > DayFive.toISOString())).map(booking => (
-              <BookingTicket id={booking.id} startDate={booking.start.substring(0,10)} startTime={booking.start.substring(11,16)} endDate={booking.end.substring(0,10)} endTime={booking.end.substring(11,16)} confirmed={booking.booked} type={booking.resource_type}/>
-            ))
-          )}
-
-          <br></br>
-          <h2 className='white'>{DaySeven.getDate() + " " + monthNames[DaySeven.getMonth()]}</h2> <hr></hr>
-          {bookings.length > 0 && (
-            bookings.filter(booking => (booking.start < DaySeven.toISOString() && booking.start > DaySix.toISOString())).map(booking => (
-              <BookingTicket id={booking.id} startDate={booking.start.substring(0,10)} startTime={booking.start.substring(11,16)} endDate={booking.end.substring(0,10)} endTime={booking.end.substring(11,16)} confirmed={booking.booked} type={booking.resource_type}/>
-            ))
-          )}
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>  
-      <Footer />
-    </div>
-  )
+    )
 }
 
 export default Home

@@ -96,14 +96,14 @@
     min-height: 100vh;
     /*background-image: url('img/tile.png');
     background-repeat: repeat;*/
-    background-color: #dadffe9f;
+    background-color: rgba(218, 223, 254, 0.6);
 }
 
 .main-container
 {
     position: relative;
     overflow-x: hidden;
-    background-image: url('img/tile.png');
+    background-image: url('img/tile2.png');
     background-repeat: repeat;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
 
@@ -147,6 +147,27 @@
     padding-top: 2vh;
 
     font-size: 1.5vh;
+    letter-spacing: 0.3vw;
+}
+
+.top-bar
+{
+    display: grid;
+    grid-template-columns: 50vw 25vw 10vw;
+    grid-template-rows: 10vh;
+    grid-template-areas: "title" "context" "nav";
+
+    background-color: #ffffff;
+}
+
+.calendar-title
+{
+    grid-area: "title";
+
+    margin-left: 3vw;
+
+    color: #374146;
+    font-size: 3vw;
     letter-spacing: 0.3vw;
 }
 
@@ -1593,7 +1614,7 @@
     left: 0;
     height: 25px;
     width: 25px;
-    background-color: #eee;
+    background-color: #ffffff;
 }
 
 /* On mouse-over, add a grey background color */
