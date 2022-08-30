@@ -8,6 +8,9 @@ const Navbar = (props, ref) =>
 {
     const homeRef = useRef(null);
     const bookingsRef = useRef(null);
+    const dropdownRef = useRef(null);
+    const deskRef = useRef(null);
+    const meetingRef = useRef(null);
     const mapRef = useRef(null);
     const statisticsRef = useRef(null);
 
@@ -17,33 +20,36 @@ const Navbar = (props, ref) =>
 
     const NavigateHome = () =>
     {
-        setCurrLocation("/home")
+        setCurrLocation("/")
         navigate("/");
+        dropdownRef.current.style.display = "none";
     }
 
     const NavigateBookings = () =>
     {
-        setCurrLocation("/bookings")
-        navigate("/");
+        setCurrLocation("/bookings");
+        navigate("/bookings");
     }
 
     const NavigateMap = () =>
     {
         setCurrLocation("/map")
-        navigate("/");
+        navigate("/map");
+        dropdownRef.current.style.display = "none";
     }
 
     const NavigateStatistics = () =>
     {
         setCurrLocation("/statistics")
-        navigate("/");
+        navigate("/statistics");
+        dropdownRef.current.style.display = "none";
     }
 
     useEffect(() =>
     {
         if(homeRef.current)
         {
-            if(currLocation === "/home")
+            if(currLocation === "/")
             {
                 homeRef.current.style.color = "#09a2fb";
             }
@@ -54,6 +60,8 @@ const Navbar = (props, ref) =>
             if(currLocation === "/bookings")
             {
                 bookingsRef.current.style.color = "#09a2fb";
+                dropdownRef.current.style.display = "block";
+                deskRef.current.style.color = "#09a2fb";
             }
         }
 
@@ -94,6 +102,14 @@ const Navbar = (props, ref) =>
                     <FaTicketAlt />
                     &nbsp;
                     Bookings
+                </div>
+                <div ref={dropdownRef} className='navlink-dropdown-container'>
+                    <div ref={deskRef} className='navlink-dropdown'>
+                        Desk
+                    </div>
+                    <div ref={meetingRef} className='navlink-dropdown'>
+                        Meeting Room
+                    </div>
                 </div>
                 <div ref={mapRef} className='navlink' onClick={NavigateMap}>
                     <FaMap />

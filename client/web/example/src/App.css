@@ -50,17 +50,35 @@
 
 .navlink-container
 {
-    margin-top: 6vh;
     font-size: 1vw;
 }
 
 .navlink
 {
-    margin-bottom: 5vh;
+    margin-top: 5vh;
     letter-spacing: 0.5vh;
 }
 
 .navlink:hover
+{
+    cursor: pointer;
+    color: #09a2fb;
+}
+
+.navlink-dropdown-container
+{
+    display: none;
+    margin-left: 3vw;
+    font-size: 0.8vw;
+}
+
+.navlink-dropdown
+{
+    margin-top: 2vh;
+    letter-spacing: 0.5vh;
+}
+
+.navlink-dropdown:hover
 {
     cursor: pointer;
     color: #09a2fb;
