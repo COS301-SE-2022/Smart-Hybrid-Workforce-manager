@@ -4,13 +4,6 @@ import (
 	"lib/utils"
 )
 
-func MapContainsKey(_map map[any]any, key any) bool {
-	if _, ok := _map[key]; ok {
-		return true
-	}
-	return false
-}
-
 func StubMutate(domain *Domain, individuals Individuals) Individuals {
 	return individuals.ClonePopulation()
 }
@@ -20,7 +13,7 @@ func DayVResourceMutateSwapValid(domain *Domain, individuals Individuals) Indivi
 	var results Individuals
 	for _, individual := range individuals {
 		copiedIndiv := individual.Clone()
-
+		validSwap(copiedIndiv, len(domain.Terminals)/7) // semi-random
 		results = append(results, copiedIndiv)
 	}
 	return results
@@ -30,8 +23,8 @@ func DayVResourceMutateSwapValid(domain *Domain, individuals Individuals) Indivi
 func validSwap(indiv *Individual, mutationDegree int) *Individual {
 	// An array of maps, where each map contains the counts that users come in on a certain day
 	// the index of the day corresponds to the day
-	var usersComingInOnDay []map[string]bool // map[user id]# of times a users id appears on that day
-	usersComingInOnDay = make([]map[string]bool, len(indiv.Gene))
+	// map[user id]# of times a users id appears on that day
+	usersComingInOnDay := make([]map[string]bool, len(indiv.Gene))
 	// initialise map
 	for i := 0; i < len(usersComingInOnDay); i++ {
 		usersComingInOnDay[i] = make(map[string]bool)
@@ -49,9 +42,11 @@ func validSwap(indiv *Individual, mutationDegree int) *Individual {
 		for dayi2 == dayi1 {
 			dayi2, sloti2 = randSlot(indiv)
 		}
-
-		performSwap(indiv, dayi1, dayi2, sloti1, sloti2)
-
+		_, contains1 := usersComingInOnDay[dayi1][indiv.Gene[dayi2][sloti2]]
+		_, contains2 := usersComingInOnDay[dayi2][indiv.Gene[dayi1][sloti1]]
+		if !contains1 && !contains2 {
+			performSwap(indiv, dayi1, dayi2, sloti1, sloti2)
+		}
 	}
 	return indiv
 }
