@@ -38,11 +38,11 @@ func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 
 	// Set configurations
 	var config data.Config
-	config.Seed = 1
-	config.PopulationSize = 300
-	config.Generations = 1000
-	config.MutationRate = 0.4
-	config.CrossOverRate = 0.4
+	config.Seed = 2
+	config.PopulationSize = 150
+	config.Generations = 100
+	config.MutationRate = 0.45
+	config.CrossOverRate = 0.45
 	config.TournamentSize = 10
 
 	// Perform Magic
@@ -56,10 +56,17 @@ func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 
 	results := ga.GA(domain, ga.DayVResourceCrossover, ga.DayVResourceFitness, ga.DayVResouceMutate, ga.TournamentSelection, ga.DayVResourcePopulationGenerator)
 
-	if len(results) == 0 {
+	if len(results) == 0 { // todo add check
 
 	}
-	// parse results as bookings
+
+	// Parse results as bookings
+	for _, indiv := range results {
+		// todo put through validation function
+
+		// transform into what the backend needs
+		bookings = append(bookings, indiv.ConvertIndividualToBookings(domain))
+	}
 
 	utils.JSONResponse(writer, request, bookings)
 }

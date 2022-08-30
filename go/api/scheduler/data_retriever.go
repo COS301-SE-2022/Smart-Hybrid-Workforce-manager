@@ -15,6 +15,7 @@ type SchedulerData struct {
 	Resources       data.Resources  `json:"resources"`
 	CurrentBookings *data.Bookings  `json:"current_bookings"`
 	PastBookings    *data.Bookings  `json:"past_bookings"`
+	StartDate       *time.Time      `json:"start_date"`
 }
 
 type BookingInfo struct {
@@ -353,6 +354,7 @@ func GetSchedulerData(from time.Time, to time.Time) (*SchedulerData, error) {
 		Resources:       resources,
 		CurrentBookings: &bookingsInfo.Bookings,
 		PastBookings:    &pastBookingsInfo.Bookings,
+		StartDate:       &from,
 	}
 
 	return &schedulerData, nil

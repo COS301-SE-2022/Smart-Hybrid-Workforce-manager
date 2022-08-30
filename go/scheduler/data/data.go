@@ -19,6 +19,7 @@ type SchedulerData struct {
 	Resources       Resources       `json:"resources"`
 	CurrentBookings *Bookings       `json:"current_bookings"`
 	PastBookings    *Bookings       `json:"past_bookings"`
+	StartDate       *time.Time      `json:"start_date"`
 }
 
 type BookingInfo struct {

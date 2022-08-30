@@ -60,6 +60,37 @@ func (population Individuals) ClonePopulation() []*Individual {
 	return cloned
 }
 
+// ConvertIndividualToBookings converts an individual result to bookings
+func (individual *Individual) ConvertIndividualToBookings(domain Domain) data.Bookings {
+	var bookings data.Bookings
+
+	if individual == nil {
+		return nil
+	}
+
+	for i, day := range individual.Gene {
+		for _, user := range day {
+			if user == "" {
+				continue
+			}
+			for _, userInfo := range domain.SchedulerData.Users {
+				if *userInfo.Id == user {
+					booked := true
+					start := time.Date(domain.SchedulerData.StartDate.Year(), domain.SchedulerData.StartDate.Month(), domain.SchedulerData.StartDate.Day(), userInfo.PreferredStartTime.Hour(), userInfo.PreferredStartTime.Minute(), 0, 0, time.UTC)
+					end := time.Date(domain.SchedulerData.StartDate.Year(), domain.SchedulerData.StartDate.Month(), domain.SchedulerData.StartDate.Day(), userInfo.PreferredEndTime.Hour(), userInfo.PreferredEndTime.Minute(), 0, 0, time.UTC)
+					start.AddDate(0, 0, i)
+					end.AddDate(0, 0, i)
+					userId := user
+					desk := "DESK"
+					bookings = append(bookings, &data.Booking{UserId: &userId, Start: &start, End: &end, Booked: &booked, Automated: &booked, ResourceType: &desk})
+				}
+			}
+		}
+	}
+
+	return bookings
+}
+
 // GetRandomIndividual retrieves a random individual in the population
 func (population Individuals) GetRandomIndividual() *Individual {
 	return population[utils.RandInt(0, len(population))]
@@ -120,16 +151,33 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 		population = append(population, individualsCarry...)
 
 		fitness(&domain, population)
+
+		if i%50 == 0 {
+			totalFitness = 0.0
+			maxFitness = math.Inf(-1)
+			minFitness = math.Inf(1)
+			for _, indiv := range population {
+				maxFitness = math.Max(maxFitness, indiv.Fitness)
+				minFitness = math.Min(minFitness, indiv.Fitness)
+				totalFitness += indiv.Fitness
+			}
+
+			fmt.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f\n", maxFitness, minFitness, totalFitness/float64(len(population)))
+		}
 	}
 	end := time.Now()
-	for _, indiv := range population {
-		fmt.Printf("Final population\n%v\n\n\n", indiv)
-	}
+	// for _, indiv := range population {
+	// 	fmt.Printf("Final population\n%v\n\n\n", indiv)
+	// }
 
 	selectPrint = selection(&domain, population, 5)
 	for _, indiv := range selectPrint {
-		fmt.Printf("Final population\n%v\n\n\n", indiv)
+		fmt.Printf("Final population\n%v\n\nFitness: %v\n\n", indiv, fitness(&domain, Individuals{indiv}))
 	}
+
+	// for _, indiv := range population {
+	// 	fmt.Printf("%v|%v\n", fitness(&domain, Individuals{indiv})[0], indiv.Fitness)
+	// }
 
 	// Get max and avg fitness
 	totalFitness = 0.0
@@ -144,7 +192,8 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 	fmt.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f\n", maxFitness, minFitness, totalFitness/float64(len(population)))
 
 	fmt.Printf(testutils.Scolour(testutils.BLUE, "+++++++Exec time: %v\n"), end.Sub(start))
-	return population
+
+	return selection(&domain, population, 1)
 }
 
 //       Monday   -   Tuesday   -  Wednesday
