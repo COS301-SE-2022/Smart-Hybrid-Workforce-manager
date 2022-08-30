@@ -30,11 +30,39 @@
 {
     position: absolute;
     background-color: transparent;
+    color: #374146;
 
     top: 0;
 
+    padding-left: 1.5vw;
+
+    text-align: left;
+
     width: 15vw;
     min-height: 100vh;
+}
+
+.logo-container
+{
+    margin-top: 1vh;
+    font-size: 3vw;
+}
+
+.navlink-container
+{
+    margin-top: 6vh;
+    font-size: 1.5vw;
+}
+
+.navlink
+{
+    margin-bottom: 5vh;
+}
+
+.navlink:hover
+{
+    cursor: pointer;
+    color: #09a2fb;
 }
 
 .page-container
