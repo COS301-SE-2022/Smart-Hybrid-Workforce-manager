@@ -26,6 +26,17 @@
     background-color: #888b9b;
 }
 
+.navbar-container
+{
+    position: absolute;
+    background-color: transparent;
+
+    top: 0;
+
+    width: 15vw;
+    min-height: 100vh;
+}
+
 .page-container
 {
     position: relative;
@@ -34,11 +45,29 @@
 
 .content
 {
+    overflow-x: hidden;
     min-height: 100vh;
-    padding-bottom: 20vh;
-    padding-top: 15vh;
-    background-image: url('img/tile.png');
-    background-repeat: repeat;
+    /*background-image: url('img/tile.png');
+    background-repeat: repeat;*/
+    background-color: #dadffe;
+}
+
+.main-container
+{
+    position: relative;
+    overflow-x: hidden;
+    background-color: #ffffff;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+
+    margin-left: 15vw;
+    margin-top: 15vh;
+
+    padding-bottom: 10vh;
+
+    width: 85vw;
+    min-height: 85vh;
+
+    border-radius: 1vh 0 0 0;
 }
 
 .circle-container

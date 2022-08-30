@@ -2,7 +2,7 @@ import React from 'react'
 import LogoutButton from '../Logout/LogoutButton'
 import { Nav, NavHeader, NavLink, Bars, NavMenu } from './NavbarElements'
 
-const Navbar = () => {
+const Navbar1 = () => {
   return (
     <div>
         <Nav>
@@ -30,4 +30,4 @@ const Navbar = () => {
   )
 }
 
-export default Navbar
+export default Navbar1

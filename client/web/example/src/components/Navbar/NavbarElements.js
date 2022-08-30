@@ -12,7 +12,7 @@ export const Nav =  styled.nav`
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     position: fixed;
     top : 0;
-    width: 99.5vw;
+    width: 10vw;
 `
 
 export const NavHeader =  styled.nav`
