@@ -133,7 +133,7 @@ type Room struct {
 // ====    Methods    ====
 // =======================
 func (b *Booking) GetWeekday() time.Weekday {
-	return b.Start.Weekday()
+	return (b.Start.Weekday() + 6) % 7
 }
 
 func ExtractUserIdsDuplicates(schedulerData *SchedulerData) []string {

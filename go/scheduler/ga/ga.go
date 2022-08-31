@@ -2,6 +2,7 @@ package ga
 
 import (
 	"fmt"
+	"lib/logger"
 	"lib/testutils"
 	"lib/utils"
 	"math"
@@ -78,8 +79,8 @@ func (individual *Individual) ConvertIndividualToBookings(domain Domain) data.Bo
 					booked := true
 					start := time.Date(domain.SchedulerData.StartDate.Year(), domain.SchedulerData.StartDate.Month(), domain.SchedulerData.StartDate.Day(), userInfo.PreferredStartTime.Hour(), userInfo.PreferredStartTime.Minute(), 0, 0, time.UTC)
 					end := time.Date(domain.SchedulerData.StartDate.Year(), domain.SchedulerData.StartDate.Month(), domain.SchedulerData.StartDate.Day(), userInfo.PreferredEndTime.Hour(), userInfo.PreferredEndTime.Minute(), 0, 0, time.UTC)
-					start.AddDate(0, 0, i)
-					end.AddDate(0, 0, i)
+					start = start.AddDate(0, 0, i)
+					end = end.AddDate(0, 0, i)
 					userId := user
 					desk := "DESK"
 					bookings = append(bookings, &data.Booking{UserId: &userId, Start: &start, End: &end, Booked: &booked, Automated: &booked, ResourceType: &desk})
@@ -107,12 +108,21 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 	// 	fmt.Printf("Initial population\n%v\n\n\n", indiv)
 	// }
 
+	// return selection(&domain, population, 1)
+
 	fitness(&domain, population) // TODO Change to useful individuals
 
-	selectPrint := selection(&domain, population, 5)
+	selectPrint := selection(&domain, population, 2)
 	for _, indiv := range selectPrint {
-		fmt.Printf("Initial population\n%v\n\n\n", indiv)
+		logger.Error.Printf("Initial population\n%v\n\n\n", indiv)
 	}
+
+	// ValidateIndividual(&domain, population[0])
+
+	// selectPrint = selection(&domain, population, 1)
+	// for _, indiv := range selectPrint {
+	// 	logger.Error.Printf("Initial Validated population\n%v\n\n\n", indiv)
+	// }
 
 	// Get max and avg fitness
 	totalFitness := 0.0
@@ -125,6 +135,8 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 	}
 
 	fmt.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f\n", maxFitness, minFitness, totalFitness/float64(len(population)))
+
+	// return selection(&domain, population, 1)
 
 	// Run ga
 	stoppingCondition := true
@@ -193,6 +205,7 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 
 	fmt.Printf(testutils.Scolour(testutils.BLUE, "+++++++Exec time: %v\n"), end.Sub(start))
 
+	// Does this actually return the fittest individual though?
 	return selection(&domain, population, 1)
 }
 
