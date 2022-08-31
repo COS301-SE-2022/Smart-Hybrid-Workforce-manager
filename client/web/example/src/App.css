@@ -167,11 +167,19 @@
 .calendar-title
 {
     grid-area: "title";
+    display: inline-flex;
 
     margin-left: 3vw;
 
     font-size: 3vw;
     letter-spacing: 0.3vw;
+}
+
+.year
+{
+    margin-top: 2.4vh;
+    margin-left: 1.5vw;
+    font-size: 2vw;
 }
 
 .context-container
@@ -378,6 +386,7 @@
     border-style: solid;
     border-top: none;
     border-right: none;
+    border-bottom: none;
     border-width: 0.15vw;
 
     width: 11vw;

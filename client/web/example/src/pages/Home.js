@@ -11,6 +11,12 @@ const Home = () =>
     const [bookings, setBookings] = useState([])
     const {userData} = useContext(UserContext);
 
+    const [date, setDate] = useState(new Date());
+    const [month, setMonth] = useState("");
+    const [monthIndex, setMonthIndex] = useState();
+    const [year, setYear] = useState("");
+
+    const titleRef = useRef(null);
     const monthSelectorRef = useRef(null);
     const weekSelectorRef = useRef(null);
     const prevRef = useRef(null);
@@ -89,6 +95,11 @@ const Home = () =>
         }
     }
 
+    const PrevClick = () =>
+    {
+        setMonthIndex(monthIndex - 1);
+    }
+
     const MouseOverNext = () =>
     {
         nextRef.current.style.backgroundColor = "#e8e8e8";
@@ -117,7 +128,11 @@ const Home = () =>
         }
     }
 
-  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const NextClick = () =>
+    {
+
+        setMonthIndex(monthIndex + 1);
+    }
 
   let DayOne = new Date()
   DayOne.setHours(23, 59, 59, 59)
@@ -146,45 +161,64 @@ const Home = () =>
   DaySeven.setHours(23, 59, 59, 59)
   DaySeven.setDate(DaySeven.getDate() + 6);
 
-  //POST request
-  const fetchData = () =>
-  {
-    let startDate = new Date()    
-    startDate.setHours(0, 0, 0, 0)
+    //POST request
+    const fetchData = () =>
+    {
+        let startDate = new Date()    
+        startDate.setHours(0, 0, 0, 0)
 
-    let endDate = new Date()
-    endDate.setHours(26, 0, 0, 0)
-    endDate.setDate(endDate.getDate() + 1 * 7);
+        let endDate = new Date()
+        endDate.setHours(26, 0, 0, 0)
+        endDate.setDate(endDate.getDate() + 1 * 7);
 
-    fetch("http://localhost:8100/api/booking/information", 
-        {
-          method: "POST",
-          mode: "cors",
-          body: JSON.stringify({
-            user_id: window.sessionStorage.getItem("UserID"),
-            start: startDate.toISOString(),
-            end: endDate.toISOString()
-          }),
-          /*headers:{
-            'Content-Type': 'application/json',
-            'Authorization': `bearer ${userData.token}`
-          }*/
-        }).then((res) => res.json()).then(data => 
-          {
-            setBookings(data);
-            window.sessionStorage.removeItem("BookingID");
-            window.sessionStorage.removeItem("StartDate");
-            window.sessionStorage.removeItem("StartTime");
-            window.sessionStorage.removeItem("EndDate");
-            window.sessionStorage.removeItem("EndTime");
-          });
-  }
+        fetch("http://localhost:8100/api/booking/information", 
+            {
+            method: "POST",
+            mode: "cors",
+            body: JSON.stringify({
+                user_id: window.sessionStorage.getItem("UserID"),
+                start: startDate.toISOString(),
+                end: endDate.toISOString()
+            }),
+            /*headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}`
+            }*/
+            }).then((res) => res.json()).then(data => 
+            {
+                setBookings(data);
+                window.sessionStorage.removeItem("BookingID");
+                window.sessionStorage.removeItem("StartDate");
+                window.sessionStorage.removeItem("StartTime");
+                window.sessionStorage.removeItem("EndDate");
+                window.sessionStorage.removeItem("EndTime");
+            });
+    }
 
     //Using useEffect hook. This will send the POST request once the component is mounted
     useEffect(() =>
     {
         fetchData();
-    }, [])
+        setMonthIndex(date.getMonth());
+        setYear(date.getFullYear());
+    }, [date])
+
+    useEffect(() =>
+    {
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        setMonth(monthNames[monthIndex % 12]);
+    },[monthIndex]);
+
+    /*useEffect(() =>
+    {
+        if(titleRef.current !== null)
+        {
+            titleRef.current.innerHTML = date.toLocaleDateString('en-GB', {
+                month: 'long',
+                year: 'numeric'
+            });
+        }
+    },[date]);*/
 
     useEffect(() =>
     {
@@ -212,8 +246,9 @@ const Home = () =>
 
                 <div className='main-container'>
                     <div className='top-bar'>
-                        <div className='calendar-title'>
-                            August 2022
+                        <div ref={titleRef} className='calendar-title'>
+                            <div className='month'>{month}</div>
+                            <div className='year'>{year}</div>
                         </div>
 
                         <div className='context-container'>
@@ -226,7 +261,7 @@ const Home = () =>
                         </div>
 
                         <div className='nav-container'>
-                            <div ref={prevRef} className='prev' onMouseEnter={MouseOverPrev} onMouseLeave={MouseLeavePrev}>
+                            <div ref={prevRef} className='prev' onMouseEnter={MouseOverPrev} onMouseLeave={MouseLeavePrev} onClick={PrevClick}>
                                 <IoIosArrowBack />
                                 <div ref={prevWeekRef} className='tooltip-prev'>
                                     Previous Week
@@ -236,7 +271,7 @@ const Home = () =>
                                 </div>
                             </div>
 
-                            <div ref={nextRef} className='next' onMouseEnter={MouseOverNext} onMouseLeave={MouseLeaveNext}>
+                            <div ref={nextRef} className='next' onMouseEnter={MouseOverNext} onMouseLeave={MouseLeaveNext} onClick={NextClick}>
                                 <IoIosArrowForward />
                                 <div ref={nextWeekRef} className='tooltip-next'>
                                     Next Week
