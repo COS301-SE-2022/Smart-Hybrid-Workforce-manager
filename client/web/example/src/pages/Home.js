@@ -97,7 +97,22 @@ const Home = () =>
 
     const PrevClick = () =>
     {
-        setMonthIndex(monthIndex - 1);
+        if(currentContext === "month")
+        {
+            if(monthIndex === 0)
+            {
+                setYear(year - 1);
+                setMonthIndex(11);
+            }
+            else
+            {
+                setMonthIndex((monthIndex - 1) % 12);
+            }
+        }
+        else
+        {
+
+        }
     }
 
     const MouseOverNext = () =>
@@ -130,8 +145,18 @@ const Home = () =>
 
     const NextClick = () =>
     {
+        if(currentContext === "month")
+        {
+            if(monthIndex === 11)
+            {
+                setYear(year + 1);
+            }
+            setMonthIndex((monthIndex + 1) % 12);
+        }
+        else
+        {
 
-        setMonthIndex(monthIndex + 1);
+        }
     }
 
   let DayOne = new Date()
@@ -206,7 +231,7 @@ const Home = () =>
     useEffect(() =>
     {
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        setMonth(monthNames[monthIndex % 12]);
+        setMonth(monthNames[monthIndex]);
     },[monthIndex]);
 
     /*useEffect(() =>
@@ -246,7 +271,7 @@ const Home = () =>
 
                 <div className='main-container'>
                     <div className='top-bar'>
-                        <div ref={titleRef} className='calendar-title'>
+                        <div className='calendar-title'>
                             <div className='month'>{month}</div>
                             <div className='year'>{year}</div>
                         </div>
@@ -306,7 +331,7 @@ const Home = () =>
 
                             <div className='day-date'>
                                 <p className='day'>Wed</p>
-                                <p className='date'>31</p>
+                                <div className='datee'>31</div>
                             </div>
 
                             <div className='day-date'>

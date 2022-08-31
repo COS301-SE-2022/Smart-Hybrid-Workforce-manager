@@ -336,7 +336,7 @@
 {
     display: grid;
     grid-template-columns: 7.4vw 11vw 11vw 11vw 11vw 11vw 11vw 11vw;
-    grid-template-rows: 10vh;
+    grid-template-rows: 11vh;
     grid-template-areas: "time" "sunday" "monday" "tuesday" "wednesday" "thursday" "friday" "saturday";
 
     text-align: center;
@@ -365,6 +365,24 @@
     font-size: 1.8vw;
 }
 
+.datee
+{
+    border-radius: 10vh;
+    background-color: #09a2fb;
+    color: #ffffff;
+
+    width: 3vw;
+    height: 3vw;
+
+    padding-top: 0.5vh;
+
+    margin-left: 4vw;
+
+    text-align: center;
+    font-size: 1.8vw;
+}
+
+
 .days-of-week-borders
 {
     position: absolute;
@@ -372,7 +390,7 @@
     width: 77vw;
     height: 5vh;
 
-    top: 15vh;
+    top: 16vh;
     margin-left: 7.4vw;
 }
 
