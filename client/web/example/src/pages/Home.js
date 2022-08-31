@@ -1,15 +1,59 @@
 import Navbar from '../components/Navbar/Navbar.js'
 import Footer from '../components/Footer'
 import BookingTicket from '../components/BookingTicket/BookingTicket';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { UserContext } from '../App';
 
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 const Home = () =>
 {
-  const [bookings, setBookings] = useState([])
-  const {userData} = useContext(UserContext);
+    const [bookings, setBookings] = useState([])
+    const {userData} = useContext(UserContext);
+
+    const monthSelectorRef = useRef(null);
+    const weekSelectorRef = useRef(null);
+    const [currentContext, setContext] = useState("week");
+
+    const SelectMonth = () =>
+    {
+        setContext("month");
+    }
+
+    const SelectWeek = () =>
+    {
+        setContext("week");
+    }
+
+    const MouseOverMonth = () =>
+    {
+        monthSelectorRef.current.style.backgroundColor = "#09a2fb";
+        monthSelectorRef.current.style.color = "#ffffff";
+    }
+
+    const MouseLeaveMonth = () =>
+    {
+        if(currentContext !== "month")
+        {
+            monthSelectorRef.current.style.backgroundColor = "#ffffff";
+            monthSelectorRef.current.style.color = "#09a2fb";
+        }
+    }
+
+    const MouseOverWeek = () =>
+    {
+        weekSelectorRef.current.style.backgroundColor = "#09a2fb";
+        weekSelectorRef.current.style.color = "#ffffff";
+    }
+
+    const MouseLeaveWeek = () =>
+    {
+        if(currentContext !== "week")
+        {
+            weekSelectorRef.current.style.backgroundColor = "#ffffff";
+            weekSelectorRef.current.style.color = "#09a2fb";
+        }
+    }
 
   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -79,6 +123,24 @@ const Home = () =>
     {
         fetchData();
     }, [])
+
+    useEffect(() =>
+    {
+        if(currentContext === "month")
+        {
+            monthSelectorRef.current.style.backgroundColor = "#09a2fb";
+            monthSelectorRef.current.style.color = "#ffffff";
+            weekSelectorRef.current.style.backgroundColor = "#ffffff";
+            weekSelectorRef.current.style.color = "#09a2fb";
+        }
+        else
+        {
+            weekSelectorRef.current.style.backgroundColor = "#09a2fb";
+            weekSelectorRef.current.style.color = "#ffffff";
+            monthSelectorRef.current.style.backgroundColor = "#ffffff";
+            monthSelectorRef.current.style.color = "#09a2fb";
+        }
+    }, [currentContext])
   
 
     return (
@@ -90,14 +152,14 @@ const Home = () =>
                     <div className='calendar-container'>
                         <div className='top-bar'>
                             <div className='calendar-title'>
-                                August
+                                August 2022
                             </div>
 
                             <div className='context-container'>
-                                <div className='month-selector'>
+                                <div ref={monthSelectorRef} className='month-selector' onClick={SelectMonth} onMouseOver={MouseOverMonth} onMouseLeave={MouseLeaveMonth}>
                                     Month
                                 </div>
-                                <div className='week-selector'>
+                                <div ref={weekSelectorRef}  className='week-selector' onClick={SelectWeek} onMouseOver={MouseOverWeek} onMouseLeave={MouseLeaveWeek}>
                                     Week
                                 </div>
                             </div>

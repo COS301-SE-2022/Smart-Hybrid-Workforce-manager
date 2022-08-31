@@ -153,11 +153,13 @@
 .top-bar
 {
     display: grid;
-    grid-template-columns: 50vw 25vw 10vw;
+    grid-template-columns: 50vw 15vw 20vw;
     grid-template-rows: 10vh;
     grid-template-areas: "title" "context" "nav";
 
     background-color: #ffffff;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    color: #374146;
 }
 
 .calendar-title
@@ -169,6 +171,110 @@
     color: #374146;
     font-size: 3vw;
     letter-spacing: 0.3vw;
+}
+
+.context-container
+{
+    display: grid;
+    grid-template-columns: 7.5vw 7.5vw;
+    grid-template-rows: 10vh;
+    grid-template-areas: "month" "week";
+
+    font-size: 1vw;
+
+    padding-top: 2vh;
+
+    text-align: center;
+
+    height: 7vh;
+}
+
+.month-selector
+{
+    top: 0;
+
+    padding-top: 1.2vh;
+
+    height: 6vh;
+
+    border-radius: 1vh 0 0 1vh;
+    border-style: solid;
+
+    color: #09a2fb;
+}
+
+.month-selector:hover
+{
+    cursor: pointer;
+    background-color: #09a2fb;
+    color: #ffffff;
+}
+
+.week-selector
+{
+    top: 0;
+
+    padding-top: 1.2vh;
+
+    height: 6vh;
+
+    border-radius: 0 1vh 1vh 0;
+    border-style: solid;
+
+    color: #09a2fb;
+}
+
+.week-selector:hover
+{
+    cursor: pointer;
+    background-color: #09a2fb;
+    color: #ffffff;
+}
+
+.nav-container
+{
+    display: grid;
+    grid-template-columns: 3vw 3vw;
+    grid-template-rows: 10vh;
+    grid-template-areas: "prev" "next";
+
+    font-size: 2vw;
+    text-align: center;
+
+    margin-left: 12vw;
+    margin-top: 2vh;
+}
+
+.prev
+{
+    border-radius: 10vh;
+    height: 3vw;
+    width: 3vw;
+    text-align: center;
+    padding-top: 0.5vh;
+    padding-right: 0.2vw;
+}
+
+.prev:hover
+{
+    cursor: pointer;
+    background-color: #e8e8e8;
+}
+
+.next
+{
+    border-radius: 10vh;
+    height: 3vw;
+    width: 3vw;
+    text-align: center;
+    padding-top: 0.5vh;
+    padding-left: 0.2vw;
+}
+
+.next:hover
+{
+    cursor: pointer;
+    background-color: #e8e8e8;
 }
 
 .card-container
