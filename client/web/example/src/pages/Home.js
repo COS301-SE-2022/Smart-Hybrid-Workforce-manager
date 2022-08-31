@@ -14,7 +14,11 @@ const Home = () =>
     const [date, setDate] = useState(new Date());
     const [month, setMonth] = useState("");
     const [monthIndex, setMonthIndex] = useState();
+    const [nextMonth, setNextMonth] = useState(false);
+    //const [prevMonth, setPrevMonth] = useState(false);
+    const [dualMonth, setDualMonth] = useState(false);
     const [year, setYear] = useState("");
+    const [days, setDays] = useState([]);
 
     const titleRef = useRef(null);
     const monthSelectorRef = useRef(null);
@@ -26,6 +30,40 @@ const Home = () =>
     const nextWeekRef = useRef(null);
     const nextMonthRef = useRef(null);
     const [currentContext, setContext] = useState("week");
+
+    //POST request
+    const fetchData = () =>
+    {
+        let startDate = new Date()    
+        startDate.setHours(0, 0, 0, 0)
+
+        let endDate = new Date()
+        endDate.setHours(26, 0, 0, 0)
+        endDate.setDate(endDate.getDate() + 1 * 7);
+
+        fetch("http://localhost:8100/api/booking/information", 
+            {
+            method: "POST",
+            mode: "cors",
+            body: JSON.stringify({
+                user_id: window.sessionStorage.getItem("UserID"),
+                start: startDate.toISOString(),
+                end: endDate.toISOString()
+            }),
+            /*headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}`
+            }*/
+            }).then((res) => res.json()).then(data => 
+            {
+                setBookings(data);
+                window.sessionStorage.removeItem("BookingID");
+                window.sessionStorage.removeItem("StartDate");
+                window.sessionStorage.removeItem("StartTime");
+                window.sessionStorage.removeItem("EndDate");
+                window.sessionStorage.removeItem("EndTime");
+            });
+    }
 
     const SelectMonth = () =>
     {
@@ -111,7 +149,90 @@ const Home = () =>
         }
         else
         {
+            const arr = [];
+            arr[6] = days[0] - 1;
 
+            const thirty = [3, 5, 8, 10];
+            const thirtyOne = [0, 2, 4, 6, 7, 9, 11];
+
+            var prevMonth = monthIndex - 1;
+            if(prevMonth < 0)
+            {
+                prevMonth = 11;
+            }
+
+            var lastDay;
+            if(thirty.includes(prevMonth))
+            {
+                lastDay = 30;
+            }
+            else if(thirtyOne.includes(prevMonth))
+            {
+                lastDay = 31;
+            }
+            else if(prevMonth === 1 && (year % 4 === 0))
+            {
+                lastDay = 29;
+            }
+            else if(prevMonth === 1 && (year % 4 !== 0))
+            {
+                lastDay = 28
+            }
+
+            for(var i = 6; i > -1; i--)
+            {
+                if(i !== 6)
+                {
+                    arr[i] = arr[i+1] - 1;
+
+                    if(arr[i+1] === 1)
+                    {
+                        arr[i] = lastDay;
+                    }
+                }
+                else
+                {
+                    if(days[0] === 1)
+                    {
+                        arr[i] = lastDay;
+                    }
+                }
+            }
+
+            setDays(arr);
+
+            if(arr.includes(1) && arr.includes(lastDay))
+            {
+                if(monthIndex === 0)
+                {
+                    setYear(year - 1);
+                    setMonthIndex(11);
+                }
+                else
+                {
+                    setMonthIndex((monthIndex - 1) % 12);
+                }
+
+                setDualMonth(true);
+            }
+            else if(arr.includes(lastDay))
+            {
+                if(monthIndex === 0)
+                {
+                    setYear(year - 1);
+                    setMonthIndex(11);
+                }
+                else
+                {
+                    setMonthIndex((monthIndex - 1) % 12);
+                }
+
+                setDualMonth(false);
+            }
+            else
+            {
+                setDualMonth(false);
+            }
         }
     }
 
@@ -155,69 +276,70 @@ const Home = () =>
         }
         else
         {
+            if(nextMonth)
+            {
+                if(monthIndex === 11)
+                {
+                    setYear(year + 1);
+                }
+                setMonthIndex((monthIndex + 1) % 12);
+            }
 
+            const arr = [];
+            arr[0] = days[6] + 1;
+
+            const thirty = [3, 5, 8, 10];
+            const thirtyOne = [0, 2, 4, 6, 7, 9, 11];
+
+            var lastDay;
+            if(thirty.includes(monthIndex))
+            {
+                lastDay = 30;
+            }
+            else if(thirtyOne.includes(monthIndex))
+            {
+                lastDay = 31;
+            }
+            else if(monthIndex === 1 && (year % 4 === 0))
+            {
+                lastDay = 29;
+            }
+            else if(monthIndex === 1 && (year % 4 !== 0))
+            {
+                lastDay = 28
+            }
+
+            for(var i = 0; i < 7; i++)
+            {
+                if(i !== 0)
+                {
+                    arr[i] = arr[i-1] + 1;
+                }
+                
+                if(arr[i] === lastDay + 1)
+                {
+                    arr[i] = 1;
+                }
+            }
+
+            setDays(arr);
+
+            if(arr.includes(lastDay) && arr.includes(1))
+            {
+                setDualMonth(true);
+                setNextMonth(true);
+            }
+            else if(arr.includes(lastDay))
+            {
+                setDualMonth(false);
+                setNextMonth(true);
+            }
+            else
+            {
+                setDualMonth(false);
+                setNextMonth(false);
+            }
         }
-    }
-
-  let DayOne = new Date()
-  DayOne.setHours(23, 59, 59, 59)
-
-  let DayTwo = new Date()
-  DayTwo.setHours(23, 59, 59, 59)
-  DayTwo.setDate(DayTwo.getDate() + 1);
-
-  let DayThree = new Date()
-  DayThree.setHours(23, 59, 59, 59)
-  DayThree.setDate(DayThree.getDate() + 2);
-
-  let DayFour = new Date()
-  DayFour.setHours(23, 59, 59, 59)
-  DayFour.setDate(DayFour.getDate() + 3);
-
-  let DayFive = new Date()
-  DayFive.setHours(23, 59, 59, 59)
-  DayFive.setDate(DayFive.getDate() + 4);
-
-  let DaySix = new Date()
-  DaySix.setHours(23, 59, 59, 59)
-  DaySix.setDate(DaySix.getDate() + 5);
-
-  let DaySeven = new Date()
-  DaySeven.setHours(23, 59, 59, 59)
-  DaySeven.setDate(DaySeven.getDate() + 6);
-
-    //POST request
-    const fetchData = () =>
-    {
-        let startDate = new Date()    
-        startDate.setHours(0, 0, 0, 0)
-
-        let endDate = new Date()
-        endDate.setHours(26, 0, 0, 0)
-        endDate.setDate(endDate.getDate() + 1 * 7);
-
-        fetch("http://localhost:8100/api/booking/information", 
-            {
-            method: "POST",
-            mode: "cors",
-            body: JSON.stringify({
-                user_id: window.sessionStorage.getItem("UserID"),
-                start: startDate.toISOString(),
-                end: endDate.toISOString()
-            }),
-            /*headers:{
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${userData.token}`
-            }*/
-            }).then((res) => res.json()).then(data => 
-            {
-                setBookings(data);
-                window.sessionStorage.removeItem("BookingID");
-                window.sessionStorage.removeItem("StartDate");
-                window.sessionStorage.removeItem("StartTime");
-                window.sessionStorage.removeItem("EndDate");
-                window.sessionStorage.removeItem("EndTime");
-            });
     }
 
     //Using useEffect hook. This will send the POST request once the component is mounted
@@ -226,13 +348,110 @@ const Home = () =>
         fetchData();
         setMonthIndex(date.getMonth());
         setYear(date.getFullYear());
+
+        const arr = [];
+        arr[date.getDay()] = date.getDate();
+
+        const thirty = [3, 5, 8, 10];
+        const thirtyOne = [0, 2, 4, 6, 7, 9, 11];
+        const currMonth = date.getMonth();
+
+        var prevMonth = currMonth - 1;
+        if(prevMonth < 0)
+        {
+            prevMonth = 11;
+        }
+
+        var lastDay;
+        if(thirty.includes(currMonth))
+        {
+            lastDay = 30;
+        }
+        else if(thirtyOne.includes(currMonth))
+        {
+            lastDay = 31;
+        }
+        else if(currMonth === 1 && (date.getFullYear() % 4 === 0))
+        {
+            lastDay = 29;
+        }
+        else if(currMonth === 1 && (date.getFullYear() % 4 !== 0))
+        {
+            lastDay = 28
+        }
+
+        for(var i = date.getDay() + 1; i < 7; i++)
+        {
+            arr[i] = arr[i-1] + 1;
+            
+            if(arr[i] === lastDay + 1)
+            {
+                arr[i] = 1;
+            }
+        }
+
+        var lastDayPrev;
+        if(thirty.includes(prevMonth))
+        {
+            lastDayPrev = 30;
+        }
+        else if(thirtyOne.includes(prevMonth))
+        {
+            lastDayPrev = 31;
+        }
+        else if(prevMonth === 1 && (date.getFullYear() % 4 === 0))
+        {
+            lastDayPrev = 29;
+        }
+        else if(prevMonth === 1 && (date.getFullYear() % 4 !== 0))
+        {
+            lastDayPrev = 28
+        }
+
+        for(i = date.getDay() - 1; i > -1; i--)
+        {
+            arr[i] = arr[i+1] - 1;
+
+            if(arr[i+1] === 1)
+            {
+                arr[i] = lastDayPrev;
+            }
+        }
+
+        setDays(arr);
+
+        if(arr.includes(lastDay) && arr.includes(1))
+        {
+            setDualMonth(true);
+            setNextMonth(true);
+        }
+        else if(arr.includes(lastDay))
+        {
+            setDualMonth(false);
+            setNextMonth(true);
+        }
+        else
+        {
+            setDualMonth(false);
+            setNextMonth(false);
+        }
+
     }, [date])
 
     useEffect(() =>
     {
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        setMonth(monthNames[monthIndex]);
-    },[monthIndex]);
+        if(!dualMonth)
+        {
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            setMonth(monthNames[monthIndex]);
+        }
+        else
+        {
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
+            setMonth(monthNames[monthIndex] + "-" + monthNames[(monthIndex + 1) % 12]);
+        }
+        
+    },[monthIndex, dualMonth]);
 
     /*useEffect(() =>
     {
@@ -316,37 +535,37 @@ const Home = () =>
 
                             <div className='day-date'>
                                 <p className='day'>Sun</p>
-                                <p className='date'>28</p>
+                                <div className='date'>{days[0]}</div>
                             </div>
 
                             <div className='day-date'>
                                 <p className='day'>Mon</p>
-                                <p className='date'>29</p>
+                                <div className='date'>{days[1]}</div>
                             </div>
 
                             <div className='day-date'>
                                 <p className='day'>Tue</p>
-                                <p className='date'>30</p>
+                                <div className='date'>{days[2]}</div>
                             </div>
 
                             <div className='day-date'>
                                 <p className='day'>Wed</p>
-                                <div className='datee'>31</div>
+                                <div className='date'>{days[3]}</div>
                             </div>
 
                             <div className='day-date'>
                                 <p className='day'>Thu</p>
-                                <p className='date'>01</p>
+                                <div className='date'>{days[4]}</div>
                             </div>
 
                             <div className='day-date'>
                                 <p className='day'>Fri</p>
-                                <p className='date'>02</p>
+                                <div className='date'>{days[5]}</div>
                             </div>
 
                             <div className='day-date'>
                                 <p className='day'>Sat</p>
-                                <p className='date'>03</p>
+                                <div className='date'>{days[6]}</div>
                             </div>
                         </div>
 

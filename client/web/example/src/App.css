@@ -362,14 +362,9 @@
 
 .date
 {
-    font-size: 1.8vw;
-}
-
-.datee
-{
     border-radius: 10vh;
-    background-color: #09a2fb;
-    color: #ffffff;
+    background-color: transparent;
+    color: #374146;
 
     width: 3vw;
     height: 3vw;
@@ -381,7 +376,6 @@
     text-align: center;
     font-size: 1.8vw;
 }
-
 
 .days-of-week-borders
 {
