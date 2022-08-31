@@ -97,7 +97,6 @@
     /*background-image: url('img/tile.png');
     background-repeat: repeat;*/
     background-color: rgba(218, 223, 254, 0.6);
-    padding-bottom: 10vh;
 }
 
 .main-container
@@ -153,13 +152,15 @@
 
 .top-bar
 {
+    position: relative;
+
     display: grid;
     grid-template-columns: 50vw 15vw 20vw;
     grid-template-rows: 10vh;
     grid-template-areas: "title" "context" "nav";
 
     background-color: #ffffff;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     color: #374146;
 }
 
@@ -311,6 +312,76 @@
     font-size: 0.8vw;
 
     z-index: 2;
+}
+
+.calendar-content-week
+{
+    /*display: grid;
+    grid-template-columns: 8vw 11vw 11vw 11vw 11vw 11vw 11vw 11vw;
+    grid-template-rows: 10vh;
+    grid-template-areas: "time" "sunday" "monday" "tuesday" "wednesday" "thursday" "friday" "saturday";*/
+    background-color: #ffffff;
+    color: #374146;
+}
+
+.days-of-week
+{
+    display: grid;
+    grid-template-columns: 7.4vw 11vw 11vw 11vw 11vw 11vw 11vw 11vw;
+    grid-template-rows: 10vh;
+    grid-template-areas: "time" "sunday" "monday" "tuesday" "wednesday" "thursday" "friday" "saturday";
+
+    text-align: center;
+
+    box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+.timezone
+{
+    margin-top: 3.5vh;
+    font-size: 1vw;
+}
+
+.day-date
+{
+    margin-top: 1vh;
+}
+
+.day
+{
+    font-size: 1vw;
+}
+
+.date
+{
+    font-size: 1.8vw;
+}
+
+.days-of-week-borders
+{
+    position: absolute;
+
+    width: 77vw;
+    height: 5vh;
+
+    top: 15vh;
+    margin-left: 7.4vw;
+}
+
+.day-date-border
+{
+    position: relative;
+    display: inline-block;
+
+    color: #e8e8e8;
+
+    border-style: solid;
+    border-top: none;
+    border-right: none;
+    border-width: 0.15vw;
+
+    width: 11vw;
+    height: 5vh;
 }
 
 .card-container

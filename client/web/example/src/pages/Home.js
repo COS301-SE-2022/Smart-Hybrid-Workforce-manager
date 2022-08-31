@@ -211,46 +211,101 @@ const Home = () =>
                 <Navbar />
 
                 <div className='main-container'>
-                    <div className='calendar-container'>
-                        <div className='top-bar'>
-                            <div className='calendar-title'>
-                                August 2022
+                    <div className='top-bar'>
+                        <div className='calendar-title'>
+                            August 2022
+                        </div>
+
+                        <div className='context-container'>
+                            <div ref={monthSelectorRef} className='month-selector' onClick={SelectMonth} onMouseOver={MouseOverMonth} onMouseLeave={MouseLeaveMonth}>
+                                Month
                             </div>
-
-                            <div className='context-container'>
-                                <div ref={monthSelectorRef} className='month-selector' onClick={SelectMonth} onMouseOver={MouseOverMonth} onMouseLeave={MouseLeaveMonth}>
-                                    Month
-                                </div>
-                                <div ref={weekSelectorRef}  className='week-selector' onClick={SelectWeek} onMouseOver={MouseOverWeek} onMouseLeave={MouseLeaveWeek}>
-                                    Week
-                                </div>
-                            </div>
-
-                            <div className='nav-container'>
-                                <div ref={prevRef} className='prev' onMouseEnter={MouseOverPrev} onMouseLeave={MouseLeavePrev}>
-                                    <IoIosArrowBack />
-                                    <div ref={prevWeekRef} className='tooltip-prev'>
-                                        Previous Week
-                                    </div>
-                                    <div ref={prevMonthRef} className='tooltip-prev'>
-                                        Previous Month
-                                    </div>
-                                </div>
-
-                                <div ref={nextRef} className='next' onMouseEnter={MouseOverNext} onMouseLeave={MouseLeaveNext}>
-                                    <IoIosArrowForward />
-                                    <div ref={nextWeekRef} className='tooltip-next'>
-                                        Next Week
-                                    </div>
-                                    <div ref={nextMonthRef} className='tooltip-next'>
-                                        Next Month
-                                    </div>
-                                </div>
+                            <div ref={weekSelectorRef}  className='week-selector' onClick={SelectWeek} onMouseOver={MouseOverWeek} onMouseLeave={MouseLeaveWeek}>
+                                Week
                             </div>
                         </div>
 
+                        <div className='nav-container'>
+                            <div ref={prevRef} className='prev' onMouseEnter={MouseOverPrev} onMouseLeave={MouseLeavePrev}>
+                                <IoIosArrowBack />
+                                <div ref={prevWeekRef} className='tooltip-prev'>
+                                    Previous Week
+                                </div>
+                                <div ref={prevMonthRef} className='tooltip-prev'>
+                                    Previous Month
+                                </div>
+                            </div>
 
+                            <div ref={nextRef} className='next' onMouseEnter={MouseOverNext} onMouseLeave={MouseLeaveNext}>
+                                <IoIosArrowForward />
+                                <div ref={nextWeekRef} className='tooltip-next'>
+                                    Next Week
+                                </div>
+                                <div ref={nextMonthRef} className='tooltip-next'>
+                                    Next Month
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+                    <div className='calendar-content-week'>
+                        <div className='days-of-week'>
+                            <div className='timezone'>
+                                GMT+02
+                            </div>
+
+                            <div className='day-date'>
+                                <p className='day'>Sun</p>
+                                <p className='date'>28</p>
+                            </div>
+
+                            <div className='day-date'>
+                                <p className='day'>Mon</p>
+                                <p className='date'>29</p>
+                            </div>
+
+                            <div className='day-date'>
+                                <p className='day'>Tue</p>
+                                <p className='date'>30</p>
+                            </div>
+
+                            <div className='day-date'>
+                                <p className='day'>Wed</p>
+                                <p className='date'>31</p>
+                            </div>
+
+                            <div className='day-date'>
+                                <p className='day'>Thu</p>
+                                <p className='date'>01</p>
+                            </div>
+
+                            <div className='day-date'>
+                                <p className='day'>Fri</p>
+                                <p className='date'>02</p>
+                            </div>
+
+                            <div className='day-date'>
+                                <p className='day'>Sat</p>
+                                <p className='date'>03</p>
+                            </div>
+                        </div>
+
+                        <div className='days-of-week-borders'>
+                            <div className='day-date-border'></div>
+                            <div className='day-date-border'></div>
+                            <div className='day-date-border'></div>
+                            <div className='day-date-border'></div>
+                            <div className='day-date-border'></div>
+                            <div className='day-date-border'></div>
+                            <div className='day-date-border'></div>
+                        </div>
+
+
+                        <div className='column-container'>
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
