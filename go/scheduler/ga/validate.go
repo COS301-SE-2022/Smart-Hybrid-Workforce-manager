@@ -2,11 +2,13 @@ package ga
 
 import (
 	"lib/collectionutils"
+	"lib/logger"
 	"lib/utils"
 )
 
 // Makes an individual valid
 func ValidateIndividual(domain *Domain, indiv *Individual) {
+	logger.Error.Printf("len of domain terminals: %v   -   %v", len(domain.Terminals), domain.Terminals)
 	// First remove duplicates on a single day, at the same time, build maps
 	usersComingInOnDay := make([]map[string]int, len(indiv.Gene)) // map[user id] (index of their slot)
 	daysThatUsersComeIn := make(map[string][]int)                 // map[user id] {int array, where int corresponds to the day a user comes in}
@@ -34,9 +36,11 @@ func ValidateIndividual(domain *Domain, indiv *Individual) {
 	for _, uid := range domain.Terminals {
 		numTimesToComeInPerUser[uid]++
 	}
+	// logger.Error.Printf(" NUM TIMES TO COME IN: %v", numTimesToComeInPerUser)
 	// Perform validation to check how many times a week they have to come in
 	for userid, numTimesToComeIn := range numTimesToComeInPerUser {
 		if numTimesToComeIn < len(daysThatUsersComeIn[userid]) { // If user is scheduled to come in too much
+			// fmt.Println("AAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 			// remove randomly
 			for i := 0; i < len(daysThatUsersComeIn[userid])-numTimesToComeIn; i++ {
 				// Get a randomIndex to select a day from
@@ -52,25 +56,28 @@ func ValidateIndividual(domain *Domain, indiv *Individual) {
 				}
 			}
 		} else if numTimesToComeIn > len(daysThatUsersComeIn[userid]) { // user not comingin enough times
-			// get random open slot
-			randDay := utils.RandInt(0, len(openSlots))
-			// choose day with most open slots
-			if len(openSlots[randDay]) == 0 {
-				maxOpen := len(openSlots[0])
-				maxIndex := 0
-				for i := 1; i < len(openSlots); i++ {
-					if len(openSlots[i]) > maxOpen {
-						maxOpen = len(openSlots[i])
-						maxIndex = i
+			for i := 0; i < numTimesToComeIn-len(daysThatUsersComeIn[userid]); i++ {
+				// fmt.Println("JSHDKAJSHDAJSHDKJHAKSDJHSKDJH")
+				// get random open slot
+				randDay := utils.RandInt(0, len(openSlots))
+				// choose day with most open slots
+				if len(openSlots[randDay]) == 0 {
+					maxOpen := len(openSlots[0])
+					maxIndex := 0
+					for i := 1; i < len(openSlots); i++ {
+						if len(openSlots[i]) > maxOpen {
+							maxOpen = len(openSlots[i])
+							maxIndex = i
+						}
 					}
+					randDay = maxIndex
 				}
-				randDay = maxIndex
+				randSloti := utils.RandInt(0, len(openSlots[randDay]))
+				// add user to select slot
+				indiv.Gene[randDay][randSloti] = userid
+				// remove random slot
+				openSlots[randDay] = collectionutils.RemElemenAtI(openSlots[randDay], randSloti)
 			}
-			randSloti := utils.RandInt(0, len(openSlots[randDay]))
-			// add user to select slot
-			indiv.Gene[randDay][randSloti] = userid
-			// remove random slot
-			openSlots[randDay] = collectionutils.RemElemenAtI(openSlots[randDay], randSloti)
 		}
 	}
 }
