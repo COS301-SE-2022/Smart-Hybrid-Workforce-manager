@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { useNavigate } from "react-router-dom"
-import { FaCalendar, FaTicketAlt, FaMap, FaChartPie } from 'react-icons/fa'
+import { FaCalendar, FaTicketAlt, FaMap, FaChartPie, FaDoorOpen } from 'react-icons/fa'
 
 const Navbar = (props, ref) =>
 {
@@ -56,6 +56,11 @@ const Navbar = (props, ref) =>
     const NavigateStatistics = () =>
     {
         navigate("/statistics");
+    }
+
+    const Logout = () =>
+    {
+
     }
 
     useEffect(() =>
@@ -132,6 +137,11 @@ const Navbar = (props, ref) =>
                     <FaChartPie />
                     &nbsp;
                     Statistics
+                </div>
+                <div className='navlink' onClick={Logout}>
+                    <FaDoorOpen />
+                    &nbsp;
+                    Logout
                 </div>
             </div>
         </div>
