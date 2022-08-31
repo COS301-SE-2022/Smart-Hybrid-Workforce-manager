@@ -97,6 +97,7 @@
     /*background-image: url('img/tile.png');
     background-repeat: repeat;*/
     background-color: rgba(218, 223, 254, 0.6);
+    padding-bottom: 10vh;
 }
 
 .main-container
@@ -168,7 +169,6 @@
 
     margin-left: 3vw;
 
-    color: #374146;
     font-size: 3vw;
     letter-spacing: 0.3vw;
 }
@@ -241,7 +241,7 @@
     font-size: 2vw;
     text-align: center;
 
-    margin-left: 12vw;
+    margin-left: 10vw;
     margin-top: 2vh;
 }
 
@@ -261,6 +261,24 @@
     background-color: #e8e8e8;
 }
 
+.tooltip-prev
+{
+    position: absolute;
+    display: none;
+    visibility: visible;
+    background-color: #374146;
+    color: white;
+    border-radius: 1vh;
+
+    padding: 1vh;
+    left: 73.2vw;
+    top: 9vh;
+
+    font-size: 0.8vw;
+
+    z-index: 2;
+}
+
 .next
 {
     border-radius: 10vh;
@@ -275,6 +293,24 @@
 {
     cursor: pointer;
     background-color: #e8e8e8;
+}
+
+.tooltip-next
+{
+    position: absolute;
+    display: none;
+    visibility: visible;
+    background-color: #374146;
+    color: white;
+    border-radius: 1vh;
+
+    padding: 1vh;
+    left: 77vw;
+    top: 9vh;
+
+    font-size: 0.8vw;
+
+    z-index: 2;
 }
 
 .card-container
@@ -1403,20 +1439,6 @@
     left: 0;
     width: 6vw;
     height: 7vh;
-}
-
-.tooltip
-{
-    visibility: hidden;
-    background-color: #444444;
-    color: white;
-    border-radius: 1vh;
-    padding: 1vh;
-
-    left: 7vw;
-
-    position: absolute;
-    z-index: 2;
 }
 
 .save-container:hover

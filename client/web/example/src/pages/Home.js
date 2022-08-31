@@ -13,6 +13,12 @@ const Home = () =>
 
     const monthSelectorRef = useRef(null);
     const weekSelectorRef = useRef(null);
+    const prevRef = useRef(null);
+    const prevWeekRef = useRef(null);
+    const prevMonthRef = useRef(null);
+    const nextRef = useRef(null);
+    const nextWeekRef = useRef(null);
+    const nextMonthRef = useRef(null);
     const [currentContext, setContext] = useState("week");
 
     const SelectMonth = () =>
@@ -52,6 +58,62 @@ const Home = () =>
         {
             weekSelectorRef.current.style.backgroundColor = "#ffffff";
             weekSelectorRef.current.style.color = "#09a2fb";
+        }
+    }
+
+    const MouseOverPrev = () =>
+    {
+        prevRef.current.style.backgroundColor = "#e8e8e8";
+
+        if(currentContext === "month")
+        {
+            prevMonthRef.current.style.display = "inline-block";
+        }
+        else
+        {
+            prevWeekRef.current.style.display = "inline-block";
+        }
+    }
+
+    const MouseLeavePrev = () =>
+    {
+        prevRef.current.style.backgroundColor = "transparent";
+
+        if(currentContext === "month")
+        {
+            prevMonthRef.current.style.display = "none";
+        }
+        else
+        {
+            prevWeekRef.current.style.display = "none";
+        }
+    }
+
+    const MouseOverNext = () =>
+    {
+        nextRef.current.style.backgroundColor = "#e8e8e8";
+
+        if(currentContext === "month")
+        {
+            nextMonthRef.current.style.display = "inline-block";
+        }
+        else
+        {
+            nextWeekRef.current.style.display = "inline-block";
+        }
+    }
+
+    const MouseLeaveNext = () =>
+    {
+        nextRef.current.style.backgroundColor = "transparent";
+
+        if(currentContext === "month")
+        {
+            nextMonthRef.current.style.display = "none";
+        }
+        else
+        {
+            nextWeekRef.current.style.display = "none";
         }
     }
 
@@ -165,11 +227,24 @@ const Home = () =>
                             </div>
 
                             <div className='nav-container'>
-                                <div className='prev'>
+                                <div ref={prevRef} className='prev' onMouseEnter={MouseOverPrev} onMouseLeave={MouseLeavePrev}>
                                     <IoIosArrowBack />
+                                    <div ref={prevWeekRef} className='tooltip-prev'>
+                                        Previous Week
+                                    </div>
+                                    <div ref={prevMonthRef} className='tooltip-prev'>
+                                        Previous Month
+                                    </div>
                                 </div>
-                                <div className='next'>
+
+                                <div ref={nextRef} className='next' onMouseEnter={MouseOverNext} onMouseLeave={MouseLeaveNext}>
                                     <IoIosArrowForward />
+                                    <div ref={nextWeekRef} className='tooltip-next'>
+                                        Next Week
+                                    </div>
+                                    <div ref={nextMonthRef} className='tooltip-next'>
+                                        Next Month
+                                    </div>
                                 </div>
                             </div>
                         </div>
