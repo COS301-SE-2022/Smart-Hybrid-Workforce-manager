@@ -1,6 +1,7 @@
 package ga
 
 import (
+	"fmt"
 	cu "lib/collectionutils"
 	"lib/logger"
 	"lib/testutils"
@@ -20,16 +21,26 @@ func StubPopulationGenerator(domain *Domain, popSize int) Individuals {
 }
 
 func DayVResourcePopulationGenerator(domain *Domain, popSize int) Individuals {
+	const numDaysInWeek int = 5 // Assume 7 days in a week for now
+
 	// Using representation 1 (DayVResource)
 	schedulerData := domain.SchedulerData
 
-	const numDaysInWeek int = 7 // Assume 7 days in a week for now
+	logger.Error.Println(testutils.Scolourf(testutils.RED, "amount %v", len(*domain.SchedulerData.CurrentBookings)))
+	for _, booking := range *domain.SchedulerData.CurrentBookings {
+		logger.Error.Println(testutils.Scolourf(testutils.RED, "%v  %v  %v", *booking.Id, *booking.UserId, *booking.Start))
+		fmt.Println(booking.Id, booking.UserId, booking.Start)
+	}
 
 	// Get slot sizes/day
 	slotSizes := []int{}
 	for i := 0; i < numDaysInWeek; i++ { // TODO: @JonathanEnslin find out if we want to include all 7 days of week
 		slotSizes = append(slotSizes, len(domain.SchedulerData.Resources)) // Initially assume all slots would be open
 	}
+
+	logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
+	logger.Error.Println(testutils.Scolourf(testutils.GREEN, "slot sizes-%v", slotSizes))
+	logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
 
 	// DEBUG ================
 	// logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
@@ -44,6 +55,9 @@ func DayVResourcePopulationGenerator(domain *Domain, popSize int) Individuals {
 		slotSizes[day]-- // Minus one slot for each existing booking on a day
 	}
 
+	logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
+	logger.Error.Println(testutils.Scolourf(testutils.BLUE, "slot sizes-%v", slotSizes))
+	logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
 	// DEBUG ================
 	// logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
 	// logger.Error.Println(testutils.Scolourf(testutils.PURPLE, "2-%v", slotSizes))
@@ -89,7 +103,7 @@ func DayVResourcePopulationGenerator(domain *Domain, popSize int) Individuals {
 	usersToAdd := []string{}
 	daysAvailable := make(map[string][]int, 0) // Used to indicate what days they are not already coming in (map[user id][days available])
 	for _, user := range domain.SchedulerData.Users {
-		daysAvailable[*user.Id] = cu.SequentialSequence(0, 7)
+		daysAvailable[*user.Id] = cu.SequentialSequence(0, numDaysInWeek)
 		// Add them times they have to come in - days they already come in
 		for i := 0; i < *user.OfficeDays-timesAlreadyComingIn[*user.Id]; i++ { // TODO: @JonathanEnslin find out what do if no office days?
 			usersToAdd = append(usersToAdd, *user.Id)
@@ -129,7 +143,7 @@ func DayVResourcePopulationGenerator(domain *Domain, popSize int) Individuals {
 	// time.Sleep(100 * time.Millisecond)
 	// END DEBUG ================
 
-	openDays := cu.SequentialSequence(0, 7) // Used to keep track of what days still have space open
+	openDays := cu.SequentialSequence(0, numDaysInWeek) // Used to keep track of what days still have space open // TODO: @Jonathan :SCHEDULER: change to use numDaysInWeek not literal 7
 	for i := range openSlots {
 		if len(openSlots[i]) == 0 {
 			openDays = cu.RemoveElementNoOrder(openDays, i)
@@ -171,7 +185,10 @@ func DayVResourcePopulationGenerator(domain *Domain, popSize int) Individuals {
 		}
 		individual := Individual{Gene: make([][]string, numDaysInWeek)}
 		// Initialise individual to empty indiv
-		for j := range individual.Gene {
+		for j := range individual.Gene { // DEBUG how long is GENE?
+			logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
+			logger.Error.Println(testutils.Scolourf(testutils.PURPLE, "slot sizes-%v", slotSizes))
+			logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
 			individual.Gene[j] = make([]string, slotSizes[j])
 		}
 
