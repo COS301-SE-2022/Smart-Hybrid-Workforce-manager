@@ -328,17 +328,14 @@ const Home = () =>
         }
         else
         {
-            if(nextMonth)
-            {
-                if(monthIndex === 11)
-                {
-                    setYear(year + 1);
-                }
-                setMonthIndex((monthIndex + 1) % 12);
-            }
-
             const arr = [];
             arr[0] = days[6] + 1;
+            arr[0] = {
+                day: 0,
+                date: days[6].date + 1,
+                month: days[6].month,
+                year: days[6].year
+            };
 
             const thirty = [3, 5, 8, 10];
             const thirtyOne = [0, 2, 4, 6, 7, 9, 11];
@@ -365,18 +362,64 @@ const Home = () =>
             {
                 if(i !== 0)
                 {
-                    arr[i] = arr[i-1] + 1;
+                    arr[i] = {
+                        day: arr[i-1].day + 1,
+                        date: arr[i-1].date + 1,
+                        month: arr[i-1].month,
+                        year: arr[i-1].year
+                    };
                 }
-                
-                if(arr[i] === lastDay + 1)
+
+                if(arr[i].date === lastDay + 1)
                 {
-                    arr[i] = 1;
+                    arr[i].date = 1;
+                    arr[i].month = (arr[i].month + 1) % 12;
+
+                    if(arr[i].month === 0)
+                    {
+                        arr[i].year = arr[i].year + 1;
+                    }
                 }
             }
 
+            //Set month and year to display. Uses lower month for dual cases
+            setMonthIndex(arr[0].month);
+            setYear(arr[0].year);
+
+            //Set the days array
             setDays(arr);
 
-            if(arr.includes(lastDay) && arr.includes(1))
+            //Highlight current day
+            const refArray = [sunRef, monRef, tueRef, wedRef, thuRef, friRef, satRef];
+            for(i = 0; i < 7; i++)
+            {
+                if((arr[i].date === currDate.date) && (arr[i].month === currDate.month) && (arr[i].year === currDate.year))
+                {
+                    refArray[i].current.style.backgroundColor = '#09a2fb';
+                    refArray[i].current.style.color = '#ffffff';
+                }
+                else
+                {
+                    refArray[i].current.style.backgroundColor = 'transparent';
+                    refArray[i].current.style.color = '#374146';
+                }
+            }
+
+            //Check for dual month
+            for(i = 1; i < 7; i++)
+            {
+                if(arr[i].month !== arr[0].month)
+                {
+                    setDualMonth(true);
+                    break;
+                }
+                else
+                {
+                    setDualMonth(false);
+                }
+            }
+
+            /*if(arr.includes(lastDay) && arr.includes(1))
             {
                 setDualMonth(true);
                 setNextMonth(true);
@@ -390,7 +433,7 @@ const Home = () =>
             {
                 setDualMonth(false);
                 setNextMonth(false);
-            }
+            }*/
         }
     }
 
@@ -399,7 +442,7 @@ const Home = () =>
     {
         fetchData();
         //setMonthIndex(date.getMonth());
-        setYear(date.getFullYear());
+        //setYear(date.getFullYear());
 
         //Create tuple for current date
         setCurrDate({
@@ -510,8 +553,9 @@ const Home = () =>
             }
         }
 
-        //Set month to display. Uses lower month for dual cases
+        //Set month and year to display. Uses lower month for dual cases
         setMonthIndex(arr[0].month);
+        setYear(arr[0].year);
 
         //Set the days array
         setDays(arr);
