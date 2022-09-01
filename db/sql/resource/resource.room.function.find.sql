@@ -2,7 +2,9 @@ CREATE OR REPLACE FUNCTION resource.room_find(
     _id uuid DEFAULT NULL,
 	_building_id uuid DEFAULT NULL,
     _name VARCHAR(256) DEFAULT NULL,
-    _location VARCHAR(256) DEFAULT NULL,
+    _xcoord float DEFAULT NULL,
+    _ycoord float DEFAULT NULL,
+    _zcoord float DEFAULT NULL,
     _dimension VARCHAR(256) DEFAULT NULL,
     _permissions JSONB DEFAULT NULL
 )
@@ -10,7 +12,9 @@ RETURNS TABLE (
     id uuid,
 	building_id uuid,
     name VARCHAR(256),
-	location VARCHAR(256),
+	xcoord float,
+	ycoord float,
+	zcoord float,
 	dimension VARCHAR(256)
 ) AS 
 $$
@@ -37,13 +41,15 @@ BEGIN
         AND permission_category = 'RESOURCE'::permission.category
         AND permission_tenant = 'ROOM'::permission.tenant
     )
-    SELECT i.id, i.building_id, i.name, i.location, i.dimension
+    SELECT i.id, i.building_id, i.name, i.xcoord, i.ycoord, i.zcoord, i.dimension
     FROM resource.room as i
     WHERE (EXISTS(SELECT 1 FROM permitted_rooms WHERE permission_tenant_id is null) OR i.id = ANY(SELECT * FROM permitted_rooms))
     AND (_id IS NULL OR i.id = _id)
     AND (_building_id IS NULL OR i.building_id = _building_id)
     AND (_name IS NULL OR i.name = _name)
-    AND (_location IS NULL OR i.location = _location)
+    AND (_xcoord IS NULL OR i.xcoord = _xcoord)
+    AND (_ycoord IS NULL OR i.ycoord = _ycoord)
+    AND (_zcoord IS NULL OR i.zcoord = _zcoord)
     AND (_dimension IS NULL OR i.dimension = _dimension);
 
     DROP TABLE _permissions_table;
