@@ -18,7 +18,59 @@ const Home = () =>
     //const [prevMonth, setPrevMonth] = useState(false);
     const [dualMonth, setDualMonth] = useState(false);
     const [year, setYear] = useState("");
-    const [days, setDays] = useState([]);
+    const [days, setDays] = useState([
+        {
+            day: -1,
+            date: -1,
+            month: -1,
+            year: -1,
+        },
+        {
+            day: -1,
+            date: -1,
+            month: -1,
+            year: -1,
+        },
+        {
+            day: -1,
+            date: -1,
+            month: -1,
+            year: -1,
+        },
+        {
+            day: -1,
+            date: -1,
+            month: -1,
+            year: -1,
+        },
+        {
+            day: -1,
+            date: -1,
+            month: -1,
+            year: -1,
+        },
+        {
+            day: -1,
+            date: -1,
+            month: -1,
+            year: -1,
+        },
+        {
+            day: -1,
+            date: -1,
+            month: -1,
+            year: -1,
+        }
+    ]);
+    const [currDate, setCurrDate] = useState();
+
+    const sunRef = useRef(null);
+    const monRef = useRef(null);
+    const tueRef = useRef(null);
+    const wedRef = useRef(null);
+    const thuRef = useRef(null);
+    const friRef = useRef(null);
+    const satRef = useRef(null);
 
     const titleRef = useRef(null);
     const monthSelectorRef = useRef(null);
@@ -349,8 +401,22 @@ const Home = () =>
         setMonthIndex(date.getMonth());
         setYear(date.getFullYear());
 
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        setCurrDate({
+            day: date.getDay(),
+            date: date.getDate(),
+            month: date.getMonth(),
+            year: date.getFullYear()
+        });
+
         const arr = [];
-        arr[date.getDay()] = date.getDate();
+        arr[date.getDay()] = {
+            day: date.getDay(),
+            date: date.getDate(),
+            month: date.getMonth(),
+            year: date.getFullYear()
+        };
 
         const thirty = [3, 5, 8, 10];
         const thirtyOne = [0, 2, 4, 6, 7, 9, 11];
@@ -382,11 +448,22 @@ const Home = () =>
 
         for(var i = date.getDay() + 1; i < 7; i++)
         {
-            arr[i] = arr[i-1] + 1;
+            arr[i] = {
+                day: arr[i-1].day + 1,
+                date: arr[i-1].date + 1,
+                month: arr[i-1].month,
+                year: arr[i-1].year
+            };
             
-            if(arr[i] === lastDay + 1)
+            if(arr[i].date === lastDay + 1)
             {
-                arr[i] = 1;
+                arr[i].date = 1;
+                arr[i].month = (arr[i].month + 1) % 12;
+
+                if(arr[i].month === 0)
+                {
+                    arr[i].year = arr[i].year + 1;
+                }
             }
         }
 
@@ -410,15 +487,43 @@ const Home = () =>
 
         for(i = date.getDay() - 1; i > -1; i--)
         {
-            arr[i] = arr[i+1] - 1;
+            arr[i] = {
+                day: arr[i+1].day - 1,
+                date: arr[i+1].date - 1,
+                month: arr[i+1].month,
+                year: arr[i+1].year
+            }
 
-            if(arr[i+1] === 1)
+            if(arr[i+1].date === 1)
             {
-                arr[i] = lastDayPrev;
+                arr[i].date = lastDayPrev;
+                arr[i].month = arr[i].month - 1;
+                
+                if(arr[i].month === -1)
+                {
+                    arr[i].month = 11;
+                    arr[i].year = arr[i].year - 1;
+                }
             }
         }
 
         setDays(arr);
+
+        //Highlight current day
+        const refArray = [sunRef, monRef, tueRef, wedRef, thuRef, friRef, satRef];
+        for(i = 0; i < 7; i++)
+        {
+            if(arr[i].date === currDate.date)
+            {
+                refArray[i].current.style.backgroundColor = '#09a2fb';
+                refArray[i].current.style.color = '#ffffff';
+            }
+            else
+            {
+                refArray[i].current.style.backgroundColor = 'transparent';
+                refArray[i].current.style.color = '#374146';
+            }
+        }
 
         if(arr.includes(lastDay) && arr.includes(1))
         {
@@ -535,37 +640,37 @@ const Home = () =>
 
                             <div className='day-date'>
                                 <p className='day'>Sun</p>
-                                <div className='date'>{days[0]}</div>
+                                <div ref={sunRef} className='date'>{days[0].date}</div>
                             </div>
 
                             <div className='day-date'>
                                 <p className='day'>Mon</p>
-                                <div className='date'>{days[1]}</div>
+                                <div ref={monRef} className='date'>{days[1].date}</div>
                             </div>
 
                             <div className='day-date'>
                                 <p className='day'>Tue</p>
-                                <div className='date'>{days[2]}</div>
+                                <div ref={tueRef} className='date'>{days[2].date}</div>
                             </div>
 
                             <div className='day-date'>
                                 <p className='day'>Wed</p>
-                                <div className='date'>{days[3]}</div>
+                                <div ref={wedRef} className='date'>{days[3].date}</div>
                             </div>
 
                             <div className='day-date'>
                                 <p className='day'>Thu</p>
-                                <div className='date'>{days[4]}</div>
+                                <div ref={thuRef} className='date'>{days[4].date}</div>
                             </div>
 
                             <div className='day-date'>
                                 <p className='day'>Fri</p>
-                                <div className='date'>{days[5]}</div>
+                                <div ref={friRef} className='date'>{days[5].date}</div>
                             </div>
 
                             <div className='day-date'>
                                 <p className='day'>Sat</p>
-                                <div className='date'>{days[6]}</div>
+                                <div ref={satRef} className='date'>{days[6].date}</div>
                             </div>
                         </div>
 
