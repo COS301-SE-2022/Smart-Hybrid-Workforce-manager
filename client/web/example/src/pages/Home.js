@@ -398,11 +398,10 @@ const Home = () =>
     useEffect(() =>
     {
         fetchData();
-        setMonthIndex(date.getMonth());
+        //setMonthIndex(date.getMonth());
         setYear(date.getFullYear());
 
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        //Create tuple for current date
         setCurrDate({
             day: date.getDay(),
             date: date.getDate(),
@@ -410,6 +409,7 @@ const Home = () =>
             year: date.getFullYear()
         });
 
+        //Add current date to temp array
         const arr = [];
         arr[date.getDay()] = {
             day: date.getDay(),
@@ -418,6 +418,7 @@ const Home = () =>
             year: date.getFullYear()
         };
 
+        //Arrays to track how many days in each month
         const thirty = [3, 5, 8, 10];
         const thirtyOne = [0, 2, 4, 6, 7, 9, 11];
         const currMonth = date.getMonth();
@@ -446,6 +447,7 @@ const Home = () =>
             lastDay = 28
         }
 
+        //Add days to array after current date
         for(var i = date.getDay() + 1; i < 7; i++)
         {
             arr[i] = {
@@ -485,6 +487,7 @@ const Home = () =>
             lastDayPrev = 28
         }
 
+        //Add days to array before the current date
         for(i = date.getDay() - 1; i > -1; i--)
         {
             arr[i] = {
@@ -507,6 +510,10 @@ const Home = () =>
             }
         }
 
+        //Set month to display. Uses lower month for dual cases
+        setMonthIndex(arr[0].month);
+
+        //Set the days array
         setDays(arr);
 
         //Highlight current day
@@ -525,7 +532,17 @@ const Home = () =>
             }
         }
 
-        if(arr.includes(lastDay) && arr.includes(1))
+        //Check for dual month
+        for(i = 1; i < 7; i++)
+        {
+            if(arr[i].month !== arr[0].month)
+            {
+                setDualMonth(true);
+                break;
+            }
+        }
+
+        /*if(arr.includes(lastDay) && arr.includes(1))
         {
             setDualMonth(true);
             setNextMonth(true);
@@ -539,7 +556,7 @@ const Home = () =>
         {
             setDualMonth(false);
             setNextMonth(false);
-        }
+        }*/
 
     }, [date])
 
