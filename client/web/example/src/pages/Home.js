@@ -81,6 +81,8 @@ const Home = () =>
     const nextMonthRef = useRef(null);
     const [currentContext, setContext] = useState("week");
 
+    const indicatorRef = useRef(null);
+
     //POST request
     const fetchData = () =>
     {
@@ -418,6 +420,7 @@ const Home = () =>
     useEffect(() =>
     {
         fetchData();
+        const date = new Date();
 
         //Create tuple for current date
         setCurrDate({
@@ -562,7 +565,18 @@ const Home = () =>
             }
         }
 
-    }, [date])
+        indicatorRef.current.style.top = (date.getHours())*7.9 + (date.getMinutes()/60)*7.9 + "vh";
+        indicatorRef.current.style.left = (date.getDay())*11.3 + "vw";
+    }, []);
+
+    const refreshTime = () =>
+    {
+        const date = new Date();
+        indicatorRef.current.style.top = (date.getHours())*7.9 + (date.getMinutes()/60)*7.9 + "vh";
+        indicatorRef.current.style.left = (date.getDay())*11.3 + "vw";
+    }
+
+    setInterval(refreshTime, 60000);
 
     useEffect(() =>
     {
@@ -704,6 +718,11 @@ const Home = () =>
                             <Borders />
                             <Borders />
                             <Borders />
+                            
+                            <div ref={indicatorRef} className='time-indicator-container'>
+                                <div className='time-indicator-circle'></div>
+                                <div className='time-indicator-line'></div>
+                            </div>
                         </div>
 
                         

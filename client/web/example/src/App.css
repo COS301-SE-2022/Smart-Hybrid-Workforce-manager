@@ -335,7 +335,7 @@
 .days-of-week
 {
     display: grid;
-    grid-template-columns: 7.4vw 11vw 11vw 11vw 11vw 11vw 11vw 11vw;
+    grid-template-columns: 5vw 11.3vw 11.3vw 11.3vw 11.3vw 11.3vw 11.3vw 11.3vw;
     grid-template-rows: 11vh;
     grid-template-areas: "time" "sunday" "monday" "tuesday" "wednesday" "thursday" "friday" "saturday";
 
@@ -381,11 +381,11 @@
 {
     position: absolute;
 
-    width: 77vw;
+    width: 79.1vw;
     height: 5vh;
 
     top: 16vh;
-    margin-left: 7.4vw;
+    margin-left: 5vw;
 }
 
 .day-date-border
@@ -401,16 +401,17 @@
     border-bottom: none;
     border-width: 0.15vw;
 
-    width: 11vw;
+    width: 11.3vw;
     height: 5vh;
 }
 
 .column-container
 {
+    position: relative;
     overflow-y: auto;
     overflow-x: hidden;
     display: grid;
-    grid-template-columns: 7.4vw 11vw 11vw 11vw 11vw 11vw 11vw 11vw;
+    grid-template-columns: 5vw 11.3vw 11.3vw 11.3vw 11.3vw 11.3vw 11.3vw 11.3vw;
     grid-template-rows: 8vh;
     grid-template-areas: "time" "sunday" "monday" "tuesday" "wednesday" "thursday" "friday" "saturday";
 
@@ -421,7 +422,7 @@
 {
     text-align: right;
     display: grid;
-    grid-template-columns: 4.4vw 3vw;
+    grid-template-columns: 4vw 1vw;
     grid-template-rows: 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh;
 }
 
@@ -442,7 +443,7 @@
     border-left: none;
     border-width: 0.15vw;
 
-    width: 3vw;
+    width: 1vw;
     height: 8vh;
 }
 
@@ -452,9 +453,10 @@
 
     border-style: solid;
     border-top: none;
+    border-right: none;
     border-width: 0.15vw;
 
-    width: 11.1vw;
+    width: 11.4vw;
     height: 8vh;
 }
 
@@ -466,6 +468,44 @@
     margin-top: 10vh;
 
     transition: 0.5s ease-in-out;
+}
+
+.time-indicator-container
+{
+    position: absolute;
+
+    width: 11.3vw;
+    height: 1vw;
+
+    margin-left: 4.5vw;
+
+    /*top: 7.5vh;*/
+    /*left: calc(4.5vw + 4*11.3vw);*/
+}
+
+.time-indicator-line
+{
+    display: inline-block;
+    position: absolute;
+    background-color: #09a2fb;
+
+    width: 11vw;
+    height: 0.5vh;
+    top: 0.7vh;
+    left: 0.8vw;
+}
+
+.time-indicator-circle
+{
+    display: inline-block;
+    position: absolute;
+    background-color: #09a2fb;
+
+    width: 2vh;
+    height: 2vh;
+    top: 0;
+
+    border-radius: 10vh;
 }
 
 .card
