@@ -1,5 +1,4 @@
 import Navbar from '../components/Navbar/Navbar.js'
-import Footer from '../components/Footer'
 import BookingTicket from '../components/BookingTicket/BookingTicket';
 import { useState, useEffect, useContext, useRef } from 'react';
 import { UserContext } from '../App';
@@ -11,11 +10,9 @@ const Home = () =>
     const [bookings, setBookings] = useState([])
     const {userData} = useContext(UserContext);
 
-    const [date, setDate] = useState(new Date());
+    const [date] = useState(new Date());
     const [month, setMonth] = useState("");
     const [monthIndex, setMonthIndex] = useState();
-    const [nextMonth, setNextMonth] = useState(false);
-    //const [prevMonth, setPrevMonth] = useState(false);
     const [dualMonth, setDualMonth] = useState(false);
     const [year, setYear] = useState("");
     const [days, setDays] = useState([
@@ -72,7 +69,6 @@ const Home = () =>
     const friRef = useRef(null);
     const satRef = useRef(null);
 
-    const titleRef = useRef(null);
     const monthSelectorRef = useRef(null);
     const weekSelectorRef = useRef(null);
     const prevRef = useRef(null);

@@ -1,5 +1,4 @@
 import Navbar from "../components/Navbar/Navbar.js"
-import Footer from "../components/Footer"
 import DeskBooking from "../components/BookingForm/DeskBooking"
 import { FaLongArrowAltRight, FaLongArrowAltLeft } from 'react-icons/fa'
 import { useRef, useEffect } from "react"

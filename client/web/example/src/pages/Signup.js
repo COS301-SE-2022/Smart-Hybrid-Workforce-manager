@@ -11,7 +11,6 @@ function Signup()
     const [password, setPassword] = useState("");
 
     const emailRef = useRef();
-    const validateEmail = new RegExp('^[a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:[.][a-zA-Z0-9-]+)+$');
     const nameRef = useRef();
     const surnameRef = useRef();
 
@@ -20,70 +19,13 @@ function Signup()
     const charactersRef = useRef();
     const specialRef = useRef();
     const caseRef = useRef();
-    const validatePassword = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$');
 
     const navigate = useNavigate();
 
-    const CheckLowerCase = () =>
-    {
-        for(var i = 0; i < password.length; i++)
-        {
-            if(password.charAt(i).match(/[A-z]/i) && password.charAt(i) === password.charAt(i).toLowerCase())
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    const CheckUpperCase = () =>
-    {
-        for(var i = 0; i < password.length; i++)
-        {
-            if(password.charAt(i).match(/[A-z]/i) && password.charAt(i) === password.charAt(i).toUpperCase())
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    const CheckCharacters = () =>
-    {
-        for(var i = 0; i < password.length; i++)
-        {
-            if(password.charAt(i).match(/[A-z]/i))
-            {
-                for(var j = 0; j < password.length; j++)
-                {
-                    if(password.charAt(j).match(/[0-9]/i))
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
-    const CheckSpecial = () =>
-    {
-        for(var i = 0; i < password.length; i++)
-        {
-            if(password.charAt(i).match(/[!@#$%^&*]/i))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     useEffect(() => 
     {
+        const validateEmail = new RegExp('^[a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:[.][a-zA-Z0-9-]+)+$');
+
         if(!validateEmail.test(email))
         {
             emailRef.current.style.borderColor = '#ff2e5b';
@@ -92,10 +34,70 @@ function Signup()
         {
             emailRef.current.style.borderColor = '#2eff69';
         }
-    },[email, validateEmail]);
+    },[email]);
 
     useEffect(() => 
     {
+        const validatePassword = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$');
+
+        const CheckLowerCase = () =>
+        {
+            for(var i = 0; i < password.length; i++)
+            {
+                if(password.charAt(i).match(/[A-z]/i) && password.charAt(i) === password.charAt(i).toLowerCase())
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        const CheckUpperCase = () =>
+        {
+            for(var i = 0; i < password.length; i++)
+            {
+                if(password.charAt(i).match(/[A-z]/i) && password.charAt(i) === password.charAt(i).toUpperCase())
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        const CheckCharacters = () =>
+        {
+            for(var i = 0; i < password.length; i++)
+            {
+                if(password.charAt(i).match(/[A-z]/i))
+                {
+                    for(var j = 0; j < password.length; j++)
+                    {
+                        if(password.charAt(j).match(/[0-9]/i))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        const CheckSpecial = () =>
+        {
+            for(var i = 0; i < password.length; i++)
+            {
+                if(password.charAt(i).match(/[!@#$%^&*]/i))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         if(!validatePassword.test(password))
         {
             passwordRef.current.style.borderColor = '#ff2e5b';
@@ -141,7 +143,7 @@ function Signup()
             specialRef.current.style.color = '#ff2e5b';
         }
 
-    },[password, validatePassword, CheckLowerCase, CheckUpperCase, CheckCharacters]);
+    },[password]);
 
     useEffect(() => 
     {
