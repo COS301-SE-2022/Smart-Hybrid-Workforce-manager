@@ -202,88 +202,82 @@ const Home = () =>
         else
         {
             const arr = [];
-            arr[6] = days[0] - 1;
+            arr[6] = {
+                day: 6,
+                date: days[0].date - 1,
+                month: days[0].month,
+                year: days[0].year
+            };
 
-            const thirty = [3, 5, 8, 10];
-            const thirtyOne = [0, 2, 4, 6, 7, 9, 11];
+            const lastDay = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-            var prevMonth = monthIndex - 1;
-            if(prevMonth < 0)
-            {
-                prevMonth = 11;
-            }
-
-            var lastDay;
-            if(thirty.includes(prevMonth))
-            {
-                lastDay = 30;
-            }
-            else if(thirtyOne.includes(prevMonth))
-            {
-                lastDay = 31;
-            }
-            else if(prevMonth === 1 && (year % 4 === 0))
-            {
-                lastDay = 29;
-            }
-            else if(prevMonth === 1 && (year % 4 !== 0))
-            {
-                lastDay = 28
-            }
-
+            //Populate temp array with days
             for(var i = 6; i > -1; i--)
             {
                 if(i !== 6)
                 {
-                    arr[i] = arr[i+1] - 1;
-
-                    if(arr[i+1] === 1)
-                    {
-                        arr[i] = lastDay;
-                    }
+                    arr[i] = {
+                        day: arr[i+1].day - 1,
+                        date: arr[i+1].date - 1,
+                        month: arr[i+1].month,
+                        year: arr[i+1].year
+                    };
                 }
-                else
+
+                if(arr[i].date === 0)
                 {
-                    if(days[0] === 1)
+                    arr[i].month = (arr[i].month - 1) % 12;
+
+                    if(arr[i].month === -1)
                     {
-                        arr[i] = lastDay;
+                        arr[i].month = 11;
+                        arr[i].year = arr[i].year - 1;
+                    }
+
+                    arr[i].date = lastDay[arr[i].month];
+
+                    if((arr[i].year % 4 === 0) && arr[i].month === 1)
+                    {
+                        arr[i].date = 29;
                     }
                 }
             }
 
+            //Set month and year to display. Uses lower month for dual cases
+            setMonthIndex(arr[0].month);
+            setYear(arr[0].year);
+
+            //Set the days array
             setDays(arr);
 
-            if(arr.includes(1) && arr.includes(lastDay))
+            //Highlight current day
+            const refArray = [sunRef, monRef, tueRef, wedRef, thuRef, friRef, satRef];
+            for(i = 0; i < 7; i++)
             {
-                if(monthIndex === 0)
+                if((arr[i].date === currDate.date) && (arr[i].month === currDate.month) && (arr[i].year === currDate.year))
                 {
-                    setYear(year - 1);
-                    setMonthIndex(11);
+                    refArray[i].current.style.backgroundColor = '#09a2fb';
+                    refArray[i].current.style.color = '#ffffff';
                 }
                 else
                 {
-                    setMonthIndex((monthIndex - 1) % 12);
+                    refArray[i].current.style.backgroundColor = 'transparent';
+                    refArray[i].current.style.color = '#374146';
                 }
-
-                setDualMonth(true);
             }
-            else if(arr.includes(lastDay))
+
+            //Check for dual month
+            for(i = 1; i < 7; i++)
             {
-                if(monthIndex === 0)
+                if(arr[i].month !== arr[0].month)
                 {
-                    setYear(year - 1);
-                    setMonthIndex(11);
+                    setDualMonth(true);
+                    break;
                 }
                 else
                 {
-                    setMonthIndex((monthIndex - 1) % 12);
+                    setDualMonth(false);
                 }
-
-                setDualMonth(false);
-            }
-            else
-            {
-                setDualMonth(false);
             }
         }
     }
@@ -358,6 +352,7 @@ const Home = () =>
                 lastDay = 28
             }
 
+            //Populate temp array with days
             for(var i = 0; i < 7; i++)
             {
                 if(i !== 0)
@@ -418,22 +413,6 @@ const Home = () =>
                     setDualMonth(false);
                 }
             }
-
-            /*if(arr.includes(lastDay) && arr.includes(1))
-            {
-                setDualMonth(true);
-                setNextMonth(true);
-            }
-            else if(arr.includes(lastDay))
-            {
-                setDualMonth(false);
-                setNextMonth(true);
-            }
-            else
-            {
-                setDualMonth(false);
-                setNextMonth(false);
-            }*/
         }
     }
 
@@ -441,8 +420,6 @@ const Home = () =>
     useEffect(() =>
     {
         fetchData();
-        //setMonthIndex(date.getMonth());
-        //setYear(date.getFullYear());
 
         //Create tuple for current date
         setCurrDate({
@@ -564,7 +541,8 @@ const Home = () =>
         const refArray = [sunRef, monRef, tueRef, wedRef, thuRef, friRef, satRef];
         for(i = 0; i < 7; i++)
         {
-            if(arr[i].date === currDate.date)
+            console.log(arr);
+            if(arr[i].date === date.getDate())
             {
                 refArray[i].current.style.backgroundColor = '#09a2fb';
                 refArray[i].current.style.color = '#ffffff';
@@ -585,22 +563,6 @@ const Home = () =>
                 break;
             }
         }
-
-        /*if(arr.includes(lastDay) && arr.includes(1))
-        {
-            setDualMonth(true);
-            setNextMonth(true);
-        }
-        else if(arr.includes(lastDay))
-        {
-            setDualMonth(false);
-            setNextMonth(true);
-        }
-        else
-        {
-            setDualMonth(false);
-            setNextMonth(false);
-        }*/
 
     }, [date])
 
