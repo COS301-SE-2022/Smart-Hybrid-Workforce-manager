@@ -46,6 +46,7 @@
 {
     margin-top: 1vh;
     font-size: 3vw;
+    height: 8vh;
 }
 
 .navlink-container
@@ -108,12 +109,12 @@
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
 
     margin-left: 15vw;
-    margin-top: 15vh;
+    margin-top: 10vh;
 
     padding-bottom: 5vh;
 
     width: 85vw;
-    height: 85vh;
+    height: 90vh;
 
     border-radius: 1vh 0 0 0;
 }
@@ -155,9 +156,9 @@
     position: relative;
 
     display: grid;
-    grid-template-columns: 50vw 15vw 20vw;
+    grid-template-columns: 40vw 20vw 10vw 15vw;
     grid-template-rows: 10vh;
-    grid-template-areas: "title" "context" "nav";
+    grid-template-areas: "title" "context" "today" "nav";
 
     background-color: #ffffff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
@@ -240,6 +241,34 @@
     color: #ffffff;
 }
 
+.today-container
+{
+    padding-top: 2vh;
+    margin-left: 3vw;
+}
+
+.today-selector
+{
+    top: 0;
+
+    padding-top: 1.2vh;
+
+    height: 6vh;
+    width: 5vw;
+
+    border-radius: 1vh 1vh 1vh 1vh;
+    border-style: solid;
+
+    background-color: #09a2fb;
+    color: #ffffff;
+    text-align: center;
+}
+
+.today-selector:hover
+{
+    cursor: pointer;
+}
+
 .nav-container
 {
     display: grid;
@@ -250,7 +279,7 @@
     font-size: 2vw;
     text-align: center;
 
-    margin-left: 10vw;
+    margin-left: 5vw;
     margin-top: 2vh;
 }
 
@@ -324,10 +353,6 @@
 
 .calendar-content-week
 {
-    /*display: grid;
-    grid-template-columns: 8vw 11vw 11vw 11vw 11vw 11vw 11vw 11vw;
-    grid-template-rows: 10vh;
-    grid-template-areas: "time" "sunday" "monday" "tuesday" "wednesday" "thursday" "friday" "saturday";*/
     background-color: #ffffff;
     color: #374146;
 }
@@ -338,6 +363,7 @@
     grid-template-columns: 5vw 11.3vw 11.3vw 11.3vw 11.3vw 11.3vw 11.3vw 11.3vw;
     grid-template-rows: 11vh;
     grid-template-areas: "time" "sunday" "monday" "tuesday" "wednesday" "thursday" "friday" "saturday";
+    background-color: #ffffff;
 
     text-align: center;
 
@@ -371,7 +397,7 @@
 
     padding-top: 0.5vh;
 
-    margin-left: 4vw;
+    margin-left: 4.2vw;
 
     text-align: center;
     font-size: 1.8vw;
@@ -414,8 +440,9 @@
     grid-template-columns: 5vw 11.3vw 11.3vw 11.3vw 11.3vw 11.3vw 11.3vw 11.3vw;
     grid-template-rows: 8vh;
     grid-template-areas: "time" "sunday" "monday" "tuesday" "wednesday" "thursday" "friday" "saturday";
+    
 
-    height: 64vh;
+    height: 69vh;
 }
 
 .time-column
@@ -460,16 +487,6 @@
     height: 8vh;
 }
 
-.card-container
-{
-    display: flex;
-
-    margin-left: calc((100vw - 60vw) / 2);
-    margin-top: 10vh;
-
-    transition: 0.5s ease-in-out;
-}
-
 .time-indicator-container
 {
     position: absolute;
@@ -478,9 +495,6 @@
     height: 1vw;
 
     margin-left: 4.5vw;
-
-    /*top: 7.5vh;*/
-    /*left: calc(4.5vw + 4*11.3vw);*/
 }
 
 .time-indicator-line
@@ -506,6 +520,16 @@
     top: 0;
 
     border-radius: 10vh;
+}
+
+.card-container
+{
+    display: flex;
+
+    margin-left: calc((100vw - 60vw) / 2);
+    margin-top: 10vh;
+
+    transition: 0.5s ease-in-out;
 }
 
 .card

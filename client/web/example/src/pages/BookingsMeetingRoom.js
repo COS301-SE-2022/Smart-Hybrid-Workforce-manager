@@ -1,16 +1,22 @@
 import Navbar from "../components/Navbar/Navbar.js"
-import { useRef } from "react"
+import { useEffect, useRef } from "react"
 import MeetingRoomBooking from "../components/BookingForm/MeetingRoomBooking"
 
 const BookingsMeetingRoom = () =>
 {
     const deskRef = useRef(null);
+    const mainRef = useRef(null);
+
+    useEffect(() =>
+    {
+        mainRef.current.style.overflowY = 'scroll';
+    },[])
 
     return (
         <div className='page-container'>
             <div className='content'>
                 <Navbar />
-                <div className="main-container">
+                <div ref={mainRef} className="main-container">
                     <MeetingRoomBooking ref={deskRef}/>
                 </div>
             </div>  

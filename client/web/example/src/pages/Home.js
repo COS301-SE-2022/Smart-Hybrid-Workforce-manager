@@ -73,6 +73,7 @@ const Home = () =>
 
     const monthSelectorRef = useRef(null);
     const weekSelectorRef = useRef(null);
+    const todaySelectorRef = useRef(null);
     const prevRef = useRef(null);
     const prevWeekRef = useRef(null);
     const prevMonthRef = useRef(null);
@@ -80,6 +81,7 @@ const Home = () =>
     const nextWeekRef = useRef(null);
     const nextMonthRef = useRef(null);
     const [currentContext, setContext] = useState("week");
+    const [isToday, setToday] = useState(true);
 
     const indicatorRef = useRef(null);
 
@@ -127,6 +129,11 @@ const Home = () =>
         setContext("week");
     }
 
+    const SelectToday = () =>
+    {
+        setToday(true);
+    }
+
     const MouseOverMonth = () =>
     {
         monthSelectorRef.current.style.backgroundColor = "#09a2fb";
@@ -154,6 +161,21 @@ const Home = () =>
         {
             weekSelectorRef.current.style.backgroundColor = "#ffffff";
             weekSelectorRef.current.style.color = "#09a2fb";
+        }
+    }
+
+    const MouseOverToday = () =>
+    {
+        todaySelectorRef.current.style.backgroundColor = "#09a2fb";
+        todaySelectorRef.current.style.color = "#ffffff";
+    }
+
+    const MouseLeaveToday = () =>
+    {
+        if(!isToday)
+        {
+            todaySelectorRef.current.style.backgroundColor = "#ffffff";
+            todaySelectorRef.current.style.color = "#09a2fb";
         }
     }
 
@@ -251,6 +273,8 @@ const Home = () =>
             setDays(arr);
 
             //Highlight current day
+            indicatorRef.current.style.display = 'none';
+            setToday(false);
             const refArray = [sunRef, monRef, tueRef, wedRef, thuRef, friRef, satRef];
             for(i = 0; i < 7; i++)
             {
@@ -258,6 +282,8 @@ const Home = () =>
                 {
                     refArray[i].current.style.backgroundColor = '#09a2fb';
                     refArray[i].current.style.color = '#ffffff';
+                    indicatorRef.current.style.display = 'block';
+                    setToday(true);
                 }
                 else
                 {
@@ -385,6 +411,8 @@ const Home = () =>
             setDays(arr);
 
             //Highlight current day
+            indicatorRef.current.style.display = 'none';
+            setToday(false);
             const refArray = [sunRef, monRef, tueRef, wedRef, thuRef, friRef, satRef];
             for(i = 0; i < 7; i++)
             {
@@ -392,6 +420,8 @@ const Home = () =>
                 {
                     refArray[i].current.style.backgroundColor = '#09a2fb';
                     refArray[i].current.style.color = '#ffffff';
+                    indicatorRef.current.style.display = 'block';
+                    setToday(true);
                 }
                 else
                 {
@@ -416,10 +446,8 @@ const Home = () =>
         }
     }
 
-    //Using useEffect hook. This will send the POST request once the component is mounted
-    useEffect(() =>
+    const loadToday = () =>
     {
-        fetchData();
         const date = new Date();
 
         //Create tuple for current date
@@ -542,11 +570,11 @@ const Home = () =>
         const refArray = [sunRef, monRef, tueRef, wedRef, thuRef, friRef, satRef];
         for(i = 0; i < 7; i++)
         {
-            console.log(arr);
             if(arr[i].date === date.getDate())
             {
                 refArray[i].current.style.backgroundColor = '#09a2fb';
                 refArray[i].current.style.color = '#ffffff';
+                indicatorRef.current.style.display = 'block';
             }
             else
             {
@@ -567,6 +595,13 @@ const Home = () =>
 
         indicatorRef.current.style.top = (date.getHours())*7.9 + (date.getMinutes()/60)*7.9 + "vh";
         indicatorRef.current.style.left = (date.getDay())*11.3 + "vw";
+    }
+
+    //Using useEffect hook. This will send the POST request once the component is mounted
+    useEffect(() =>
+    {
+        fetchData();
+        loadToday();
     }, []);
 
     const refreshTime = () =>
@@ -576,7 +611,7 @@ const Home = () =>
         indicatorRef.current.style.left = (date.getDay())*11.3 + "vw";
     }
 
-    setInterval(refreshTime, 60000);
+    setInterval(refreshTime, 60000*5);
 
     useEffect(() =>
     {
@@ -609,7 +644,22 @@ const Home = () =>
             monthSelectorRef.current.style.backgroundColor = "#ffffff";
             monthSelectorRef.current.style.color = "#09a2fb";
         }
-    }, [currentContext])
+    }, [currentContext]);
+
+    useEffect(() =>
+    {
+        if(isToday)
+        {
+            todaySelectorRef.current.style.backgroundColor = '#09a2fb';
+            todaySelectorRef.current.style.color = '#ffffff';
+            loadToday();
+        }
+        else
+        {
+            todaySelectorRef.current.style.backgroundColor = '#ffffff';
+            todaySelectorRef.current.style.color = '#09a2fb';
+        }
+    },[isToday]);
   
 
     return (
@@ -630,6 +680,12 @@ const Home = () =>
                             </div>
                             <div ref={weekSelectorRef}  className='week-selector' onClick={SelectWeek} onMouseOver={MouseOverWeek} onMouseLeave={MouseLeaveWeek}>
                                 Week
+                            </div>
+                        </div>
+
+                        <div className='today-container'>
+                            <div ref={todaySelectorRef} className='today-selector' onClick={SelectToday} onMouseOver={MouseOverToday} onMouseLeave={MouseLeaveToday}>
+                                Today
                             </div>
                         </div>
 
