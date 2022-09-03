@@ -4,6 +4,8 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import { UserContext } from '../App';
 
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+import Borders from '../components/Calendar/Borders.js';
+import Times from '../components/Calendar/Times.js';
 
 const Home = () =>
 {
@@ -577,17 +579,6 @@ const Home = () =>
         
     },[monthIndex, dualMonth]);
 
-    /*useEffect(() =>
-    {
-        if(titleRef.current !== null)
-        {
-            titleRef.current.innerHTML = date.toLocaleDateString('en-GB', {
-                month: 'long',
-                year: 'numeric'
-            });
-        }
-    },[date]);*/
-
     useEffect(() =>
     {
         if(currentContext === "month")
@@ -703,10 +694,19 @@ const Home = () =>
                             <div className='day-date-border'></div>
                         </div>
 
-
                         <div className='column-container'>
+                            <Times />
 
+                            <Borders />
+                            <Borders />
+                            <Borders />
+                            <Borders />
+                            <Borders />
+                            <Borders />
+                            <Borders />
                         </div>
+
+                        
                     </div>
 
                 </div>

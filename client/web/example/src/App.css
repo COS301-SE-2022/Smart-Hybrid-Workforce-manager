@@ -11,7 +11,7 @@
 ::-webkit-scrollbar
 {
     width: 12px;
-    background-color: #ffffff;
+    background-color: transparent;
 }
 
 ::-webkit-scrollbar-thumb
@@ -102,7 +102,7 @@
 .main-container
 {
     position: relative;
-    overflow-x: hidden;
+    overflow: hidden;
     background-image: url('img/tile2.png');
     background-repeat: repeat;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
@@ -113,7 +113,7 @@
     padding-bottom: 5vh;
 
     width: 85vw;
-    min-height: 85vh;
+    height: 85vh;
 
     border-radius: 1vh 0 0 0;
 }
@@ -346,8 +346,8 @@
 
 .timezone
 {
-    margin-top: 3.5vh;
-    font-size: 1vw;
+    margin-top: 7vh;
+    font-size: 0.8vw;
 }
 
 .day-date
@@ -403,6 +403,59 @@
 
     width: 11vw;
     height: 5vh;
+}
+
+.column-container
+{
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: grid;
+    grid-template-columns: 7.4vw 11vw 11vw 11vw 11vw 11vw 11vw 11vw;
+    grid-template-rows: 8vh;
+    grid-template-areas: "time" "sunday" "monday" "tuesday" "wednesday" "thursday" "friday" "saturday";
+
+    height: 64vh;
+}
+
+.time-column
+{
+    text-align: right;
+    display: grid;
+    grid-template-columns: 4.4vw 3vw;
+    grid-template-rows: 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh;
+}
+
+.time-label
+{
+    padding-top: 6.8vh;
+    padding-right: 0.4vw;
+    font-size: 0.8vw;
+}
+
+.time-border
+{
+    color: #e8e8e8;
+
+    border-style: solid;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-width: 0.15vw;
+
+    width: 3vw;
+    height: 8vh;
+}
+
+.day-time-border
+{
+    color: #e8e8e8;
+
+    border-style: solid;
+    border-top: none;
+    border-width: 0.15vw;
+
+    width: 11.1vw;
+    height: 8vh;
 }
 
 .card-container
