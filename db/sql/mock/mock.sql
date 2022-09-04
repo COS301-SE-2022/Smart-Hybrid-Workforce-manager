@@ -504,7 +504,9 @@ SELECT resource.room_store(
 	'14141414-dc08-4a06-9983-8b374586e459'::uuid,
 	'98989898-dc08-4a06-9983-8b374586e459'::uuid,
 	'Office Block B',
-	'B4',
+	'10',
+    '10',
+    '10',
 	'5x5'
 );
 
@@ -514,7 +516,9 @@ SELECT resource.room_store(
 	'15151515-dc08-4a06-9983-8b374586e459'::uuid,
 	'98989898-dc08-4a06-9983-8b374586e459'::uuid,
 	'Secretary',
-	'B9',
+	'10',
+    '10',
+    '10',
 	'5x5'
 );
 
@@ -522,7 +526,6 @@ SELECT resource.room_store(
 SELECT resource.room_association_store(
 	'15151515-dc08-4a06-9983-8b374586e459'::uuid, -- Room 02
 	'14141414-dc08-4a06-9983-8b374586e459'::uuid -- Room 01
-
 );
 
 -- Resource Desk 01

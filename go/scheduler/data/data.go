@@ -122,11 +122,13 @@ type Building struct {
 
 // Room identifies a Room Resource via common attributes
 type Room struct {
-	Id         *string `json:"id,omitempty"`
-	BuildingId *string `json:"building_id,omitempty"`
-	Name       *string `json:"name,omitempty"`
-	Location   *string `json:"location,omitempty"`
-	Dimension  *string `json:"dimension,omitempty"`
+	Id         *string  `json:"id,omitempty"`
+	BuildingId *string  `json:"building_id,omitempty"`
+	Name       *string  `json:"name,omitempty"`
+	XCoord     *float64 `json:"xcoord,omitempty"`
+	YCoord     *float64 `json:"ycoord,omitempty"`
+	ZCoord     *float64 `json:"zcoord,omitempty"`
+	Dimension  *string  `json:"dimension,omitempty"`
 }
 
 // =======================
