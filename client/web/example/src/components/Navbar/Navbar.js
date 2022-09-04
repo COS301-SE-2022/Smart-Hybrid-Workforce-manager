@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import { FaCalendar, FaTicketAlt, FaMap, FaChartPie, FaDoorOpen } from 'react-icons/fa'
+import { UserContext } from '../../App';
 
 const Navbar = (props, ref) =>
 {
@@ -16,6 +17,8 @@ const Navbar = (props, ref) =>
     const [dropDown, setDropDown] = useState();
 
     const navigate = useNavigate();
+
+    const {userData,setUserData} = useContext(UserContext);
 
     const NavigateHome = () =>
     {
@@ -57,8 +60,10 @@ const Navbar = (props, ref) =>
     }
 
     const Logout = () =>
-    {
-
+    { 
+        setUserData(null);
+        localStorage.removeItem("auth_data");
+        navigate("/login");
     }
 
     useEffect(() =>

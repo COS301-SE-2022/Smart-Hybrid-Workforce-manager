@@ -23,7 +23,7 @@ export default function Login()
       type:null,
       active:null
     }))
-    fetch("http://localhost:8100/api/user/login", 
+    fetch("http://localhost:5000/api/user/login", 
     {
       method: "POST",
       body: JSON.stringify({
