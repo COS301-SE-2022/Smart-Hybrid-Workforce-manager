@@ -39,9 +39,14 @@ func validSwap(indiv *Individual, mutationDegree int) *Individual {
 		dayi1, sloti1 := randSlot(indiv)
 		// select a day that is not the same day as dayi1
 		dayi2, sloti2 := randSlot(indiv)
-		for dayi2 == dayi1 {
+		for dayi2 == dayi1 && dayi2 != -1 { // if dayi2 == -1 it means that there might no be enough slots
 			dayi2, sloti2 = randSlot(indiv)
 		}
+
+		if dayi1 == -1 || dayi2 == -1 { // Mutation can not be performed
+			break
+		}
+
 		_, contains1 := usersComingInOnDay[dayi1][indiv.Gene[dayi2][sloti2]]
 		_, contains2 := usersComingInOnDay[dayi2][indiv.Gene[dayi1][sloti1]]
 		if !contains1 && !contains2 {
@@ -59,7 +64,11 @@ func performSwap(indiv *Individual, day1, day2, sloti1, sloti2 int) {
 // Returns the day and index of a random slot in an individual
 func randSlot(indiv *Individual) (randDay int, randSlot int) {
 	randDay = utils.RandInt(0, len(indiv.Gene)) // First mutation point
-	randSlot = utils.RandInt(0, len(indiv.Gene[randDay]))
+	if len(indiv.Gene[randDay]) > 0 {           // Will panic if <= 0
+		randSlot = utils.RandInt(0, len(indiv.Gene[randDay]))
+	} else {
+		randSlot = -1 // Use -1 to indicate that no slots are available
+	}
 	return
 }
 
@@ -89,6 +98,9 @@ func DayVResouceMutate(domain *Domain, individuals Individuals) Individuals {
 		copiedIndividual := individual.Clone()
 		for i := range individual.Gene {
 			// randDay1 := rand.Intn(len(individual.Gene)) // First mutation point
+			if len(copiedIndividual.Gene[i]) == 0 { // No mutation can be performed if there are no slots at all
+				continue
+			}
 			randSloti := utils.RandInt(0, len(copiedIndividual.Gene[i]))
 			// mutate everything
 			for j := randSloti; j < len(copiedIndividual.Gene[i]); j++ {
