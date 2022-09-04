@@ -1,7 +1,6 @@
 package ga
 
 import (
-	"fmt"
 	cu "lib/collectionutils"
 	"lib/logger"
 	"lib/testutils"
@@ -21,16 +20,16 @@ func StubPopulationGenerator(domain *Domain, popSize int) Individuals {
 }
 
 func DayVResourcePopulationGenerator(domain *Domain, popSize int) Individuals {
-	const numDaysInWeek int = 5 // Assume 7 days in a week for now
+	const numDaysInWeek int = 5 // Assume 5 days in a week for now
 
 	// Using representation 1 (DayVResource)
 	schedulerData := domain.SchedulerData
 
-	logger.Error.Println(testutils.Scolourf(testutils.RED, "amount %v", len(*domain.SchedulerData.CurrentBookings)))
-	for _, booking := range *domain.SchedulerData.CurrentBookings {
-		logger.Error.Println(testutils.Scolourf(testutils.RED, "%v  %v  %v", *booking.Id, *booking.UserId, *booking.Start))
-		fmt.Println(booking.Id, booking.UserId, booking.Start)
-	}
+	// logger.Error.Println(testutils.Scolourf(testutils.RED, "amount %v", len(*domain.SchedulerData.CurrentBookings)))
+	// for _, booking := range *domain.SchedulerData.CurrentBookings {
+	// 	logger.Error.Println(testutils.Scolourf(testutils.RED, "%v  %v  %v", *booking.Id, *booking.UserId, *booking.Start))
+	// 	fmt.Println(booking.Id, booking.UserId, booking.Start)
+	// }
 
 	// Get slot sizes/day
 	slotSizes := []int{}
@@ -74,6 +73,20 @@ func DayVResourcePopulationGenerator(domain *Domain, popSize int) Individuals {
 			openSlots[dayOfWeek] = append(openSlots[dayOfWeek], i)
 		}
 	}
+
+	openDays := cu.SequentialSequence(0, numDaysInWeek) // Used to keep track of what days still have space open // TODO: @Jonathan :SCHEDULER: change to use numDaysInWeek not literal 7
+	for i := range openSlots {
+		if len(openSlots[i]) == 0 {
+			openDays = cu.RemoveElementNoOrder(openDays, i)
+		}
+	}
+
+	// DEBUG ================
+	// logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
+	// logger.Error.Println(testutils.Scolourf(testutils.PURPLE, "7-%v", openDays))
+	// logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
+	// time.Sleep(100 * time.Millisecond)
+	// END DEBUG ================
 
 	// DEBUG ================
 	// logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
@@ -143,20 +156,6 @@ func DayVResourcePopulationGenerator(domain *Domain, popSize int) Individuals {
 	// time.Sleep(100 * time.Millisecond)
 	// END DEBUG ================
 
-	openDays := cu.SequentialSequence(0, numDaysInWeek) // Used to keep track of what days still have space open // TODO: @Jonathan :SCHEDULER: change to use numDaysInWeek not literal 7
-	for i := range openSlots {
-		if len(openSlots[i]) == 0 {
-			openDays = cu.RemoveElementNoOrder(openDays, i)
-		}
-	}
-
-	// DEBUG ================
-	// logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
-	// logger.Error.Println(testutils.Scolourf(testutils.PURPLE, "7-%v", openDays))
-	// logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
-	// time.Sleep(100 * time.Millisecond)
-	// END DEBUG ================
-
 	// DEBUG ================
 	// logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
 	// logger.Error.Println(testutils.Scolourf(testutils.PURPLE, "12-%v", openDays))
@@ -199,6 +198,11 @@ func DayVResourcePopulationGenerator(domain *Domain, popSize int) Individuals {
 			// time.Sleep(25 * time.Millisecond)
 			// END DEBUG ================
 			availableDaysIntersection := cu.IntSliceIntersection(daysAvailableCopy[userId], openDaysCopy)
+			// If user can not come in, either because they already come in each day they can, or
+			// if there are no resources left
+			if len(availableDaysIntersection) == 0 {
+				break
+			}
 			// DEBUG ================
 			// logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
 			// logger.Error.Println(testutils.Scolourf(testutils.PURPLE, "9-%v", len(availableDaysIntersection)))
