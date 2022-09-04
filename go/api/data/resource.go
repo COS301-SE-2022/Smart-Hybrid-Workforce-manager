@@ -23,11 +23,13 @@ type Buildings []*Building
 
 // Room identifies a Room Resource via common attributes
 type Room struct {
-	Id         *string `json:"id,omitempty"`
-	BuildingId *string `json:"building_id,omitempty"`
-	Name       *string `json:"name,omitempty"`
-	Location   *string `json:"location,omitempty"`
-	Dimension  *string `json:"dimension,omitempty"`
+	Id         *string  `json:"id,omitempty"`
+	BuildingId *string  `json:"building_id,omitempty"`
+	Name       *string  `json:"name,omitempty"`
+	XCoord     *float64 `json:"xcoord,omitempty"`
+	YCoord     *float64 `json:"ycoord,omitempty"`
+	ZCoord     *float64 `json:"zcoord,omitempty"`
+	Dimension  *string  `json:"dimension,omitempty"`
 }
 
 // Rooms represent a splice of Room
@@ -101,7 +103,9 @@ func mapRoom(rows *sql.Rows) (interface{}, error) {
 		&identifier.Id,
 		&identifier.BuildingId,
 		&identifier.Name,
-		&identifier.Location,
+		&identifier.XCoord,
+		&identifier.YCoord,
+		&identifier.ZCoord,
 		&identifier.Dimension,
 	)
 	if err != nil {
@@ -214,8 +218,8 @@ func (buildings Buildings) FindHead() *Building {
 // StoreRoomResource stores a Room
 func (access *ResourceDA) StoreRoomResource(identifier *Room) error {
 	_, err := access.access.Query(
-		`SELECT 1 FROM resource.room_store($1, $2, $3, $4, $5)`, nil,
-		identifier.Id, identifier.BuildingId, identifier.Name, identifier.Location, identifier.Dimension)
+		`SELECT 1 FROM resource.room_store($1, $2, $3, $4, $5, $6, $7)`, nil,
+		identifier.Id, identifier.BuildingId, identifier.Name, identifier.XCoord, identifier.YCoord, identifier.ZCoord, identifier.Dimension)
 	if err != nil {
 		return err
 	}
@@ -229,8 +233,8 @@ func (access *ResourceDA) FindRoomResource(identifier *Room, permissions *Permis
 		return nil, err
 	}
 	results, err := access.access.Query(
-		`SELECT * FROM resource.room_find($1, $2, $3, $4, $5, $6)`, mapRoom,
-		identifier.Id, identifier.BuildingId, identifier.Name, identifier.Location, identifier.Dimension, permissionContent)
+		`SELECT * FROM resource.room_find($1, $2, $3, $4, $5, $6, $7, $8)`, mapRoom,
+		identifier.Id, identifier.BuildingId, identifier.Name, identifier.XCoord, identifier.YCoord, identifier.ZCoord, identifier.Dimension, permissionContent)
 	if err != nil {
 		return nil, err
 	}

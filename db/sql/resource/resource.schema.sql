@@ -16,7 +16,9 @@ CREATE TABLE IF NOT EXISTS resource.room (
     id uuid DEFAULT uuid_generate_v4(),
     building_id uuid REFERENCES resource.building(id) ON DELETE CASCADE,
     name VARCHAR(256),
-    location VARCHAR(256), -- TODO [KP]: CHANGE TO WHAT WE USE
+    xcoord float,
+    ycoord float,
+    zcoord float,
     dimension VARCHAR(256) NOT NULL DEFAULT('5x5'),
 	
     PRIMARY KEY (id)
