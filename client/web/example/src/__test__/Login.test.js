@@ -95,5 +95,25 @@ describe('LoginTest', () => {
     // expect(jsdomAlert).toHaveBeenCalledWith("Successfully Logged In!");
   });
 
-  
+  it('Correct page navigation on valid login', () => {
+    global.fetch = () => 
+      Promise.resolve({status: 200,
+        json: () => Promise.resolve()
+    })
+
+    render(<MockLogin />);
+    jest.spyOn(global, 'alert').mockImplementation(() => {})
+    // jest.spyOn(Object.getPrototypeOf(window.localStorage), 'setItem')
+    // Object.setPrototypeOf(window.localStorage.setItem, jest.fn())
+
+    fireEvent.change(screen.getByPlaceholderText(/Enter your email/i), { target: { value: 'successEmail' } })
+    fireEvent.change(screen.getByPlaceholderText(/Enter your password/i), { target: { value: 'successPass' } })
+
+    fireEvent.click(screen.getByText(/Sign In/i));
+    // expect(sessionStorage.setItem).toHaveBeenCalled();
+
+    // expect(screen.getByText(/Fail/i)).toBeInTheDocument()
+    // expect(window.alert).toBeCalled()
+    expect(history.location.pathname).toBe('/');
+  });
 })
