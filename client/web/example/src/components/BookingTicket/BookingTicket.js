@@ -85,16 +85,8 @@ const BookingTicket = ({id, startDate, startTime, endTime, confirmed, type, days
     return (
         <div>
             <div ref={ticketRef} className="booking-ticket">
-                <div className="booking-tex">
-                    <p>Start Time: {startHours}{startMins}</p>
-                    <p>End Time: {endHours}{endMins}</p>
-                    <p>Type: {type}</p>
-                    <p>Date: {year}{month}{day}</p>
-                    {{confirmed} ? (
-                        <p>Acceptance: Pending</p>
-                    ) : (
-                        <p>Acceptance: Approved</p>
-                    )}                
+                <div className="booking-text">
+                    <p>{type}</p>               
                 </div>
 
             </div>

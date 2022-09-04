@@ -84,39 +84,7 @@ const Home = () =>
 
     const indicatorRef = useRef(null);
 
-    //POST request
-    const fetchData = () =>
-    {
-        let startDate = new Date()    
-        startDate.setHours(0, 0, 0, 0)
-
-        let endDate = new Date()
-        endDate.setHours(26, 0, 0, 0)
-        endDate.setDate(endDate.getDate() + 1 * 7);
-
-        fetch("http://localhost:5000/api/booking/information", 
-            {
-            method: "POST",
-            mode: "cors",
-            body: JSON.stringify({
-                user_id: window.sessionStorage.getItem("UserID"),
-                start: startDate.toISOString(),
-                end: endDate.toISOString()
-            }),
-            headers:{
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${userData}` //Changed for frontend editing
-            }
-            }).then((res) => res.json()).then(data => 
-            {
-                setBookings(data);
-                window.sessionStorage.removeItem("BookingID");
-                window.sessionStorage.removeItem("StartDate");
-                window.sessionStorage.removeItem("StartTime");
-                window.sessionStorage.removeItem("EndDate");
-                window.sessionStorage.removeItem("EndTime");
-            });
-    }
+    
 
     const SelectMonth = () =>
     {
@@ -606,9 +574,43 @@ const Home = () =>
     //Using useEffect hook. This will send the POST request once the component is mounted
     useEffect(() =>
     {
+        //POST request
+        const fetchData = () =>
+        {
+            let startDate = new Date()    
+            startDate.setHours(0, 0, 0, 0)
+
+            let endDate = new Date()
+            endDate.setHours(26, 0, 0, 0)
+            endDate.setDate(endDate.getDate() + 1 * 7);
+
+            fetch("http://localhost:5000/api/booking/information", 
+                {
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify({
+                    user_id: window.sessionStorage.getItem("UserID"),
+                    start: startDate.toISOString(),
+                    end: endDate.toISOString()
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData}` //Changed for frontend editing .token
+                }
+                }).then((res) => res.json()).then(data => 
+                {
+                    setBookings(data);
+                    window.sessionStorage.removeItem("BookingID");
+                    window.sessionStorage.removeItem("StartDate");
+                    window.sessionStorage.removeItem("StartTime");
+                    window.sessionStorage.removeItem("EndDate");
+                    window.sessionStorage.removeItem("EndTime");
+                });
+        }
+
         fetchData();
         loadToday();
-    }, []);
+    }, [userData]);
 
     const refreshTime = () =>
     {
@@ -787,7 +789,14 @@ const Home = () =>
                             </div>
 
                             <div className='bookings-container'>
-                                <BookingTicket id={1} startDate={'2022-09-07'} startTime={'08:00'} endTime={'17:00'} confirmed={true} type={'Desk'} days={days} />
+                                {bookings.length > 0 && (
+                                    bookings.map((booking, i) => (
+                                        <BookingTicket id={booking.id} startDate={booking.startDate} startTime={booking.startTime} endTime={booking.endTime} confirmed={booking.confirmed} type={booking.type} days={days} />
+                                    ))
+                                )}
+
+                                <BookingTicket id={1} startDate={'2022-09-04'} startTime={'15:00'} endTime={'20:00'} confirmed={true} type={'Desk'} days={days} />
+                                <BookingTicket id={2} startDate={'2022-09-07'} startTime={'10:23'} endTime={'18:47'} confirmed={true} type={'Meeting Room'} days={days} />
                             </div>
                         </div>
                     </div>
