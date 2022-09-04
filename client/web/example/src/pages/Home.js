@@ -12,7 +12,6 @@ const Home = () =>
     const [bookings, setBookings] = useState([])
     const {userData} = useContext(UserContext);
 
-    const [date] = useState(new Date());
     const [month, setMonth] = useState("");
     const [monthIndex, setMonthIndex] = useState();
     const [dualMonth, setDualMonth] = useState(false);
@@ -591,10 +590,17 @@ const Home = () =>
                 setDualMonth(true);
                 break;
             }
+            else
+            {
+                setDualMonth(false);
+            }
         }
 
-        indicatorRef.current.style.top = (date.getHours())*7.9 + (date.getMinutes()/60)*7.9 + "vh";
-        indicatorRef.current.style.left = (date.getDay())*11.3 + "vw";
+        if(indicatorRef.current)
+        {
+            indicatorRef.current.style.top = (date.getHours())*7.9 + (date.getMinutes()/60)*7.9 + "vh";
+            indicatorRef.current.style.left = (date.getDay())*11.3 + "vw";
+        }
     }
 
     //Using useEffect hook. This will send the POST request once the component is mounted
@@ -779,9 +785,11 @@ const Home = () =>
                                 <div className='time-indicator-circle'></div>
                                 <div className='time-indicator-line'></div>
                             </div>
-                        </div>
 
-                        
+                            <div className='bookings-container'>
+                                <BookingTicket id={1} startDate={'2022-09-07'} startTime={'08:00'} endTime={'17:00'} confirmed={true} type={'Desk'} days={days} />
+                            </div>
+                        </div>
                     </div>
 
                 </div>

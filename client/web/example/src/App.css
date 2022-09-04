@@ -117,6 +117,16 @@
     height: 90vh;
 
     border-radius: 1vh 0 0 0;
+
+    animation: fadeIn ease 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeIn
+{
+    0% { opacity: 0;}
+    100% { opacity: 1;}
 }
 
 .circle-container
@@ -501,7 +511,7 @@
 {
     display: inline-block;
     position: absolute;
-    background-color: #09a2fb;
+    background-color: #fc4058;
 
     width: 11vw;
     height: 0.5vh;
@@ -513,13 +523,111 @@
 {
     display: inline-block;
     position: absolute;
-    background-color: #09a2fb;
+    background-color: #fc4058;
 
     width: 2vh;
     height: 2vh;
     top: 0;
 
     border-radius: 10vh;
+}
+
+.bookings-container
+{
+    position: absolute;
+    background: transparent;
+}
+
+.booking-ticket
+{
+    position: relative;
+
+    width: 10vw;
+    height: 30vh;
+
+    margin-left: 5.7vw;
+  
+    background: #9fdbfd66;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
+
+    border-width: 0.5px;
+    border-radius: 3vh;
+
+    text-align: center;
+    color: #374146;
+}
+
+.booking-image
+{
+    grid-area: 'image';
+    background: linear-gradient(#fff0 0%, #fff0 70%, #1d1d1d 100%), url("https://media.istockphoto.com/photos/the-setup-for-success-picture-id1165916723?k=20&m=1165916723&s=612x612&w=0&h=ASBd76yDYvooY6s-Bck44cvzRcYOqkQBAzvEnKUUivw=");
+    background-size: cover;
+    border-top-left-radius: 4vh;
+    border-bottom-left-radius: 4vh;
+}
+
+.booking-text
+{
+    grid-area: 'text';
+
+    margin-top: 4vh;
+
+    text-align: center;
+    font-size: 3vh;
+}
+
+.booking-popup
+{
+    position: absolute;
+    visibility: hidden;
+
+    display: grid;
+    grid-template-columns: 25vw 25vw;
+    grid-template-rows: 30vh;
+    grid-template-areas: "edit" "delete";
+
+    border-radius: 4vh;
+    opacity: 0;
+
+    background-color: #1b1b1b;
+
+    text-align: center;
+    color: white;
+
+    transition: 0.5s;
+}
+
+.booking:hover .booking-popup
+{
+    visibility: visible;
+    transition: 0.5s;
+    opacity: 0.95;
+}
+
+.booking-edit
+{
+    grid-area: 'edit';
+    margin: 10vh;
+}
+
+.booking-delete
+{
+    grid-area: 'delete';
+    margin: 10vh;
+}
+
+
+.booking-edit-icon:hover
+{
+    cursor: pointer;
+    color: #919191;
+}
+
+.booking-delete-icon:hover
+{
+    cursor: pointer;
+    color: #919191;
 }
 
 .card-container
@@ -590,12 +698,6 @@
     transition: 0.5s ease-in-out;
 
     background: rgba(255, 255, 255, 0.8);
-}
- 
-@keyframes fadeIn
-{
-    0% { opacity: 0;}
-    100% { opacity: 1;}
 }
 
 .login-grid
@@ -686,10 +788,6 @@
 
     width: 50vw;
 
-    animation: fadeIn ease 3s;
-    animation-iteration-count: 1;
-    animation-fill-mode: forwards;
-
     background: rgba(255, 255, 255, 0.6);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(4px);
@@ -715,10 +813,6 @@
     padding-bottom: 3vh;
 
     width: 50vw;
-
-    animation: fadeIn ease 3s;
-    animation-iteration-count: 1;
-    animation-fill-mode: forwards;
 
     background: rgba(255, 255, 255, 0.6);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -955,103 +1049,6 @@
 
     margin-left: 22.5vw;
     margin-top: 10vh;
-}
-
-.booking
-{
-    position: relative;
-    display: grid;
-    grid-template-columns: 25vw 25vw;
-    grid-template-rows: 30vh;
-    grid-template-areas: "image" "text";
-
-    width: 50vw;
-    height: 30vh;
-
-    margin-left: 2.5vw;
-    margin-right: 2.5vw;
-    margin-top: 10vh;
-  
-    border-radius: 4vh;
-    background: white;
-    box-shadow: 1vh 1vh 4vh rgba(0,0,0,0.9);
-    text-align: center;
-
-    animation: fadeIn ease 3s;
-    animation-iteration-count: 1;
-    animation-fill-mode: forwards;
-}
-
-.booking-image
-{
-    grid-area: 'image';
-    background: linear-gradient(#fff0 0%, #fff0 70%, #1d1d1d 100%), url("https://media.istockphoto.com/photos/the-setup-for-success-picture-id1165916723?k=20&m=1165916723&s=612x612&w=0&h=ASBd76yDYvooY6s-Bck44cvzRcYOqkQBAzvEnKUUivw=");
-    background-size: cover;
-    border-top-left-radius: 4vh;
-    border-bottom-left-radius: 4vh;
-}
-
-.booking-text
-{
-    grid-area: 'text';
-
-    margin-top: 4vh;
-
-    text-align: center;
-    font-size: 3vh;
-}
-
-.booking-popup
-{
-    position: absolute;
-    visibility: hidden;
-
-    display: grid;
-    grid-template-columns: 25vw 25vw;
-    grid-template-rows: 30vh;
-    grid-template-areas: "edit" "delete";
-
-    border-radius: 4vh;
-    opacity: 0;
-
-    background-color: #1b1b1b;
-
-    text-align: center;
-    color: white;
-
-    transition: 0.5s;
-}
-
-.booking:hover .booking-popup
-{
-    visibility: visible;
-    transition: 0.5s;
-    opacity: 0.95;
-}
-
-.booking-edit
-{
-    grid-area: 'edit';
-    margin: 10vh;
-}
-
-.booking-delete
-{
-    grid-area: 'delete';
-    margin: 10vh;
-}
-
-
-.booking-edit-icon:hover
-{
-    cursor: pointer;
-    color: #919191;
-}
-
-.booking-delete-icon:hover
-{
-    cursor: pointer;
-    color: #919191;
 }
 
 .button-resource-container
