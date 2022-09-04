@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { MdEdit, MdDelete } from 'react-icons/md'
+import React, { useEffect, useRef, useState } from 'react';
+import { MdEdit, MdDelete } from 'react-icons/md';
+import { GiDesk, GiRoundTable } from 'react-icons/gi';
 
 const BookingTicket = ({id, startDate, startTime, endTime, confirmed, type, days}) => 
 {
@@ -58,13 +59,14 @@ const BookingTicket = ({id, startDate, startTime, endTime, confirmed, type, days
         setStartHours(startTime.substring(0,2));
         setStartMins(startTime.substring(3,5));
         setEndHours(endTime.substring(0,2));
-        setEndMins(endTime.substring(3,5));      
-    },[startDate, startTime, endTime]);
+        setEndMins(endTime.substring(3,5));
+    },[startDate, startTime, endTime, type]);
 
     useEffect(() =>
     {
         ticketRef.current.style.top = startHours*8 + (startMins/60)*8 + "vh";
         ticketRef.current.style.height = (endHours-startHours)*8 + (startMins/60)*8 + "vh";
+        ticketRef.current.style.paddingTop = ((endHours-startHours)*8 + (startMins/60)*8)/2 - 2.5 + "vh";
     },[startHours, startMins, endHours, endMins]);
 
     useEffect(() =>
@@ -81,14 +83,24 @@ const BookingTicket = ({id, startDate, startTime, endTime, confirmed, type, days
         }
     },[days, day, month, year])
 
+    const renderIcon = () =>
+    {
+        if(type === 'Desk')
+        {
+            return <GiDesk />;
+        }
+        else
+        {
+            return <GiRoundTable />;
+        }
+    }
 
     return (
         <div>
             <div ref={ticketRef} className="booking-ticket">
                 <div className="booking-text">
-                    <p>{type}</p>               
+                    {renderIcon()}       
                 </div>
-
             </div>
         </div>
     )

@@ -795,7 +795,7 @@ const Home = () =>
                                     ))
                                 )}
 
-                                <BookingTicket id={1} startDate={'2022-09-04'} startTime={'15:00'} endTime={'20:00'} confirmed={true} type={'Desk'} days={days} />
+                                <BookingTicket id={1} startDate={'2022-09-04'} startTime={'15:00'} endTime={'16:00'} confirmed={true} type={'Desk'} days={days} />
                                 <BookingTicket id={2} startDate={'2022-09-07'} startTime={'10:23'} endTime={'18:47'} confirmed={true} type={'Meeting Room'} days={days} />
                             </div>
                         </div>
