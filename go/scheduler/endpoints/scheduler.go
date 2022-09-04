@@ -61,11 +61,13 @@ func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	// Parse results as bookings
-	for _, indiv := range results {
+	for i, indiv := range results {
 		// todo put through validation function
 
 		// transform into what the backend needs
-		bookings = append(bookings, indiv.ConvertIndividualToBookings(domain))
+		if i == 0 {
+			bookings = append(bookings, indiv.ConvertIndividualToBookings(domain))
+		}
 	}
 
 	utils.JSONResponse(writer, request, bookings)
