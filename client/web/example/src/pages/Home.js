@@ -106,7 +106,7 @@ const Home = () =>
             }),
             headers:{
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${userData.token}`
+                'Authorization': `bearer ${userData}` //Changed for frontend editing
             }
             }).then((res) => res.json()).then(data => 
             {

@@ -22,7 +22,7 @@ const ProtectedRoute = () => {
     //         return <Navigate to="/login" replace state={{from: location}}/>;
     //     }      
     // }  
-    if(userData)
+    if(!userData)
         return <Outlet/>;
     else
         return <Navigate to="/login" replace state={{from: location}}/>
