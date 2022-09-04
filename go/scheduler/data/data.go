@@ -139,11 +139,19 @@ func (b *Booking) GetWeekday() time.Weekday {
 }
 
 func ExtractUserIdsDuplicates(schedulerData *SchedulerData) []string {
-	var results []string
+	// Keep track of how many days users are already coming into the office
+	timesAlreadyComingIn := make(map[string]int, 0) // (map[user id]times coming in already)
+	for _, booking := range *schedulerData.CurrentBookings {
+		timesAlreadyComingIn[*booking.UserId]++ // Add one to indicate they are coming in
+	}
+
+	// Add users as many times as they need to come into office
+	usersToAdd := []string{}
 	for _, user := range schedulerData.Users {
-		for i := 0; i < *user.OfficeDays; i++ {
-			results = append(results, *user.Id)
+		// Add them times they have to come in - days they already come in
+		for i := 0; i < *user.OfficeDays-timesAlreadyComingIn[*user.Id]; i++ { // TODO: @JonathanEnslin find out what do if no office days?
+			usersToAdd = append(usersToAdd, *user.Id)
 		}
 	}
-	return results
+	return usersToAdd
 }
