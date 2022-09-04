@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import Navbar from '../components/Navbar'
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from '../components/Footer'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'

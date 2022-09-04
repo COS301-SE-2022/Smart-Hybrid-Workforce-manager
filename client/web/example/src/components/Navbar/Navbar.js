@@ -59,13 +59,6 @@ const Navbar = (props, ref) =>
         navigate("/statistics");
     }
 
-    const Logout = () =>
-    { 
-        setUserData(null);
-        localStorage.removeItem("auth_data");
-        navigate("/login");
-    }
-
     useEffect(() =>
     {
         if(currLocation === "/")
@@ -140,11 +133,6 @@ const Navbar = (props, ref) =>
                     <FaChartPie />
                     &nbsp;
                     Statistics
-                </div>
-                <div className='navlink' onClick={Logout}>
-                    <FaDoorOpen />
-                    &nbsp;
-                    Logout
                 </div>
             </div>
         </div>

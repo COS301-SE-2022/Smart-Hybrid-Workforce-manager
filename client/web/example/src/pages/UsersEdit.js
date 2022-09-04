@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import Navbar from '../components/Navbar'
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from '../components/Footer'
 import '../App.css'
 import RoleUserList from '../components/Role/RoleUserList'

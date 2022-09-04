@@ -26,6 +26,40 @@
     background-color: #888b9b;
 }
 
+.profilebar-container
+{
+    position: absolute;
+    display: inline-flex;
+    width: 100vw;
+    height: 10vh;
+    padding-left: 88vw;
+}
+
+.profilepic-container
+{
+    font-size: 3vw;
+    margin-top: 1vh;
+}
+
+.profilepic-container:hover
+{
+    cursor: pointer;
+    color: #09a2fb;
+}
+
+.logout
+{
+    font-size: 1vw;
+    margin-top: 3.5vh;
+    margin-left: 2vw;
+}
+
+.logout:hover
+{
+    cursor: pointer;
+    color: #09a2fb;
+}
+
 .navbar-container
 {
     position: absolute;
@@ -141,7 +175,8 @@
 
 .content-login
 {
-    background-color: #252525;
+    background-image: url('img/tile2.png');
+    background-repeat: repeat;
 }
 
 .footer
@@ -868,7 +903,7 @@
 
 .form-container-login h1
 {
-    color: white;
+    color: #374146;
     font-size: 7vh;
 }
 
@@ -1023,7 +1058,7 @@
     grid-area: signup;
 
     text-align: center;
-    color: rgb(170, 170, 170);
+    color: #374146;
 
     font-size: 2vh;
 }

@@ -1,4 +1,4 @@
-import Navbar from "../components/Navbar"
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
 import Button from 'react-bootstrap/Button'
 import { useState, useEffect, useContext } from 'react';

@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import Navbar from '../components/Navbar'
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from '../components/Footer'
 import '../App.css'
 import Button from 'react-bootstrap/Button'
@@ -7,6 +7,7 @@ import RoleUserList from '../components/Role/RoleUserList'
 import TeamUserList from '../components/Team/TeamUserList'
 import { UserContext } from '../App'
 import { useNavigate } from 'react-router-dom'
+import ProfileBar from '../components/Navbar/ProfileBar';
 
 function Profile()
 {
@@ -92,10 +93,10 @@ function Profile()
         }
 
         // window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
-        FetchUser();
-        FetchUserRoles();
-        FetchUserTeams();
-  }, [userData.user_id])
+        //FetchUser();
+        //FetchUserRoles();
+        //FetchUserTeams();
+  }, [userData])
 
   const ProfileConfiguration = () =>
   {
@@ -123,41 +124,43 @@ function Profile()
   return (
     <div className='page-container'>
       <div className='content'>
+        <ProfileBar />
         <Navbar />
-        <div className='user-container'>
-          <div className="user">
-            <div className="user-image"></div>
-            <div className="user-text">
-              <p className="user-text-name">{firstName + " " + lastName}</p>
-              <p className="user-text-email">{email}</p>              
+        <div className='main-container'>
+            <div className='user-container'>
+                <div className="user">
+                    <div className="user-image"></div>
+                    <div className="user-text">
+                    <p className="user-text-name">{firstName + " " + lastName}</p>
+                    <p className="user-text-email">{email}</p>              
+                    </div>
+                    <div className="user-roles">
+                    <h3>Roles</h3>
+                    <div className='list'>
+                        {roles.length > 0 && (
+                        roles.map(role => (
+                            <RoleUserList id={role.role_id}/>
+                            
+                        ))
+                        )}
+                    </div>
+                    </div>
+                    <div className="user-teams">
+                    <h3>Teams</h3>
+                    <div className='list'>
+                        {teams.length > 0 && (
+                        teams.map(team => (
+                            <TeamUserList teamId={team.team_id} />
+                        ))
+                        )}
+                    </div>
+                    </div>
+                    <Button className='button-user-profile' variant='primary' onClick={ProfileConfiguration}>Profile Configuration</Button>
+                    <Button className='button-user-profile' variant='primary' onClick={LogOut}>Log Out</Button>
+                </div>
             </div>
-            <div className="user-roles">
-              <h3>Roles</h3>
-              <div className='list'>
-                {roles.length > 0 && (
-                  roles.map(role => (
-                    <RoleUserList id={role.role_id}/>
-                    
-                  ))
-                )}
-              </div>
-            </div>
-            <div className="user-teams">
-              <h3>Teams</h3>
-              <div className='list'>
-                {teams.length > 0 && (
-                  teams.map(team => (
-                    <TeamUserList teamId={team.team_id} />
-                  ))
-                )}
-              </div>
-            </div>
-            <Button className='button-user-profile' variant='primary' onClick={ProfileConfiguration}>Profile Configuration</Button>
-            <Button className='button-user-profile' variant='primary' onClick={LogOut}>Log Out</Button>
-          </div>
         </div>
       </div>
-      <Footer />
     </div>
   )
 }

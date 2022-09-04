@@ -61,7 +61,7 @@ export default function Login()
       <div className='content-login'>
         <div className='login-grid'>
           <div className='form-container-login'>
-            <p className='form-header'><h1>WELCOME BACK</h1>Please enter your details.</p>
+            <div className='form-header'><h1>WELCOME BACK</h1>Please enter your details.</div>
             {auth===undefined?console.log("logged In"):console.log("not logged in")}
             <Form className='form' onSubmit={handleSubmit}>
               <Form.Group className='form-group' controlId="formBasicEmail">
@@ -77,10 +77,6 @@ export default function Login()
               <Button className='button-submit' variant='primary' type='submit'>Sign In</Button>
             </Form>
             <p className='signup-prompt'>Don't have an account? <a className='signup-link' href='/signup'>Sign up for free!</a></p>
-          </div>
-
-          <div className='image-container'>
-            <img className='login-image' src='https://i.pinimg.com/originals/43/90/d7/4390d72e6a6cb6086c73e570bb6c439d.jpg' alt='office'></img>
           </div>
         </div>
 

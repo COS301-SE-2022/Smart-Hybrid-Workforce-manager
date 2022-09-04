@@ -1,4 +1,4 @@
-import Navbar from '../components/Navbar/Navbar.js'
+import Navbar from '../components/Navbar/Navbar.js'/Navbar.js'
 import Footer from '../components/Footer'
 import BookingTicket from '../components/BookingTicket/BookingTicket';
 import { useState, useEffect, useContext } from 'react';

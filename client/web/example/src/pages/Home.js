@@ -6,6 +6,7 @@ import { UserContext } from '../App';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import Borders from '../components/Calendar/Borders.js';
 import Times from '../components/Calendar/Times.js';
+import ProfileBar from '../components/Navbar/ProfileBar.js';
 
 const Home = () =>
 {
@@ -615,8 +616,11 @@ const Home = () =>
     const refreshTime = () =>
     {
         const date = new Date();
-        indicatorRef.current.style.top = (date.getHours())*7.9 + (date.getMinutes()/60)*7.9 + "vh";
-        indicatorRef.current.style.left = (date.getDay())*11.3 + "vw";
+        if(indicatorRef.current)
+        {
+            indicatorRef.current.style.top = (date.getHours())*7.9 + (date.getMinutes()/60)*7.9 + "vh";
+            indicatorRef.current.style.left = (date.getDay())*11.3 + "vw";
+        }
     }
 
     setInterval(refreshTime, 60000*5);
@@ -673,6 +677,7 @@ const Home = () =>
     return (
         <div className='page-container'>
             <div className='content'>
+                <ProfileBar />
                 <Navbar />
 
                 <div className='main-container'>

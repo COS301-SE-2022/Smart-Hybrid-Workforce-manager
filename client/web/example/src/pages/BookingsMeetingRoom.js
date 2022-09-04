@@ -1,6 +1,7 @@
 import Navbar from "../components/Navbar/Navbar.js"
 import { useEffect, useRef } from "react"
 import MeetingRoomBooking from "../components/BookingForm/MeetingRoomBooking"
+import ProfileBar from "../components/Navbar/ProfileBar.js";
 
 const BookingsMeetingRoom = () =>
 {
@@ -15,6 +16,7 @@ const BookingsMeetingRoom = () =>
     return (
         <div className='page-container'>
             <div className='content'>
+                <ProfileBar />
                 <Navbar />
                 <div ref={mainRef} className="main-container">
                     <MeetingRoomBooking ref={deskRef}/>
