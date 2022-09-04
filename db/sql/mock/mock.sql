@@ -506,7 +506,7 @@ SELECT resource.room_store(
 	'Office Block B',
 	'10',
     '10',
-    '10',,
+    '10',
 	'5x5'
 );
 
