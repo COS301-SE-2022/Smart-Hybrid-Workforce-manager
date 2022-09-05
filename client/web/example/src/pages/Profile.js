@@ -26,7 +26,7 @@ function Profile()
   const [roles, SetRoles] = useState([])
   const [teams, SetTeams] = useState([])
   
-  const {userData}=useContext(UserContext)
+  const {userData,setUserData}=useContext(UserContext)
 
   const navigate = useNavigate();
 
@@ -44,9 +44,14 @@ function Profile()
             fetch("http://localhost:8080/api/user/information", 
             {
                 method: "POST",
+                mode: "cors",
                 body: JSON.stringify({
                     identifier : userData.user_id.substring(6)
-                })
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
             }).then((res) => res.json()).then(data => 
             {
                 sessionStorage.setItem("UserID", data[0].id);
@@ -69,9 +74,14 @@ function Profile()
             fetch("http://localhost:8080/api/role/user/information", 
             {
                 method: "POST",
+                mode: "cors",
                 body: JSON.stringify({
                     identifier:userData.user_id.substring(6)
-                })
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
             }).then((res) => res.json()).then(data => 
             {
                 SetRoles(data);
@@ -83,9 +93,14 @@ function Profile()
             fetch("http://localhost:8080/api/team/user/information", 
             {
                 method: "POST",
+                mode: "cors",
                 body: JSON.stringify({
                     identifier:userData.user_id.substring(6)
-                })
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
             }).then((res) => res.json()).then(data => 
             {
                 SetTeams(data);
@@ -117,7 +132,7 @@ function Profile()
 
   const LogOut = () =>
   {
-
+    setUserData(null);
     navigate("/login");
   }
 

@@ -36,6 +36,7 @@ export default function Login()
         alert("Failed login");
       }        
     }).then((data) => {
+      data['expr_time'] = Date.parse(data.ExpirationTime)
       setUserData(data)
       localStorage.setItem("auth_data", data);
       if (location.state?.from) {

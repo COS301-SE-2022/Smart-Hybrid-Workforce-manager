@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { MdEdit, MdDelete } from 'react-icons/md';
 import { GiDesk, GiRoundTable } from 'react-icons/gi';
+import { UserContext } from '../../App';
 
 const BookingTicket = ({id, startDate, startTime, endTime, confirmed, type, days}) => 
 {
@@ -11,6 +12,8 @@ const BookingTicket = ({id, startDate, startTime, endTime, confirmed, type, days
     const [startMins, setStartMins] = useState(""); 
     const [endHours, setEndHours] = useState(""); 
     const [endMins, setEndMins] = useState(""); 
+
+    const {userData} = useContext(UserContext);
 
     const ticketRef = useRef(null);
 
@@ -33,9 +36,14 @@ const BookingTicket = ({id, startDate, startTime, endTime, confirmed, type, days
                 let res = await fetch("http://localhost:8080/api/booking/remove", 
                 {
                     method: "POST",
+                    mode: "cors",
                     body: JSON.stringify({
                     id: id
-                    })
+                    }),
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                    }
                 });
 
                 if(res.status === 200)
