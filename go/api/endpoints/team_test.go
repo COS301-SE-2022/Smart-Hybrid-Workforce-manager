@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	dtdb "lib/dockertest_db"
 	tu "lib/testutils"
+	ts "lib/test_setup"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -37,7 +38,7 @@ func createTeamAssociation(teamId string, teamAssociationId string) data.TeamAss
 }
 
 func TestInformationTeamHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -132,7 +133,7 @@ func TestInformationTeamHandler(t *testing.T) {
 }
 
 func TestCreateTeamHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -227,7 +228,7 @@ func TestCreateTeamHandler(t *testing.T) {
 }
 
 func TestDeleteTeamHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -323,7 +324,7 @@ func TestDeleteTeamHandler(t *testing.T) {
 
 //Team user
 func TestInformationUserTeamHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -412,7 +413,7 @@ func TestInformationUserTeamHandler(t *testing.T) {
 }
 
 func TestCreateUserTeamHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -501,7 +502,7 @@ func TestCreateUserTeamHandler(t *testing.T) {
 }
 
 func TestDeleteUserTeamHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -591,7 +592,7 @@ func TestDeleteUserTeamHandler(t *testing.T) {
 
 //Team association
 func TestInformationTeamAssociationHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -680,7 +681,7 @@ func TestInformationTeamAssociationHandler(t *testing.T) {
 }
 
 func TestCreateTeamAssociationHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -769,7 +770,7 @@ func TestCreateTeamAssociationHandler(t *testing.T) {
 }
 
 func TestDeleteTeamAssociationHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
