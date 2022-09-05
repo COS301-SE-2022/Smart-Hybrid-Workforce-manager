@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	dtdb "lib/dockertest_db"
 	tu "lib/testutils"
+	ts "lib/test_setup"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -37,7 +38,7 @@ func createTeamAssociation(teamId string, teamAssociationId string) data.TeamAss
 
 //Buildings
 func TestInformationBuildingsHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -177,7 +178,7 @@ func TestInformationBuildingsHandler(t *testing.T) {
 }
 
 func TestCreateBuildingHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -317,7 +318,7 @@ func TestCreateBuildingHandler(t *testing.T) {
 }
 
 func TestDeleteBuildingHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -467,7 +468,7 @@ func TestDeleteBuildingHandler(t *testing.T) {
 
 //Rooms
 func TestInformationRoomsHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -606,7 +607,7 @@ func TestInformationRoomsHandler(t *testing.T) {
 }
 
 func TestCreateRoomHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -761,7 +762,7 @@ func TestCreateRoomHandler(t *testing.T) {
 }
 
 func TestDeleteRoomHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -925,7 +926,7 @@ func TestDeleteRoomHandler(t *testing.T) {
 }
 
 func TestInformationIdentifiersHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -1057,7 +1058,7 @@ func TestInformationIdentifiersHandler(t *testing.T) {
 }
 
 func TestCreateIdentifierHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -1224,7 +1225,7 @@ func TestCreateIdentifierHandler(t *testing.T) {
 }
 
 func TestDeleteIdentifierHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -1401,7 +1402,7 @@ func TestDeleteIdentifierHandler(t *testing.T) {
 
 //Room Association
 func TestInformationRoomAssociationsHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -1534,7 +1535,7 @@ func TestInformationRoomAssociationsHandler(t *testing.T) {
 }
 
 func TestCreateRoomAssociationHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
@@ -1706,7 +1707,7 @@ func TestCreateRoomAssociationHandler(t *testing.T) {
 }
 
 func TestDeleteRoomAssociationHandler(t *testing.T) {
-	testdb := SetupTest(t)
+	testdb := ts.SetupTest(t)
 	defer dtdb.StopTestDbWithTest(testdb, t, false)
 
 	// ==================
