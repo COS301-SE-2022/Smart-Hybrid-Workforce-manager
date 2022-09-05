@@ -22,7 +22,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "CI=false && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -45,11 +45,12 @@
     ]
   },
   "devDependencies": {
+    "jest-fetch-mock": "^3.0.3",
     "jest-watch-typeahead": "^0.6.5"
   },
-  "jest":{
+  "jest": {
     "transformIgnorePatterns": [
-        "node_modules/(?!@ngrx|(?!deck.gl)|ng-dynamic)"
-      ]
+      "node_modules/(?!@ngrx|(?!deck.gl)|ng-dynamic)"
+    ]
   }
 }
