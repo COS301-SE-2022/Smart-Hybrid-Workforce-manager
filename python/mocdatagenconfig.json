@@ -1,7 +1,0 @@
-{
-    "office_days_options": [1, 2, 3, 4, 5],
-    "work_from_home_options": [true, false],
-    "parking_options": ["SANDARD"],
-    "date_options": [],
-    "start_time_options": [""]
-}
