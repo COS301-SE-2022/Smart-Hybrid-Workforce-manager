@@ -2,13 +2,24 @@ package data
 
 import "time"
 
+type Config struct {
+	Seed           int     `json:"seed"`
+	PopulationSize int     `json:"populationSize"`
+	Generations    int     `json:"generations"`
+	MutationRate   float64 `json:"mutationRate"`
+	CrossOverRate  float64 `json:"crossOverRate"`
+	TournamentSize int     `json:"tournamentSize"`
+}
+
 type SchedulerData struct {
-	Users     Users           `json:"users"`
-	Teams     []*TeamInfo     `json:"teams"`
-	Buildings []*BuildingInfo `json:"buildings"`
-	Rooms     []*RoomInfo     `json:"rooms"`
-	Resources Resources       `json:"resources"`
-	Bookings  *BookingInfo    `json:"bookings"`
+	Users           Users           `json:"users"`
+	Teams           []*TeamInfo     `json:"teams"`
+	Buildings       []*BuildingInfo `json:"buildings"`
+	Rooms           []*RoomInfo     `json:"rooms"`
+	Resources       Resources       `json:"resources"`
+	CurrentBookings *Bookings       `json:"current_bookings"`
+	PastBookings    *Bookings       `json:"past_bookings"`
+	StartDate       *time.Time      `json:"start_date"`
 }
 
 type BookingInfo struct {
@@ -111,9 +122,57 @@ type Building struct {
 
 // Room identifies a Room Resource via common attributes
 type Room struct {
-	Id         *string `json:"id,omitempty"`
-	BuildingId *string `json:"building_id,omitempty"`
-	Name       *string `json:"name,omitempty"`
-	Location   *string `json:"location,omitempty"`
-	Dimension  *string `json:"dimension,omitempty"`
+	Id         *string  `json:"id,omitempty"`
+	BuildingId *string  `json:"building_id,omitempty"`
+	Name       *string  `json:"name,omitempty"`
+	XCoord     *float64 `json:"xcoord,omitempty"`
+	YCoord     *float64 `json:"ycoord,omitempty"`
+	ZCoord     *float64 `json:"zcoord,omitempty"`
+	Dimension  *string  `json:"dimension,omitempty"`
+}
+
+// =======================
+// ====    Methods    ====
+// =======================
+func (b *Booking) GetWeekday() time.Weekday {
+	return (b.Start.Weekday() + 6) % 7
+}
+
+// ExtractUserIdsDuplicates creates an array of user ids which are duplicated
+func ExtractUserIdsDuplicates(schedulerData *SchedulerData) []string {
+	// Keep track of how many days users are already coming into the office
+	timesAlreadyComingIn := make(map[string]int, 0) // (map[user id]times coming in already)
+	for _, booking := range *schedulerData.CurrentBookings {
+		timesAlreadyComingIn[*booking.UserId]++ // Add one to indicate they are coming in
+	}
+
+	// Add users as many times as they need to come into office
+	usersToAdd := []string{}
+	for _, user := range schedulerData.Users {
+		// Add them times they have to come in - days they already come in
+		for i := 0; i < *user.OfficeDays-timesAlreadyComingIn[*user.Id]; i++ { // TODO: @JonathanEnslin find out what do if no office days?
+			usersToAdd = append(usersToAdd, *user.Id)
+		}
+	}
+	return usersToAdd
+}
+
+// ExtractResourceIds extracts all resource ids from schedulerdata into a string array
+func ExtractResourceIds(schedulerData *SchedulerData) []string {
+	// Add resources to string array
+	resources := []string{}
+	for _, resource := range schedulerData.Resources {
+		resources = append(resources, *resource.Id)
+	}
+	return resources
+}
+
+// ExtractUserIdMap extracts all user ids from the schedulerdata into an indexed map
+func ExtractUserIdMap(schedulerData *SchedulerData) map[int](string) {
+	var result map[int](string)
+	result = make(map[int]string)
+	for i, user := range schedulerData.Users {
+		result[i] = *user.Id
+	}
+	return result
 }
