@@ -105,7 +105,7 @@ func dailyScheduler(writer http.ResponseWriter, request *http.Request) {
 	indvs := ga.DailyPopulationGenerator(&domain, 20)
 
 	for _, indiv := range indvs {
-		fmt.Println(indiv.String())
+		fmt.Println(indiv.StringDomain(domain))
 	}
 
 	utils.JSONResponse(writer, request, bookings)
