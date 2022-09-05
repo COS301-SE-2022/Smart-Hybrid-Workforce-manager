@@ -9,7 +9,7 @@ const TeamUserList = ({teamId}) =>
 
     useEffect(() =>
     {
-        fetch("http://localhost:8100/api/team/information", 
+        fetch("http://localhost:8080/api/team/information", 
         {
         method: "POST",
         body: JSON.stringify({
@@ -28,7 +28,7 @@ const TeamUserList = ({teamId}) =>
         {
             try
             {
-                let res = await fetch("http://localhost:8100/api/team/user/remove", 
+                let res = await fetch("http://localhost:8080/api/team/user/remove", 
                 {
                     method: "POST",
                     body: JSON.stringify({

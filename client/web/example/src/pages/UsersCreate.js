@@ -18,7 +18,7 @@ function CreateUser()
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/user/register", 
+      let res = await fetch("http://localhost:8080/api/user/register", 
       {
         method: "POST",
         body: JSON.stringify({

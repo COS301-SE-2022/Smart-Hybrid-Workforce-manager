@@ -16,14 +16,7 @@ export default function Login()
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
-    console.log(JSON.stringify({
-      identifier:identifier,
-      secret:secret,
-      id: null,
-      type:null,
-      active:null
-    }))
-    fetch("http://localhost:5000/api/user/login", 
+    fetch("http://localhost:8080/api/user/login", 
     {
       method: "POST",
       body: JSON.stringify({

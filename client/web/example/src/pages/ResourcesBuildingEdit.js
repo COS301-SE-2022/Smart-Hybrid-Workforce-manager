@@ -16,7 +16,7 @@ const BuildingEdit = () =>
   //POST request
   const FetchBuilding = () =>
   {
-    fetch("http://localhost:8100/api/resource/building/information", 
+    fetch("http://localhost:8080/api/resource/building/information", 
         {
           method: "POST",
           body: JSON.stringify({
@@ -35,7 +35,7 @@ const BuildingEdit = () =>
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/resource/building/create", 
+      let res = await fetch("http://localhost:8080/api/resource/building/create", 
       {
         method: "POST",
         body: JSON.stringify({

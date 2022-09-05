@@ -585,7 +585,7 @@ const Home = () =>
             endDate.setHours(26, 0, 0, 0)
             endDate.setDate(endDate.getDate() + 1 * 7);
 
-            fetch("http://localhost:5000/api/booking/information", 
+            fetch("http://localhost:8080/api/booking/information", 
                 {
                 method: "POST",
                 mode: "cors",
@@ -596,7 +596,7 @@ const Home = () =>
                 }),
                 headers:{
                     'Content-Type': 'application/json',
-                    'Authorization': `bearer ${userData}` //Changed for frontend editing .token
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
                 }
                 }).then((res) => res.json()).then(data => 
                 {

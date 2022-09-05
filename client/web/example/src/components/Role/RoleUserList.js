@@ -8,7 +8,7 @@ const RoleUserList = ({id}) =>
     const navigate=useNavigate();
     useEffect(() =>
     {
-        fetch("http://localhost:8100/api/role/information", 
+        fetch("http://localhost:8080/api/role/information", 
         {
         method: "POST",
         body: JSON.stringify({
@@ -27,7 +27,7 @@ const RoleUserList = ({id}) =>
         {
             try
             {
-                let res = await fetch("http://localhost:8100/api/role/user/remove", 
+                let res = await fetch("http://localhost:8080/api/role/user/remove", 
                 {
                     method: "POST",
                     body: JSON.stringify({

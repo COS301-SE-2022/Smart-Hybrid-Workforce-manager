@@ -46,7 +46,7 @@ const Layout = () =>
     //POST requests
     const FetchBuildings = () =>
     {
-        fetch("http://localhost:8100/api/resource/building/information", 
+        fetch("http://localhost:8080/api/resource/building/information", 
             {
             method: "POST",
             body: JSON.stringify({
@@ -66,7 +66,7 @@ const Layout = () =>
 
     const UpdateRooms = (e) =>
     {
-        fetch("http://localhost:8100/api/resource/room/information", 
+        fetch("http://localhost:8080/api/resource/room/information", 
             {
             method: "POST",
             body: JSON.stringify({
@@ -84,7 +84,7 @@ const Layout = () =>
 
     const UpdateResources = (e) =>
     {
-        fetch("http://localhost:8100/api/resource/information", 
+        fetch("http://localhost:8080/api/resource/information", 
             {
             method: "POST",
             body: JSON.stringify({
@@ -481,7 +481,7 @@ const Layout = () =>
 
         try
         {
-            let res = await fetch("http://localhost:8100/api/resource/batch-create", 
+            let res = await fetch("http://localhost:8080/api/resource/batch-create", 
             {
                 method: "POST",
                 body: JSON.stringify(resources)

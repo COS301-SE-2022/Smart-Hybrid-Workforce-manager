@@ -7,8 +7,9 @@ import { UserContext } from "../App";
 
 
 const ProtectedRoute = () => {
-    const { userData } = useContext(UserContext);    
+    const { userData,setUserData } = useContext(UserContext);    
     const location = useLocation();
+    console.log(userData);
     // const navigate = useNavigate();
     // console.log(userData);
     // console.log((userData==null));
@@ -22,7 +23,7 @@ const ProtectedRoute = () => {
     //         return <Navigate to="/login" replace state={{from: location}}/>;
     //     }      
     // }  
-    if(!userData)
+    if(userData)
         return <Outlet/>;
     else
         return <Navigate to="/login" replace state={{from: location}}/>

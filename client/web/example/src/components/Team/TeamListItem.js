@@ -27,7 +27,7 @@ const TeamListItem = ({id, name, description, capacity, picture, lead, priority}
         {
             try
             {
-                let res = await fetch("http://localhost:8100/api/team/remove", 
+                let res = await fetch("http://localhost:8080/api/team/remove", 
                 {
                     method: "POST",
                     body: JSON.stringify({

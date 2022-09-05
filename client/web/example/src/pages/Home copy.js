@@ -48,7 +48,7 @@ const Home = () =>
     endDate.setHours(26, 0, 0, 0)
     endDate.setDate(endDate.getDate() + 1 * 7);
 
-    fetch("http://localhost:8100/api/booking/information", 
+    fetch("http://localhost:8080/api/booking/information", 
         {
           method: "POST",
           mode: "cors",

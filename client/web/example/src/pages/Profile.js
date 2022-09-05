@@ -41,7 +41,7 @@ function Profile()
         //POST requests
         const FetchUser = () =>
         {
-            fetch("http://localhost:8100/api/user/information", 
+            fetch("http://localhost:8080/api/user/information", 
             {
                 method: "POST",
                 body: JSON.stringify({
@@ -66,7 +66,7 @@ function Profile()
 
         const FetchUserRoles = () =>
         {
-            fetch("http://localhost:8100/api/role/user/information", 
+            fetch("http://localhost:8080/api/role/user/information", 
             {
                 method: "POST",
                 body: JSON.stringify({
@@ -80,7 +80,7 @@ function Profile()
 
         const FetchUserTeams = () =>
         {
-            fetch("http://localhost:8100/api/team/user/information", 
+            fetch("http://localhost:8080/api/team/user/information", 
             {
                 method: "POST",
                 body: JSON.stringify({

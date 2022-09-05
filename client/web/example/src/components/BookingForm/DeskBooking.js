@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { useNavigate } from "react-router-dom"
+import { UserContext } from '../../App'
 
 const DeskBooking = (props, ref) =>
 {
@@ -9,6 +10,8 @@ const DeskBooking = (props, ref) =>
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
 
+    const {userData} = useContext(UserContext);
+    console.log(userData)
     const navigate = useNavigate();
 
     let handleSubmit = async (e) =>
@@ -16,19 +19,24 @@ const DeskBooking = (props, ref) =>
         e.preventDefault();
         try
         {
-            let res = await fetch("http://localhost:8100/api/booking/create", 
+            let res = await fetch("http://localhost:8080/api/booking/create", 
             {
                 method: "POST",
+                mode: "cors",
                 body: JSON.stringify({
                     id: null,
-                    user_id: window.sessionStorage.getItem("UserID"),
+                    user_id: userData.user_id,
                     resource_type: "DESK",
                     resource_preference_id: null,
                     resource_id: null,
                     start: startDate + "T" + startTime + ":43.511Z",
                     end: startDate + "T" + endTime + ":43.511Z",
                     booked: false
-                })
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
             });
 
             if(res.status === 200)
@@ -36,16 +44,21 @@ const DeskBooking = (props, ref) =>
                 alert("Booking Successfully Created!");
                 navigate("/");
 
-                await fetch("http://localhost:8100/api/notification/send", 
+                await fetch("http://localhost:8080/api/notification/send", 
                 {
                     method: "POST",
+                    mode: "cors",
                     body: JSON.stringify({
                         to: "archedevelop@gmail.com",
                         sDate: startDate,
                         sTime: startTime,
                         eDate: startDate,
                         eTime: endTime
-                    })
+                    }),
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                    }
                 });
             }
         }

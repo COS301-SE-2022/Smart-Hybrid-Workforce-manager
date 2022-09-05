@@ -31,18 +31,14 @@ import (
 
 ////////////////////////////////////////////////
 //Structures and Variables
-type UserData struct{
+type RedisData struct{
+	User_id 			string		`json:"user_id"`
 	User_Identifier		string		`json:"user_identifier"`
 	User_Name			string		`json:"user_name"`
 	User_Surname		string		`json:"user_surname"`
 	Token 				string 		`json:"token"`
 	CreationTime 		time.Time 	`json:"CreationTime"`
 	ExpirationTime 		time.Time	`json:"ExpirationTime"`
-}
-
-type RedisData struct{
-	User_id 			string		`json:"user_id"`
-	Userdata			UserData	`json:"user_data"`
 }
 
 
@@ -320,7 +316,7 @@ func getTokenRedisData(token string) (*RedisData,error){
 		
 }
 
-func UserLogin(user_id string, user_identifier string, user_name string, user_surname string) (*UserData,error){
+func UserLogin(user_id string, user_identifier string, user_name string, user_surname string) (*RedisData,error){
 	redisClient := getAuthClient();
 
 	token, err := generateAuthToken(&redisClient, user_id);
@@ -328,17 +324,14 @@ func UserLogin(user_id string, user_identifier string, user_name string, user_su
 		return nil, err;
 	}
 
-	userData := &UserData{
+	redisData := &RedisData{
+		User_id: user_id,
 		User_Identifier: user_identifier,
 		User_Name: user_name,
 		User_Surname: user_surname,
 		Token: token,
 		CreationTime: time.Now(), 
 		ExpirationTime: time.Now().Add(time.Hour),
-	}
-	redisData := &RedisData{
-		User_id: user_id,
-		Userdata: *userData,
 	}
 
 	rdata,err := json.Marshal(redisData)
@@ -359,5 +352,5 @@ func UserLogin(user_id string, user_identifier string, user_name string, user_su
 	}
 	_ = val;
 
-	return userData,nil;
+	return redisData,nil;
 }

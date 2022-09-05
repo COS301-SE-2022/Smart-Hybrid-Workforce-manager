@@ -21,7 +21,7 @@ function BookingsDeskEdit()
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/booking/create", 
+      let res = await fetch("http://localhost:8080/api/booking/create", 
       {
         method: "POST",
         body: JSON.stringify({
@@ -38,7 +38,7 @@ function BookingsDeskEdit()
 
       if(res.status === 200)
       {
-        let res = await fetch("http://localhost:8100/api/notification/send", 
+        let res = await fetch("http://localhost:8080/api/notification/send", 
         {
           method: "POST",
           body: JSON.stringify({

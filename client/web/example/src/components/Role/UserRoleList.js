@@ -13,7 +13,7 @@ const UserRoleList = ({id}) =>
         {
             try
             {
-                let res = await fetch("http://localhost:8100/api/role/user/remove", 
+                let res = await fetch("http://localhost:8080/api/role/user/remove", 
                 {
                     method: "POST",
                     body: JSON.stringify({
@@ -38,7 +38,7 @@ const UserRoleList = ({id}) =>
   //POST request
   const getName = useCallback(() =>
   {
-    fetch("http://localhost:8100/api/user/information", 
+    fetch("http://localhost:8080/api/user/information", 
         {
           method: "POST",
             body: JSON.stringify({

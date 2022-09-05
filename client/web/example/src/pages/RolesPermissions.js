@@ -229,7 +229,7 @@ function RolePermissions() {
 
   async function AddPermission(id, idType, type, category, tenant, tenant_id) {
     try {
-      let res = await fetch("http://localhost:8100/api/permission/create",
+      let res = await fetch("http://localhost:8080/api/permission/create",
         {
           method: "POST",
           body: JSON.stringify({
@@ -256,7 +256,7 @@ function RolePermissions() {
 
   async function RemovePermission(id) {
     try {
-      let res = await fetch("http://localhost:8100/api/permission/remove",
+      let res = await fetch("http://localhost:8080/api/permission/remove",
         {
           method: "POST",
           body: JSON.stringify({
@@ -274,7 +274,7 @@ function RolePermissions() {
 
   //POST request
   const FetchRolePermissions = useCallback(() => {
-    fetch("http://localhost:8100/api/permission/information",
+    fetch("http://localhost:8080/api/permission/information",
       {
         method: "POST",
         body: JSON.stringify({

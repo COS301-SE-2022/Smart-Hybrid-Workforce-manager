@@ -28,7 +28,7 @@ function EditUser()
   //POST request
   const FetchUserRoles = () =>
   {
-    fetch("http://localhost:8100/api/role/user/information", 
+    fetch("http://localhost:8080/api/role/user/information", 
         {
           method: "POST",
           body: JSON.stringify({
@@ -43,7 +43,7 @@ function EditUser()
   //POST request
   const FetchUserTeams = () =>
   {
-    fetch("http://localhost:8100/api/team/user/information", 
+    fetch("http://localhost:8080/api/team/user/information", 
         {
           method: "POST",
           body: JSON.stringify({
@@ -58,7 +58,7 @@ function EditUser()
     //POST request
     const FetchRoles = () =>
     {
-        fetch("http://localhost:8100/api/role/information", 
+        fetch("http://localhost:8080/api/role/information", 
             {
             method: "POST",
             body: JSON.stringify({
@@ -79,7 +79,7 @@ function EditUser()
         e.preventDefault();
         try
         {
-            let res = await fetch("http://localhost:8100/api/role/user/create", 
+            let res = await fetch("http://localhost:8080/api/role/user/create", 
             {
                 method: "POST",
                 body: JSON.stringify({
@@ -103,7 +103,7 @@ function EditUser()
     //POST request
     const FetchTeams = () =>
     {
-        fetch("http://localhost:8100/api/team/information", 
+        fetch("http://localhost:8080/api/team/information", 
             {
             method: "POST",
             body: JSON.stringify({
@@ -124,7 +124,7 @@ function EditUser()
         e.preventDefault();
         try
         {
-            let res = await fetch("http://localhost:8100/api/team/user/create", 
+            let res = await fetch("http://localhost:8080/api/team/user/create", 
             {
                 method: "POST",
                 body: JSON.stringify({

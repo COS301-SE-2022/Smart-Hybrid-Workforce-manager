@@ -21,7 +21,7 @@ const EditRole = () =>
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/role/create", 
+      let res = await fetch("http://localhost:8080/api/role/create", 
       {
         method: "POST",
         body: JSON.stringify({
@@ -46,7 +46,7 @@ const EditRole = () =>
     //POST request
   const FetchRoleUsers = () =>
   {
-    fetch("http://localhost:8100/api/role/user/information", 
+    fetch("http://localhost:8080/api/role/user/information", 
         {
           method: "POST",
           body: JSON.stringify({

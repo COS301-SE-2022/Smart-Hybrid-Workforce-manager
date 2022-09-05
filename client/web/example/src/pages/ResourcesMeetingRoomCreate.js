@@ -18,7 +18,7 @@ const CreateMeetingRoom = () =>
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/resource/create", 
+      let res = await fetch("http://localhost:8080/api/resource/create", 
       {
         method: "POST",
         body: JSON.stringify({

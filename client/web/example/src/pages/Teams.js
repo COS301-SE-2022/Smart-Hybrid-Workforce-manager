@@ -14,7 +14,7 @@ function Teams()
   //POST request
   const FetchTeams = () =>
   {
-    fetch("http://localhost:8100/api/team/information", 
+    fetch("http://localhost:8080/api/team/information", 
         {
           method: "POST",
           body: JSON.stringify({

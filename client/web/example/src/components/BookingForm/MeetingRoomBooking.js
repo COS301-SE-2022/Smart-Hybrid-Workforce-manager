@@ -26,7 +26,7 @@ const MeetingRoomBooking = (props, ref) =>
         e.preventDefault();
         try
         {
-            let res = await fetch("http://localhost:8100/api/booking/meetingroom/create", 
+            let res = await fetch("http://localhost:8080/api/booking/meetingroom/create", 
             {
                 method: "POST",
                 body: JSON.stringify(
@@ -64,7 +64,7 @@ const MeetingRoomBooking = (props, ref) =>
     //POST request
     const FetchTeams = () =>
     {
-        fetch("http://localhost:8100/api/team/information", 
+        fetch("http://localhost:8080/api/team/information", 
         {
             method: "POST",
             body: JSON.stringify({})
@@ -77,7 +77,7 @@ const MeetingRoomBooking = (props, ref) =>
     //POST request
     const FetchRoles = () =>
     {
-        fetch("http://localhost:8100/api/role/information", 
+        fetch("http://localhost:8080/api/role/information", 
         {
             method: "POST",
             body: JSON.stringify({})

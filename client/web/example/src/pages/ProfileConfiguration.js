@@ -27,7 +27,7 @@ function ProfileConfiguration()
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/user/update", 
+      let res = await fetch("http://localhost:8080/api/user/update", 
       {
         method: "POST",
         body: JSON.stringify({
