@@ -42,9 +42,9 @@ func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 	config.Seed = 2
 	config.PopulationSize = 150
 	config.Generations = 100
-	config.MutationRate = 0.45
-	config.CrossOverRate = 0.45
-	config.TournamentSize = 10
+	config.MutationRate = 0.25
+	config.CrossOverRate = 0.65
+	config.TournamentSize = 15
 
 	// Perform Magic
 	var bookings []data.Bookings
@@ -55,7 +55,8 @@ func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 	domain.Config = &config
 	domain.SchedulerData = &schedulerData
 
-	results := ga.GA(domain, ga.WeeklyDayVResourceCrossover, ga.WeeklyDayVResourceFitness, ga.WeeklyDayVResouceMutate, ga.WeeklyTournamentSelection, ga.WeeklyDayVResourcePopulationGenerator)
+	results := ga.GA(domain, ga.WeeklyDayVResourceCrossover, ga.WeeklyDayVResourceFitness, ga.WeeklyDayVResourceMutateSwapValid, ga.WeeklyTournamentSelection, ga.WeeklyDayVResourcePopulationGenerator)
+	// results := ga.GA(domain, ga.WeeklyDayVResourceCrossover, ga.WeeklyDayVResourceFitness, ga.WeeklyDayVResouceMutate, ga.WeeklyTournamentSelection, ga.WeeklyDayVResourcePopulationGenerator)
 
 	if len(results) == 0 { // todo add check
 

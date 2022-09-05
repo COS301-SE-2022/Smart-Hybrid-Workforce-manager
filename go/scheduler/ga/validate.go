@@ -2,7 +2,6 @@ package ga
 
 import (
 	"lib/collectionutils"
-	"lib/logger"
 	"lib/utils"
 )
 
@@ -11,7 +10,7 @@ import (
 
 // Makes an individual valid
 func ValidateIndividual(domain *Domain, indiv *Individual) {
-	logger.Error.Printf("len of domain terminals: %v   -   %v", len(domain.Terminals), domain.Terminals)
+	// logger.Error.Printf("len of domain terminals: %v   -   %v", len(domain.Terminals), domain.Terminals)
 	// First remove duplicates on a single day, at the same time, build maps
 	usersComingInOnDay := make([]map[string]int, len(indiv.Gene)) // map[user id] (index of their slot)
 	daysThatUsersComeIn := make(map[string][]int)                 // map[user id] {int array, where int corresponds to the day a user comes in}
@@ -74,6 +73,9 @@ func ValidateIndividual(domain *Domain, indiv *Individual) {
 						}
 					}
 					randDay = maxIndex
+				}
+				if len(openSlots[randDay]) <= 0 {
+					continue // no space to fix // TODO: @JonathanEnslin, this could possibly lead to invalid individuals, need to look into it
 				}
 				randSloti := utils.RandInt(0, len(openSlots[randDay]))
 				// add user to select slot
