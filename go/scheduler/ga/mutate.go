@@ -111,7 +111,7 @@ func WeeklyDayVResouceMutate(domain *Domain, individuals Individuals) Individual
 			// mutate everything
 			for j := randSloti; j < len(copiedIndividual.Gene[i]); j++ {
 				// TODO set chance to be empty
-				if utils.RandInt(0, 100) > 4 {
+				if utils.RandInt(0, 100) > 10 {
 					copiedIndividual.Gene[i][j] = ""
 				} else {
 					copiedIndividual.Gene[i][j] = domain.GetRandomTerminal()

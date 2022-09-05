@@ -171,9 +171,13 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 		population = append(individualsOffspring, individualsMutated...)
 		population = append(population, individualsCarry...)
 
+		// for indivi := range population {
+		// ValidateIndividual(&domain, population[indivi])
+		// }
+
 		fitness(&domain, population)
 
-		if i%50 == 0 {
+		if i%1 == 0 {
 			totalFitness = 0.0
 			maxFitness = math.Inf(-1)
 			minFitness = math.Inf(1)
@@ -183,7 +187,14 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 				totalFitness += indiv.Fitness
 			}
 
-			fmt.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f\n", maxFitness, minFitness, totalFitness/float64(len(population)))
+			logger.Debug.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f  ", maxFitness, minFitness, totalFitness/float64(len(population)))
+			if int(400*totalFitness/float64(len(population))) <= 0 {
+				logger.Debug.Print("-")
+			} else {
+				logger.Debug.Print(strings.Repeat("*", int(400*totalFitness/float64(len(population)))))
+			}
+
+			logger.Debug.Println()
 		}
 	}
 	end := time.Now()
