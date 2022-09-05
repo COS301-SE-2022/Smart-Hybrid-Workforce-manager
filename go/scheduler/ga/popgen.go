@@ -7,7 +7,10 @@ import (
 	"lib/utils"
 )
 
-func StubPopulationGenerator(domain *Domain, popSize int) Individuals {
+///////////////////////////////////////////////////
+// WEEKLY
+
+func WeeklyStubPopulationGenerator(domain *Domain, popSize int) Individuals {
 	var population Individuals
 	for j := 0; j < popSize; j++ {
 		genes := []string{}
@@ -19,7 +22,7 @@ func StubPopulationGenerator(domain *Domain, popSize int) Individuals {
 	return population
 }
 
-func DayVResourcePopulationGenerator(domain *Domain, popSize int) Individuals {
+func WeeklyDayVResourcePopulationGenerator(domain *Domain, popSize int) Individuals {
 	// Using representation 1 (DayVResource)
 	const numDaysInWeek int = 5 // Assume 5 days in a week for now
 
@@ -160,4 +163,15 @@ func getUserAvailabilityInfo(domain *Domain, numDaysInWeek int) (daysAvailable m
 	}
 
 	return daysAvailable, usersToAdd
+}
+
+///////////////////////////////////////////////////
+// DAILY
+
+func DailyPopulationGenerator(domain *Domain, popSize int) Individuals {
+	var population Individuals
+	for j := 0; j < popSize; j++ {
+
+	}
+	return population
 }

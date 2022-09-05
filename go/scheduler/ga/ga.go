@@ -209,14 +209,7 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 	return selection(&domain, population, 1)
 }
 
-//       Monday   -   Tuesday   -  Wednesday
-// 08:00 emp1, emp2
-// 09:00
-// 10:10
-
-// emp1     emp2    emp3
-// Mon		Mon
-// 0-1		0-1
+// String method for printing individuals
 func (individual Individual) String() string {
 	// Returns table representation of an individual
 	// 	userIds := make(map[string]int)

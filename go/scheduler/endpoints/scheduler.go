@@ -54,13 +54,13 @@ func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 	domain.Config = &config
 	domain.SchedulerData = &schedulerData
 
-	results := ga.GA(domain, ga.DayVResourceCrossover, ga.DayVResourceFitness, ga.DayVResouceMutate, ga.TournamentSelection, ga.DayVResourcePopulationGenerator)
+	results := ga.GA(domain, ga.WeeklyDayVResourceCrossover, ga.WeeklyDayVResourceFitness, ga.WeeklyDayVResouceMutate, ga.WeeklyTournamentSelection, ga.WeeklyDayVResourcePopulationGenerator)
 
 	if len(results) == 0 { // todo add check
 
 	}
 
-	// Parse results as bookings
+	// Get best individual
 	for i, indiv := range results {
 		// todo put through validation function
 
@@ -82,9 +82,24 @@ func dailyScheduler(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	// Perform Magic
+	// Set configurations
+	var config data.Config
+	config.Seed = 2
+	config.PopulationSize = 150
+	config.Generations = 100
+	config.MutationRate = 0.45
+	config.CrossOverRate = 0.45
+	config.TournamentSize = 10
 
+	// Perform Magic
 	var bookings []data.Bookings
+
+	// Create domain
+	var domain ga.Domain
+	domain.Terminals = data.ExtractResourceIds(&schedulerData)
+	domain.Config = &config
+	domain.SchedulerData = &schedulerData
+
 	utils.JSONResponse(writer, request, bookings)
 }
 

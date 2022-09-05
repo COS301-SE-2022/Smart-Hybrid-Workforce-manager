@@ -4,7 +4,10 @@ import (
 	"scheduler/data"
 )
 
-func StubFitness(domain *Domain, individuals Individuals) []float64 {
+///////////////////////////////////////////////////
+// WEEKLY
+
+func WeeklyStubFitness(domain *Domain, individuals Individuals) []float64 {
 	var result []float64
 	for i := 0; i < len(individuals); i++ {
 		result = append(result, 0.0)
@@ -13,10 +16,10 @@ func StubFitness(domain *Domain, individuals Individuals) []float64 {
 	return result
 }
 
-func DayVResourceFitness(domain *Domain, individuals Individuals) []float64 {
+func WeeklyDayVResourceFitness(domain *Domain, individuals Individuals) []float64 {
 	var result []float64
 	for _, individual := range individuals {
-		fitness := dayVResourceFitness(domain, individual)
+		fitness := weeklyDayVResourceFitness(domain, individual)
 		result = append(result, fitness)
 		individual.Fitness = fitness
 		//fmt.Println(fitness)
@@ -24,7 +27,7 @@ func DayVResourceFitness(domain *Domain, individuals Individuals) []float64 {
 	return result
 }
 
-func dayVResourceFitness(domain *Domain, individual *Individual) float64 {
+func weeklyDayVResourceFitness(domain *Domain, individual *Individual) float64 {
 	dailyMaps := individual.getUserCountMapsPerDay()
 	// fmt.Printf("daily maps: %v\n", dailyMaps)
 	differentUsersCount := individual.DifferentUsersCount(domain)
@@ -167,3 +170,6 @@ func (individual *Individual) getUserCountMapsPerDay() []map[string]int {
 	}
 	return result
 }
+
+///////////////////////////////////////////////////
+// DAILY

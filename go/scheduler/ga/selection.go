@@ -1,18 +1,21 @@
 package ga
 
-func StubSelection(domain *Domain, individuals Individuals, count int) Individuals {
+///////////////////////////////////////////////////
+// WEEKLY
+
+func WeeklyStubSelection(domain *Domain, individuals Individuals, count int) Individuals {
 	return individuals[:count]
 }
 
-func TournamentSelection(domain *Domain, individuals Individuals, count int) Individuals {
+func WeeklyTournamentSelection(domain *Domain, individuals Individuals, count int) Individuals {
 	var results Individuals
 	for i := 0; i <= count; i++ {
-		results = append(results, tournamentSelection(domain, individuals))
+		results = append(results, weeklyTournamentSelection(domain, individuals))
 	}
 	return results
 }
 
-func tournamentSelection(domain *Domain, individuals Individuals) *Individual {
+func weeklyTournamentSelection(domain *Domain, individuals Individuals) *Individual {
 	var tournament Individuals
 
 	for i := 0; i <= domain.Config.TournamentSize; i++ {
@@ -31,3 +34,6 @@ func tournamentSelection(domain *Domain, individuals Individuals) *Individual {
 }
 
 // SELECTION FUNCTION: FITNESS PROPORTIONATE SELECTION
+
+///////////////////////////////////////////////////
+// DAILY

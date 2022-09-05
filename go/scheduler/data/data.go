@@ -138,6 +138,7 @@ func (b *Booking) GetWeekday() time.Weekday {
 	return (b.Start.Weekday() + 6) % 7
 }
 
+// ExtractUserIdsDuplicates creates an array of user ids which are duplicated
 func ExtractUserIdsDuplicates(schedulerData *SchedulerData) []string {
 	// Keep track of how many days users are already coming into the office
 	timesAlreadyComingIn := make(map[string]int, 0) // (map[user id]times coming in already)
@@ -154,4 +155,14 @@ func ExtractUserIdsDuplicates(schedulerData *SchedulerData) []string {
 		}
 	}
 	return usersToAdd
+}
+
+// ExtractResourceIds extracts all resource ids from schedulerdata into a string array
+func ExtractResourceIds(schedulerData *SchedulerData) []string {
+	// Add resources to string array
+	resources := []string{}
+	for _, resource := range schedulerData.Resources {
+		resources = append(resources, *resource.Id)
+	}
+	return resources
 }

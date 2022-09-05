@@ -2,7 +2,10 @@ package ga
 
 import "lib/utils"
 
-func StubCrossOver(domain *Domain, individuals Individuals, selectionFunc Selection, offspring int) Individuals {
+///////////////////////////////////////////////////
+// WEEKLY
+
+func WeeklyStubCrossOver(domain *Domain, individuals Individuals, selectionFunc Selection, offspring int) Individuals {
 	if len(individuals) == 0 || offspring == 0 {
 		return nil
 	}
@@ -13,30 +16,17 @@ func StubCrossOver(domain *Domain, individuals Individuals, selectionFunc Select
 	return result
 }
 
-// Not complete
-// func GenericSinglePointCrossover(domain *Domain, individuals Individuals, selectionFunc Selection, offspring int) Individuals {
-// 	if len(individuals) == 0 || offspring == 0 {
-// 		return nil
-// 	}
-// 	var result Individuals
-// 	for i := 0; i < offspring; i++ {
-// 		rand.Intn(len(individuals[i].Gene))
-// 		result = append(result, individuals[i%len(individuals)].Clone())
-// 	}
-// 	return result
-// }
-
-func DayVResourceCrossover(domain *Domain, individuals Individuals, selectionFunc Selection, offspring int) Individuals {
+func WeeklyDayVResourceCrossover(domain *Domain, individuals Individuals, selectionFunc Selection, offspring int) Individuals {
 	var results Individuals
 	for i := 0; i <= offspring; i++ {
 		// select parents
 		parents := selectionFunc(domain, individuals, 2)
-		results = append(results, dayVResourceCrossover(domain, parents, 2)...)
+		results = append(results, weeklyDayVResourceCrossover(domain, parents, 2)...)
 	}
 	return results
 }
 
-func dayVResourceCrossover(domain *Domain, individuals Individuals, offspring int) Individuals {
+func weeklyDayVResourceCrossover(domain *Domain, individuals Individuals, offspring int) Individuals {
 	if len(individuals) != 2 {
 		return nil
 	}
@@ -66,3 +56,6 @@ func dayVResourceCrossover(domain *Domain, individuals Individuals, offspring in
 
 	return Individuals{parent1, parent2}
 }
+
+///////////////////////////////////////////////////
+// DAILY
