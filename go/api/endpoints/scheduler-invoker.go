@@ -90,7 +90,7 @@ func WeeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 
 // DailyScheduler will call and execute the daily scheduers
 func DailyScheduler(writer http.ResponseWriter, request *http.Request) {
-	dailyEndpointURL := os.Getenv("SCHEDULER_ADDR_DAILY") + "/daily"
+	dailyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/daily"
 
 	var requestedDate SchedulerRequest
 	err := utils.UnmarshalJSON(writer, request, &requestedDate)
