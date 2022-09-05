@@ -12,7 +12,7 @@ func WeeklyStubMutate(domain *Domain, individuals Individuals) Individuals {
 }
 
 // Performs of a version of swap mutation, where users are shifted around between days, but are kept valid
-func WeeklyWeeklyDayVResourceMutateSwapValid(domain *Domain, individuals Individuals) Individuals {
+func WeeklyDayVResourceMutateSwapValid(domain *Domain, individuals Individuals) Individuals {
 	var results Individuals
 	for _, individual := range individuals {
 		copiedIndiv := individual.Clone()
@@ -125,3 +125,25 @@ func WeeklyDayVResouceMutate(domain *Domain, individuals Individuals) Individual
 
 ///////////////////////////////////////////////////
 // DAILY
+
+func DailyMutate(domain *Domain, individuals Individuals) Individuals {
+	var results Individuals
+	for _, individual := range individuals {
+		copiedIndividual := individual.Clone()
+		if len(individual.Gene) == 0 {
+			return nil
+		}
+		slot1 := utils.RandInt(0, len(copiedIndividual.Gene[0]))
+		slot2 := utils.RandInt(0, len(copiedIndividual.Gene[0]))
+		if slot1 > slot2 {
+			temp := slot1
+			slot1 = slot2
+			slot2 = temp
+		}
+		for i := slot1; i < slot2; i++ {
+			copiedIndividual.Gene[0][i] = domain.GetRandomTerminal()
+		}
+		results = append(results, copiedIndividual)
+	}
+	return results
+}

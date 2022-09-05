@@ -174,6 +174,7 @@ func DailyPopulationGenerator(domain *Domain, popSize int) Individuals {
 	for j := 0; j < popSize; j++ {
 		var individual Individual
 		individual.Gene = append(individual.Gene, domain.GetRandomTerminalArrays(len(domain.Map)))
+		population = append(population, &individual)
 	}
 	return population
 }

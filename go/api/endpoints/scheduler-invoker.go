@@ -15,7 +15,7 @@ import (
 
 type SchedulerRequest struct {
 	StartDate *time.Time `json:"start_date,omitempty"`
-	NumDays   *int       `json:"num_days,omitempty"` // Used for weekly scheduler, not necissarily daily scheduler
+	NumDays   *int       `json:"num_days,omitempty"` // Used for weekly scheduler, not necessarily daily scheduler
 }
 
 //BookingHandlers handles booking requests
@@ -30,8 +30,8 @@ func SchedulerHandlers(router *mux.Router) error {
 
 // SchedulerInvoker will invoke the weekly scheduler and then the daily schedulers for each day of the week
 func SchedulerInvoker(writer http.ResponseWriter, request *http.Request) {
-	weeklyEndpointURL := os.Getenv("SCHEDULER_ADDR")
-	dailyEndpointURL := os.Getenv("SCHEDULER_ADDR_DAILY")
+	weeklyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/weekly"
+	dailyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/daily"
 	now := time.Now()
 	nextMonday := scheduler.TimeOfNextWeekDay(now, "Monday")            // Start of next week
 	nextSaturday := scheduler.TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
@@ -68,7 +68,7 @@ func SchedulerInvoker(writer http.ResponseWriter, request *http.Request) {
 
 // WeeklyScheduler will call and execute the weekly scheduers
 func WeeklyScheduler(writer http.ResponseWriter, request *http.Request) {
-	weeklyEndpointURL := os.Getenv("SCHEDULER_ADDR")
+	weeklyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/weekly"
 	now := time.Now()
 	nextMonday := scheduler.TimeOfNextWeekDay(now, "Monday")            // Start of next week
 	nextSaturday := scheduler.TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
@@ -90,7 +90,7 @@ func WeeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 
 // DailyScheduler will call and execute the daily scheduers
 func DailyScheduler(writer http.ResponseWriter, request *http.Request) {
-	dailyEndpointURL := os.Getenv("SCHEDULER_ADDR_DAILY")
+	dailyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/daily"
 
 	var requestedDate SchedulerRequest
 	err := utils.UnmarshalJSON(writer, request, &requestedDate)
