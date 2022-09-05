@@ -6,6 +6,9 @@ import (
 	"lib/utils"
 )
 
+///////////////////////////////////////////////////
+// WEEKLY
+
 // Makes an individual valid
 func ValidateIndividual(domain *Domain, indiv *Individual) {
 	logger.Error.Printf("len of domain terminals: %v   -   %v", len(domain.Terminals), domain.Terminals)
@@ -81,3 +84,6 @@ func ValidateIndividual(domain *Domain, indiv *Individual) {
 		}
 	}
 }
+
+///////////////////////////////////////////////////
+// DAILY

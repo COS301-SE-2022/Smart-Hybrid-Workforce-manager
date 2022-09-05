@@ -33,8 +33,8 @@ INSERT INTO resource.building (id, name, location, dimension) VALUES ('98989898-
 -- Data for Name: room; Type: TABLE DATA; Schema: resource; Owner: admin
 --
 
-INSERT INTO resource.room (id, building_id, name, location, dimension) VALUES ('14141414-dc08-4a06-9983-8b374586e459', '98989898-dc08-4a06-9983-8b374586e459', 'Office Block B', 'B4', '5x5');
-INSERT INTO resource.room (id, building_id, name, location, dimension) VALUES ('15151515-dc08-4a06-9983-8b374586e459', '98989898-dc08-4a06-9983-8b374586e459', 'Secretary', 'B9', '5x5');
+INSERT INTO resource.room (id, building_id, name, xcoord, ycoord, zcoord, dimension) VALUES ('14141414-dc08-4a06-9983-8b374586e459', '98989898-dc08-4a06-9983-8b374586e459', 'B4', '10', '10', '10', '5x5');
+INSERT INTO resource.room (id, building_id, name, xcoord, ycoord, zcoord, dimension) VALUES ('15151515-dc08-4a06-9983-8b374586e459', '98989898-dc08-4a06-9983-8b374586e459', 'B9', '10', '10', '10', '5x5');
 
 
 --
