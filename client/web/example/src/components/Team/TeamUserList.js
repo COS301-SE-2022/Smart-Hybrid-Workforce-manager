@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
-import { MdDelete } from 'react-icons/md'
+import { MdDelete } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
 const TeamUserList = ({teamId}) =>
 {
-  const [teamName, SetTeamName] = useState("")
+  const [teamName, SetTeamName] = useState("");
+  const navigate = useNavigate();
 
     useEffect(() =>
     {
-        fetch("http://localhost:8100/api/team/information", 
+        fetch("http://localhost:8080/api/team/information", 
         {
         method: "POST",
         body: JSON.stringify({
@@ -26,7 +28,7 @@ const TeamUserList = ({teamId}) =>
         {
             try
             {
-                let res = await fetch("http://localhost:8100/api/team/user/remove", 
+                let res = await fetch("http://localhost:8080/api/team/user/remove", 
                 {
                     method: "POST",
                     body: JSON.stringify({
@@ -38,7 +40,7 @@ const TeamUserList = ({teamId}) =>
                 if(res.status === 200)
                 {
                     alert("Team Successfully Removed!");
-                    window.location.reload();
+                    navigate(0);
                 }
             }
             catch (err)

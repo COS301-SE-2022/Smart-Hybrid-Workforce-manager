@@ -1,20 +1,23 @@
-import Navbar from "../components/Navbar"
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
 import { useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { useNavigate } from 'react-router-dom';
 
 const CreateRole = () =>
 {
   const [roleName, setRoleName] = useState("");
   const [roleColor, setRoleColor] = useState("");
 
+  const navigate = useNavigate();
+
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/role/create", 
+      let res = await fetch("http://localhost:8080/api/role/create", 
       {
         method: "POST",
         body: JSON.stringify({
@@ -26,7 +29,7 @@ const CreateRole = () =>
       if(res.status === 200)
       {
         alert("Role Successfully Created!");
-        window.location.assign("./role");
+        navigate("/role");
       }
     }
     catch(err)

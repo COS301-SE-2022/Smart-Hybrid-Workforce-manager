@@ -46,7 +46,7 @@ const Layout = () =>
     //POST requests
     const FetchBuildings = () =>
     {
-        fetch("http://localhost:8100/api/resource/building/information", 
+        fetch("http://localhost:8080/api/resource/building/information", 
             {
             method: "POST",
             body: JSON.stringify({
@@ -66,7 +66,7 @@ const Layout = () =>
 
     const UpdateRooms = (e) =>
     {
-        fetch("http://localhost:8100/api/resource/room/information", 
+        fetch("http://localhost:8080/api/resource/room/information", 
             {
             method: "POST",
             body: JSON.stringify({
@@ -84,7 +84,7 @@ const Layout = () =>
 
     const UpdateResources = (e) =>
     {
-        fetch("http://localhost:8100/api/resource/information", 
+        fetch("http://localhost:8080/api/resource/information", 
             {
             method: "POST",
             body: JSON.stringify({
@@ -127,7 +127,6 @@ const Layout = () =>
     const AddBuilding = () =>
     {
         navigate("/building");
-        // window.location.assign(".");
     }
 
     //Edit selected building
@@ -138,7 +137,6 @@ const Layout = () =>
             e.preventDefault();
             window.sessionStorage.setItem("BuildingID", currBuilding);
             navigate("/building-edit");
-            // window.location.assign("./building-edit");
         }
         else
         {
@@ -152,7 +150,6 @@ const Layout = () =>
         {
             window.sessionStorage.setItem("BuildingID", currBuilding);
             navigate("/room");
-            // window.location.assign("./room");
         }
         else
         {
@@ -168,7 +165,6 @@ const Layout = () =>
             window.sessionStorage.setItem("RoomID", currRoom);
             window.sessionStorage.setItem("BuildingID", currBuilding);
             navigate("/room-edit");
-            // window.location.assign("./room-edit");
         }
         else
         {
@@ -485,7 +481,7 @@ const Layout = () =>
 
         try
         {
-            let res = await fetch("http://localhost:8100/api/resource/batch-create", 
+            let res = await fetch("http://localhost:8080/api/resource/batch-create", 
             {
                 method: "POST",
                 body: JSON.stringify(resources)

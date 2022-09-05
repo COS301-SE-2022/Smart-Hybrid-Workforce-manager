@@ -260,14 +260,6 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) { // TO
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
-	logger.Access.Printf("userCred: %v", userCred)
-	logger.Access.Printf("userCred Sec: %v", *userCred.Secret)
-	logger.Access.Printf("userCred Idnt: %v", *userCred.Identifier)
-	temp := "local." + *userCred.Identifier
-	// userCred.Identifier = &temp
-	logger.Access.Printf("temp: %v", temp)
-	logger.Access.Printf("\nuserCred\n%v\n", userCred)
-
 	access, err := db.Open()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
@@ -283,35 +275,29 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) { // TO
 		logger.Error.Fatalf("\nerror\n%v\n", err)
 		return
 	}
-
-	logger.Access.Printf("\nusers\n%v\n", credentials)
-	// logger.Access.Printf("\nuser\n%v\n", *credentials[0])
-	if len(credentials) == 0 {
+	if(len(credentials) == 0){
 		utils.AccessDenied(writer, request, errors.New("incorrect email password combination"))
 		return
 	}
-
-	// var user = data.User{
-	// 	Identifier: userCred.Identifier,
-	// }
-
-	// logger.Access.Printf("\nuser\n%v\n", user)
-
+	
+	users, err := da.FindIdentifier(&data.User{Identifier: credentials[0].Identifier})
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	user := users.FindHead()
 	err = access.Commit()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
 
-	//IF users == [] return error
-
-	//After user login create auth token
-	authData, err := redis.UserLogin(*credentials[0].Id)
+	authData, err := redis.UserLogin(*user.Id,*credentials[0].Identifier,*user.FirstName,*user.LastName)
 	if err != nil {
 		logger.Error.Println("Error user login endpoint")
 		utils.InternalServerError(writer, request, err)
 	}
-	// logger.Access.Printf("\nauthdata\n%v\n", authData)
+	logger.Access.Printf("User Login:%v\n", *user.Id)
 	utils.JSONResponse(writer, request, authData)
 }
 

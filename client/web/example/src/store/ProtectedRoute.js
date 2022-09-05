@@ -7,8 +7,9 @@ import { UserContext } from "../App";
 
 
 const ProtectedRoute = () => {
-    const { userData } = useContext(UserContext);    
+    const { userData,setUserData } = useContext(UserContext);    
     const location = useLocation();
+    console.log(userData);
     // const navigate = useNavigate();
     // console.log(userData);
     // console.log((userData==null));
@@ -21,8 +22,13 @@ const ProtectedRoute = () => {
     //         }
     //         return <Navigate to="/login" replace state={{from: location}}/>;
     //     }      
-    // }  
-    return (userData!=null)?<Outlet/>:<Navigate to="/login" replace state={{from: location}}/>
+    // }
+    if(userData && userData.expr_time > Date.now()){        
+        return <Outlet/>;
+    }        
+    else
+        return <Navigate to="/login" replace state={{from: location}}/>
+    // return (userData==null)?<Outlet/>: //Change ==
 }
 
 export default ProtectedRoute;

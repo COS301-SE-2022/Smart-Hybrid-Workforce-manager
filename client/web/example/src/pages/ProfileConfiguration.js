@@ -1,4 +1,4 @@
-import Navbar from "../components/Navbar"
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
 import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
@@ -27,7 +27,7 @@ function ProfileConfiguration()
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/user/update", 
+      let res = await fetch("http://localhost:8080/api/user/update", 
       {
         method: "POST",
         body: JSON.stringify({
@@ -50,7 +50,6 @@ function ProfileConfiguration()
       {
         alert("Profile Configuration Succesfully Updated!");
         navigate("/")
-        // window.location.assign("./");
       }
     }
     catch(err)

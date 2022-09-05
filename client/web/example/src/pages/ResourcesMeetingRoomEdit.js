@@ -1,8 +1,9 @@
-import Navbar from "../components/Navbar"
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
 import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { useNavigate } from 'react-router-dom';
 
 const EditMeetingRoom = () =>
 {
@@ -10,12 +11,14 @@ const EditMeetingRoom = () =>
   const [meetingRoomLocation, setMeetingRoomLocation] = useState("");
   const [meetingRoomCapacity, setMeetingRoomCapacity] = useState("");
 
+  const navigate = useNavigate();
+
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/resource/create", 
+      let res = await fetch("http://localhost:8080/api/resource/create", 
       {
         method: "POST",
         body: JSON.stringify({
@@ -31,7 +34,7 @@ const EditMeetingRoom = () =>
       if(res.status === 200)
       {
         alert("MeetingRoom Successfully Updated!");
-        window.location.assign("./resources");
+        navigate("/resources");
       }
     }
     catch(err)

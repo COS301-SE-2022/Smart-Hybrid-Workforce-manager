@@ -1,9 +1,10 @@
-import Navbar from "../components/Navbar"
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
 import React, { useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
+import { useNavigate } from 'react-router-dom';
 
 const CreateBuilding = () =>
 {
@@ -11,12 +12,14 @@ const CreateBuilding = () =>
   const [buildingLocation, SetBuildingLocation] = useState("");
   const [buildingDimensions, SetBuildingDimensions] = useState("");
 
+  const navigate = useNavigate();
+
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/resource/building/create", 
+      let res = await fetch("http://localhost:8080/api/resource/building/create", 
       {
         method: "POST",
         body: JSON.stringify({
@@ -30,7 +33,7 @@ const CreateBuilding = () =>
       if(res.status === 200)
       {
         alert("Building Successfully Created!");
-        window.location.assign("./resources");
+        navigate("/resources");
       }
     }
     catch(err)

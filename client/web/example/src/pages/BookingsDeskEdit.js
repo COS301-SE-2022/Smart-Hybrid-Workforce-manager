@@ -1,9 +1,10 @@
-import Navbar from "../components/Navbar"
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
 import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { UserContext } from "../App"
+import { useNavigate } from 'react-router-dom';
 
 function BookingsDeskEdit()
 {
@@ -12,14 +13,15 @@ function BookingsDeskEdit()
   const [endDate, setEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
 
-  const {userData}=UserContext(UserContext)
+  const {userData} = UserContext(UserContext);
+  const navigate = useNavigate();
 
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/booking/create", 
+      let res = await fetch("http://localhost:8080/api/booking/create", 
       {
         method: "POST",
         body: JSON.stringify({
@@ -36,7 +38,7 @@ function BookingsDeskEdit()
 
       if(res.status === 200)
       {
-        let res = await fetch("http://localhost:8100/api/notification/send", 
+        let res = await fetch("http://localhost:8080/api/notification/send", 
         {
           method: "POST",
           body: JSON.stringify({
@@ -51,7 +53,7 @@ function BookingsDeskEdit()
         if(res.status === 200)
         {
           alert("Booking Successfully Edited!");
-          window.location.assign("./");
+          navigate("/");
         }
       }
     }

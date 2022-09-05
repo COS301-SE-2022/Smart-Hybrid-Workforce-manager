@@ -1,4 +1,4 @@
-import Navbar from "../components/Navbar"
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
 import { useState, useEffect, useContext } from 'react';
 import UserListItem from '../components/Profile/UserListItem';
@@ -16,7 +16,7 @@ function Users()
   //POST request
   const FetchUsers = () =>
   {
-    fetch("http://localhost:8100/api/user/information", 
+    fetch("http://localhost:8080/api/user/information", 
         {
           method: "POST",
           body: JSON.stringify({
@@ -36,7 +36,6 @@ function Users()
   const AddUser = () =>
   {
     navigate("/user-create");
-    // window.location.assign("./user-create");
   }
 
   return (

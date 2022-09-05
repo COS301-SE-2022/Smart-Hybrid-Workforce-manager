@@ -12,6 +12,7 @@ const LogoutButton = () =>{
     let handleSubmit = async(e) =>{
         e.preventDefault();
         setUserData(null);
+        localStorage.removeItem("auth_data");
         console.log(userData);
         navigate("/login");
     }

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import Navbar from '../components/Navbar'
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from '../components/Footer'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
@@ -21,7 +21,7 @@ function Teams()
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/team/create", 
+      let res = await fetch("http://localhost:8080/api/team/create", 
       {
         method: "POST",
         body: JSON.stringify({
@@ -37,7 +37,6 @@ function Teams()
       {
         alert("Team Successfully Created!");
         navigate("/team");
-        // window.location.assign("./team");
       }
     }
     catch(err)
