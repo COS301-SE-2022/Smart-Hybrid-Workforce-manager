@@ -8,6 +8,7 @@ import TeamUserList from '../components/Team/TeamUserList'
 import { UserContext } from '../App'
 import { useNavigate } from 'react-router-dom'
 import ProfileBar from '../components/Navbar/ProfileBar';
+import { FaWheelchair, FaHouseUser } from 'react-icons/fa';
 
 function Profile()
 {
@@ -46,7 +47,7 @@ function Profile()
                 method: "POST",
                 mode: "cors",
                 body: JSON.stringify({
-                    identifier : userData.user_id.substring(6)
+                    identifier : userData.user_identifier
                 }),
                 headers:{
                     'Content-Type': 'application/json',
@@ -54,6 +55,7 @@ function Profile()
                 }
             }).then((res) => res.json()).then(data => 
             {
+                console.log(data);
                 sessionStorage.setItem("UserID", data[0].id);
                 SetIdentifier(data[0].identifier);
                 SetFirstName(data[0].first_name);
@@ -64,8 +66,8 @@ function Profile()
                 SetWorkFromHome(data[0].work_from_home);
                 SetParking(data[0].parking);
                 SetOfficeDays(data[0].office_days);
-                SetStartTime(data[0].preferred_start_time);
-                SetEndTime(data[0].preferred_end_time);
+                SetStartTime(data[0].preferred_start_time.substring(11,16));
+                SetEndTime(data[0].preferred_end_time.substring(11,16));
             });
         };
 
@@ -76,7 +78,7 @@ function Profile()
                 method: "POST",
                 mode: "cors",
                 body: JSON.stringify({
-                    identifier:userData.user_id.substring(6)
+                    identifier: userData.user_identifier
                 }),
                 headers:{
                     'Content-Type': 'application/json',
@@ -95,7 +97,7 @@ function Profile()
                 method: "POST",
                 mode: "cors",
                 body: JSON.stringify({
-                    identifier:userData.user_id.substring(6)
+                    identifier: userData.user_identifier
                 }),
                 headers:{
                     'Content-Type': 'application/json',
@@ -108,9 +110,9 @@ function Profile()
         }
 
         // window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
-        //FetchUser();
-        //FetchUserRoles();
-        //FetchUserTeams();
+        FetchUser();
+        FetchUserRoles();
+        FetchUserTeams();
   }, [userData])
 
   const ProfileConfiguration = () =>
@@ -136,62 +138,71 @@ function Profile()
     navigate("/login");
   }
 
-  return (
-    <div className='page-container'>
-      <div className='content'>
-        <ProfileBar />
-        <Navbar />
-        <div className='main-container'>
-            <div className='profile-container'>
-                <div className="profile-image-container"></div>
+    const renderWheelchair = () =>
+    {
+        if(parking === 'DISABLED')
+        {
+            return <FaWheelchair />
+        }
+    }
 
-                <div className='personal-information-container'>
-                    <div className='personal-information-title'>Personal Information</div>
-                    <div className='profile-firstname'>John</div>
-                    <div className='profile-surname'>Smith</div>
-                    <div className='profile-email'>jsmith@gmail.com</div>
-                    <div className='profile-home'>Work from home: Yes</div>
-                    <div className='profile-parking'>Parking type: Standard</div>
-                    <div className='profile-days'>Number of office days per week: 4</div>
-                    <div className='profile-startTime'>Preferred start time: 09:00</div>
-                    <div className='profile-endTime'>Preferred end time: 15:00</div>
-                </div>
+    const renderHome = () =>
+    {
+        if(workFromHome === 'true')
+        {
+            return <FaHouseUser />
+        }
+    }
 
-                <div className="user">
-                    
-                    <div className="user-text">
-                    <p className="user-text-name">{firstName + " " + lastName}</p>
-                    <p className="user-text-email">{email}</p>              
+    return (
+        <div className='page-container'>
+            <div className='content'>
+                <ProfileBar />
+                <Navbar />
+                <div className='main-container'>
+                    <div className='profile-container'>
+                        
+                        <div className='personal-information-container'>
+                            <div className='profile-name'>{firstName} &nbsp; {lastName}</div>
+                            <div className='profile-email'>{email}</div>
+                            <div className='profile-icons'>
+                                {renderWheelchair()}
+                                {renderHome()}
+                            </div>
+                        </div>
+
+                        <div className='preferences-container'>
+                            <div className='profile-days'>{officeDays} office days per week</div>
+                        <div className='profile-time'>Preferred times: {startTime} - {endTime}</div>
+                            <div className='profile-roles'>
+                                {roles.length > 0 && (
+                                    roles.map(role =>
+                                    (
+                                        role.role_id 
+                                    ))
+                                )}
+                            </div>
+                        </div>
+
+                        <div className='profile-teams-container'>
+                            <div className='profile-teams-title'>Teams</div>
+                            <div className='profile-teams-carousel'>
+                                {teams.length > 0 && (
+                                    teams.map(team =>
+                                    (
+                                        <div className='profile-team'>{team.team_id}</div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="profile-image-container"></div>
+
                     </div>
-                    <div className="user-roles">
-                    <h3>Roles</h3>
-                    <div className='list'>
-                        {roles.length > 0 && (
-                        roles.map(role => (
-                            <RoleUserList id={role.role_id}/>
-                            
-                        ))
-                        )}
-                    </div>
-                    </div>
-                    <div className="user-teams">
-                    <h3>Teams</h3>
-                    <div className='list'>
-                        {teams.length > 0 && (
-                        teams.map(team => (
-                            <TeamUserList teamId={team.team_id} />
-                        ))
-                        )}
-                    </div>
-                    </div>
-                    <Button className='button-user-profile' variant='primary' onClick={ProfileConfiguration}>Profile Configuration</Button>
-                    <Button className='button-user-profile' variant='primary' onClick={LogOut}>Log Out</Button>
                 </div>
             </div>
         </div>
-      </div>
-    </div>
-  )
+    )
 }
 
 export default Profile

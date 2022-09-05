@@ -93,7 +93,7 @@ const BookingTicket = ({id, startDate, startTime, endTime, confirmed, type, days
 
     const renderIcon = () =>
     {
-        if(type === 'Desk')
+        if(type === 'DESK')
         {
             return <GiDesk />;
         }

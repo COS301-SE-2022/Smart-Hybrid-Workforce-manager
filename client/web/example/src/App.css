@@ -1368,48 +1368,20 @@
     margin-top: 3vh;
 }
 
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 1;
-    }
-}
-
 .profile-container
 {
+    display: grid;
+    grid-template-columns: 42.5vw 42.5vw;
+    grid-template-rows: 25vh 55vh;
+    grid-template-areas: "topLeft" "topRight" "teams";
+
     width: 85vw;
     height: 80vh;
 
     margin-top: 10vh;
 
-    background-color: #ffffff;
-}
-
-.users {
-    position: relative;
-    display: grid;
-    grid-template-columns: 20vw 20vw;
-    grid-template-rows: 20vh 15vh 15vh 10vh ;
-    grid-template-areas: "image""text";
-
-    width: 40vw;
-    height: 65vh;
-
-    margin-left: 2.5vw;
-    margin-right: 2.5vw;
-    margin-top: 10vh;
-
-    border-radius: 4vh;
-    background: white;
-    box-shadow: 1vh 1vh 4vh rgba(0, 0, 0, 0.9);
-    text-align: left;
-
-    animation: fadeIn ease 3s;
-    animation-iteration-count: 1;
-    animation-fill-mode: forwards;
+    background: #ffffff;
+    color: #374146;
 }
 
 .profile-image-container
@@ -1429,6 +1401,105 @@
 
     width: 10vw;
     height: 10vw;
+}
+
+.personal-information-container
+{
+    grid-area: "topLeft";
+    position: relative;
+
+    text-align: right;
+
+    padding-top: 13vh;
+    padding-right: 4vw;
+
+    width: 42.5vw;
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    color: #374146;
+}
+
+.profile-name
+{
+    position: relative;
+
+    font-size: 1.5vw;
+}
+
+.profile-email
+{
+    position: relative;
+
+    font-size: 1vw;
+}
+
+.profile-icons
+{
+    position: relative;
+
+    font-size: 1.5vw;
+}
+
+.preferences-container
+{
+    grid-area: "topRight";
+    position: relative;
+
+    text-align: left;
+
+    padding-top: 13vh;
+    padding-left: 4vw;
+
+    width: 42.5vw;
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    color: #374146;
+}
+
+.profile-teams-container
+{
+    width: 85vw;
+
+    padding-top: 2vh;
+    padding-left: 1vw;
+}
+
+.profile-teams-title
+{
+    font-size: 2vw;
+}
+
+.profile-teams-carousel
+{
+    overflow-y: scroll;
+
+    padding-left: 6.5vw;
+    padding-bottom: 4vh;
+
+    height: 47vh;
+}
+
+.profile-team
+{
+    display: inline-block;
+
+    width: 15vw;
+    height: 35vh;
+
+    margin-left: 2vw;
+    margin-top: 4vh;
+
+    padding-top: 1vh;
+  
+    background: #09a2fb66;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+
+    border-width: 0.5px;
+    border-radius: 3vh;
+
+    text-align: center;
+    color: #374146;
 }
 
 .user-text {
