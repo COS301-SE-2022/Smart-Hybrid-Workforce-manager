@@ -73,7 +73,7 @@ func TestCreateRoleHandler(t *testing.T) {
 
 	for _, tt := range basicBadTests {
 		t.Run(tt.name, func(t *testing.T) {
-			CreateRoleHandler(tt.args.w, tt.args.r, &data.Permissions{data.CreateGenericPermission("VIEW", "RESOURCE", "BUILDING")}) // Make request
+			CreateRoleHandler(tt.args.w, tt.args.r, &data.Permissions{data.CreateGenericPermission("", "", "")}) // Make request
 			// check response code
 			response := tt.args.w.Result()
 			if response.StatusCode != tt.expect.responseCode {
@@ -98,6 +98,48 @@ func TestCreateRoleHandler(t *testing.T) {
 			} else {
 				t.Error(tu.Scolourf(tu.RED, "Expected an error message, got none"))
 			}
+		})
+	}
+
+	//Good tests ================
+	type goodExpect struct {
+		responseCode    int
+		responseBody    *string
+		responseMessage string
+	}
+
+	goodTests := []struct {
+		name    string
+		request string
+		args    args
+		expect  goodExpect
+	}{
+		{
+			name: "Valid role information",
+			args: args{
+				httptest.NewRecorder(),
+				httptest.NewRequest(http.MethodPost, `http://localhost:8100/api/role/create`, strings.NewReader(`
+					{
+						"role_name" : "Test_Role"
+					}`)),
+			},
+			expect: goodExpect{
+				responseCode:    http.StatusOK,
+				responseBody:    nil, // no response body for valid insecreatesrts
+				responseMessage: "request_ok",
+			},
+		},
+	}
+
+	for _, tt := range goodTests {
+		t.Run(tt.name, func(t *testing.T) {
+			CreateRoleHandler(tt.args.w, tt.args.r, &data.Permissions{data.CreateGenericPermission("", "", "")}) // Make request
+			// check response code
+			response := tt.args.w.Result()
+			if response.StatusCode != tt.expect.responseCode {
+				t.Error(tu.Scolourf(tu.RED, "Invalid response code recieved, expected %d, got %d", tt.expect.responseCode, response.StatusCode))
+			}
+			defer response.Body.Close()
 		})
 	}
 }

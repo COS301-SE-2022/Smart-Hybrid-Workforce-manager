@@ -109,5 +109,5 @@ func main() {
 
 	// Start API on port 8080 in its docker container
 	logger.Info.Println("Starting API on 8080")
-	logger.Error.Fatal(http.ListenAndServe(":8080", handlers.CORS(credentials, methods) (router)))
+	logger.Error.Fatal(http.ListenAndServe(":8080", handlers.CORS(credentials, methods)(router)))
 }

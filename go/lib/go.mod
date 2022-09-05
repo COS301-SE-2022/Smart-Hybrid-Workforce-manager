@@ -2,10 +2,7 @@ module lib
 
 go 1.17
 
-replace api => ../api
-
 require (
-	api v0.0.0-00010101000000-000000000000
 	github.com/golang-migrate/migrate/v4 v4.15.2
 	github.com/lib/pq v1.10.6
 	github.com/ory/dockertest/v3 v3.9.1
