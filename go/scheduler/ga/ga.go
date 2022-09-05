@@ -28,10 +28,19 @@ type Domain struct {
 
 	Config        *data.Config
 	SchedulerData *data.SchedulerData
+	Map           map[int](string)
 }
 
 func (domain *Domain) GetRandomTerminal() string {
 	return domain.Terminals[utils.RandInt(0, len(domain.Terminals))]
+}
+
+func (domain *Domain) GetRandomTerminalArrays(length int) []string {
+	var result []string
+	for i := 0; i < length; i++ {
+		result = append(result, domain.GetRandomTerminal())
+	}
+	return result
 }
 
 // Individual represents a solution to the domain problem

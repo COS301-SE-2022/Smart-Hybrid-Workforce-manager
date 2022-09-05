@@ -166,3 +166,12 @@ func ExtractResourceIds(schedulerData *SchedulerData) []string {
 	}
 	return resources
 }
+
+// ExtractUserIdMap extracts all user ids from the schedulerdata into an indexed map
+func ExtractUserIdMap(schedulerData *SchedulerData) map[int](string) {
+	var result map[int](string)
+	for i, user := range schedulerData.Users {
+		result[i] = *user.Id
+	}
+	return result
+}

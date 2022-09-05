@@ -99,6 +99,7 @@ func dailyScheduler(writer http.ResponseWriter, request *http.Request) {
 	domain.Terminals = data.ExtractResourceIds(&schedulerData)
 	domain.Config = &config
 	domain.SchedulerData = &schedulerData
+	domain.Map = data.ExtractUserIdMap(&schedulerData)
 
 	utils.JSONResponse(writer, request, bookings)
 }

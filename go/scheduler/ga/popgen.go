@@ -168,10 +168,12 @@ func getUserAvailabilityInfo(domain *Domain, numDaysInWeek int) (daysAvailable m
 ///////////////////////////////////////////////////
 // DAILY
 
+// DailyPopulationGenerator generates random possibly invalid individuals
 func DailyPopulationGenerator(domain *Domain, popSize int) Individuals {
 	var population Individuals
 	for j := 0; j < popSize; j++ {
-
+		var individual Individual
+		individual.Gene = append(individual.Gene, domain.GetRandomTerminalArrays(len(domain.Map)))
 	}
 	return population
 }
