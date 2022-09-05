@@ -226,3 +226,23 @@ func TestCreateRoleHandler(t *testing.T) {
 		})
 	}
 }
+
+func TestInformationRolesHandler(t *testing.T) {
+
+}
+
+func TestDeleteRoleHandler(t *testing.T) {
+
+}
+
+func TestCreateUserRoleHandler(t *testing.T) {
+
+}
+
+func TestInformationUserRolesHandler(t *testing.T) {
+
+}
+
+func TestDeleteUserRoleHandler(t *testing.T) {
+
+}
