@@ -15,13 +15,14 @@ import (
 //BookingHandlers handles booking requests
 func SchedulerHandlers(router *mux.Router) error {
 	router.HandleFunc("/execute", SchedulerInvoker).Methods("POST")
+	router.HandleFunc("/execute/weekly", WeeklyScheduler).Methods("POST")
+	router.HandleFunc("/execute/daily", DailyScheduler).Methods("POST")
 	router.HandleFunc("/delete", RemoveAutomatedBookings).Methods("POST")
-	// router.HandleFunc("/scheduler/execute", security.Validate(InformationMeetingRoomBookingHandler,
-	// 	&data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "USER")})).Methods("POST")
 
 	return nil
 }
 
+// SchedulerInvoker will invoke the weekly scheduler and then the daily schedulers for each day of the week
 func SchedulerInvoker(writer http.ResponseWriter, request *http.Request) {
 	now := time.Now()
 	nextMonday := scheduler.TimeOfNextWeekDay(now, "Monday")            // Start of next week
@@ -39,6 +40,30 @@ func SchedulerInvoker(writer http.ResponseWriter, request *http.Request) {
 	utils.Ok(writer, request)
 }
 
+// WeeklyScheduler will call and execute the weekly scheduers
+func WeeklyScheduler(writer http.ResponseWriter, request *http.Request) {
+	now := time.Now()
+	nextMonday := scheduler.TimeOfNextWeekDay(now, "Monday")            // Start of next week
+	nextSaturday := scheduler.TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
+	schedulerData, err := scheduler.GetSchedulerData(nextMonday, nextSaturday)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	err = scheduler.Call(schedulerData) // TODO: @JonathanEnslin handle the return data
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	utils.Ok(writer, request)
+}
+
+// DailyScheduler will call and execute the daily scheduers
+func DailyScheduler(writer http.ResponseWriter, request *http.Request) {
+	utils.Ok(writer, request)
+}
+
+// RemoveAutomatedBookings removes all automated bookings from the database
 func RemoveAutomatedBookings(writer http.ResponseWriter, request *http.Request) {
 	// Create a database connection
 	access, err := db.Open()
