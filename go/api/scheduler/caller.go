@@ -5,9 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"lib/clock"
-	"lib/logger"
 	"lib/restclient"
-	"lib/testutils"
 	"net/http"
 	"os"
 	"time"
@@ -46,21 +44,9 @@ func datesEqual(t1 time.Time, t2 time.Time) bool {
 
 // mayCall determines using the passed in params, and the current time, whether or not the scheduler
 // may be called
-func mayCall(scheduledDay string, lastEntry *LogEntry, now time.Time) bool {
+func mayCall(scheduledDay string, now time.Time) bool {
 	// check if correct day of week
-	if scheduledDay != now.Weekday().String() {
-		return false
-	}
-	// compare the dates, if a different date, scheduling may occur
-	if lastEntry == nil || !datesEqual(now, lastEntry.datetime) {
-		return true
-	}
-	// otherwise, inspect the log entry to determine
-	if lastEntry.status == FAILED || lastEntry.status == TIMED_OUT {
-		return true
-	}
-	// It was either succesful or it is pending
-	return false
+	return scheduledDay == now.Weekday().String()
 }
 
 // TimeOfNextWeekDay returns the date/time of the next 'weekday'
@@ -79,20 +65,12 @@ func TimeOfNextWeekDay(now time.Time, weekday string) time.Time {
 // entry permits it
 func checkAndCall(now time.Time, scheduledDay string) error {
 	// scheduledDay := "Friday" // TODO: @JonathanEnslin Make env var
-	lastEntry, err := ReadLastEntry()
-	if err != nil {
-		return err
-	}
-	if mayCall(scheduledDay, lastEntry, now) {
+	if mayCall(scheduledDay, now) {
 		// TODO: @JonathanEnslin move this into a seperate function that uses exponential backoff
 		nextMonday := TimeOfNextWeekDay(now, "Monday")            // Start of next week
 		nextSaturday := TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
 		schedulerData, err := GetSchedulerData(nextMonday, nextSaturday)
 		if err != nil {
-			log_write_err := NewLogEntry(FAILED, &now).WriteLog()
-			if log_write_err != nil {
-				return log_write_err
-			}
 			return err
 		}
 		err = Call(schedulerData) // TODO: @JonathanEnslin handle the return data
@@ -113,53 +91,21 @@ func Call(data *SchedulerData) error { // TODO: @JonathanEnslin improve this fun
 		return err
 	}
 	request.Header.Set("Content-Type", "application/json")
-	// TODO: @JonathanEnslin determine request headers
 	if err != nil {
 		return err
 	}
 	response, err := HTTPClient.Do(request) // TODO: @JonathanEnslin URL env param
-	logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE1"))
-	now := Clock.Now()
 	if err != nil {
-		errType := FAILED
-		if os.IsTimeout(err) {
-			errType = TIMED_OUT // TODO: @JonathanEnslin look at implementing type of exp backoff for timeout
-		}
-		logErr := NewLogEntry(errType, &now).WriteLog()
-		if logErr != nil {
-			return logErr
-		}
 		return err
 	}
-	logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE2"))
 	defer response.Body.Close()
 	candidateBookings := &CandidateBookings{}
 	err = json.NewDecoder(response.Body).Decode(candidateBookings)
-	logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE3"))
 	if err != nil {
-		logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE4.12"))
-		logErr := NewLogEntry(FAILED, &now).WriteLog()
-		logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE4.112"))
-
-		if logErr != nil {
-			logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE4.1122"))
-			return logErr
-		}
 		return err
 	}
-	logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE4.1"))
 	err = makeBookings(*candidateBookings)
-	logger.Info.Println(testutils.Scolour(testutils.GREEN, "HERE4.2"))
 	if err != nil {
-		logErr := NewLogEntry(FAILED, &now).WriteLog()
-		if logErr != nil {
-
-			return logErr
-		}
-		return err
-	}
-	err = NewLogEntry(SUCCESS, &now).WriteLog()
-	if err != nil { // TODO: IMPORTANT! @JonathanEnslin consider panicking when logger fails
 		return err
 	}
 	return nil
