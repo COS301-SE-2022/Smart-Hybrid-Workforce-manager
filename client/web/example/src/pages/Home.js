@@ -796,7 +796,7 @@ const Home = () =>
                             <div className='bookings-container'>
                                 {bookings.length > 0 && (
                                     bookings.map((booking, i) => (
-                                        <BookingTicket id={booking.id} startDate={booking.startDate} startTime={booking.startTime} endTime={booking.endTime} confirmed={booking.confirmed} type={booking.type} days={days} />
+                                        <BookingTicket id={booking.id} startDate={booking.start.substring(0,10)} startTime={booking.start.substring(11,16)} endTime={booking.end.substring(11,16)} confirmed={booking.booked} type={booking.resource_type} days={days} />
                                     ))
                                 )}
 
