@@ -11,7 +11,7 @@ SELECT "user".identifier_store(
 	'/picture',
     false,
     'STANDARD',
-    0,
+    3,
     '09:00',
     '17:00',
 	'22222222-dc08-4a06-9983-8b374586e459' -- preferred desk
@@ -415,7 +415,7 @@ SELECT "user".identifier_store(
 	'/johndoe.png',
     false,
     'STANDARD',
-    0,
+    2,
     '09:00',
     '17:00'
 );
@@ -430,7 +430,7 @@ SELECT "user".identifier_store(
 	'/janedoe.jpeg',
     false,
     'STANDARD',
-    0,
+    4,
     '09:00',
     '17:00'
 );
@@ -445,7 +445,7 @@ SELECT "user".identifier_store(
 	'/steve.png',
     false,
     'STANDARD',
-    0,
+    1,
     '09:00',
     '17:00'
 );

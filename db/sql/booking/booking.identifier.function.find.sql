@@ -7,6 +7,7 @@ CREATE OR REPLACE FUNCTION booking.identifier_find(
     _start TIMESTAMP DEFAULT NULL,
     _end TIMESTAMP DEFAULT NULL,
     _booked BOOLEAN DEFAULT NULL,
+    _automated BOOLEAN DEFAULT NULL,
     _date_created TIMESTAMP DEFAULT NULL,
     _permissions JSONB DEFAULT NULL -- Must only contain user_ids not role_ids
 )
@@ -58,6 +59,7 @@ BEGIN
     AND (_start IS NULL OR i.start >= _start)
     AND (_end IS NULL OR i."end" <= _end)
     AND (_booked IS NULL OR i.booked = _booked)
+    AND (_automated IS NULL OR i.automated >= _automated)
     AND (_date_created IS NULL OR i.date_created >= _date_created);
 
     DROP TABLE _permissions_table;

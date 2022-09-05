@@ -4,8 +4,8 @@ import (
 	"api/data"
 	"api/db"
 	"api/redis"
-	"lib/utils"
 	"errors"
+	"lib/utils"
 
 	// "errors"
 	"fmt"
@@ -23,11 +23,16 @@ import (
 var emailRegex = regexp.MustCompile(`^(?:[^@\t\n ])+@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]*$`)
 
 type RegisterUserStruct struct {
-	FirstName *string `json:"first_name,omitempty"`
-	LastName  *string `json:"last_name,omitempty"`
-	Email     string  `json:"email"`
-	Picture   *string `json:"picture,omitempty"`
-	Password  *string `json:"password"`
+	FirstName          *string    `json:"first_name,omitempty"`
+	LastName           *string    `json:"last_name,omitempty"`
+	Email              string     `json:"email"`
+	Picture            *string    `json:"picture,omitempty"`
+	Password           *string    `json:"password"`
+	OfficeDays         *int       `json:"office_days,omitempty"`
+	PreferredStartTime *time.Time `json:"preferred_start_time,omitempty"`
+	PreferredEndTime   *time.Time `json:"preferred_end_time,omitempty"`
+	WorkFromHome       *bool      `json:"work_from_home,omitempty"`
+	Parking            *string    `json:"parking,omitempty"`
 }
 
 /////////////////////////////////////////////
@@ -97,12 +102,37 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 		fmt.Println(timeErr)
 		return
 	}
-
 	defaultPreferredEndTime, timeErr := time.Parse("15:04", "17:00")
 	if timeErr != nil {
 		fmt.Println(timeErr)
 		return
 	}
+
+	if registerUserStruct.WorkFromHome != nil {
+		defaultWorkFromHome = *registerUserStruct.WorkFromHome
+	}
+
+	if registerUserStruct.OfficeDays != nil {
+		defaultOfficeDays = *registerUserStruct.OfficeDays
+	}
+
+	if registerUserStruct.Parking != nil {
+		defaultParking = *registerUserStruct.Parking
+	}
+
+	if registerUserStruct.PreferredEndTime != nil {
+		defaultPreferredEndTime = *registerUserStruct.PreferredEndTime
+	}
+
+	if registerUserStruct.PreferredStartTime != nil {
+		defaultPreferredStartTime = *registerUserStruct.PreferredStartTime
+	}
+
+	if defaultPreferredStartTime.After(defaultPreferredEndTime) {
+		utils.BadRequest(writer, request, "invalid_request: preffered start time later than preferred end time")
+		return
+	}
+
 	user = &data.User{
 		Identifier:         &registerUserStruct.Email,
 		Email:              &registerUserStruct.Email,
@@ -230,12 +260,12 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) { // TO
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
-	logger.Access.Printf("userCred: %v",userCred)
-	logger.Access.Printf("userCred Sec: %v",*userCred.Secret)
-	logger.Access.Printf("userCred Idnt: %v",*userCred.Identifier)
+	logger.Access.Printf("userCred: %v", userCred)
+	logger.Access.Printf("userCred Sec: %v", *userCred.Secret)
+	logger.Access.Printf("userCred Idnt: %v", *userCred.Identifier)
 	temp := "local." + *userCred.Identifier
 	// userCred.Identifier = &temp
-	logger.Access.Printf("temp: %v",temp)
+	logger.Access.Printf("temp: %v", temp)
 	logger.Access.Printf("\nuserCred\n%v\n", userCred)
 
 	access, err := db.Open()
@@ -256,11 +286,11 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) { // TO
 
 	logger.Access.Printf("\nusers\n%v\n", credentials)
 	// logger.Access.Printf("\nuser\n%v\n", *credentials[0])
-	if(len(credentials) == 0){
+	if len(credentials) == 0 {
 		utils.AccessDenied(writer, request, errors.New("incorrect email password combination"))
 		return
 	}
-	
+
 	// var user = data.User{
 	// 	Identifier: userCred.Identifier,
 	// }

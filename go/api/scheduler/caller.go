@@ -16,7 +16,7 @@ import (
 var (
 	HTTPClient  restclient.HTTPClient
 	Clock       clock.Clock   = &clock.RealClock{} // TODO: @JonathanEnslin make sure this is not a bad way of doing it
-	timeout     time.Duration = 30 * time.Second
+	timeout     time.Duration = 1800 * time.Second
 	endpointURL string
 )
 

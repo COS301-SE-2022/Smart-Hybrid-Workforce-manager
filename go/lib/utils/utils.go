@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"lib/logger"
+	"math/rand"
 	"net/http"
 	"strings"
 )
@@ -127,4 +128,8 @@ func clientIP(request *http.Request) string {
 	}
 
 	return request.RemoteAddr
+}
+
+func RandInt(min int, max int) int {
+	return min + rand.Intn(max-min)
 }

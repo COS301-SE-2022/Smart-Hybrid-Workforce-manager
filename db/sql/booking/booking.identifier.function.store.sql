@@ -29,8 +29,8 @@ BEGIN
         WHERE id = _id
 		RETURNING identifier.id INTO __id;
     ELSE
-    	INSERT INTO booking.identifier(id, user_id, resource_type, resource_preference_id, start, "end", booked, automated, dependent)
-    	VALUES (COALESCE(_id, uuid_generate_v4()), _user_id, _resource_type, _resource_preference_id, _start, _end, _booked, _automated ,_dependent)
+    	INSERT INTO booking.identifier(id, user_id, resource_type, resource_preference_id, resource_id, start, "end", booked, automated, dependent)
+    	VALUES (COALESCE(_id, uuid_generate_v4()), _user_id, _resource_type, _resource_preference_id, _resource_id, _start, _end, _booked, COALESCE(_automated, false) ,_dependent)
 		RETURNING identifier.id INTO __id;
     END IF;
 	RETURN __id;
