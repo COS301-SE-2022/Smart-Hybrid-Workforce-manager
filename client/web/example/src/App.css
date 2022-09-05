@@ -1378,14 +1378,17 @@
     }
 }
 
-.user-container {
-    display: float;
+.profile-container
+{
+    width: 85vw;
+    height: 80vh;
 
-    margin-left: 30vw;
     margin-top: 10vh;
+
+    background-color: #ffffff;
 }
 
-.user {
+.users {
     position: relative;
     display: grid;
     grid-template-columns: 20vw 20vw;
@@ -1409,14 +1412,20 @@
     animation-fill-mode: forwards;
 }
 
-.user-image {
-    grid-area: 'image';
+.profile-image-container
+{
+    position: absolute;
+
     background: linear-gradient(#fff0 0%, #fff0 70%, #1d1d1d 100%), url("https://media.istockphoto.com/photos/the-setup-for-success-picture-id1165916723?k=20&m=1165916723&s=612x612&w=0&h=ASBd76yDYvooY6s-Bck44cvzRcYOqkQBAzvEnKUUivw=");
     background-size: cover;
-    border-radius: 50vh;
+    border-style: solid;
+    border-width: 0.4vw;
+    border-radius: 10vh;
+    border-color: #ffffff;
 
-    margin-left: 2.5vw;
-    margin-top: 2.5vh;
+    margin-left: 37.5vw;
+    
+    top: 1.5vh;
 
     width: 10vw;
     height: 10vw;

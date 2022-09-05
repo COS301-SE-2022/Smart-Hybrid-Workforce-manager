@@ -127,9 +127,23 @@ function Profile()
         <ProfileBar />
         <Navbar />
         <div className='main-container'>
-            <div className='user-container'>
+            <div className='profile-container'>
+                <div className="profile-image-container"></div>
+
+                <div className='personal-information-container'>
+                    <div className='personal-information-title'>Personal Information</div>
+                    <div className='profile-firstname'>John</div>
+                    <div className='profile-surname'>Smith</div>
+                    <div className='profile-email'>jsmith@gmail.com</div>
+                    <div className='profile-home'>Work from home: Yes</div>
+                    <div className='profile-parking'>Parking type: Standard</div>
+                    <div className='profile-days'>Number of office days per week: 4</div>
+                    <div className='profile-startTime'>Preferred start time: 09:00</div>
+                    <div className='profile-endTime'>Preferred end time: 15:00</div>
+                </div>
+
                 <div className="user">
-                    <div className="user-image"></div>
+                    
                     <div className="user-text">
                     <p className="user-text-name">{firstName + " " + lastName}</p>
                     <p className="user-text-email">{email}</p>              
