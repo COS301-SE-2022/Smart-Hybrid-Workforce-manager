@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { useNavigate } from "react-router-dom"
+import { UserContext } from '../../App'
 
 const MeetingRoomBooking = (props, ref) =>
 {
@@ -18,6 +19,8 @@ const MeetingRoomBooking = (props, ref) =>
     const [aditionalAttendees, SetAditionalAttendees] = useState(0) // Use a number not string
     const [attendeesDesks, SetAttendeesDesks] = useState(false) // Use a bool
     const [aditionalAttendeesDesks, SetAditionalAttendeesDesks] = useState(false) // Use a bool
+    
+    const {userData} = useContext(UserContext);
 
     const navigate = useNavigate();
 
@@ -29,11 +32,12 @@ const MeetingRoomBooking = (props, ref) =>
             let res = await fetch("http://localhost:8080/api/booking/meetingroom/create", 
             {
                 method: "POST",
+                mode: "cors",
                 body: JSON.stringify(
                 {
                     "booking": {
                     id: null,
-                    user_id: window.sessionStorage.getItem("UserID"),
+                    user_id: userData.user_id,
                     resource_type: "MEETINGROOM",
                     resource_preference_id: null,
                     resource_id: null,
@@ -46,7 +50,11 @@ const MeetingRoomBooking = (props, ref) =>
                     additional_attendees: Number(aditionalAttendees),
                     desks_attendees: attendeesDesks,
                     desks_aditional_attendees: aditionalAttendeesDesks,
-                })
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
             });
 
             if(res.status === 200)
@@ -67,7 +75,12 @@ const MeetingRoomBooking = (props, ref) =>
         fetch("http://localhost:8080/api/team/information", 
         {
             method: "POST",
-            body: JSON.stringify({})
+            mode: "cors",
+            body: JSON.stringify({}),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+            }
         }).then((res) => res.json()).then(data => 
         {
             SetTeams(data);
@@ -80,7 +93,12 @@ const MeetingRoomBooking = (props, ref) =>
         fetch("http://localhost:8080/api/role/information", 
         {
             method: "POST",
-            body: JSON.stringify({})
+            mode: "cors",
+            body: JSON.stringify({}),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+            }
         }).then((res) => res.json()).then(data => 
         {
             SetRoles(data);
