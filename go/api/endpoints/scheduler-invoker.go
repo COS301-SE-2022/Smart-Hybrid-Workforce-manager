@@ -15,7 +15,7 @@ import (
 
 type SchedulerRequest struct {
 	StartDate *time.Time `json:"start_date,omitempty"`
-	NumDays   *int       `json:"num_days,omitempty"` // Used for weekly scheduler, not necissarily daily scheduler
+	NumDays   *int       `json:"num_days,omitempty"` // Used for weekly scheduler, not necessarily daily scheduler
 }
 
 //BookingHandlers handles booking requests

@@ -1,6 +1,7 @@
 package endpoints
 
 import (
+	"fmt"
 	"lib/utils"
 	"net/http"
 	"scheduler/data"
@@ -100,6 +101,12 @@ func dailyScheduler(writer http.ResponseWriter, request *http.Request) {
 	domain.Config = &config
 	domain.SchedulerData = &schedulerData
 	domain.Map = data.ExtractUserIdMap(&schedulerData)
+
+	indvs := ga.DailyPopulationGenerator(&domain, 20)
+
+	for _, indiv := range indvs {
+		fmt.Println(indiv.String())
+	}
 
 	utils.JSONResponse(writer, request, bookings)
 }
