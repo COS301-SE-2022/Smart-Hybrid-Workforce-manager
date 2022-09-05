@@ -149,9 +149,9 @@ func (access *BookingDA) FindIdentifier(identifier *Booking, permissions *Permis
 		return nil, err
 	}
 	results, err := access.access.Query(
-		`SELECT * FROM booking.identifier_find($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, mapBooking,
+		`SELECT * FROM booking.identifier_find($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`, mapBooking,
 		identifier.Id, identifier.UserId, identifier.ResourceType, identifier.ResourcePreferenceId,
-		identifier.ResourceId, identifier.Start, identifier.End, identifier.Booked, identifier.DateCreated, permissionContent)
+		identifier.ResourceId, identifier.Start, identifier.End, identifier.Booked, identifier.Automated, identifier.DateCreated, permissionContent)
 	if err != nil {
 		return nil, err
 	}

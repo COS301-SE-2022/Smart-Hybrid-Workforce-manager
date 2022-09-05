@@ -5,9 +5,11 @@ import (
 	"api/db"
 	"api/security"
 	"fmt"
+	"lib/collectionutils"
 	"lib/logger"
 	"lib/utils"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -49,6 +51,8 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
+	// Set booked to nil
+	booking.Booked = nil
 
 	// Check if user has permission to create a booking for the incomming user
 	authorized := false
@@ -73,9 +77,80 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 	}
 	defer access.Close()
 
-	// TODO [KP]: Do more checks like if they already have a booking etc
-
+	// Make access connection to db
 	da := data.NewBookingDA(access)
+	dr := data.NewResourceDA(access)
+
+	// Check if they already have a desk booking
+	floor := time.Date(booking.Start.Year(), booking.Start.Month(), booking.Start.Day(), 0, 0, 0, 0, booking.Start.Location())
+	ceil := time.Date(booking.Start.Year(), booking.Start.Month(), booking.Start.Day(), 23, 59, 59, 0, booking.Start.Location())
+	desk := "DESK"
+
+	presentBooking := &data.Booking{
+		UserId:       booking.UserId,
+		Start:        &floor,
+		End:          &ceil,
+		ResourceType: &desk,
+	}
+	bookings, err := da.FindIdentifier(presentBooking, &data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "USER")})
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	if len(bookings) > 0 {
+		utils.BadRequest(writer, request, "booking_exists")
+		return
+	}
+
+	// On Demand scheduler
+	now := time.Now()
+	now = time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+	daysInAdvance := 2
+	onDemandCutoffDate := now.AddDate(0, 0, daysInAdvance)
+
+	// Assign Resource on Demand
+	if (*booking.Start).Before(onDemandCutoffDate) {
+		// Get all resources booked on the day
+		day := &data.Booking{
+			Start: &floor,
+			End:   &ceil,
+		}
+		bookings, err := da.FindIdentifier(day, &data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "USER")})
+		if err != nil {
+			utils.InternalServerError(writer, request, err)
+			return
+		}
+		// Create a list of Resources booked
+		var resourcesBooked []string
+		for _, booking := range bookings {
+			resourcesBooked = append(resourcesBooked, *booking.ResourceId)
+		}
+		// Get all resources available
+		resourceType := &data.Resource{
+			ResourceType: &desk,
+		}
+		resources, err := dr.FindIdentifier(resourceType, &data.Permissions{data.CreateGenericPermission("VIEW", "RESOURCE", "IDENTIFIER")})
+		if err != nil {
+			utils.InternalServerError(writer, request, err)
+			return
+		}
+		// Find first available resource and bookit
+		yes := true
+		for _, resource := range resources {
+			if resource.Id != nil && !collectionutils.Contains(resourcesBooked, *resource.Id) {
+				booking.ResourceId = resource.Id
+				booking.Booked = &yes
+				break
+			}
+		}
+		// If no available resources error
+		if !(*booking.Booked) {
+			utils.BadRequest(writer, request, "no_available_resources")
+			return
+		}
+	}
+
+	// Create Booking
 	_, err = da.StoreIdentifier(&booking)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
