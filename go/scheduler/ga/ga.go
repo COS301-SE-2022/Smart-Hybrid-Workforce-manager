@@ -70,8 +70,8 @@ func (population Individuals) ClonePopulation() []*Individual {
 	return cloned
 }
 
-// ConvertIndividualToBookings converts an individual result to bookings
-func (individual *Individual) ConvertIndividualToBookings(domain Domain) data.Bookings {
+// ConvertIndividualToWeeklyBookings converts an individual result to bookings
+func (individual *Individual) ConvertIndividualToWeeklyBookings(domain Domain) data.Bookings {
 	var bookings data.Bookings
 
 	if individual == nil {
@@ -96,6 +96,22 @@ func (individual *Individual) ConvertIndividualToBookings(domain Domain) data.Bo
 				}
 			}
 		}
+	}
+
+	return bookings
+}
+
+// ConvertIndividualToDailyBookings converts an individual result to bookings
+func (individual *Individual) ConvertIndividualToDailyBookings(domain Domain) data.Bookings {
+	var bookings data.Bookings
+
+	if individual == nil {
+		return nil
+	}
+
+	for i, booking := range *domain.SchedulerData.CurrentBookings {
+		booking.ResourceId = &individual.Gene[0][i]
+		bookings = append(bookings, booking)
 	}
 
 	return bookings
@@ -240,6 +256,9 @@ func (individual Individual) String() string {
 	// 			}
 	// 		}
 	// 	}
+	if len(individual.Gene) == 0 {
+		return "no elements"
+	}
 	maxSlotsize := -1
 	for _, day := range individual.Gene {
 		if len(day) > maxSlotsize {
@@ -312,6 +331,10 @@ func (individual *Individual) StringDomain(domain Domain) string {
 	// 			}
 	// 		}
 	// 	}
+	if len(individual.Gene) == 0 || len(individual.Gene[0]) == 0 {
+		return "no elements"
+	}
+
 	maxSlotsize := -1
 	for _, day := range individual.Gene {
 		if len(day) > maxSlotsize {
