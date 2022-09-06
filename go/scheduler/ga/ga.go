@@ -3,10 +3,7 @@ package ga
 import (
 	"context"
 	"fmt"
-	"lib/logger"
-	"lib/testutils"
 	"lib/utils"
-	"math"
 	"math/rand"
 	"scheduler/data"
 	"strings"
@@ -124,10 +121,10 @@ func (population Individuals) GetRandomIndividual() *Individual {
 }
 
 // GA is a generic configurable genetic algorithm that produces multiple solutions to the domain problem
-func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, selection Selection, populationGenerator PopulationGenerator, solutionChannel chan Individual, forceStop context.Context) {
+func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, selection Selection, populationGenerator PopulationGenerator, solutionChannel chan Individual, forceStop *context.Context) {
 	// Seed
 	rand.Seed(int64(domain.Config.Seed))
-	start := time.Now()
+	//start := time.Now()
 
 	// Create initial pop and calculate fitnesses
 	population := populationGenerator(&domain, domain.Config.PopulationSize)
@@ -137,10 +134,10 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 
 	fitness(&domain, population)
 
-	selectPrint := selection(&domain, population, 2)
-	for _, indiv := range selectPrint {
-		logger.Error.Printf("Initial population\n%v\n\n\n", indiv)
-	}
+	// selectPrint := selection(&domain, population, 2)
+	// for _, indiv := range selectPrint {
+	// 	logger.Error.Printf("Initial population\n%v\n\n\n", indiv)
+	// }
 
 	// selectPrint = selection(&domain, population, 1)
 	// for _, indiv := range selectPrint {
@@ -148,23 +145,23 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 	// }
 
 	// Get max and avg fitness
-	totalFitness := 0.0
-	maxFitness := math.Inf(-1)
-	minFitness := math.Inf(1)
-	for _, indiv := range population {
-		maxFitness = math.Max(maxFitness, indiv.Fitness)
-		minFitness = math.Min(minFitness, indiv.Fitness)
-		totalFitness += indiv.Fitness
-	}
+	// totalFitness := 0.0
+	// maxFitness := math.Inf(-1)
+	// minFitness := math.Inf(1)
+	// for _, indiv := range population {
+	// 	maxFitness = math.Max(maxFitness, indiv.Fitness)
+	// 	minFitness = math.Min(minFitness, indiv.Fitness)
+	// 	totalFitness += indiv.Fitness
+	// }
 
-	fmt.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f\n", maxFitness, minFitness, totalFitness/float64(len(population)))
+	// fmt.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f\n", maxFitness, minFitness, totalFitness/float64(len(population)))
 
 	// return selection(&domain, population, 1)
 
 	// Run ga
 	stoppingCondition := true
 	for i := 0; i < domain.Config.Generations && stoppingCondition; i++ {
-		stoppingCondition = forceStop.Err() != nil
+		stoppingCondition = (*forceStop).Err() == nil
 
 		crossOverAmount := int(float64(domain.Config.PopulationSize) * domain.Config.CrossOverRate)
 		mutateAmount := int(float64(domain.Config.PopulationSize) * domain.Config.MutationRate)
@@ -196,52 +193,52 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 		// send individual on channel
 		solutionChannel <- *selection(&domain, population, 1)[0]
 
-		if i%1 == 0 {
-			totalFitness = 0.0
-			maxFitness = math.Inf(-1)
-			minFitness = math.Inf(1)
-			for _, indiv := range population {
-				maxFitness = math.Max(maxFitness, indiv.Fitness)
-				minFitness = math.Min(minFitness, indiv.Fitness)
-				totalFitness += indiv.Fitness
-			}
+		// if i%1 == 0 {
+		// 	totalFitness = 0.0
+		// 	maxFitness = math.Inf(-1)
+		// 	minFitness = math.Inf(1)
+		// 	for _, indiv := range population {
+		// 		maxFitness = math.Max(maxFitness, indiv.Fitness)
+		// 		minFitness = math.Min(minFitness, indiv.Fitness)
+		// 		totalFitness += indiv.Fitness
+		// 	}
 
-			logger.Debug.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f  ", maxFitness, minFitness, totalFitness/float64(len(population)))
-			if int(400*totalFitness/float64(len(population))) <= 0 {
-				logger.Debug.Print("-")
-			} else {
-				logger.Debug.Print(strings.Repeat("*", int(400*totalFitness/float64(len(population)))))
-			}
+		// 	logger.Debug.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f  ", maxFitness, minFitness, totalFitness/float64(len(population)))
+		// 	if int(400*totalFitness/float64(len(population))) <= 0 {
+		// 		logger.Debug.Print("-")
+		// 	} else {
+		// 		logger.Debug.Print(strings.Repeat("*", int(400*totalFitness/float64(len(population)))))
+		// 	}
 
-			logger.Debug.Println()
-		}
+		// 	logger.Debug.Println()
+		// }
 	}
-	end := time.Now()
+	//end := time.Now()
 	// for _, indiv := range population {
 	// 	fmt.Printf("Final population\n%v\n\n\n", indiv)
 	// }
 
-	selectPrint = selection(&domain, population, 5)
-	for _, indiv := range selectPrint {
-		fmt.Printf("Final population\n%v\n\nFitness: %v\n\n", indiv, fitness(&domain, Individuals{indiv}))
-	}
+	// selectPrint = selection(&domain, population, 5)
+	// for _, indiv := range selectPrint {
+	// 	fmt.Printf("Final population\n%v\n\nFitness: %v\n\n", indiv, fitness(&domain, Individuals{indiv}))
+	// }
 
 	// for _, indiv := range population {
 	// 	fmt.Printf("%v|%v\n", fitness(&domain, Individuals{indiv})[0], indiv.Fitness)
 	// }
 
 	// Get max and avg fitness
-	totalFitness = 0.0
-	maxFitness = math.Inf(-1)
-	minFitness = math.Inf(1)
-	for _, indiv := range population {
-		maxFitness = math.Max(maxFitness, indiv.Fitness)
-		minFitness = math.Min(minFitness, indiv.Fitness)
-		totalFitness += indiv.Fitness
-	}
+	// totalFitness = 0.0
+	// maxFitness = math.Inf(-1)
+	// minFitness = math.Inf(1)
+	// for _, indiv := range population {
+	// 	maxFitness = math.Max(maxFitness, indiv.Fitness)
+	// 	minFitness = math.Min(minFitness, indiv.Fitness)
+	// 	totalFitness += indiv.Fitness
+	// }
 
-	fmt.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f\n", maxFitness, minFitness, totalFitness/float64(len(population)))
-	fmt.Printf(testutils.Scolour(testutils.BLUE, "+++++++Exec time: %v\n"), end.Sub(start))
+	// fmt.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f\n", maxFitness, minFitness, totalFitness/float64(len(population)))
+	// fmt.Printf(testutils.Scolour(testutils.BLUE, "+++++++Exec time: %v\n"), end.Sub(start))
 }
 
 // String method for printing individuals

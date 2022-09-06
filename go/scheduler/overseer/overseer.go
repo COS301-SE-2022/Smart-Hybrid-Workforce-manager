@@ -3,6 +3,7 @@ package overseer
 import (
 	"context"
 	"fmt"
+	"lib/logger"
 	"scheduler/data"
 	"scheduler/ga"
 	"time"
@@ -31,27 +32,27 @@ func WeeklyOverseer(schedulerData data.SchedulerData) []data.Bookings {
 	var c chan ga.Individual = make(chan ga.Individual)
 	var s context.Context = context.Background()
 
-	go ga.GA(domain, ga.WeeklyDayVResourceCrossover, ga.WeeklyDayVResourceFitness, ga.WeeklyDayVResourceMutateSwapValid, ga.WeeklyTournamentSelection, ga.WeeklyDayVResourcePopulationGenerator, c, s)
+	go ga.GA(domain, ga.WeeklyDayVResourceCrossover, ga.WeeklyDayVResourceFitness, ga.WeeklyDayVResourceMutateSwapValid, ga.WeeklyTournamentSelection, ga.WeeklyDayVResourcePopulationGenerator, c, &s)
 
 	// Listen on channel for best individual for x seconds
 	var best ga.Individual
-	select {
-	case <-time.After(time.Second * 10):
-		s.Done()
-		break
-	case candidate, ok := <-c: // if ok is false close event happened
-		if !ok {
-			break
-		}
-		if candidate.Fitness > best.Fitness {
-			best = candidate
+	for {
+		select {
+		case <-time.After(time.Second * 5):
+			s.Done()
+			bookings = append(bookings, best.ConvertIndividualToWeeklyBookings(domain))
+			return bookings
+		case candidate, ok := <-c: // if ok is false close event happened
+			if !ok {
+				bookings = append(bookings, best.ConvertIndividualToWeeklyBookings(domain))
+				return bookings
+			}
+			if candidate.Fitness > best.Fitness {
+				best = candidate
+				logger.Error.Printf("BEST INDIVIDUAL \n %v", best)
+			}
 		}
 	}
-
-	// Todo check if best is not nil
-	bookings = append(bookings, best.ConvertIndividualToWeeklyBookings(domain))
-
-	return bookings
 }
 
 func DailyOverseer(schedulerData data.SchedulerData) []data.Bookings {
