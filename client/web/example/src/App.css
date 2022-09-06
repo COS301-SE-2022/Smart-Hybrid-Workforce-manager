@@ -1403,6 +1403,23 @@
     height: 10vw;
 }
 
+.profile-edit
+{
+    position: absolute;
+
+    margin-left: 80vw;
+    
+    top: 10vh;
+
+    font-size: 2vw;
+}
+
+.profile-edit:hover
+{
+    cursor: pointer;
+    color: #09a2fb;
+}
+
 .personal-information-container
 {
     grid-area: "topLeft";
