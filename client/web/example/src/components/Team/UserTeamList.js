@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import { MdDelete } from 'react-icons/md'
+import { MdDelete } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
 const UserTeamList = ({id}) =>
 {  
     const [name, setName] = useState("error");
+    const navigate = useNavigate();
     
   let DeleteUser = async (e) =>
     {
@@ -12,7 +14,7 @@ const UserTeamList = ({id}) =>
         {
             try
             {
-                let res = await fetch("http://localhost:8100/api/team/user/remove", 
+                let res = await fetch("http://localhost:8080/api/team/user/remove", 
                 {
                     method: "POST",
                     body: JSON.stringify({
@@ -24,7 +26,7 @@ const UserTeamList = ({id}) =>
                 if(res.status === 200)
                 {
                     alert("User Successfully Removed!");
-                    window.location.reload();
+                    navigate(0);
                 }
             }
             catch (err)
@@ -37,7 +39,7 @@ const UserTeamList = ({id}) =>
   //POST request
   const getName = useCallback(() =>
   {
-    fetch("http://localhost:8100/api/user/information", 
+    fetch("http://localhost:8080/api/user/information", 
         {
           method: "POST",
             body: JSON.stringify({

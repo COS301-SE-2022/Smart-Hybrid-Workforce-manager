@@ -1,27 +1,15 @@
 import useImage from 'use-image';
-import meetingroom_grey from '../../img/meetingroom_grey.svg';
 import meetingroom_img from '../../img/meetingroom_img.svg';
-import { Image, Rect } from 'react-konva'
-import { useRef, useEffect, Fragment, useState } from 'react'
+import { Image } from 'react-konva'
+import { useRef, useEffect, Fragment } from 'react'
 import { Transformer } from 'react-konva'
 
 const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, stage}) =>
 {
     const shapeRef = useRef(null);
-    const imgRef = useRef(null);
     const transformRef = useRef(null);
     //const [image] = useImage(meetingroom_grey);
     const [image] = useImage(meetingroom_img);
-    const [center, setCenter] = useState([(-stage.x() + stage.width() / 2.0) / stage.scaleX(), (-stage.y() + stage.height() / 2.0) / stage.scaleY()]);
-
-    const calculateCenter = (x, offX, y, offY, width, height, angle) =>
-    {
-        angle = angle * Math.PI / 180;
-        const cX = x + ((width / 2) * Math.cos(-angle)) + ((height / 2) * Math.sin(-angle)) - (offX * Math.cos(-angle)) - (offY * Math.sin(-angle));
-        const cY = y + ((width / 2) * Math.sin(angle)) + ((height / 2) * Math.cos(angle)) - (offY * Math.cos(angle)) - (offX * Math.sin(angle));
-
-        setCenter([cX, cY]);
-    }
 
     useEffect(() =>
     {
@@ -31,11 +19,6 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, stage}) =>
             transformRef.current.getLayer().batchDraw();
         }
     }, [isSelected]);
-
-    useEffect(() =>
-    {
-        calculateCenter(shapeRef.current.x(), shapeRef.current.offsetX(), shapeRef.current.y(), shapeRef.current.offsetY(), shapeRef.current.width(), shapeRef.current.height(), shapeRef.current.getAbsoluteRotation());
-    }, [shapeRef]);
 
     return (
         <Fragment> 

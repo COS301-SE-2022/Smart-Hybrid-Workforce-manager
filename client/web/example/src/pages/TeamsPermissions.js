@@ -1,4 +1,4 @@
-import Navbar from "../components/Navbar"
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
 import { useState, useEffect, useCallback } from 'react'
 import Form from 'react-bootstrap/Form'
@@ -88,7 +88,7 @@ const TeamPermissions = () =>
   {
     try
     {
-      let res = await fetch("http://localhost:8100/api/permission/create", 
+      let res = await fetch("http://localhost:8080/api/permission/create", 
       {
         method: "POST",
         body: JSON.stringify({
@@ -113,7 +113,7 @@ const TeamPermissions = () =>
   {
     try
     {
-      let res = await fetch("http://localhost:8100/api/permission/remove", 
+      let res = await fetch("http://localhost:8080/api/permission/remove", 
       {
         method: "POST",
         body: JSON.stringify({
@@ -133,7 +133,7 @@ const TeamPermissions = () =>
   //POST request
   const FetchTeamPermissions = useCallback(() =>
   {
-    fetch("http://localhost:8100/api/permission/information", 
+    fetch("http://localhost:8080/api/permission/information", 
         {
           method: "POST",
           body: JSON.stringify({

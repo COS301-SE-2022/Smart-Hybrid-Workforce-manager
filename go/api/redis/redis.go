@@ -18,6 +18,7 @@ import (
 	"errors"
 	"github.com/go-redis/redis/v8"
 	_ "github.com/gorilla/mux"
+	"lib/logger"
 )
 
 ////////////////////////////////////////////////
@@ -30,14 +31,17 @@ import (
 
 ////////////////////////////////////////////////
 //Structures and Variables
-
 type RedisData struct{
 	User_id 			string		`json:"user_id"`
-	Email				string		`json:"email"`
+	User_Identifier		string		`json:"user_identifier"`
+	User_Name			string		`json:"user_name"`
+	User_Surname		string		`json:"user_surname"`
 	Token 				string 		`json:"token"`
 	CreationTime 		time.Time 	`json:"CreationTime"`
 	ExpirationTime 		time.Time	`json:"ExpirationTime"`
 }
+
+
 
 //Redis clients
 var redisClients[5] *redis.Client
@@ -46,7 +50,7 @@ var redisClients[5] *redis.Client
 var ctx = context.Background()
 
 func InitializeRedisClients() error{
-	// //logger.Info.Println("Redis Initializing!")
+	logger.Info.Println("Redis Initializing!")
 	for i := 0; i < 5; i++{
 		if redisClients[i] == nil {
 			redisClients[i] = redis.NewClient(&redis.Options{
@@ -57,18 +61,18 @@ func InitializeRedisClients() error{
 			err := redisClients[i].Set(ctx, "verify", true, 0).Err()
 			if err != nil {
 				fmt.Println(err)
-				//logger.Error.Fatal(err)
+				logger.Error.Fatal(err)
 				return err
 			}
 			val, err := redisClients[i].Get(ctx, "verify").Result()
 			if err != nil {
-				//logger.Error.Fatal(err)
+				logger.Error.Fatal(err)
 				return err
 			}
 			_ = val
 		}
 	}
-	//logger.Info.Println("Redis Initialized")
+	logger.Info.Println("Redis Initialized")
 	return nil
 } 
 
@@ -86,12 +90,12 @@ func getRedisClient(database int) redis.Client {
 		err := redisClients[database].Set(ctx, "verify", true, 0).Err()
 		if err != nil {
 			fmt.Println(err)
-			//logger.Error.Fatal(err)
+			logger.Error.Fatal(err)
 		}
 		val, err := redisClients[database].Get(ctx, "verify").Result()
 		if err != nil {
 			fmt.Println(err)
-			//logger.Error.Fatal(err)
+			logger.Error.Fatal(err)
 		}
 		_ = val
 		return *redisClients[database]
@@ -243,7 +247,7 @@ func generateToken()string{
 	buff := make([]byte, int(math.Ceil(float64(128)/2)))
     n,err := rand.Read(buff)
 	if err != nil{
-		//logger.Warn.Println(err)
+		logger.Warn.Println(err)
 	}
 	_ = n
     return hex.EncodeToString(buff)[:128]
@@ -254,7 +258,7 @@ func generateAuthToken(rclient *redis.Client, user_id string)(string,error){
 	if err != nil{
 		err = rclient.Set(ctx, user_id, "", 0).Err()
 		if err != nil{
-			//logger.Error.Println("Redis database error: cannot set user token")
+			logger.Error.Println("Redis database error: cannot set user token")
 			return "",err
 		}
 	}
@@ -272,7 +276,7 @@ func generateAuthToken(rclient *redis.Client, user_id string)(string,error){
 	}
     err = rclient.Set(ctx, user_id, token, 0).Err()
 	if err != nil{
-		//logger.Error.Println("Redis database error: cannot set user token")
+		logger.Error.Println("Redis database error: cannot set user token")
 		return "",err
 	}
 	return token,nil;
@@ -281,7 +285,6 @@ func generateAuthToken(rclient *redis.Client, user_id string)(string,error){
 
 func GetRequestRedisData(request *http.Request) (*RedisData,error) {
 	token := string(request.Header.Get("Authorization"))
-	fmt.Print(token)
 	//check "bearer "
 	if(len(token) < 100){
 		//log bad auth token
@@ -306,10 +309,14 @@ func getTokenRedisData(token string) (*RedisData,error){
 	if err != nil{
 		return nil,errors.New("Redis data parse error")
 	}
-	return redisData,nil;
+	if(redisData != nil){
+		return redisData,nil;
+	}
+	return nil,errors.New("no data found");
+		
 }
 
-func UserLogin(user_id string) (*RedisData,error){
+func UserLogin(user_id string, user_identifier string, user_name string, user_surname string) (*RedisData,error){
 	redisClient := getAuthClient();
 
 	token, err := generateAuthToken(&redisClient, user_id);
@@ -319,6 +326,9 @@ func UserLogin(user_id string) (*RedisData,error){
 
 	redisData := &RedisData{
 		User_id: user_id,
+		User_Identifier: user_identifier,
+		User_Name: user_name,
+		User_Surname: user_surname,
 		Token: token,
 		CreationTime: time.Now(), 
 		ExpirationTime: time.Now().Add(time.Hour),
@@ -326,18 +336,18 @@ func UserLogin(user_id string) (*RedisData,error){
 
 	rdata,err := json.Marshal(redisData)
 	if err != nil{
-		//logger.Error.Fatal(err)
+		logger.Error.Fatal(err)
 		return nil,err
 	}
 
 	err = redisClient.Set(ctx, token, rdata, time.Until(time.Now().Add(time.Hour))).Err();
 	if err != nil{
-		//logger.Error.Fatal(serr)
+		logger.Error.Fatal(err)
 		return nil,errors.New("redis database error: cannot set token data")
 	}
 	val, err := redisClient.Get(ctx, token).Result();
 	if err != nil {
-		//logger.Error.Fatal(gerr)
+		logger.Error.Fatal(err)
 		return nil,errors.New("redis database error: cannot get set token");
 	}
 	_ = val;

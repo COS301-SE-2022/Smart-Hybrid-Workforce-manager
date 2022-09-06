@@ -1,8 +1,9 @@
-import Navbar from "../components/Navbar"
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
 import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { useNavigate } from 'react-router-dom';
 
 const RoomEdit = () =>
 {
@@ -10,10 +11,12 @@ const RoomEdit = () =>
   const [roomLocation, setRoomLocation] = useState("");
   const [roomDimensions, setRoomDimensions] = useState("");
 
+  const navigate = useNavigate();
+
   //POST request
   const FetchRoom = () =>
   {
-    fetch("http://localhost:8100/api/resource/room/information", 
+    fetch("http://localhost:8080/api/resource/room/information", 
         {
           method: "POST",
           body: JSON.stringify({
@@ -32,7 +35,7 @@ const RoomEdit = () =>
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/resource/room/create", 
+      let res = await fetch("http://localhost:8080/api/resource/room/create", 
       {
         method: "POST",
         body: JSON.stringify({
@@ -47,7 +50,7 @@ const RoomEdit = () =>
       if(res.status === 200)
       {
         alert("Room Successfully Updated!");
-        window.location.assign("./resources");
+        navigate("/resources");
       }
     }
     catch(err)

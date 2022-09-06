@@ -1,10 +1,11 @@
-import Navbar from "../components/Navbar"
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
 import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import UserRoleList from '../components/Role/UserRoleList'
 import RoleLeadOption from '../components/Role/RoleLeadOption'
+import { useNavigate } from 'react-router-dom';
 
 const EditRole = () =>
 {
@@ -13,13 +14,14 @@ const EditRole = () =>
   const [roleLead, setRoleLead] = useState(window.sessionStorage.getItem("RoleLead"));
 
   const [roleUsers, SetRoleUsers] = useState([]);
+  const navigate = useNavigate();
 
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/role/create", 
+      let res = await fetch("http://localhost:8080/api/role/create", 
       {
         method: "POST",
         body: JSON.stringify({
@@ -32,7 +34,7 @@ const EditRole = () =>
       if(res.status === 200)
       {
         alert("Role Successfully Updated!");
-        window.location.assign("./role");
+        navigate("/role");
       }
     }
     catch(err)
@@ -44,7 +46,7 @@ const EditRole = () =>
     //POST request
   const FetchRoleUsers = () =>
   {
-    fetch("http://localhost:8100/api/role/user/information", 
+    fetch("http://localhost:8080/api/role/user/information", 
         {
           method: "POST",
           body: JSON.stringify({
@@ -58,7 +60,7 @@ const EditRole = () =>
 
   const PermissionConfiguration = () =>
   {
-    window.location.assign("./role-permissions");
+    navigate("/role-permissions");
   }
 
   //Using useEffect hook. This will ste the default values of the form once the components are mounted

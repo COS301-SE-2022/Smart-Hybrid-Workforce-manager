@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import Navbar from '../components/Navbar'
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from '../components/Footer'
 import '../App.css'
 import Button from 'react-bootstrap/Button'
@@ -7,6 +7,8 @@ import RoleUserList from '../components/Role/RoleUserList'
 import TeamUserList from '../components/Team/TeamUserList'
 import { UserContext } from '../App'
 import { useNavigate } from 'react-router-dom'
+import ProfileBar from '../components/Navbar/ProfileBar';
+import { FaWheelchair, FaHouseUser } from 'react-icons/fa';
 
 function Profile()
 {
@@ -25,77 +27,93 @@ function Profile()
   const [roles, SetRoles] = useState([])
   const [teams, SetTeams] = useState([])
   
-  const {userData}=useContext(UserContext)
+  const {userData,setUserData}=useContext(UserContext)
 
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
-  //POST request
-  const FetchUser = () =>
-  {
-    fetch("http://localhost:8100/api/user/information", 
-        {
-          method: "POST",
-          body: JSON.stringify({
-            identifier:userData.user_id.substring(6)
-          })
-        }).then((res) => res.json()).then(data => 
-        {
-          sessionStorage.setItem("UserID",data[0].id)
-          SetIdentifier(data[0].identifier)
-          SetFirstName(data[0].first_name);
-          SetLastName(data[0].last_name);
-          SetEmail(data[0].email);
-          SetPicture(data[0].picture);
-          SetDateCreated(data[0].date_created);
-          SetWorkFromHome(data[0].work_from_home);
-          SetParking(data[0].parking);
-          SetOfficeDays(data[0].office_days);
-          SetStartTime(data[0].preferred_start_time);
-          SetEndTime(data[0].preferred_end_time);
-        });
-  }
-
-  console.log(window.sessionStorage.getItem("UserID"))
+  /*console.log(window.sessionStorage.getItem("UserID"))
   console.log(userData)
-  console.log(userData.user_id.substring(6))
-  //POST request
-  const FetchUserRoles = () =>
-  {
-    fetch("http://localhost:8100/api/role/user/information", 
-        {
-          method: "POST",
-          body: JSON.stringify({
-            identifier:userData.user_id.substring(6)
-          })
-        }).then((res) => res.json()).then(data => 
-          {
-            SetRoles(data);
-          });
-  }
-
-  //POST request
-  const FetchUserTeams = () =>
-  {
-    fetch("http://localhost:8100/api/team/user/information", 
-        {
-          method: "POST",
-          body: JSON.stringify({
-            identifier:userData.user_id.substring(6)
-          })
-        }).then((res) => res.json()).then(data => 
-          {
-            SetTeams(data);
-          });
-  }
+  console.log(userData.user_id.substring(6))*/
+  
 
   //Using useEffect hook. This will ste the default values of the form once the components are mounted
-  useEffect(() =>
-  {
-    // window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
-    FetchUser();
-    FetchUserRoles();
-    FetchUserTeams();
-  }, [])
+    useEffect(() =>
+    {
+        //POST requests
+        const FetchUser = () =>
+        {
+            fetch("http://localhost:8080/api/user/information", 
+            {
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify({
+                    identifier : userData.user_identifier
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
+            }).then((res) => res.json()).then(data => 
+            {
+                console.log(data);
+                sessionStorage.setItem("UserID", data[0].id);
+                SetIdentifier(data[0].identifier);
+                SetFirstName(data[0].first_name);
+                SetLastName(data[0].last_name);
+                SetEmail(data[0].email);
+                SetPicture(data[0].picture);
+                SetDateCreated(data[0].date_created);
+                SetWorkFromHome(data[0].work_from_home);
+                SetParking(data[0].parking);
+                SetOfficeDays(data[0].office_days);
+                SetStartTime(data[0].preferred_start_time.substring(11,16));
+                SetEndTime(data[0].preferred_end_time.substring(11,16));
+            });
+        };
+
+        const FetchUserRoles = () =>
+        {
+            fetch("http://localhost:8080/api/role/user/information", 
+            {
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify({
+                    identifier: userData.user_identifier
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
+            }).then((res) => res.json()).then(data => 
+            {
+                SetRoles(data);
+            });
+        };
+
+        const FetchUserTeams = () =>
+        {
+            fetch("http://localhost:8080/api/team/user/information", 
+            {
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify({
+                    identifier: userData.user_identifier
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
+            }).then((res) => res.json()).then(data => 
+            {
+                SetTeams(data);
+            });
+        }
+
+        // window.sessionStorage.setItem("UserID", "11111111-1111-4a06-9983-8b374586e459");
+        FetchUser();
+        FetchUserRoles();
+        FetchUserTeams();
+  }, [userData])
 
   const ProfileConfiguration = () =>
   {
@@ -112,55 +130,79 @@ function Profile()
     window.sessionStorage.setItem("StartTime", startTime);
     window.sessionStorage.setItem("EndTime", endTime);
     navigate("/profile-configuration")
-    // window.location.assign("./profile-configuration");
   }
 
   const LogOut = () =>
   {
-
-    window.location.assign("./login");
+    setUserData(null);
+    navigate("/login");
   }
 
-  return (
-    <div className='page-container'>
-      <div className='content'>
-        <Navbar />
-        <div className='user-container'>
-          <div className="user">
-            <div className="user-image"></div>
-            <div className="user-text">
-              <p className="user-text-name">{firstName + " " + lastName}</p>
-              <p className="user-text-email">{email}</p>              
+    const renderWheelchair = () =>
+    {
+        if(parking === 'DISABLED')
+        {
+            return <FaWheelchair />
+        }
+    }
+
+    const renderHome = () =>
+    {
+        if(workFromHome === 'true')
+        {
+            return <FaHouseUser />
+        }
+    }
+
+    return (
+        <div className='page-container'>
+            <div className='content'>
+                <ProfileBar />
+                <Navbar />
+                <div className='main-container'>
+                    <div className='profile-container'>
+                        
+                        <div className='personal-information-container'>
+                            <div className='profile-name'>{firstName} &nbsp; {lastName}</div>
+                            <div className='profile-email'>{email}</div>
+                            <div className='profile-icons'>
+                                {renderWheelchair()}
+                                {renderHome()}
+                            </div>
+                        </div>
+
+                        <div className='preferences-container'>
+                            <div className='profile-days'>{officeDays} office days per week</div>
+                        <div className='profile-time'>Preferred times: {startTime} - {endTime}</div>
+                            <div className='profile-roles'>
+                                {roles.length > 0 && (
+                                    roles.map(role =>
+                                    (
+                                        role.role_id 
+                                    ))
+                                )}
+                            </div>
+                        </div>
+
+                        <div className='profile-teams-container'>
+                            <div className='profile-teams-title'>Teams</div>
+                            <div className='profile-teams-carousel'>
+                                {teams.length > 0 && (
+                                    teams.map(team =>
+                                    (
+                                        <div className='profile-team'>{team.team_id}</div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="profile-image-container"></div>
+
+                    </div>
+                </div>
             </div>
-            <div className="user-roles">
-              <h3>Roles</h3>
-              <div className='list'>
-                {roles.length > 0 && (
-                  roles.map(role => (
-                    <RoleUserList id={role.role_id}/>
-                    
-                  ))
-                )}
-              </div>
-            </div>
-            <div className="user-teams">
-              <h3>Teams</h3>
-              <div className='list'>
-                {teams.length > 0 && (
-                  teams.map(team => (
-                    <TeamUserList teamId={team.team_id} />
-                  ))
-                )}
-              </div>
-            </div>
-            <Button className='button-user-profile' variant='primary' onClick={ProfileConfiguration}>Profile Configuration</Button>
-            <Button className='button-user-profile' variant='primary' onClick={LogOut}>Log Out</Button>
-          </div>
         </div>
-      </div>
-      <Footer />
-    </div>
-  )
+    )
 }
 
 export default Profile

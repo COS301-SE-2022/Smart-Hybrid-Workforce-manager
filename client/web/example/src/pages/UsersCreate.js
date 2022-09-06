@@ -1,22 +1,24 @@
 import React, { useState } from 'react'
-import Navbar from '../components/Navbar'
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from '../components/Footer'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
+import { useNavigate } from 'react-router-dom'
 
 function CreateUser()
 {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const navigate=useNavigate();
 
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/user/register", 
+      let res = await fetch("http://localhost:8080/api/user/register", 
       {
         method: "POST",
         body: JSON.stringify({
@@ -30,7 +32,7 @@ function CreateUser()
       if(res.status === 200)
       {
         alert("User Successfully Created!");
-        window.location.assign("./users");
+        navigate("/users");
       }
     }
     catch(err)

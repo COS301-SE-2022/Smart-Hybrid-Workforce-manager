@@ -1,4 +1,4 @@
-import Navbar from "../components/Navbar"
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
 import Button from 'react-bootstrap/Button'
 import { useState, useEffect, useContext } from 'react';
@@ -14,7 +14,7 @@ function Teams()
   //POST request
   const FetchTeams = () =>
   {
-    fetch("http://localhost:8100/api/team/information", 
+    fetch("http://localhost:8080/api/team/information", 
         {
           method: "POST",
           body: JSON.stringify({
@@ -28,7 +28,6 @@ function Teams()
   const AddTeam = () =>
   {
     navigate("/team-create");
-    // window.location.assign("./team-create");
   }
 
   //Using useEffect hook. This will send the POST request once the component is mounted
