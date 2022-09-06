@@ -25,12 +25,10 @@ func WeeklyOverseer(schedulerData data.SchedulerData) []data.Bookings {
 	domain.Config = &config
 	domain.SchedulerData = &schedulerData
 
-	results := ga.GA(domain, ga.WeeklyDayVResourceCrossover, ga.WeeklyDayVResourceFitness, ga.WeeklyDayVResourceMutateSwapValid, ga.WeeklyTournamentSelection, ga.WeeklyDayVResourcePopulationGenerator)
-	// results := ga.GA(domain, ga.WeeklyDayVResourceCrossover, ga.WeeklyDayVResourceFitness, ga.WeeklyDayVResouceMutate, ga.WeeklyTournamentSelection, ga.WeeklyDayVResourcePopulationGenerator)
+	// Create channel
+	var c chan ga.Individual = make(chan ga.Individual)
 
-	if len(results) == 0 { // todo add check
-
-	}
+	results := ga.GA(domain, ga.WeeklyDayVResourceCrossover, ga.WeeklyDayVResourceFitness, ga.WeeklyDayVResourceMutateSwapValid, ga.WeeklyTournamentSelection, ga.WeeklyDayVResourcePopulationGenerator, c)
 
 	// Get best individual
 	for i, indiv := range results {

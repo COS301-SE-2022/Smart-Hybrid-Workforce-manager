@@ -123,7 +123,7 @@ func (population Individuals) GetRandomIndividual() *Individual {
 }
 
 // GA is a generic configurable genetic algorithm that produces multiple solutions to the domain problem
-func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, selection Selection, populationGenerator PopulationGenerator) Individuals {
+func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, selection Selection, populationGenerator PopulationGenerator, solutionChannel chan Individual) Individuals {
 	// Seed
 	rand.Seed(int64(domain.Config.Seed))
 	start := time.Now()
