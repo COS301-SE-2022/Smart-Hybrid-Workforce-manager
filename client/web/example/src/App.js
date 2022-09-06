@@ -7,6 +7,8 @@ import Bookings from './pages/Bookings'
 import BookingsDesk from './pages/BookingsDesk'
 import BookingsMeetingRoom from './pages/BookingsMeetingRoom'
 
+import Map from './pages/Map'
+
 import Admin from './pages/Admin'
 
 import Teams from './pages/Teams'
@@ -73,6 +75,7 @@ function App()
             <Route path="/bookings-meetingroom" exact element={<BookingsMeetingRoom/>} />
             <Route path="/admin" exact element={<Admin />} />
             <Route path="/layout" exact element={<Layout />} />
+            <Route path="/map" exact element={<Map />} />
 
             <Route path="/users" exact element={<Users />} />
             <Route path="/user-edit" exact element={<EditUser />} />
