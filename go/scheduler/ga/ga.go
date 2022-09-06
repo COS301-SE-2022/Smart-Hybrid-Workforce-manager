@@ -1,6 +1,7 @@
 package ga
 
 import (
+	"context"
 	"fmt"
 	"lib/logger"
 	"lib/testutils"
@@ -123,26 +124,23 @@ func (population Individuals) GetRandomIndividual() *Individual {
 }
 
 // GA is a generic configurable genetic algorithm that produces multiple solutions to the domain problem
-func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, selection Selection, populationGenerator PopulationGenerator, solutionChannel chan Individual) Individuals {
+func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, selection Selection, populationGenerator PopulationGenerator, solutionChannel chan Individual, forceStop context.Context) {
 	// Seed
 	rand.Seed(int64(domain.Config.Seed))
 	start := time.Now()
+
 	// Create initial pop and calculate fitnesses
 	population := populationGenerator(&domain, domain.Config.PopulationSize)
 	// for _, indiv := range population {
 	// 	fmt.Printf("Initial population\n%v\n\n\n", indiv)
 	// }
 
-	// return selection(&domain, population, 1)
-
-	fitness(&domain, population) // TODO Change to useful individuals
+	fitness(&domain, population)
 
 	selectPrint := selection(&domain, population, 2)
 	for _, indiv := range selectPrint {
 		logger.Error.Printf("Initial population\n%v\n\n\n", indiv)
 	}
-
-	// ValidateIndividual(&domain, population[0])
 
 	// selectPrint = selection(&domain, population, 1)
 	// for _, indiv := range selectPrint {
@@ -166,6 +164,8 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 	// Run ga
 	stoppingCondition := true
 	for i := 0; i < domain.Config.Generations && stoppingCondition; i++ {
+		stoppingCondition = forceStop.Err() != nil
+
 		crossOverAmount := int(float64(domain.Config.PopulationSize) * domain.Config.CrossOverRate)
 		mutateAmount := int(float64(domain.Config.PopulationSize) * domain.Config.MutationRate)
 		carryAmount := domain.Config.PopulationSize - crossOverAmount - mutateAmount // TODO: Find out Anna if is guicci
@@ -192,6 +192,9 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 		// }
 
 		fitness(&domain, population)
+
+		// send individual on channel
+		solutionChannel <- *selection(&domain, population, 1)[0]
 
 		if i%1 == 0 {
 			totalFitness = 0.0
@@ -238,11 +241,7 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 	}
 
 	fmt.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f\n", maxFitness, minFitness, totalFitness/float64(len(population)))
-
 	fmt.Printf(testutils.Scolour(testutils.BLUE, "+++++++Exec time: %v\n"), end.Sub(start))
-
-	// Does this actually return the fittest individual though?
-	return selection(&domain, population, 1)
 }
 
 // String method for printing individuals
