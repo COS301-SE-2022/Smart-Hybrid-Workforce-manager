@@ -86,7 +86,6 @@ const BookingTicket = ({id, startDate, startTime, endTime, confirmed, type, days
             {
                 ticketRef.current.style.display  = 'block';
                 ticketRef.current.style.left = i*11.3 + "vw";
-                break;
             }
         }
     },[days, day, month, year])

@@ -578,21 +578,13 @@ const Home = () =>
         //POST request
         const fetchData = () =>
         {
-            let startDate = new Date()    
-            startDate.setHours(0, 0, 0, 0)
-
-            let endDate = new Date()
-            endDate.setHours(26, 0, 0, 0)
-            endDate.setDate(endDate.getDate() + 1 * 7);
 
             fetch("http://localhost:8080/api/booking/information", 
                 {
                 method: "POST",
                 mode: "cors",
                 body: JSON.stringify({
-                    user_id: window.sessionStorage.getItem("UserID"),
-                    start: startDate.toISOString(),
-                    end: endDate.toISOString()
+                    user_id: userData.user_id
                 }),
                 headers:{
                     'Content-Type': 'application/json',
@@ -601,6 +593,7 @@ const Home = () =>
                 }).then((res) => res.json()).then(data => 
                 {
                     setBookings(data);
+                    console.log(data);
                     window.sessionStorage.removeItem("BookingID");
                     window.sessionStorage.removeItem("StartDate");
                     window.sessionStorage.removeItem("StartTime");
