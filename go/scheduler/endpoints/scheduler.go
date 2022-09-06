@@ -68,7 +68,7 @@ func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 
 		// transform into what the backend needs
 		if i == 0 {
-			bookings = append(bookings, indiv.ConvertIndividualToBookings(domain))
+			bookings = append(bookings, indiv.ConvertIndividualToWeeklyBookings(domain))
 		}
 	}
 
@@ -107,8 +107,9 @@ func dailyScheduler(writer http.ResponseWriter, request *http.Request) {
 
 	for _, indiv := range indvs {
 		fmt.Println(indiv.StringDomain(domain))
-		mutated := ga.DailyMutate(&domain, ga.Individuals{indiv})
-		fmt.Println(mutated[0].StringDomain(domain))
+		// mutated := ga.DailyMutate(&domain, ga.Individuals{indiv})
+		// fmt.Println(mutated[0].StringDomain(domain))
+		bookings = append(bookings, indiv.ConvertIndividualToDailyBookings(domain))
 	}
 
 	utils.JSONResponse(writer, request, bookings)

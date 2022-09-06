@@ -1,6 +1,8 @@
 package data
 
-import "time"
+import (
+	"time"
+)
 
 type Config struct {
 	Seed           int     `json:"seed"`
@@ -171,8 +173,8 @@ func ExtractResourceIds(schedulerData *SchedulerData) []string {
 func ExtractUserIdMap(schedulerData *SchedulerData) map[int](string) {
 	var result map[int](string)
 	result = make(map[int]string)
-	for i, user := range schedulerData.Users {
-		result[i] = *user.Id
+	for i, booking := range *schedulerData.CurrentBookings {
+		result[i] = *booking.UserId
 	}
 	return result
 }
