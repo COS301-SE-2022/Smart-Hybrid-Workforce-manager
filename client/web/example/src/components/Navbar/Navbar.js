@@ -10,7 +10,7 @@ const Navbar = (props, ref) =>
     const dropdownRef = useRef(null);
     const deskRef = useRef(null);
     const meetingRef = useRef(null);
-    const mapRef = useRef(null);
+    const calendarRef = useRef(null);
     const statisticsRef = useRef(null);
 
     const [currLocation, setCurrLocation] = useState("");
@@ -49,9 +49,9 @@ const Navbar = (props, ref) =>
         navigate("/bookings-meetingroom");
     }
 
-    const NavigateMap = () =>
+    const NavigateCalendar = () =>
     {
-        navigate("/map");
+        navigate("/calendar");
     }
 
     const NavigateStatistics = () =>
@@ -81,10 +81,10 @@ const Navbar = (props, ref) =>
             meetingRef.current.style.color = "#09a2fb";
         }
 
-        if(currLocation === "/map")
+        if(currLocation === "/calendar")
         {
             dropdownRef.current.style.display = "none";
-            mapRef.current.style.color = "#09a2fb";
+            calendarRef.current.style.color = "#09a2fb";
         }
 
         if(currLocation === "/statistics")
@@ -107,9 +107,9 @@ const Navbar = (props, ref) =>
             </div>
             <div className='navlink-container'>
                 <div ref={homeRef} className='navlink' onClick={NavigateHome}>
-                    <FaCalendar />
+                    <FaMap />
                     &nbsp;
-                    Calendar
+                    Home
                 </div>
                 <div ref={bookingsRef} className='navlink' onClick={ShowBookings}>
                     <FaTicketAlt />
@@ -124,10 +124,10 @@ const Navbar = (props, ref) =>
                         Meeting Room
                     </div>
                 </div>
-                <div ref={mapRef} className='navlink' onClick={NavigateMap}>
-                    <FaMap />
+                <div ref={calendarRef} className='navlink' onClick={NavigateCalendar}>
+                    <FaCalendar />
                     &nbsp;
-                    Office Map
+                    Calendar
                 </div>
                 <div ref={statisticsRef} className='navlink' onClick={NavigateStatistics}>
                     <FaChartPie />
