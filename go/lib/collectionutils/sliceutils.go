@@ -58,3 +58,21 @@ func Contains(s []string, e string) bool {
 	}
 	return false
 }
+
+// Flattens a 2D array
+// Does not copy elements
+func Flatten2DArr[T any](arr [][]T) []T {
+	totalLen := 0
+	for i := 0; i < len(arr); i++ {
+		totalLen += len(arr[i])
+	}
+	flattenedArr := make([]T, totalLen)
+	flatIndex := 0
+	for _, subArr := range arr {
+		for _, el := range subArr {
+			flattenedArr[flatIndex] = el
+			flatIndex++
+		}
+	}
+	return flattenedArr
+}
