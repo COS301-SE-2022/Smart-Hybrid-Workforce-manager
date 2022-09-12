@@ -1,5 +1,5 @@
 import useImage from 'use-image';
-import desk_grey from '../../img/desk_grey.svg';
+import desk_grey from '../../img/desk_light.svg';
 import { Image } from 'react-konva'
 import { useRef, useEffect, Fragment } from 'react'
 import { Transformer } from 'react-konva'
