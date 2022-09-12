@@ -76,3 +76,16 @@ func Flatten2DArr[T any](arr [][]T) []T {
 	}
 	return flattenedArr
 }
+
+func PartitionArray[T any](arr []T, sizes []int) [][]T {
+	partitionedArray := make([][]T, len(sizes))
+	flatIndex := 0
+	for i := 0; i < len(sizes); i++ {
+		partitionedArray[i] = make([]T, sizes[i])
+		for j := 0; j < sizes[i]; j++ {
+			partitionedArray[i][j] = arr[flatIndex]
+			flatIndex++
+		}
+	}
+	return partitionedArray
+}
