@@ -1716,14 +1716,78 @@
     grid-template-areas: "building" "room";
 }
 
+.building-selector-container
+{
+    position: absolute;
+    top: 2vh;
+    left: 1vw;
+}
+
+.building-selector
+{
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+
+    color: #374146;
+
+    border-style: none;
+    border-radius: 1.5vh;
+    outline: none;
+
+    margin-top: 1vh;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+
+    width: 20vw;
+
+    font-size: 1vw;
+}
+
+.room-selector-container
+{
+    position: absolute;
+    top: 2vh;
+    left: 25vw;
+}
+
+.room-selector
+{
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+
+    color: #374146;
+
+    border-style: none;
+    border-radius: 1.5vh;
+    outline: none;
+
+    margin-top: 1vh;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+
+    width: 20vw;
+
+    font-size: 1vw;
+}
+
 .canvas-container
 {
     position: absolute;
-    background-color: #EDF3F8;
-    width: 100vw;
-    height: 95vh;
+    /*background-color: #EDF3F8;*/
+    background: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+
+    width: 85vw;
+    height: 90vh;
     left: 0;
-    top: 5vh;
 }
 
 .properties-pane

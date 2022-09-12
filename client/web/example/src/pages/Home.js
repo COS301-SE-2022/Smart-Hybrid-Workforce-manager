@@ -597,42 +597,6 @@ const Home = () =>
                 <Navbar />
 
                 <div className='main-container'>
-                    <div className='properties-pane' style={{left: propertiesPaneLeft}}>
-                        <div className='properties-pane-label-container' onClick={PropertiesCollapse} >
-                            <p>Properties</p>
-                        </div>
-
-                        <div className='building-pane'>
-                            <p className='building-label'>Buildings</p>
-                            <MdAdd className='add-building-img' size={35} onClick={AddBuilding} />
-                            <MdEdit className='edit-building-img' size={25} onClick={EditBuilding} />
-
-                                <select className='list-box-building' name='building' size='10' onChange={UpdateRooms.bind(this)}>
-                                    <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
-                                    {buildings.length > 0 && (
-                                        buildings.map(building => (
-                                            <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
-                                        ))
-                                    )}
-                                </select>
-                        </div>
-
-                        <div className='room-pane'>
-                            <p className='room-label'>Rooms</p>
-                            <MdAdd className='add-room-img' size={35} onClick={AddRoom} />
-                            <MdEdit className='edit-room-img' size={25} onClick={EditRoom} />
-
-                                <select className='list-box-room' name='room' size="10" onChange={UpdateResources.bind(this)}>
-                                    <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
-                                    {rooms.length > 0 && (
-                                        rooms.map(room => (
-                                            <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>
-                                        ))
-                                    )}
-                                </select>
-                        </div>
-                    </div>                                     
-
                     <div ref={canvasRef} className='canvas-container'>
                         <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onTouchStart={CheckDeselect} draggable onWheel={ZoomInOut} ref={stageRef}>
                             <Layer>
@@ -687,6 +651,28 @@ const Home = () =>
                                 )}                             
                             </Layer>
                         </Stage>
+                    </div>
+
+                    <div className='building-selector-container'>
+                        <select className='building-selector' name='building' onChange={UpdateRooms.bind(this)}>
+                            <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
+                                {buildings.length > 0 && (
+                                    buildings.map(building => (
+                                        <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
+                                    ))
+                                )}
+                        </select>
+                    </div>
+
+                    <div className='room-selector-container'>
+                        <select className='room-selector' name='room' onChange={UpdateResources.bind(this)}>
+                            <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
+                                {rooms.length > 0 && (
+                                    rooms.map(room => (
+                                        <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>
+                                    ))
+                                )}
+                        </select>
                     </div>
                 </div>
             </div>  
