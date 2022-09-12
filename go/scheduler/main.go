@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"scheduler/endpoints"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -23,5 +24,10 @@ func main() {
 
 	// Start API on port 8080 in its docker container
 	logger.Info.Println("Starting API on 8080")
-	logger.Error.Fatal(http.ListenAndServe(":8080", router))
+	server := http.Server{
+		Addr:              ":8080",
+		Handler:           router,
+		ReadHeaderTimeout: 5 * time.Second,
+	}
+	logger.Error.Fatal(server.ListenAndServe())
 }
