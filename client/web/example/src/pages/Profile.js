@@ -9,6 +9,7 @@ import { UserContext } from '../App'
 import { useNavigate } from 'react-router-dom'
 import ProfileBar from '../components/Navbar/ProfileBar';
 import { FaWheelchair, FaHouseUser } from 'react-icons/fa';
+import NavbarAdmin from '../components/Navbar/NavbarAdmin.js'
 
 function Profile()
 {
@@ -132,12 +133,6 @@ function Profile()
     navigate("/profile-configuration")
   }
 
-  const LogOut = () =>
-  {
-    setUserData(null);
-    navigate("/login");
-  }
-
     const renderWheelchair = () =>
     {
         if(parking === 'DISABLED')
@@ -154,11 +149,23 @@ function Profile()
         }
     }
 
+    const showNavbar = () =>
+    {
+        if(!userData.user_identifier.includes("admin"))
+        {
+            return <Navbar />;
+        }
+        else
+        {
+            return <NavbarAdmin />;
+        }
+    };
+
     return (
         <div className='page-container'>
             <div className='content'>
                 <ProfileBar />
-                <Navbar />
+                {showNavbar()}
                 <div className='main-container'>
                     <div className='profile-container'>
                         

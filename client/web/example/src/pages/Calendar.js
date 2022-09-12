@@ -7,6 +7,7 @@ import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import Borders from '../components/Calendar/Borders.js';
 import Times from '../components/Calendar/Times.js';
 import ProfileBar from '../components/Navbar/ProfileBar.js';
+import NavbarAdmin from '../components/Navbar/NavbarAdmin.js';
 
 const Calendar = () =>
 {
@@ -663,13 +664,24 @@ const Calendar = () =>
             todaySelectorRef.current.style.color = '#09a2fb';
         }
     },[isToday]);
-  
+
+    const showNavbar = () =>
+    {
+        if(!userData.user_identifier.includes("admin"))
+        {
+            return <Navbar />;
+        }
+        else
+        {
+            return <NavbarAdmin />;
+        }
+    };
 
     return (
         <div className='page-container'>
             <div className='content'>
                 <ProfileBar />
-                <Navbar />
+                {showNavbar()}
 
                 <div className='main-container'>
                     <div className='top-bar'>
