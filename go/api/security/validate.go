@@ -3,8 +3,10 @@ package security
 import (
 	"api/data"
 	"api/db"
-	"lib/utils"
+	"api/redis"
 	"fmt"
+	"lib/logger"
+	"lib/utils"
 	"net/http"
 )
 
@@ -26,17 +28,15 @@ func Validate(function HandlerFunc, permissionRequired *data.Permissions) Handle
 			function(writer, request, nil)
 			return
 		}
-
-		// redisUserData,err := redis.GetRequestRedisData(request)
-		// if err != nil{
-		// 	// logger.Error.Println(err)
-		// 	// utils.BadRequest(writer, request, "Invalid Authorization Token")
-		// 	return
-		// }
-		// logger.Access.Printf("redisUserData: %v",redisUserData)
-		// Check if user data is null
-		// user_id := redisUserData.User_id
-		user_id := "00000000-0000-0000-0000-000000000000"
+		redisUserData, err := redis.GetRequestRedisData(request)
+		if err != nil || redisUserData == nil {
+			logger.Error.Println(err)
+			utils.BadRequest(writer, request, "Invalid Authorization Token")
+			return
+		}
+		user_id := redisUserData.User_id
+		// user_id := "00000000-0000-0000-0000-000000000000"
+		logger.Error.Printf("user_id: %v", user_id)
 		permissions, err := GetUserPermissions(&user_id, access)
 		if err != nil {
 			utils.InternalServerError(writer, request, err)
@@ -54,7 +54,7 @@ func Validate(function HandlerFunc, permissionRequired *data.Permissions) Handle
 			}
 		}
 		if len(filteredPermissions) == 0 {
-			utils.AccessDenied(writer, request, fmt.Errorf("the user doesn't have permission to execute query")) // TODO [KP]: Be more descriptive
+			utils.AccessDenied(writer, request, fmt.Errorf("the user ission to execute query")) // TODO [KP]: Be more descriptive
 			return
 		}
 		function(writer, request, &filteredPermissions)

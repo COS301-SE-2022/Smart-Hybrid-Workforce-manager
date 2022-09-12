@@ -99,6 +99,9 @@ func WeeklyDayVResouceMutate(domain *Domain, individuals Individuals) Individual
 	var results Individuals
 	for _, individual := range individuals {
 		copiedIndividual := individual.Clone()
+		if len(domain.Terminals) == 0 {
+			continue // No mutation of this type can be done if there are no terminals
+		}
 		for i := range individual.Gene {
 			// randDay1 := rand.Intn(len(individual.Gene)) // First mutation point
 			if len(copiedIndividual.Gene[i]) == 0 { // No mutation can be performed if there are no slots at all
@@ -108,7 +111,7 @@ func WeeklyDayVResouceMutate(domain *Domain, individuals Individuals) Individual
 			// mutate everything
 			for j := randSloti; j < len(copiedIndividual.Gene[i]); j++ {
 				// TODO set chance to be empty
-				if utils.RandInt(0, 100) > 4 {
+				if utils.RandInt(0, 100) > 10 {
 					copiedIndividual.Gene[i][j] = ""
 				} else {
 					copiedIndividual.Gene[i][j] = domain.GetRandomTerminal()

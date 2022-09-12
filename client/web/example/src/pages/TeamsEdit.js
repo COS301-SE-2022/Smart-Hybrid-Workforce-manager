@@ -1,10 +1,11 @@
-import Navbar from "../components/Navbar"
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
 import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import UserTeamList from '../components/Team/UserTeamList'
 import TeamLeadOption from '../components/Team/TeamLeadOption'
+import { useNavigate } from 'react-router-dom'
 
 const EditTeam = () =>
 {
@@ -17,12 +18,14 @@ const EditTeam = () =>
   const [teamUsers, SetTeamUsers] = useState([]);
   //const [viewableUsers, SetViewableUsers] = useState([]);
 
+  const navigate = useNavigate();
+
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/team/create", 
+      let res = await fetch("http://localhost:8080/api/team/create", 
       {
         method: "POST",
         body: JSON.stringify({
@@ -38,7 +41,7 @@ const EditTeam = () =>
       if(res.status === 200)
       {
         alert("Team Successfully Updated!");
-        window.location.assign("./team");
+        navigate("/team");
       }
     }
     catch(err)
@@ -50,7 +53,7 @@ const EditTeam = () =>
   //POST request
   const FetchTeamUsers = () =>
   {
-    fetch("http://localhost:8100/api/team/user/information", 
+    fetch("http://localhost:8080/api/team/user/information", 
         {
           method: "POST",
           body: JSON.stringify({
@@ -65,7 +68,7 @@ const EditTeam = () =>
   //POST request
   const FetchViewableUsers = () =>
   {
-    fetch("http://localhost:8100/api/user/information", 
+    fetch("http://localhost:8080/api/user/information", 
         {
           method: "POST",
           body: JSON.stringify({})
@@ -90,7 +93,7 @@ const EditTeam = () =>
 
   const PermissionConfiguration = () =>
   {
-    window.location.assign("./team-permissions");
+    navigate("/team-permissions");
   }
 
   return (

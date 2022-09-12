@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { MdDelete } from 'react-icons/md'
+import { MdDelete } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
 const RoleUserList = ({id}) =>
 {
-  const [roleName, SetRoleName] = useState("")
-    
+    const [roleName, SetRoleName] = useState("")
+    const navigate=useNavigate();
     useEffect(() =>
     {
-        fetch("http://localhost:8100/api/role/information", 
+        fetch("http://localhost:8080/api/role/information", 
         {
         method: "POST",
         body: JSON.stringify({
@@ -26,7 +27,7 @@ const RoleUserList = ({id}) =>
         {
             try
             {
-                let res = await fetch("http://localhost:8100/api/role/user/remove", 
+                let res = await fetch("http://localhost:8080/api/role/user/remove", 
                 {
                     method: "POST",
                     body: JSON.stringify({
@@ -38,7 +39,7 @@ const RoleUserList = ({id}) =>
                 if(res.status === 200)
                 {
                     alert("Role Successfully Removed!");
-                    window.location.reload();
+                    navigate(0);
                 }
             }
             catch (err)

@@ -1,9 +1,10 @@
-import Navbar from "../components/Navbar"
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
 import { useState, useEffect, useCallback } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
+import { useNavigate } from 'react-router-dom';
 
 function RolePermissions() {
   const [roleName, setRoleName] = useState(window.sessionStorage.getItem("RoleName").substring(5, window.sessionStorage.getItem("RoleName").length));
@@ -63,6 +64,8 @@ function RolePermissions() {
   const [viewBuildingIdentifierId, SetViewBuildingIdentifierId] = useState("")
   const [deleteBuildingIdentifier, SetDeleteBuildingIdentifier] = useState("") // allows users of a role to delete the Building for everyone
   const [deleteBuildingIdentifierId, SetDeleteBuildingIdentifierId] = useState("")
+
+  const navigate = useNavigate();
 
   let handleSubmit = async (e) => {
     e.preventDefault();
@@ -221,12 +224,12 @@ function RolePermissions() {
     }
 
     alert("Permissions successfully updated.")
-    window.location.assign("./role-permissions");
+    navigate("/role-permissions");
   };
 
   async function AddPermission(id, idType, type, category, tenant, tenant_id) {
     try {
-      let res = await fetch("http://localhost:8100/api/permission/create",
+      let res = await fetch("http://localhost:8080/api/permission/create",
         {
           method: "POST",
           body: JSON.stringify({
@@ -253,7 +256,7 @@ function RolePermissions() {
 
   async function RemovePermission(id) {
     try {
-      let res = await fetch("http://localhost:8100/api/permission/remove",
+      let res = await fetch("http://localhost:8080/api/permission/remove",
         {
           method: "POST",
           body: JSON.stringify({
@@ -271,7 +274,7 @@ function RolePermissions() {
 
   //POST request
   const FetchRolePermissions = useCallback(() => {
-    fetch("http://localhost:8100/api/permission/information",
+    fetch("http://localhost:8080/api/permission/information",
       {
         method: "POST",
         body: JSON.stringify({

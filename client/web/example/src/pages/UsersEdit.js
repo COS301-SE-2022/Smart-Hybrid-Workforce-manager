@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import Navbar from '../components/Navbar'
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from '../components/Footer'
 import '../App.css'
 import RoleUserList from '../components/Role/RoleUserList'
@@ -28,7 +28,7 @@ function EditUser()
   //POST request
   const FetchUserRoles = () =>
   {
-    fetch("http://localhost:8100/api/role/user/information", 
+    fetch("http://localhost:8080/api/role/user/information", 
         {
           method: "POST",
           body: JSON.stringify({
@@ -43,7 +43,7 @@ function EditUser()
   //POST request
   const FetchUserTeams = () =>
   {
-    fetch("http://localhost:8100/api/team/user/information", 
+    fetch("http://localhost:8080/api/team/user/information", 
         {
           method: "POST",
           body: JSON.stringify({
@@ -58,7 +58,7 @@ function EditUser()
     //POST request
     const FetchRoles = () =>
     {
-        fetch("http://localhost:8100/api/role/information", 
+        fetch("http://localhost:8080/api/role/information", 
             {
             method: "POST",
             body: JSON.stringify({
@@ -79,7 +79,7 @@ function EditUser()
         e.preventDefault();
         try
         {
-            let res = await fetch("http://localhost:8100/api/role/user/create", 
+            let res = await fetch("http://localhost:8080/api/role/user/create", 
             {
                 method: "POST",
                 body: JSON.stringify({
@@ -92,7 +92,6 @@ function EditUser()
             {
               alert("Role Successfully Added!");
               navigate(0);
-              window.location.reload();
             }
         }
         catch (err)
@@ -104,7 +103,7 @@ function EditUser()
     //POST request
     const FetchTeams = () =>
     {
-        fetch("http://localhost:8100/api/team/information", 
+        fetch("http://localhost:8080/api/team/information", 
             {
             method: "POST",
             body: JSON.stringify({
@@ -125,7 +124,7 @@ function EditUser()
         e.preventDefault();
         try
         {
-            let res = await fetch("http://localhost:8100/api/team/user/create", 
+            let res = await fetch("http://localhost:8080/api/team/user/create", 
             {
                 method: "POST",
                 body: JSON.stringify({
@@ -138,7 +137,6 @@ function EditUser()
             {
                 alert("Team Successfully Added!");
                 navigate(0);
-                window.location.reload();
             }
         }
         catch (err)
@@ -149,7 +147,7 @@ function EditUser()
   
   const PermissionConfiguration = () =>
   {
-    window.location.assign("./user-permissions");
+    navigate("/user-permissions");
   }
 
   //Using useEffect hook. This will ste the default values of the form once the components are mounted

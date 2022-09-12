@@ -103,11 +103,11 @@ func main() {
 
 	// Setup CORS for the API
 	credentials := handlers.AllowCredentials()
-	methods := handlers.AllowedMethods([]string{"POST"})
-	// ttl := handlers.MaxAge(3600)
-	// origins := handlers.AllowedOrigins([]string{"www.example.com"})
+	headers := handlers.AllowedHeaders([]string{"X-Requested-With","Authorization"})
+	origins := handlers.AllowedOrigins([]string{os.Getenv("ORIGIN_ALLOWED")})
+	methods := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
 
 	// Start API on port 8080 in its docker container
 	logger.Info.Println("Starting API on 8080")
-	logger.Error.Fatal(http.ListenAndServe(":8080", handlers.CORS(credentials, methods)(router)))
+	logger.Error.Fatal(http.ListenAndServe(":8080", handlers.CORS(credentials, methods, headers, origins) (router)))
 }

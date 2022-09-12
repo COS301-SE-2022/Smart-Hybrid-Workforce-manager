@@ -28,7 +28,7 @@
 <!-- Dark Mode -->
 <img src="https://user-images.githubusercontent.com/53088824/167407001-1c69efc3-2f7e-449d-9952-03e34aef579f.png#gh-dark-mode-only" height=35/>
 
-Smart Hybrid Workforce Manager is a system that aims to provide companies an easy to use system for managing company resources by allowing employees to book company space and resources using AI to optimise the workspace.
+Smart Hybrid Workforce Manager aims to provide companies an easy to use system to manage company resources by allowing employees to book company spaces and resources while companies migrate to a Hybrid style of working. The system uses smart scheduling to maximise work productivity and team dynamics while lowering management costs within a company.
 
 <a href="https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/projects" target="_blank">
   ➛ Project Board<br>
@@ -45,7 +45,7 @@ Smart Hybrid Workforce Manager is a system that aims to provide companies an eas
 
 ### User Manual
 
-<a href="https://drive.google.com/file/d/1ffPNxu-At3yxPxNehlCiKJTz4YlE-Hch/view?usp=sharing" target="_blank">
+<a href="https://drive.google.com/file/d/1Nn8iWty2ChC2auBH4YT4mFuYyOf-awlo/view?usp=sharing" target="_blank">
   ➛ User Manual v1.0<br>
 </a> 
 

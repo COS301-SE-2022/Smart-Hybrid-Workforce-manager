@@ -7,7 +7,7 @@ const TeamLeadOption = ({id, teamLeadId}) =>
   //POST request
   const getName = useCallback(() =>
   {
-    fetch("http://localhost:8100/api/user/information", 
+    fetch("http://localhost:8080/api/user/information", 
         {
           method: "POST",
             body: JSON.stringify({

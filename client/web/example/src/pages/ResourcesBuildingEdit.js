@@ -1,8 +1,9 @@
-import Navbar from "../components/Navbar"
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
 import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { useNavigate } from 'react-router-dom';
 
 const BuildingEdit = () =>
 {
@@ -10,10 +11,12 @@ const BuildingEdit = () =>
   const [buildingLocation, setBuildingLocation] = useState("");
   const [buildingDimensions, setBuildingDimensions] = useState("");
 
+  const navigate = useNavigate();
+
   //POST request
   const FetchBuilding = () =>
   {
-    fetch("http://localhost:8100/api/resource/building/information", 
+    fetch("http://localhost:8080/api/resource/building/information", 
         {
           method: "POST",
           body: JSON.stringify({
@@ -32,7 +35,7 @@ const BuildingEdit = () =>
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/resource/building/create", 
+      let res = await fetch("http://localhost:8080/api/resource/building/create", 
       {
         method: "POST",
         body: JSON.stringify({
@@ -46,7 +49,7 @@ const BuildingEdit = () =>
       if(res.status === 200)
       {
         alert("Building Successfully Updated!");
-        window.location.assign("./resources");
+        navigate("/resources");
       }
     }
     catch(err)

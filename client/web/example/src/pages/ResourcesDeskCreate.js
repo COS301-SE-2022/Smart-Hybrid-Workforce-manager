@@ -1,20 +1,23 @@
-import Navbar from "../components/Navbar"
+import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
 import { useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { useNavigate } from 'react-router-dom';
 
 const CreateDesk = () =>
 {
   const [deskName, SetDeskName] = useState("");
   const [deskLocation, SetDeskLocation] = useState("");
 
+  const navigate = useNavigate();
+
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8100/api/resource/create", 
+      let res = await fetch("http://localhost:8080/api/resource/create", 
       {
         method: "POST",
         body: JSON.stringify({
@@ -31,7 +34,7 @@ const CreateDesk = () =>
       if(res.status === 200)
       {
         alert("Desk Successfully Created!");
-        window.location.assign("./resources");
+        navigate("/resources");
       }
     }
     catch(err)

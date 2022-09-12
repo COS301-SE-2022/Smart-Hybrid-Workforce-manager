@@ -165,6 +165,51 @@ func getUserAvailabilityInfo(domain *Domain, numDaysInWeek int) (daysAvailable m
 	return daysAvailable, usersToAdd
 }
 
+////////////////////////////////////////////////////
+// DayVResourceInvalidPopGen
+func WeeklyDayVResourceInvalidPopulationGenerator(domain *Domain, popSize int) Individuals {
+	// Using representation 1 (DayVResource)
+	const numDaysInWeek int = 5 // Assume 5 days in a week for now
+
+	// Get slot info
+	slotSizes, openSlots, _ := getSlotInfo(domain, numDaysInWeek)
+
+	population := make([]*Individual, popSize)
+	for i := 0; i < popSize; i++ {
+		// Used to maintain a copy of openSlots
+		openSlotsCopy := make([][]int, len(openSlots))
+		for k := range openSlotsCopy {
+			openSlotsCopy[k] = make([]int, len(openSlots[k]))
+			copy(openSlotsCopy[k], openSlots[k])
+		}
+
+		individual := Individual{Gene: make([][]string, numDaysInWeek)}
+		// Initialise individual to empty indiv
+		for j := range individual.Gene { // DEBUG how long is GENE?
+			individual.Gene[j] = make([]string, slotSizes[j])
+		}
+
+		for dayi := range individual.Gene {
+			for sloti := range individual.Gene[dayi] {
+				if len(domain.Terminals) == 0 {
+					individual.Gene[dayi][sloti] = ""
+				} else {
+					individual.Gene[dayi][sloti] = domain.GetRandomTerminal()
+				}
+			}
+		}
+		population[i] = &individual
+	}
+
+	// DEBUG ================
+	logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
+	logger.Error.Println(testutils.Scolour(testutils.GREEN, "Done"))
+	logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
+	// END DEBUG ================
+
+	return population
+}
+
 ///////////////////////////////////////////////////
 // DAILY
 
