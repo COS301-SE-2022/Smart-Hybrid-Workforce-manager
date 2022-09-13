@@ -1,7 +1,7 @@
 package ga
 
 import (
-	. "lib/collectionutils"
+	cu "lib/collectionutils"
 	"lib/utils"
 )
 
@@ -63,7 +63,7 @@ func weeklyDayVResourceCrossover(domain *Domain, individuals Individuals, offspr
 // A valid crossover, that works similarly to PMX 2-point crossover
 // It initially flattens an individual, and then performs crossover on the flattened crossover
 func weeklyFlattenCrossoverValid(domain *Domain, individuals Individuals, offspring int) Individuals {
-	flatParent1, flatParent2 := Flatten2DArr(individuals[0].Gene), Flatten2DArr(individuals[0].Gene)
+	flatParent1, flatParent2 := cu.Flatten2DArr(individuals[0].Gene), cu.Flatten2DArr(individuals[0].Gene)
 
 	xPoint1, xPoint2 := utils.RandInt(0, len(flatParent1)), utils.RandInt(0, len(flatParent1))
 
@@ -80,12 +80,18 @@ func weeklyFlattenCrossoverValid(domain *Domain, individuals Individuals, offspr
 		sizes[i] = len(col)
 	}
 
-	child1, child2 := PartitionArray(flatChild1, sizes), PartitionArray(flatChild2, sizes)
+	child1, child2 := cu.PartitionArray(flatChild1, sizes), cu.PartitionArray(flatChild2, sizes)
 	return []*Individual{{child1, 0.0}, {child2, 0.0}}
 }
 
-func twoPointSwap(arr1, arr2 []string, xP1, xP2 int) ([]string, []string) {
-	res1, res2 := make([]string, len(arr1)), make([]string, len(arr1))
+///////////////////////////////////////////////////
+// DAILY
+
+///////////////////////////////////////////////////
+// General crossover code
+
+func twoPointSwap[T any](arr1, arr2 []T, xP1, xP2 int) ([]T, []T) {
+	res1, res2 := make([]T, len(arr1)), make([]T, len(arr1))
 	for i := 0; i < xP1; i++ {
 		res1[i] = arr1[i]
 		res2[i] = arr2[i]
@@ -100,6 +106,3 @@ func twoPointSwap(arr1, arr2 []string, xP1, xP2 int) ([]string, []string) {
 	}
 	return res1, res2
 }
-
-///////////////////////////////////////////////////
-// DAILY
