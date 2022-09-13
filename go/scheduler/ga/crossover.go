@@ -1,6 +1,9 @@
 package ga
 
-import "lib/utils"
+import (
+	. "lib/collectionutils"
+	"lib/utils"
+)
 
 ///////////////////////////////////////////////////
 // WEEKLY
@@ -55,6 +58,47 @@ func weeklyDayVResourceCrossover(domain *Domain, individuals Individuals, offspr
 	}
 
 	return Individuals{parent1, parent2}
+}
+
+// A valid crossover, that works similarly to PMX 2-point crossover
+// It initially flattens an individual, and then performs crossover on the flattened crossover
+func weeklyFlattenCrossoverValid(domain *Domain, individuals Individuals, offspring int) Individuals {
+	flatParent1, flatParent2 := Flatten2DArr(individuals[0].Gene), Flatten2DArr(individuals[0].Gene)
+
+	xPoint1, xPoint2 := utils.RandInt(0, len(flatParent1)), utils.RandInt(0, len(flatParent1))
+
+	if xPoint1 > xPoint2 {
+		xPoint1, xPoint2 = xPoint2, xPoint1
+	}
+
+	flatChild1, flatChild2 := twoPointSwap(flatParent1, flatParent2, xPoint1, xPoint2)
+
+	// TODO: @JonathanEnslin - Make individuals valid
+
+	sizes := make([]int, len(individuals[0].Gene))
+	for i, col := range individuals[0].Gene {
+		sizes[i] = len(col)
+	}
+
+	child1, child2 := PartitionArray(flatChild1, sizes), PartitionArray(flatChild2, sizes)
+	return []*Individual{{child1, 0.0}, {child2, 0.0}}
+}
+
+func twoPointSwap(arr1, arr2 []string, xP1, xP2 int) ([]string, []string) {
+	res1, res2 := make([]string, len(arr1)), make([]string, len(arr1))
+	for i := 0; i < xP1; i++ {
+		res1[i] = arr1[i]
+		res2[i] = arr2[i]
+	}
+	for i := xP1; i < xP2; i++ {
+		res1[i] = arr2[i]
+		res2[i] = arr1[i]
+	}
+	for i := xP2; i < len(arr1); i++ {
+		res1[i] = arr1[i]
+		res2[i] = arr2[i]
+	}
+	return res1, res2
 }
 
 ///////////////////////////////////////////////////
