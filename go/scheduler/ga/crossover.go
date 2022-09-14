@@ -50,7 +50,7 @@ func weeklyDayVResourceCrossover(domain *Domain, individuals Individuals, offspr
 	// crossover for length
 	for i := 0; i <= length; i++ {
 		// no overflow
-		if len(crossoverParent1) < crossoverParent1Slot+i && len(crossoverParent2) < crossoverParent2Slot+i {
+		if len(crossoverParent1) > crossoverParent1Slot+i && len(crossoverParent2) > crossoverParent2Slot+i {
 			temp := crossoverParent1[crossoverParent1Slot+i]
 			crossoverParent1[crossoverParent1Slot+i] = crossoverParent2[crossoverParent2Slot+i]
 			crossoverParent2[crossoverParent2Slot+i] = temp
@@ -60,9 +60,15 @@ func weeklyDayVResourceCrossover(domain *Domain, individuals Individuals, offspr
 	return Individuals{parent1, parent2}
 }
 
+///////////////////////////////////////////////////
+// DAILY
+
+///////////////////////////////////////////////////
+// General crossover code
+
 // A valid crossover, that works similarly to PMX 2-point crossover
 // It initially flattens an individual, and then performs crossover on the flattened crossover
-func weeklyFlattenCrossoverValid(domain *Domain, individuals Individuals, offspring int) Individuals {
+func generalFlattenCrossoverValid(domain *Domain, individuals Individuals, offspring int) Individuals {
 	flatParent1, flatParent2 := cu.Flatten2DArr(individuals[0].Gene), cu.Flatten2DArr(individuals[0].Gene)
 
 	xPoint1, xPoint2 := utils.RandInt(0, len(flatParent1)), utils.RandInt(0, len(flatParent1))
@@ -73,7 +79,7 @@ func weeklyFlattenCrossoverValid(domain *Domain, individuals Individuals, offspr
 
 	flatChild1, flatChild2 := twoPointSwap(flatParent1, flatParent2, xPoint1, xPoint2)
 
-	// TODO: @JonathanEnslin - Make individuals valid
+	// TODO: @JonathanEnslin - Make individuals valid (for both daily and weekly, can make the function context specific, look at dimms of gene, or pass in validator)
 
 	sizes := make([]int, len(individuals[0].Gene))
 	for i, col := range individuals[0].Gene {
@@ -84,12 +90,7 @@ func weeklyFlattenCrossoverValid(domain *Domain, individuals Individuals, offspr
 	return []*Individual{{child1, 0.0}, {child2, 0.0}}
 }
 
-///////////////////////////////////////////////////
-// DAILY
-
-///////////////////////////////////////////////////
-// General crossover code
-
+// twoPointSwap swaps the elements from xP1 up and to excluding xP2 between arr1 and arr2
 func twoPointSwap[T any](arr1, arr2 []T, xP1, xP2 int) ([]T, []T) {
 	res1, res2 := make([]T, len(arr1)), make([]T, len(arr1))
 	for i := 0; i < xP1; i++ {
