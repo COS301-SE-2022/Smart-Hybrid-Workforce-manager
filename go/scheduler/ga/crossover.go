@@ -81,6 +81,22 @@ func generalFlattenCrossoverValid(domain *Domain, individuals Individuals, offsp
 
 	// TODO: @JonathanEnslin - Make individuals valid (for both daily and weekly, can make the function context specific, look at dimms of gene, or pass in validator)
 
+	// ======================================================================
+	// Perform PMX (Partially Mapped Crossover) - move out into seperate function
+	// map crossover points in two parents
+	p1Section, p2Section := make(map[string]int), make(map[string]int)
+	for i := xPoint1; i < xPoint2; i++ {
+		p1Section[flatParent1[i]] = i
+		p2Section[flatParent2[i]] = i
+	}
+
+	for i := 0; i < xPoint1; i++ {
+		flatChild1[i] = FindValid(i, flatParent1, p2Section)
+		flatChild2[i] = FindValid(i, flatParent2, p1Section)
+	}
+
+	// ======================================================================
+
 	sizes := make([]int, len(individuals[0].Gene))
 	for i, col := range individuals[0].Gene {
 		sizes[i] = len(col)
@@ -106,4 +122,13 @@ func twoPointSwap[T any](arr1, arr2 []T, xP1, xP2 int) ([]T, []T) {
 		res2[i] = arr2[i]
 	}
 	return res1, res2
+}
+
+func FindValid[T comparable](index int, parent []T, otherParentMap map[T]int) T {
+	// Check if element about to be copied from parent is already present inside the crossed over section
+	if _, ok := otherParentMap[parent[index]]; !ok {
+		return parent[index] // If it isn't, return that element since it can be inserted
+	} else {
+		return FindValid(otherParentMap[parent[index]], parent, otherParentMap) // If it is, find and return a valid element
+	}
 }
