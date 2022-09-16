@@ -427,3 +427,70 @@ func TestSliceIntersection(t *testing.T) {
 		})
 	}
 }
+
+func TestSliceDifference(t *testing.T) {
+	type args struct {
+		slice1 []string
+		slice2 []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{
+			name: "Both slices empty",
+			args: args{
+				slice1: []string{},
+				slice2: []string{},
+			},
+			want: []string{},
+		},
+		{
+			name: "Slice 1 empty",
+			args: args{
+				slice1: []string{},
+				slice2: []string{"1", "2", "3"},
+			},
+			want: []string{},
+		},
+		{
+			name: "Slice 2 empty",
+			args: args{
+				slice1: []string{"1", "2", "3"},
+				slice2: []string{},
+			},
+			want: []string{"1", "2", "3"},
+		},
+		{
+			name: "Both contains distinct elements",
+			args: args{
+				slice1: []string{"1", "2", "3"},
+				slice2: []string{"4", "5", "6"},
+			},
+			want: []string{"1", "2", "3"},
+		},
+		{
+			name: "Both contains some unique elements",
+			args: args{
+				slice1: []string{"1", "2", "3", "4", "5"},
+				slice2: []string{"4", "5", "6", "7", "8"},
+			},
+			want: []string{"1", "2", "3"},
+		},
+		{
+			name: "Slice 1 contains duplicates of elements that are also contained in slice 2",
+			args: args{
+				slice1: []string{"1", "2", "3", "3", "4", "4", "5", "5"},
+				slice2: []string{"4", "5", "6", "7", "8"},
+			},
+			want: []string{"1", "2", "3", "3"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := SliceDifference(tt.args.slice1, tt.args.slice2)
+			assert.ElementsMatch(t, got, tt.want, "Expected=%v, got=%v")
+		})
+	}
+}

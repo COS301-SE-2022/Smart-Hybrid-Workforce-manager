@@ -14,6 +14,7 @@ func SequentialSequence(start, end int) []int {
 }
 
 // This method finds the intersection between two integer slices
+// Duplicate elements could be added multiple times
 func IntSliceIntersection(slice1, slice2 []int) []int {
 	// Gets the intersection of two integer slices
 	intersectionMap := make(map[int]bool)
@@ -119,4 +120,20 @@ func Copy2DArr[T any](arr [][]T) [][]T {
 		copied[i] = Copy1DArr(arr[i])
 	}
 	return copied
+}
+
+// Gets the difference between 2 slices
+// Equievalent to set difference, e.g. A-B
+func SliceDifference[T comparable](slice1, slice2 []T) []T {
+	slice2Map := make(map[T]bool)
+	for _, v := range slice2 {
+		slice2Map[v] = true
+	}
+	result := []T{}
+	for _, v := range slice1 {
+		if !MapHasKey(slice2Map, v) {
+			result = append(result, v)
+		}
+	}
+	return result
 }
