@@ -30,7 +30,7 @@ func IntSliceIntersection(slice1, slice2 []int) []int {
 }
 
 // Removes the ONLY THE FIRST matching element from the slice without preserving ordering
-func RemoveElementNoOrder(slice []int, element int) []int {
+func RemoveElementNoOrder[T comparable](slice []T, element T) []T {
 	for i := range slice {
 		if slice[i] == element {
 			slice[i] = slice[len(slice)-1] // replace with last element
@@ -41,7 +41,7 @@ func RemoveElementNoOrder(slice []int, element int) []int {
 }
 
 // Removes the element at the specified index. If the element does not exist, nothing is done
-func RemElemenAtI(slice []int, index int) []int {
+func RemElemenAtI[T any](slice []T, index int) []T {
 	if index >= len(slice) {
 		return slice
 	}
@@ -50,7 +50,7 @@ func RemElemenAtI(slice []int, index int) []int {
 }
 
 // Contains slice
-func Contains(s []string, e string) bool {
+func Contains[T comparable](s []T, e T) bool {
 	for _, a := range s {
 		if a == e {
 			return true
