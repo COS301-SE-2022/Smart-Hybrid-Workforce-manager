@@ -73,3 +73,65 @@ func Test_twoPointSwap(t *testing.T) {
 		})
 	}
 }
+
+func TestFindValid(t *testing.T) {
+	type args struct {
+		index          int
+		parent         []string
+		otherParentMap map[string]int
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "Return mapped element",
+			args: args{
+				index:  0,
+				parent: []string{"c", "f", "e", "b", "a", "m", "d", "g"},
+				otherParentMap: map[string]int{
+					"c": 2,
+					"d": 3,
+					"z": 4,
+					"e": 5,
+				},
+			},
+			want: "m",
+		},
+		{
+			name: "Return element at index",
+			args: args{
+				index:  1,
+				parent: []string{"c", "f", "e", "b", "a", "m", "d", "g"},
+				otherParentMap: map[string]int{
+					"c": 2,
+					"d": 3,
+					"z": 4,
+					"e": 5,
+				},
+			},
+			want: "f",
+		},
+		{
+			name: "Return mapped element second test",
+			args: args{
+				index:  6,
+				parent: []string{"c", "f", "e", "b", "a", "m", "d", "g"},
+				otherParentMap: map[string]int{
+					"c": 2,
+					"d": 3,
+					"z": 4,
+					"e": 5,
+				},
+			},
+			want: "b",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := FindValid(tt.args.index, tt.args.parent, tt.args.otherParentMap)
+			assert.Equal(t, tt.want, got, "FindValid() = %v, want %v", got, tt.want)
+		})
+	}
+}

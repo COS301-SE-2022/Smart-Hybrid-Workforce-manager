@@ -126,7 +126,7 @@ func twoPointSwap[T any](arr1, arr2 []T, xP1, xP2 int) ([]T, []T) {
 
 func FindValid[T comparable](index int, parent []T, otherParentMap map[T]int) T {
 	// Check if element about to be copied from parent is already present inside the crossed over section
-	if _, ok := otherParentMap[parent[index]]; !ok {
+	if !cu.MapHasKey(otherParentMap, parent[index]) {
 		return parent[index] // If it isn't, return that element since it can be inserted
 	} else {
 		return FindValid(otherParentMap[parent[index]], parent, otherParentMap) // If it is, find and return a valid element
