@@ -2,7 +2,6 @@ package overseer
 
 import (
 	"context"
-	"fmt"
 	"lib/logger"
 	"scheduler/data"
 	"scheduler/ga"
@@ -36,6 +35,7 @@ func WeeklyOverseer(schedulerData data.SchedulerData) []data.Bookings {
 
 	// Listen on channel for best individual for x seconds
 	var best ga.Individual
+	best.Fitness = -1
 	for {
 		select {
 		case <-time.After(time.Second * 5):
@@ -75,14 +75,30 @@ func DailyOverseer(schedulerData data.SchedulerData) []data.Bookings {
 	domain.SchedulerData = &schedulerData
 	domain.Map = data.ExtractUserIdMap(&schedulerData)
 
-	indvs := ga.DailyPopulationGenerator(&domain, 1)
+	// Create channel
+	var c chan ga.Individual = make(chan ga.Individual)
+	var s context.Context = context.Background()
 
-	for _, indiv := range indvs {
-		fmt.Println(indiv.StringDomain(domain))
-		// mutated := ga.DailyMutate(&domain, ga.Individuals{indiv})
-		// fmt.Println(mutated[0].StringDomain(domain))
-		bookings = append(bookings, indiv.ConvertIndividualToDailyBookings(domain))
+	go ga.GA(domain, ga.WeeklyStubCrossOver, ga.WeeklyStubFitness, ga.DailyMutate, ga.WeeklyTournamentSelection, ga.DailyPopulationGenerator, c, &s)
+
+	// Listen on channel for best individual for x seconds
+	var best ga.Individual
+	best.Fitness = -1
+	for {
+		select {
+		case <-time.After(time.Second * 5):
+			s.Done()
+			bookings = append(bookings, best.ConvertIndividualToDailyBookings(domain))
+			return bookings
+		case candidate, ok := <-c: // if ok is false close event happened
+			if !ok {
+				bookings = append(bookings, best.ConvertIndividualToDailyBookings(domain))
+				return bookings
+			}
+			if candidate.Fitness > best.Fitness {
+				best = candidate
+				logger.Error.Printf("BEST INDIVIDUAL \n %v", best)
+			}
+		}
 	}
-
-	return bookings
 }
