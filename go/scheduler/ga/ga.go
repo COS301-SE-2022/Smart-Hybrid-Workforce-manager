@@ -3,6 +3,7 @@ package ga
 import (
 	"context"
 	"fmt"
+	cu "lib/collectionutils"
 	"lib/utils"
 	"math/rand"
 	"scheduler/data"
@@ -37,6 +38,21 @@ func (domain *Domain) GetRandomTerminalArrays(length int) []string {
 	var result []string
 	for i := 0; i < length; i++ {
 		result = append(result, domain.GetRandomTerminal())
+	}
+	return result
+}
+
+// Gets unique* elements from the terminals array
+// unique in this context means that it will not take the exact same element twice,
+// however if duplicates are present, it could happen that an element gets selected twice
+// if len(terminals) < length, panic will result
+func (domain *Domain) GetRandomUniqueTerminalArrays(length int) []string {
+	domainTerminalsCopy := cu.Copy1DArr(domain.Terminals)
+	var result []string
+	for i := 0; i < length; i++ {
+		randi := utils.RandInt(0, len(domainTerminalsCopy))
+		result = append(result, domainTerminalsCopy[randi])
+		domainTerminalsCopy = cu.RemElemenAtI(domainTerminalsCopy, randi)
 	}
 	return result
 }
