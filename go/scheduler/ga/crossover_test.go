@@ -135,3 +135,59 @@ func TestFindValid(t *testing.T) {
 		})
 	}
 }
+
+func TestPMX(t *testing.T) {
+	type args struct {
+		p1  []string
+		p2  []string
+		xP1 int
+		xP2 int
+	}
+	tests := []struct {
+		name  string
+		args  args
+		want  []string
+		want1 []string
+	}{
+		{
+			name: "No mapping required test, normal crossover",
+			args: args{
+				p1:  []string{"a", "b", "c", "d", "e", "f", "g", "h", "j"},
+				p2:  []string{"h", "j", "f", "e", "d", "c", "g", "a", "b"},
+				xP1: 2,
+				xP2: 5,
+			},
+			want:  []string{"a", "b", "f", "e", "d", "c", "g", "h", "j"},
+			want1: []string{"h", "j", "c", "d", "e", "f", "g", "a", "b"},
+		},
+		{
+			name: "No mapping required test, crossover entire chromosome",
+			args: args{
+				p1:  []string{"a", "b", "c", "d", "e", "f", "g", "h", "j"},
+				p2:  []string{"h", "j", "f", "e", "d", "c", "g", "a", "b"},
+				xP1: 0,
+				xP2: 9,
+			},
+			want:  []string{"h", "j", "f", "e", "d", "c", "g", "a", "b"},
+			want1: []string{"a", "b", "c", "d", "e", "f", "g", "h", "j"},
+		},
+		{
+			name: "Mapping required crossover",
+			args: args{
+				p1:  []string{"a", "b", "c", "d", "z", "e", "f", "g"},
+				p2:  []string{"c", "f", "e", "b", "a", "m", "d", "g"},
+				xP1: 2,
+				xP2: 6,
+			},
+			want:  []string{"z", "d", "e", "b", "a", "m", "f", "g"},
+			want1: []string{"m", "f", "c", "d", "z", "e", "b", "g"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, got1 := PMX(tt.args.p1, tt.args.p2, tt.args.xP1, tt.args.xP2)
+			assert.True(t, reflect.DeepEqual(got, tt.want), "PMX() got = %v, want %v", got, tt.want)
+			assert.True(t, reflect.DeepEqual(got1, tt.want1), "PMX() got1 = %v, want %v", got1, tt.want1)
+		})
+	}
+}
