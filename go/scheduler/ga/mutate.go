@@ -1,6 +1,7 @@
 package ga
 
 import (
+	cu "lib/collectionutils"
 	"lib/utils"
 )
 
@@ -16,14 +17,14 @@ func WeeklyDayVResourceMutateSwapValid(domain *Domain, individuals Individuals) 
 	var results Individuals
 	for _, individual := range individuals {
 		copiedIndiv := individual.Clone()
-		validSwap(copiedIndiv, len(domain.Terminals)/7) // semi-random
+		validWeeklySwap(copiedIndiv, len(domain.Terminals)/7) // semi-random
 		results = append(results, copiedIndiv)
 	}
 	return results
 }
 
 // Swap random users to differnt days, but keep the individual valid
-func validSwap(indiv *Individual, mutationDegree int) *Individual {
+func validWeeklySwap(indiv *Individual, mutationDegree int) *Individual {
 	// An array of maps, where each map contains the counts that users come in on a certain day
 	// the index of the day corresponds to the day
 	// map[user id]# of times a users id appears on that day
@@ -146,4 +147,71 @@ func DailyMutate(domain *Domain, individuals Individuals) Individuals {
 		results = append(results, copiedIndividual)
 	}
 	return results
+}
+
+// DailyMutateValid produces len(individuals) amount of new mutated individuals
+func DailyMutateValid(domain *Domain, individuals Individuals) Individuals {
+	var results Individuals
+	for _, indiv := range individuals {
+		results = append(results, dailyMutateValid(domain, indiv, 0.5, 1, 1))
+	}
+	return results
+}
+
+// Performs mutation on a daily individual
+// with a certain probability it will either swap around resources already
+// in an individual, or pull new resources from the terminals (if there are new resources)
+func dailyMutateValid(domain *Domain, individual *Individual, swapProbability float64, swapAmount, pullAmount int) *Individual {
+	decider := utils.RandFloat64()
+	if decider <= swapProbability {
+		// Apply swap mutate
+		return dailySwapMutate(domain, individual, swapAmount)
+	}
+	// Attempt pull mutate
+	mutated := dailyPullMutateValid(domain, individual, pullAmount)
+	if mutated == nil { // Apply swap mutate if pull mutate could not be performed
+		return dailySwapMutate(domain, individual, swapAmount)
+	}
+	return mutated
+}
+
+// Swaps around resources inside a daily individual, it does this swapAmount times
+// Individuals will remain valid if they were valid to begin with\
+func dailySwapMutate(domain *Domain, individual *Individual, swapAmount int) *Individual {
+	copiedIndividual := individual.Clone()
+	gene := copiedIndividual.Gene
+	if len(gene[0]) == 0 {
+		return copiedIndividual // No users to be assigned resources
+	}
+	for i := 0; i < swapAmount; i++ {
+		// Find random indices to swap inside the individaul
+		randi1, randi2 := utils.RandInt(0, len(gene[0])), utils.RandInt(0, len(gene[0]))
+		// Swap the resources
+		gene[randi1], gene[randi2] = gene[randi2], gene[randi1]
+	}
+	return copiedIndividual
+}
+
+// dailyPullMutateValid will pull new resources at random from the terminals, and
+// replace assigned resources at random, while keeping the individual valid, returns nil
+// if no terminals can be taken
+func dailyPullMutateValid(domain *Domain, individual *Individual, pullAmount int) *Individual {
+	copiedIndividual := individual.Clone()
+	gene := copiedIndividual.Gene
+	availableTerminals := cu.SliceDifference(domain.Terminals, gene[0])
+	if len(gene[0]) == 0 {
+		return copiedIndividual // no users to be assigned resoures
+	}
+	if len(availableTerminals) == 0 {
+		return nil // No terminals
+	}
+	for i := 0; i < pullAmount; i++ {
+		// Get index for a random resource from the available resources
+		rTerminali := utils.RandInt(0, len(availableTerminals))
+		// Get index for a random user/resource in the gene
+		rGenei := utils.RandInt(0, len(gene[0]))
+		// Exchange the resource assigned to the individual with the new resource obtained from the available terminals
+		gene[0][rGenei], availableTerminals[rTerminali] = availableTerminals[rTerminali], gene[0][rGenei]
+	}
+	return copiedIndividual
 }
