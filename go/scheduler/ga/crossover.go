@@ -66,43 +66,30 @@ func weeklyDayVResourceCrossover(domain *Domain, individuals Individuals, offspr
 ///////////////////////////////////////////////////
 // General crossover code
 
-// A valid crossover, that works similarly to PMX 2-point crossover
+// A valid (daily) crossover, that works similarly to PMX 2-point crossover
 // It initially flattens an individual, and then performs crossover on the flattened crossover
-func generalFlattenCrossoverValid(domain *Domain, individuals Individuals, offspring int) Individuals {
+func PartiallyMappedFlattenCrossoverValid(domain *Domain, individuals Individuals, offspring int) Individuals {
+	// Flatten the parents
 	flatParent1, flatParent2 := cu.Flatten2DArr(individuals[0].Gene), cu.Flatten2DArr(individuals[0].Gene)
 
+	// Get the crossover points
 	xPoint1, xPoint2 := utils.RandInt(0, len(flatParent1)), utils.RandInt(0, len(flatParent1))
 
+	// Ensure that the first crossover point is not larger than the second
 	if xPoint1 > xPoint2 {
 		xPoint1, xPoint2 = xPoint2, xPoint1
 	}
 
-	flatChild1, flatChild2 := twoPointSwap(flatParent1, flatParent2, xPoint1, xPoint2)
+	offspring1, offspring2 := PMX(flatParent1, flatParent2, xPoint1, xPoint2)
 
-	// TODO: @JonathanEnslin - Make individuals valid (for both daily and weekly, can make the function context specific, look at dimms of gene, or pass in validator)
-
-	// ======================================================================
-	// Perform PMX (Partially Mapped Crossover) - move out into seperate function
-	// map crossover points in two parents
-	p1Section, p2Section := make(map[string]int), make(map[string]int)
-	for i := xPoint1; i < xPoint2; i++ {
-		p1Section[flatParent1[i]] = i
-		p2Section[flatParent2[i]] = i
-	}
-
-	for i := 0; i < xPoint1; i++ {
-		flatChild1[i] = FindValid(i, flatParent1, p2Section)
-		flatChild2[i] = FindValid(i, flatParent2, p1Section)
-	}
-
-	// ======================================================================
-
+	// Calculate the original dimensions of the individuals
 	sizes := make([]int, len(individuals[0].Gene))
 	for i, col := range individuals[0].Gene {
 		sizes[i] = len(col)
 	}
 
-	child1, child2 := cu.PartitionArray(flatChild1, sizes), cu.PartitionArray(flatChild2, sizes)
+	// child1 and child2 are the de-flattened offspring
+	child1, child2 := cu.PartitionArray(offspring1, sizes), cu.PartitionArray(offspring2, sizes)
 	return []*Individual{{child1, 0.0}, {child2, 0.0}}
 }
 
@@ -122,6 +109,38 @@ func twoPointSwap[T any](arr1, arr2 []T, xP1, xP2 int) ([]T, []T) {
 		res2[i] = arr2[i]
 	}
 	return res1, res2
+}
+
+// PMX performs partially mapped crossover, where p1 and p2 are parents, and xP1 and xP2 are
+// the crossover points
+func PMX[T comparable](p1, p2 []T, xP1, xP2 int) ([]T, []T) {
+	// Make offspring arrays
+	offspring1, offspring2 := make([]T, len(p1)), make([]T, len(p2))
+
+	// Map the genetic material inside the crossover section
+	p1XSection, p2XSection := make(map[T]int), make(map[T]int)
+	for i := xP1; i < xP2; i++ {
+		p1XSection[p1[i]] = i
+		p2XSection[p2[i]] = i
+	}
+
+	// Cross over the crossover sections
+	for i := xP1; i < xP2; i++ {
+		offspring1[i] = p2[i]
+		offspring2[i] = p1[i]
+	}
+
+	// Fill in the rest of the chromosomes by mapping where necessary
+	for i := 0; i < xP1; i++ {
+		offspring1[i] = FindValid(i, p1, p2XSection)
+		offspring2[i] = FindValid(i, p2, p1XSection)
+	}
+
+	for i := xP2; i < len(p1); i++ {
+		offspring1[i] = FindValid(i, p1, p2XSection)
+		offspring2[i] = FindValid(i, p2, p1XSection)
+	}
+	return offspring1, offspring2
 }
 
 func FindValid[T comparable](index int, parent []T, otherParentMap map[T]int) T {
