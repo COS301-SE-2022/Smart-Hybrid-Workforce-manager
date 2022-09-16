@@ -232,6 +232,7 @@ func TestPartiallyMappedFlattenCrossoverValid(t *testing.T) {
 						Fitness: 0.0,
 					},
 				},
+				numOffspring: 2,
 			},
 			errMessage: "Expceted parents and children to contain the same element",
 		},
@@ -244,6 +245,113 @@ func TestPartiallyMappedFlattenCrossoverValid(t *testing.T) {
 			child1Gene, child2Gene := got[0].Gene, got[1].Gene
 			assert.ElementsMatch(t, parent1Gene[0], child1Gene[0], tt.errMessage)
 			assert.ElementsMatch(t, parent2Gene[0], child2Gene[0], tt.errMessage)
+			assert.Len(t, got, tt.args.numOffspring, "Incorrect number of individuals returned, expected=%v, got=%v", tt.args.numOffspring, len(got))
+		})
+	}
+}
+
+func TestCrossoverCaller(t *testing.T) {
+
+	mockCrossover := func(domain *Domain, individuals Individuals, numOffspring int) Individuals {
+		return individuals[:numOffspring] // Mock crossover
+	}
+
+	mockSelectionOperator := func(domain *Domain, individuals Individuals, count int) Individuals {
+		return individuals[:count] // Mock crossover
+	}
+
+	individuals := Individuals{
+		&Individual{
+			Fitness: 0.0,
+			Gene:    [][]string{{"pear", "litchi"}},
+		},
+		&Individual{
+			Fitness: 0.0,
+			Gene:    [][]string{{"cabbage", "broccoli"}},
+		},
+		&Individual{
+			Fitness: 0.0,
+			Gene:    [][]string{{"peanut", "almond"}},
+		},
+	}
+
+	type args struct {
+		crossoverOperator CrossoverOperator
+		domain            *Domain
+		individuals       Individuals
+		selectionFunc     Selection
+		offspring         int
+	}
+	tests := []struct {
+		name        string
+		args        args
+		expectedLen int
+	}{
+		{
+			name: "Test for the correct number of individuals being returned, expect 0",
+			args: args{
+				crossoverOperator: mockCrossover,
+				domain:            nil,
+				selectionFunc:     mockSelectionOperator,
+				offspring:         0,
+				individuals:       individuals,
+			},
+			expectedLen: 0,
+		},
+		{
+			name: "Test for the correct number of individuals being returned, expect 1",
+			args: args{
+				crossoverOperator: mockCrossover,
+				domain:            nil,
+				selectionFunc:     mockSelectionOperator,
+				offspring:         1,
+				individuals:       individuals,
+			},
+			expectedLen: 1,
+		},
+		{
+			name: "Test for the correct number of individuals being returned, expect 2",
+			args: args{
+				crossoverOperator: mockCrossover,
+				domain:            nil,
+				selectionFunc:     mockSelectionOperator,
+				offspring:         2,
+				individuals:       individuals,
+			},
+			expectedLen: 2,
+		},
+		{
+			name: "Test for the correct number of individuals being returned, exepct 100",
+			args: args{
+				crossoverOperator: mockCrossover,
+				domain:            nil,
+				selectionFunc:     mockSelectionOperator,
+				offspring:         100,
+				individuals:       individuals,
+			},
+			expectedLen: 100,
+		},
+		{
+			name: "Test for the correct number of individuals being returned, expect 101",
+			args: args{
+				crossoverOperator: mockCrossover,
+				domain:            nil,
+				selectionFunc:     mockSelectionOperator,
+				offspring:         101,
+				individuals:       individuals,
+			},
+			expectedLen: 101,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := CrossoverCaller(
+				tt.args.crossoverOperator,
+				tt.args.domain, tt.args.individuals,
+				tt.args.selectionFunc,
+				tt.args.offspring,
+			)
+			assert.Len(t, got, tt.expectedLen, "Incorrect number of individuals returned, got=%v, expected=%v", len(got), tt.expectedLen)
 		})
 	}
 }

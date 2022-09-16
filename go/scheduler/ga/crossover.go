@@ -5,7 +5,19 @@ import (
 	"lib/utils"
 )
 
+// Function of this type gets passed into CrossoverCaller
 type CrossoverOperator func(domain *Domain, individuals Individuals, numOffspring int) Individuals
+
+// CrossoverCaller gets passed to the GA, it uses the specified operator to perform crossover
+func CrossoverCaller(crossoverOperator CrossoverOperator, domain *Domain, individuals Individuals, selectionFunc Selection, offspring int) Individuals {
+	var results Individuals
+	for i := 0; i <= offspring; i++ {
+		// select parents
+		parents := selectionFunc(domain, individuals, 2)
+		results = append(results, crossoverOperator(domain, parents, 2)...)
+	}
+	return results[:offspring]
+}
 
 ///////////////////////////////////////////////////
 // WEEKLY
@@ -67,16 +79,6 @@ func weeklyDayVResourceCrossover(domain *Domain, individuals Individuals, offspr
 
 ///////////////////////////////////////////////////
 // General crossover code
-
-func CrossoverCaller(crossoverOperator CrossoverOperator, domain *Domain, individuals Individuals, selectionFunc Selection, offspring int) Individuals {
-	var results Individuals
-	for i := 0; i < offspring; i++ {
-		// select parents
-		parents := selectionFunc(domain, individuals, 2)
-		results = append(results, crossoverOperator(domain, parents, 2)...)
-	}
-	return results
-}
 
 // A valid (daily) crossover, that works similarly to PMX 2-point crossover
 // It initially flattens an individual, and then performs pmx crossover on the flattened crossover
