@@ -172,7 +172,7 @@ func TestPMX(t *testing.T) {
 			want1: []string{"a", "b", "c", "d", "e", "f", "g", "h", "j"},
 		},
 		{
-			name: "Mapping required crossover",
+			name: "Mapping required crossover, arrays not permuations of eachother",
 			args: args{
 				p1:  []string{"a", "b", "c", "d", "z", "e", "f", "g"},
 				p2:  []string{"c", "f", "e", "b", "a", "m", "d", "g"},
@@ -182,12 +182,68 @@ func TestPMX(t *testing.T) {
 			want:  []string{"z", "d", "e", "b", "a", "m", "f", "g"},
 			want1: []string{"m", "f", "c", "d", "z", "e", "b", "g"},
 		},
+		{
+			name: "Mapping required crossover, arrays are permuations of eachother",
+			args: args{
+				p1:  []string{"a", "b", "c", "d", "e", "f", "g"},
+				p2:  []string{"c", "f", "e", "b", "a", "d", "g"},
+				xP1: 2,
+				xP2: 5,
+			},
+			want:  []string{"c", "d", "e", "b", "a", "f", "g"},
+			want1: []string{"a", "f", "c", "d", "e", "b", "g"},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, got1 := PMX(tt.args.p1, tt.args.p2, tt.args.xP1, tt.args.xP2)
 			assert.True(t, reflect.DeepEqual(got, tt.want), "PMX() got = %v, want %v", got, tt.want)
 			assert.True(t, reflect.DeepEqual(got1, tt.want1), "PMX() got1 = %v, want %v", got1, tt.want1)
+		})
+	}
+}
+
+func TestPartiallyMappedFlattenCrossoverValid(t *testing.T) {
+	type args struct {
+		domain       *Domain
+		individuals  Individuals
+		numOffspring int
+	}
+	tests := []struct {
+		name       string
+		args       args
+		errMessage string
+	}{
+		{
+			name: "Normal crossover (daily form)",
+			args: args{
+				domain: nil,
+				individuals: Individuals{
+					&Individual{
+						Gene: [][]string{
+							{"a", "b", "c", "d", "e", "f", "g"},
+						},
+						Fitness: 0.0,
+					},
+					&Individual{
+						Gene: [][]string{
+							{"c", "f", "e", "b", "a", "d", "g"},
+						},
+						Fitness: 0.0,
+					},
+				},
+			},
+			errMessage: "Expceted parents and children to contain the same element",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := PartiallyMappedFlattenCrossoverValid(tt.args.domain, tt.args.individuals, tt.args.numOffspring)
+			parent1Gene, parent2Gene := tt.args.individuals[0].Gene, tt.args.individuals[1].Gene
+			child1Gene, child2Gene := got[0].Gene, got[1].Gene
+			assert.ElementsMatch(t, parent1Gene[0], child1Gene[0], tt.errMessage)
+			assert.ElementsMatch(t, parent2Gene[0], child2Gene[0], tt.errMessage)
 		})
 	}
 }

@@ -67,10 +67,10 @@ func weeklyDayVResourceCrossover(domain *Domain, individuals Individuals, offspr
 // General crossover code
 
 // A valid (daily) crossover, that works similarly to PMX 2-point crossover
-// It initially flattens an individual, and then performs crossover on the flattened crossover
-func PartiallyMappedFlattenCrossoverValid(domain *Domain, individuals Individuals, offspring int) Individuals {
+// It initially flattens an individual, and then performs pmx crossover on the flattened crossover
+func PartiallyMappedFlattenCrossoverValid(domain *Domain, individuals Individuals, numOffspring int) Individuals {
 	// Flatten the parents
-	flatParent1, flatParent2 := cu.Flatten2DArr(individuals[0].Gene), cu.Flatten2DArr(individuals[0].Gene)
+	flatParent1, flatParent2 := cu.Flatten2DArr(individuals[0].Gene), cu.Flatten2DArr(individuals[1].Gene)
 
 	// Get the crossover points
 	xPoint1, xPoint2 := utils.RandInt(0, len(flatParent1)), utils.RandInt(0, len(flatParent1))
