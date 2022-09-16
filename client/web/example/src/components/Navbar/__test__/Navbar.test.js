@@ -1,8 +1,7 @@
 import { BrowserRouter } from 'react-router-dom'
 import React, { useContext, useState } from 'react'
-import Navbar from '../index.js'
+import Navbar from '../Navbar.js'
 import {act, render, fireEvent, cleanup, screen} from '@testing-library/react';
-import { Nav, NavHeader, NavLink, Bars, NavMenu } from '../NavbarElements'
 import { createMemoryHistory } from 'history';
 import { UserContext } from '../../../App';
 import Bookings from '../../../pages/Bookings.js'
