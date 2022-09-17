@@ -47,3 +47,24 @@ describe('When rendering as Users type', () => {
     expect(screen.getByTestId('admin-card-text-body').textContent).toBe('Create and manage users.');
   });
 });
+
+describe('When rendering as Teams type', () => {
+  it('should return Users icon', () => {
+    render(<MockAdminCard name='Teams' description='Create and manage teams.' path='/team' type='Teams'/> );
+    expect(screen.getByTestId('admin-icon-teams')).toBeInTheDocument();
+  });
+
+  it('should display the correct header', () => {
+    render(<MockAdminCard name='Teams' description='Create and manage teams.' path='/team' type='Teams'/> );
+
+    expect(screen.getByTestId('admin-card-text-header')).toBeInTheDocument();
+    expect(screen.getByTestId('admin-card-text-header').textContent).toBe('Teams');
+  });
+
+  it('should display the correct body', () => {
+    render(<MockAdminCard name='Teams' description='Create and manage teams.' path='/team' type='Teams'/> );
+
+    expect(screen.getByTestId('admin-card-text-body')).toBeInTheDocument();
+    expect(screen.getByTestId('admin-card-text-body').textContent).toBe('Create and manage teams.');
+  });
+});
