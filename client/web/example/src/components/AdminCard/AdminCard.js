@@ -21,12 +21,12 @@ const AdminCard = ({name, description, path, type}) =>
     function icon()
     {
         if (type === 'Users')
-            return <MdAccountCircle className='admin-icon' size={50} />
+            return <MdAccountCircle className='admin-icon' size={50} data-testid='admin-icon-users' />
         if (type === 'Teams')
-            return <MdSupervisedUserCircle className='admin-icon' size={50} />
+            return <MdSupervisedUserCircle className='admin-icon' size={50} data-testid='admin-icon-teams' />
         if (type === 'Resources')
-            return <MdHomeFilled className='admin-icon' size={50} />
-        return <MdPermIdentity className='admin-icon' size={50} />
+            return <MdHomeFilled className='admin-icon' size={50} data-testid='admin-icon-resources' />
+        return <MdPermIdentity className='admin-icon' size={50} data-testid='admin-icon-default' />
     }
 
 
@@ -38,8 +38,8 @@ const AdminCard = ({name, description, path, type}) =>
                 </div>
                 
                 <div className="admin-card-text">
-                    <h2>{name}</h2>
-                    <p>{description}</p>
+                    <h2 data-testid='admin-card-text-header'>{name}</h2>
+                    <p data-testid='admin-card-text-body'>{description}</p>
                 </div>
                 <div className="admin-card-arrow">
                     <FaLongArrowAltRight size={50}/>

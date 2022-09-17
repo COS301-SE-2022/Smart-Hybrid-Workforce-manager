@@ -57,7 +57,7 @@ describe('When clicking on Statistics', () => {
 });
 
 describe('When clicking on Bookings', () => {
-  it('should open drop down menu', () => {
+  it('should open and close drop down menu', () => {
     render(<MockNavbar/> );
 
     expect(screen.getByText(/Bookings/i)).toBeInTheDocument();
@@ -67,6 +67,10 @@ describe('When clicking on Bookings', () => {
     fireEvent.click(screen.getByText(/Bookings/i));
     expect(screen.getByText(/Desk/i)).toBeVisible();
     expect(screen.getByText(/Meeting Room/i)).toBeVisible();
+
+    fireEvent.click(screen.getByText(/Bookings/i));
+    expect(screen.getByText(/Desk/i)).not.toBeVisible();
+    expect(screen.getByText(/Meeting Room/i)).not.toBeVisible();
   });
 
   it('should navigate to /bookings-desk', () => {
