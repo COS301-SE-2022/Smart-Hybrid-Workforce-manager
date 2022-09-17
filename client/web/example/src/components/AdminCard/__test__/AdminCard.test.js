@@ -89,3 +89,24 @@ describe('When rendering as Resources type', () => {
     expect(screen.getByTestId('admin-card-text-body').textContent).toBe('Create and manage resources.');
   });
 });
+
+describe('When rendering as Roles type', () => {
+  it('should return Users icon', () => {
+    render(<MockAdminCard name='Roles' description='Create and manage roles.' path='/role' type='Roles'/> );
+    expect(screen.getByTestId('admin-icon-default')).toBeInTheDocument();
+  });
+
+  it('should display the correct header', () => {
+    render(<MockAdminCard name='Roles' description='Create and manage roles.' path='/role' type='Roles'/> );
+
+    expect(screen.getByTestId('admin-card-text-header')).toBeInTheDocument();
+    expect(screen.getByTestId('admin-card-text-header').textContent).toBe('Roles');
+  });
+
+  it('should display the correct body', () => {
+    render(<MockAdminCard name='Roles' description='Create and manage roles.' path='/role' type='Roles'/> );
+
+    expect(screen.getByTestId('admin-card-text-body')).toBeInTheDocument();
+    expect(screen.getByTestId('admin-card-text-body').textContent).toBe('Create and manage roles.');
+  });
+});
