@@ -68,3 +68,24 @@ describe('When rendering as Teams type', () => {
     expect(screen.getByTestId('admin-card-text-body').textContent).toBe('Create and manage teams.');
   });
 });
+
+describe('When rendering as Resources type', () => {
+  it('should return Users icon', () => {
+    render(<MockAdminCard name='Resources' description='Create and manage resources.' path='/resources' type='Resources'/> );
+    expect(screen.getByTestId('admin-icon-resources')).toBeInTheDocument();
+  });
+
+  it('should display the correct header', () => {
+    render(<MockAdminCard name='Resources' description='Create and manage resources.' path='/resources' type='Resources'/> );
+
+    expect(screen.getByTestId('admin-card-text-header')).toBeInTheDocument();
+    expect(screen.getByTestId('admin-card-text-header').textContent).toBe('Resources');
+  });
+
+  it('should display the correct body', () => {
+    render(<MockAdminCard name='Resources' description='Create and manage resources.' path='/resources' type='Resources'/> );
+
+    expect(screen.getByTestId('admin-card-text-body')).toBeInTheDocument();
+    expect(screen.getByTestId('admin-card-text-body').textContent).toBe('Create and manage resources.');
+  });
+});
