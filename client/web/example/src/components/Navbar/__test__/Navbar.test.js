@@ -2,19 +2,17 @@ import { BrowserRouter } from 'react-router-dom'
 import React, { useContext, useState } from 'react'
 import Navbar from '../Navbar.js'
 import {act, render, fireEvent, cleanup, screen} from '@testing-library/react';
-import { createMemoryHistory } from 'history';
 import { UserContext } from '../../../App';
-import Bookings from '../../../pages/Bookings.js'
 
-afterEach(cleanup);
+import * as router from 'react-router'
 
-const history = createMemoryHistory();
+const navigate = jest.fn();
 
 const MockNavbar = () => {
   const [userData, setUserData] = useState(null);
 
   return(
-    <BrowserRouter history={history}>
+    <BrowserRouter>
       <UserContext.Provider value={{userData, setUserData}}>
         <Navbar/>
       </UserContext.Provider>
@@ -22,13 +20,18 @@ const MockNavbar = () => {
   )
 };
 
-describe('NavbarTest', () => {
+beforeEach(() => {
+  jest.spyOn(router, 'useNavigate').mockImplementation(() => navigate)
+});
 
-  it('Navigate to bookings', () => {
+afterEach(cleanup);
+
+describe('When clicking on Calendar', () => {
+  it('should navigate to /', () => {
     render(<MockNavbar/> );
 
-    expect(screen.getByText(/BOOKINGS/i)).toBeInTheDocument();
-    fireEvent.click(screen.getByText(/BOOKINGS/i));
-    // expect(history.location.pathname).toBe('/bookings');
+    expect(screen.getByText(/Calendar/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByText(/Calendar/i));
+    expect(navigate).toHaveBeenCalledWith('/');
   });
-})
+});
