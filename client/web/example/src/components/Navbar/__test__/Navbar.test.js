@@ -46,3 +46,12 @@ describe('When clicking on Office Map', () => {
   });
 });
 
+describe('When clicking on Statistics', () => {
+  it('should navigate to /statistics', () => {
+    render(<MockNavbar/> );
+
+    expect(screen.getByText(/Statistics/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByText(/Statistics/i));
+    expect(navigate).toHaveBeenCalledWith('/statistics');
+  });
+});
