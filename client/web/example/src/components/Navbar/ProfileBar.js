@@ -40,7 +40,7 @@ const ProfileBar = (props, ref) =>
 
     return (
         <div className='profilebar-container'>
-            <div ref={profileRef} className='profilepic-container' onClick={NavigateProfile}>
+            <div ref={profileRef} className='profilepic-container' onClick={NavigateProfile} data-testid='profilepic-container'>
                 <CgProfile />
             </div>
 
