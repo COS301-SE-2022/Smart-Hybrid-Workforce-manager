@@ -44,4 +44,20 @@ describe('When clicking on popup', () => {
     fireEvent.click(screen.getByTestId('resource-edit-icon'));
     expect(localStorage.setItem).toHaveBeenCalledWith('UserID', 'test_id');
   });
+
+  it('should set UserName in local storage', () => {
+    render(<MockUserListItem id='test_id' name='test_name' email='test_email'/> );
+
+    expect(screen.getByTestId('resource-edit-icon')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('resource-edit-icon'));
+    expect(localStorage.setItem).toHaveBeenCalledWith('UserName', 'test_name');
+  });
+
+  it('should set UserEmail in local storage', () => {
+    render(<MockUserListItem id='test_id' name='test_name' email='test_email'/> );
+
+    expect(screen.getByTestId('resource-edit-icon')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('resource-edit-icon'));
+    expect(localStorage.setItem).toHaveBeenCalledWith('UserEmail', 'test_email');
+  });
 });
