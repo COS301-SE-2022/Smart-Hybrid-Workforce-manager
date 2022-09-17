@@ -1,6 +1,7 @@
 package ga
 
 import (
+	"math"
 	"scheduler/data"
 )
 
@@ -174,8 +175,67 @@ func (individual *Individual) getUserCountMapsPerDay() []map[string]int {
 ///////////////////////////////////////////////////
 // DAILY
 
+func DailyFitness(domain *Domain, individuals Individuals) []float64 {
+	var result []float64
+	for _, individual := range individuals {
+		fitness := dailyFitness(domain, individual)
+		result = append(result, fitness)
+		individual.Fitness = fitness
+		//fmt.Println(fitness)
+	}
+	return result
+}
+
+func dailyFitness(domain *Domain, individual *Individual) float64 {
+	return 0.0
+}
+
+// teamProximityScore calculates a score that indicates the proximity of members
+// of a team, scales with team priority (TODO: @JonathanEnslin remember this)
+func (individual *Individual) teamProximityScore(domain *Domain) float64 {
+	return 0.0
+}
+
+// preferredDeskBonus returns a bonus fitness value for users sitting at their preffered desk
+func (indiividual *Individual) preferredDeskBonus(domain *Domain) float64 {
+	return 0.0
+}
+
 // avgDistanceFromCentroid calculates the centroid of a set of points and then calculates
 // the avg point-to-centroid distance
-func (individual *Individual) avgDistanceFromCentroid() {
+// param coords is an array of float64 arrays, where each inner array corresponds to a set of coordinates
+// the length of the array correspons to the coordinate dimension, e.g. len=2 would be 2D, or x and y
+func avgDistanceFromCentroid(coords [][]float64) float64 {
+	centroid := getCentroid(coords) // Get the centroid
+	avgDistance := 0.0
+	for _, coord := range coords {
+		avgDistance += math.Sqrt(distanceRadicand(centroid, coord)) // get the total distance
+	}
+	avgDistance /= float64(len(coords)) // calculate the avg distance from the total
+	return avgDistance
+}
 
+// Gets the centroid a set of coordinates
+// See avgDistanceFromCentroid explanation on how the coordinates work
+func getCentroid(coords [][]float64) []float64 {
+	means := make([]float64, len(coords[0]))
+	for _, coord := range coords {
+		for i := range coord {
+			means[i] += coord[i] // sum the total value for each part of the coordinate
+		}
+	}
+	for i := range means {
+		means[i] /= float64(len(coords)) // calculate the average from the totals
+	}
+	return means
+}
+
+// Returns the value of the distance formula before sqrt is applied
+// See avgDistanceFromCentroid explanation on how the coordinates work
+func distanceRadicand(origin []float64, coord []float64) float64 {
+	result := 0.0
+	for i := range coord {
+		result += math.Pow(coord[i]-origin[i], 2)
+	}
+	return result
 }
