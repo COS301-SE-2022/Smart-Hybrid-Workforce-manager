@@ -2,6 +2,7 @@ package collectionutils
 
 import (
 	"reflect"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -491,6 +492,94 @@ func TestSliceDifference(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := SliceDifference(tt.args.slice1, tt.args.slice2)
 			assert.ElementsMatch(t, got, tt.want, "Expected=%v, got=%v")
+		})
+	}
+}
+
+func TestGroupBy(t *testing.T) {
+	type argsStrInt struct {
+		slice        []int
+		groupingFunc func(item int) string
+	}
+	tests1 := []struct {
+		name          string
+		args          argsStrInt
+		wantGroupKeys []string
+		wantGroups    map[string][]int
+	}{
+		{
+			name: "Test 1",
+			args: argsStrInt{
+				slice: []int{7, 9, 9, 9, 9, 1, 10, 7, 7, 1, 2},
+				groupingFunc: func(item int) string {
+					return strconv.Itoa(item)
+				},
+			},
+			wantGroupKeys: []string{"1", "2", "7", "9", "10"},
+			wantGroups: map[string][]int{
+				"1":  {1, 1},
+				"2":  {2},
+				"7":  {7, 7, 7},
+				"9":  {9, 9, 9, 9},
+				"10": {10},
+			},
+		},
+	}
+	for _, tt := range tests1 {
+		t.Run(tt.name, func(t *testing.T) {
+			gotGroupKeys, gotGroups := GroupBy(tt.args.slice, tt.args.groupingFunc)
+			assert.ElementsMatch(t, gotGroupKeys, tt.wantGroupKeys,
+				"GroupBy() gotGroupKeys = %v, want %v in no particular order", gotGroupKeys, tt.wantGroupKeys)
+			if !reflect.DeepEqual(gotGroups, tt.wantGroups) {
+				t.Errorf("GroupBy() gotGroups = %v, want %v", gotGroups, tt.wantGroups)
+			}
+		})
+	}
+
+	type argsStrStr struct {
+		slice        []string
+		groupingFunc func(item string) string
+	}
+	tests2 := []struct {
+		name          string
+		args          argsStrStr
+		wantGroupKeys []string
+		wantGroups    map[string][]string
+	}{
+		{
+			name: "Test 2",
+			args: argsStrStr{
+				slice: []string{"Apple", "Broccoli", "Cabbage", "Pear", "Pineapple", "Cashew", "Egg"},
+				groupingFunc: func(item string) string {
+					if Contains([]string{"Apple", "Pineapple", "Pear"}, item) {
+						return "Fruit"
+					}
+					if Contains([]string{"Broccoli", "Cabbage"}, item) {
+						return "Vegetable"
+					}
+					if Contains([]string{"Cashew"}, item) {
+						return "Nut"
+					}
+					return "Unknown"
+				},
+			},
+			wantGroupKeys: []string{"Fruit", "Vegetable", "Nut", "Unknown"},
+			wantGroups: map[string][]string{
+				"Fruit":     {"Apple", "Pear", "Pineapple"},
+				"Vegetable": {"Broccoli", "Cabbage"},
+				"Nut":       {"Cashew"},
+				"Unknown":   {"Egg"},
+			},
+		},
+	}
+	for _, tt := range tests2 {
+		t.Run(tt.name, func(t *testing.T) {
+			gotGroupKeys, gotGroups := GroupBy(tt.args.slice, tt.args.groupingFunc)
+			assert.ElementsMatch(t, gotGroupKeys, tt.wantGroupKeys,
+				"GroupBy() gotGroupKeys = %v, want %v in no particular order", gotGroupKeys, tt.wantGroupKeys)
+			if !reflect.DeepEqual(gotGroups, tt.wantGroups) {
+				t.Errorf("GroupBy() gotGroups = %v, want %v", gotGroups, tt.wantGroups)
+			}
 		})
 	}
 }

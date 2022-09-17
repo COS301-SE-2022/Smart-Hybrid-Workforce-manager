@@ -125,15 +125,30 @@ func Copy2DArr[T any](arr [][]T) [][]T {
 // Gets the difference between 2 slices
 // Equievalent to set difference, e.g. A-B
 func SliceDifference[T comparable](slice1, slice2 []T) []T {
-	slice2Map := make(map[T]bool)
+	slice2Map := make(map[T]bool) // Map what elements are contained in slice 2
 	for _, v := range slice2 {
 		slice2Map[v] = true
 	}
 	result := []T{}
 	for _, v := range slice1 {
-		if !MapHasKey(slice2Map, v) {
-			result = append(result, v)
+		if !MapHasKey(slice2Map, v) { // Check if element is present in slice 2
+			result = append(result, v) // Only add to the result if the element is not also in slice 2
 		}
 	}
 	return result
+}
+
+// GroupBy works similar to SQL group by in that it groups the elements in the passed in slice, using whatever group
+// is returned by the groupingFunc, see the tests for GroupBy for example usages
+func GroupBy[T comparable, G comparable](slice []T, groupingFunc func(item T) G) (groupKeys []G, groups map[G][]T) {
+	groups = make(map[G][]T)
+	for _, item := range slice {
+		itemGroup := groupingFunc(item)    // Get the item's group
+		if !MapHasKey(groups, itemGroup) { // Check if group needs to be created
+			groupKeys = append(groupKeys, itemGroup)
+			groups[itemGroup] = []T{}
+		}
+		groups[itemGroup] = append(groups[itemGroup], item) // Add item to group
+	}
+	return
 }
