@@ -22,7 +22,7 @@ const MockAdminCard = ({name, description, path, type}) => {
 
 beforeEach(() => {
   jest.spyOn(router, 'useNavigate').mockImplementation(() => navigate);
-  jest.spyOn(window.localStorage.__proto__, 'removeItem');
+  jest.spyOn(window, 'open');
 });
 
 afterEach(cleanup);
@@ -46,6 +46,15 @@ describe('When rendering as Users type', () => {
     expect(screen.getByTestId('admin-card-text-body')).toBeInTheDocument();
     expect(screen.getByTestId('admin-card-text-body').textContent).toBe('Create and manage users.');
   });
+
+  it('should navigate to /users', () => {
+    render(<MockAdminCard name='Users' description='Create and manage users.' path='/users' type='Users'/> );
+
+    expect(screen.getByTestId('admin-card')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('admin-card'));
+    expect(navigate).toHaveBeenCalledWith('/users');
+    expect(window.open).not.toHaveBeenCalled();
+  });
 });
 
 describe('When rendering as Teams type', () => {
@@ -66,6 +75,15 @@ describe('When rendering as Teams type', () => {
 
     expect(screen.getByTestId('admin-card-text-body')).toBeInTheDocument();
     expect(screen.getByTestId('admin-card-text-body').textContent).toBe('Create and manage teams.');
+  });
+
+  it('should navigate to /team', () => {
+    render(<MockAdminCard name='Teams' description='Create and manage teams.' path='/team' type='Teams'/> );
+
+    expect(screen.getByTestId('admin-card')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('admin-card'));
+    expect(navigate).toHaveBeenCalledWith('/team');
+    expect(window.open).not.toHaveBeenCalled();
   });
 });
 
@@ -88,6 +106,15 @@ describe('When rendering as Resources type', () => {
     expect(screen.getByTestId('admin-card-text-body')).toBeInTheDocument();
     expect(screen.getByTestId('admin-card-text-body').textContent).toBe('Create and manage resources.');
   });
+
+  it('should call window.open to /resources', () => {
+    render(<MockAdminCard name='Resources' description='Create and manage resources.' path='/resources' type='Resources'/> );
+
+    expect(screen.getByTestId('admin-card')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('admin-card'));
+    expect(window.open).toHaveBeenCalledWith('/resources');
+    expect(navigate).not.toHaveBeenCalled();
+  });
 });
 
 describe('When rendering as Roles type', () => {
@@ -108,5 +135,14 @@ describe('When rendering as Roles type', () => {
 
     expect(screen.getByTestId('admin-card-text-body')).toBeInTheDocument();
     expect(screen.getByTestId('admin-card-text-body').textContent).toBe('Create and manage roles.');
+  });
+
+  it('should navigate to /role', () => {
+    render(<MockAdminCard name='Roles' description='Create and manage roles.' path='/role' type='Roles'/> );
+
+    expect(screen.getByTestId('admin-card')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('admin-card'));
+    expect(navigate).toHaveBeenCalledWith('/role');
+    expect(window.open).not.toHaveBeenCalled();
   });
 });

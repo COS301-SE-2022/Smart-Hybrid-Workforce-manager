@@ -32,7 +32,7 @@ const AdminCard = ({name, description, path, type}) =>
 
     return (
         <div>
-            <div className="admin-card" onClick={route}>
+            <div className="admin-card" onClick={route} data-testid='admin-card'>
                 <div className="admin-card-image">
                     {icon()}
                 </div>
