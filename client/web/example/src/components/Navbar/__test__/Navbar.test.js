@@ -55,3 +55,31 @@ describe('When clicking on Statistics', () => {
     expect(navigate).toHaveBeenCalledWith('/statistics');
   });
 });
+
+describe('When clicking on Bookings', () => {
+  it('should open drop down menu', () => {
+    render(<MockNavbar/> );
+
+    expect(screen.getByText(/Bookings/i)).toBeInTheDocument();
+    expect(screen.getByText(/Desk/i)).not.toBeVisible();
+    expect(screen.getByText(/Meeting Room/i)).not.toBeVisible();
+
+    fireEvent.click(screen.getByText(/Bookings/i));
+    expect(screen.getByText(/Desk/i)).toBeVisible();
+    expect(screen.getByText(/Meeting Room/i)).toBeVisible();
+  });
+
+  it('should navigate to /bookings-desk', () => {
+    render(<MockNavbar/> );
+
+    fireEvent.click(screen.getByText(/Desk/i));
+    expect(navigate).toHaveBeenCalledWith('/bookings-desk');
+  });
+
+  it('should navigate to /bookings-meetingroom', () => {
+    render(<MockNavbar/> );
+
+    fireEvent.click(screen.getByText(/Meeting Room/i));
+    expect(navigate).toHaveBeenCalledWith('/bookings-meetingroom');
+  });
+});
