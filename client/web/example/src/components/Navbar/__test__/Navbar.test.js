@@ -35,3 +35,14 @@ describe('When clicking on Calendar', () => {
     expect(navigate).toHaveBeenCalledWith('/');
   });
 });
+
+describe('When clicking on Office Map', () => {
+  it('should navigate to /map', () => {
+    render(<MockNavbar/> );
+
+    expect(screen.getByText(/Office Map/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByText(/Office Map/i));
+    expect(navigate).toHaveBeenCalledWith('/map');
+  });
+});
+
