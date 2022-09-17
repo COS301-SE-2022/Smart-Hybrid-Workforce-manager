@@ -173,3 +173,9 @@ func (individual *Individual) getUserCountMapsPerDay() []map[string]int {
 
 ///////////////////////////////////////////////////
 // DAILY
+
+// avgDistanceFromCentroid calculates the centroid of a set of points and then calculates
+// the avg point-to-centroid distance
+func (individual *Individual) avgDistanceFromCentroid() {
+
+}

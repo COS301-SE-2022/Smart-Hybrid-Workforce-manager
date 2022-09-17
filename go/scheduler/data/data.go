@@ -1,6 +1,7 @@
 package data
 
 import (
+	"lib/collectionutils"
 	"time"
 )
 
@@ -165,6 +166,28 @@ func ExtractResourceIds(schedulerData *SchedulerData) []string {
 	resources := []string{}
 	for _, resource := range schedulerData.Resources {
 		resources = append(resources, *resource.Id)
+	}
+	return resources
+}
+
+// ExtractResourceIds extracts all available desk ids from schedulerdata into a string array
+func ExtractAvailableDeskIds(schedulerData *SchedulerData) []string {
+	// Build map of all resources that have arleady been assigned to a booking
+	bookedResources := make(map[string]bool)
+	for _, booking := range *schedulerData.CurrentBookings {
+		if booking.ResourceId != nil && *booking.ResourceId != "" {
+			bookedResources[*booking.ResourceId] = true
+		}
+	}
+
+	// Add resources to string array
+	resources := []string{}
+	for _, resource := range schedulerData.Resources {
+		if resource.ResourceType != nil &&
+			*resource.ResourceType == "DESK" &&
+			!collectionutils.MapHasKey(bookedResources, *resource.Id) { // Check if resource is a desk
+			resources = append(resources, *resource.Id) // Append to available resources
+		}
 	}
 	return resources
 }

@@ -290,7 +290,7 @@ func (individual Individual) String() string {
 
 	for i := range individual.Gene {
 		if len(individual.Gene) == 1 {
-			table[i][0] = fmt.Sprintf("%38s|", fmt.Sprintf("Resources"))
+			table[i][0] = fmt.Sprintf("%38s|", "Resources")
 		} else {
 			table[i][0] = fmt.Sprintf("%38s|", fmt.Sprintf("Day-%d", i))
 		}
@@ -366,13 +366,13 @@ func (individual *Individual) StringDomain(domain Domain) string {
 
 	for i := range individual.Gene {
 		if len(individual.Gene) == 1 {
-			table[i][0] = fmt.Sprintf("%38s|", fmt.Sprintf("Resources"))
+			table[i][0] = fmt.Sprintf("%38s|", "Resources")
 		} else {
 			table[i][0] = fmt.Sprintf("%38s|", fmt.Sprintf("Day-%d", i))
 		}
 		table[i][1] = strings.Repeat("=", 39)
 	}
-	table[1][0] = fmt.Sprintf("%38s|", fmt.Sprintf("User_ids")) // user id column added
+	table[1][0] = fmt.Sprintf("%38s|", "User_ids") // user id column added
 	table[1][1] = strings.Repeat("=", 39)
 
 	for i := 0; i < len(individual.Gene)+1; i++ {
