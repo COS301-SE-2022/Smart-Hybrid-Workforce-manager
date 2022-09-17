@@ -210,9 +210,11 @@ func TestPartiallyMappedFlattenCrossoverValid(t *testing.T) {
 		numOffspring int
 	}
 	tests := []struct {
-		name       string
-		args       args
-		errMessage string
+		name                string
+		args                args
+		errMessage          string
+		originalParentGene1 [][]string
+		originalParentGene2 [][]string
 	}{
 		{
 			name: "Normal crossover (daily form)",
@@ -234,6 +236,12 @@ func TestPartiallyMappedFlattenCrossoverValid(t *testing.T) {
 				},
 				numOffspring: 2,
 			},
+			originalParentGene1: [][]string{
+				{"a", "b", "c", "d", "e", "f", "g"},
+			},
+			originalParentGene2: [][]string{
+				{"c", "f", "e", "b", "a", "d", "g"},
+			},
 			errMessage: "Expceted parents and children to contain the same element",
 		},
 	}
@@ -246,6 +254,8 @@ func TestPartiallyMappedFlattenCrossoverValid(t *testing.T) {
 			assert.ElementsMatch(t, parent1Gene[0], child1Gene[0], tt.errMessage)
 			assert.ElementsMatch(t, parent2Gene[0], child2Gene[0], tt.errMessage)
 			assert.Len(t, got, tt.args.numOffspring, "Incorrect number of individuals returned, expected=%v, got=%v", tt.args.numOffspring, len(got))
+			assert.True(t, reflect.DeepEqual(parent1Gene, tt.originalParentGene1), "Parent 1 gene has been changed")
+			assert.True(t, reflect.DeepEqual(parent2Gene, tt.originalParentGene2), "Parent 2 gene has been changed")
 		})
 	}
 }

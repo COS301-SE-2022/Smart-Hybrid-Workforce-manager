@@ -187,7 +187,7 @@ func dailySwapMutate(domain *Domain, individual *Individual, swapAmount int) *In
 		// Find random indices to swap inside the individaul
 		randi1, randi2 := utils.RandInt(0, len(gene[0])), utils.RandInt(0, len(gene[0]))
 		// Swap the resources
-		gene[randi1], gene[randi2] = gene[randi2], gene[randi1]
+		gene[0][randi1], gene[0][randi2] = gene[0][randi2], gene[0][randi1]
 	}
 	return copiedIndividual
 }
