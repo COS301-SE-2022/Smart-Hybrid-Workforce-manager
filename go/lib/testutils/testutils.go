@@ -3,6 +3,10 @@ package testutils
 import (
 	// "api/db"
 	"fmt"
+	"lib/collectionutils"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type Colour string
@@ -30,4 +34,24 @@ func Scolourf(colour Colour, format string, a ...interface{}) string {
 	return fmt.Sprintf(Scolour(colour, format), a...)
 }
 
+// Returns a pointer to the value passed in, mainly used for passing in literals
 func Ptr[T any](obj T) *T { return &obj }
+
+// MapsWithcSlicesMatchLoosely function compares two maps that map two arrays, it checks that the keys of the
+// maps are identical, and that the arrays mapped two match loosely, meaning the elements of the arrays match, but not necessarily the order
+func MapsWithcSlicesMatchLoosely[K comparable, V any](t *testing.T, map1 map[K][]V, map2 map[K][]V, msgAndArgs ...interface{}) {
+	if len(map1) != len(map2) {
+		assert.Fail(t, "Len of maps should be same", msgAndArgs...)
+	}
+
+	for key, value := range map1 {
+		if !collectionutils.MapHasKey(map2, key) {
+			assert.Fail(t, "Maps should have matching keys", msgAndArgs...)
+			return
+		}
+		assert.ElementsMatch(t, value, map2[key], msgAndArgs...)
+		if t.Failed() {
+			return
+		}
+	}
+}
