@@ -2,9 +2,14 @@ import styles from './kanban.module.css';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MdEdit, MdPersonAdd } from 'react-icons/md';
 import { useRef, useState } from 'react';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 const Kanban = () =>
 {
+    const columnsContainerRef = useRef(null);
+    const rightIntervalRef = useRef(null);
+    const leftIntervalRef = useRef(null);
+
     const columnsInit = 
     {
         ['col1']: 
@@ -43,7 +48,77 @@ const Kanban = () =>
                     name: 'User 4'
                 }
             ]
-        }       
+        },
+        
+        ['col3']:
+        {
+            name: 'Team 3',
+            items: [
+                {
+                    id: 't3u1',
+                    name: 'User 1'
+                },
+                {
+                    id: 't3u2',
+                    name: 'User 2'
+                },
+                {
+                    id: 't3u3',
+                    name: 'User 3'
+                },
+                {
+                    id: 't3u4',
+                    name: 'User 4'
+                },
+                {
+                    id: 't3u5',
+                    name: 'User 5'
+                },
+                {
+                    id: 't3u6',
+                    name: 'User 6'
+                },
+                {
+                    id: 't3u7',
+                    name: 'User 7'
+                }
+            ]
+        },
+
+        ['col4']:
+        {
+            name: 'Team 4',
+            items: [
+                {
+                    id: 't4u1',
+                    name: 'User 1'
+                },
+                {
+                    id: 't4u2',
+                    name: 'User 2'
+                },
+                {
+                    id: 't4u3',
+                    name: 'User 3'
+                },
+                {
+                    id: 't4u4',
+                    name: 'User 4'
+                },
+                {
+                    id: 't4u5',
+                    name: 'User 5'
+                },
+                {
+                    id: 't4u6',
+                    name: 'User 6'
+                },
+                {
+                    id: 't4u7',
+                    name: 'User 7'
+                }
+            ]
+        }
     }
 
     const [columns, setColumns] = useState(columnsInit);
@@ -78,6 +153,46 @@ const Kanban = () =>
     const HideEditTeamHint = (col) =>
     {
         document.getElementById(col + 'EditTeamHint').style.display = 'none';
+    }
+
+    const StartScrollLeft = () =>
+    {
+        if(columnsContainerRef.current)
+        {
+            leftIntervalRef.current = setInterval(() =>
+            {
+                columnsContainerRef.current.scrollLeft -= 3;
+            }, 10);
+        }
+    }
+
+    const StopScrollLeft = () =>
+    {
+        if(leftIntervalRef.current)
+        {
+            clearInterval(leftIntervalRef.current);
+            leftIntervalRef.current = null;
+        }
+    }
+
+    const StartScrollRight = () =>
+    {
+        if(columnsContainerRef.current)
+        {
+            rightIntervalRef.current = setInterval(() =>
+            {
+                columnsContainerRef.current.scrollLeft += 3;
+            }, 10);
+        }
+    }
+
+    const StopScrollRight = () =>
+    {
+        if(rightIntervalRef.current)
+        {
+            clearInterval(rightIntervalRef.current);
+            rightIntervalRef.current = null;
+        }
     }
 
     const onDragEnd = (result, columns, setColumns) =>
@@ -135,61 +250,65 @@ const Kanban = () =>
 
     return (
         <div className={styles.kanbanContainer}>
-            <DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumns)}>
-                {Object.entries(columns).map(([id, col]) => {
-                    return (
-                        <Droppable key={id} droppableId={id}>
-                            {(provided, snapshot) =>
-                            {
-                                return (
-                                    <div {...provided.droppableProps} ref={provided.innerRef} className={styles.column}>
-                                        <div className={styles.columnHeaderContainer}>
-                                            <div className={styles.columnHeader}>
-                                                {col.name}
-                                            </div>
-                                            <div className={styles.columnActions}>
-                                                <div className={styles.addUser} onClick={AddUser.bind(this, id)}><MdPersonAdd onMouseEnter={ShowAddUserHint.bind(this, id)} onMouseLeave={HideAddUserHint.bind(this, id)} /></div>
-                                                <div className={styles.editTeam} onClick={EditTeam.bind(this, id)}><MdEdit onMouseEnter={ShowEditTeamHint.bind(this, id)} onMouseLeave={HideEditTeamHint.bind(this, id)}/></div>
+            <div className={styles.leftArrow} onMouseDown={StartScrollLeft} onMouseUp={StopScrollLeft} onMouseLeave={StopScrollLeft}><IoIosArrowBack /></div>
+            <div className={styles.rightArrow} onMouseDown={StartScrollRight} onMouseUp={StopScrollRight} onMouseLeave={StopScrollRight}><IoIosArrowForward /></div>
+            <div ref={columnsContainerRef} className={styles.columnsContainer}>
+                <DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumns)}>
+                    {Object.entries(columns).map(([id, col]) => {
+                        return (
+                            <Droppable key={id} droppableId={id}>
+                                {(provided, snapshot) =>
+                                {
+                                    return (
+                                        <div {...provided.droppableProps} ref={provided.innerRef} className={styles.column}>
+                                            <div className={styles.columnHeaderContainer}>
+                                                <div className={styles.columnHeader}>
+                                                    {col.name}
+                                                </div>
+                                                <div className={styles.columnActions}>
+                                                    <div className={styles.addUser} onClick={AddUser.bind(this, id)}><MdPersonAdd onMouseEnter={ShowAddUserHint.bind(this, id)} onMouseLeave={HideAddUserHint.bind(this, id)} /></div>
+                                                    <div className={styles.editTeam} onClick={EditTeam.bind(this, id)}><MdEdit onMouseEnter={ShowEditTeamHint.bind(this, id)} onMouseLeave={HideEditTeamHint.bind(this, id)}/></div>
+                                                </div>
+
+                                                <div id={id + 'AddUserHint'} className={styles.addUserHint}>Add a new user</div>
+                                                <div id={id + 'EditTeamHint'} className={styles.editTeamHint}>Edit team</div>
                                             </div>
 
-                                            <div id={id + 'AddUserHint'} className={styles.addUserHint}>Add a new user</div>
-                                            <div id={id + 'EditTeamHint'} className={styles.editTeamHint}>Edit team</div>
+                                            <div className={styles.itemsContainer}>
+                                                {col.items.length > 0 && col.items.map((item, index) => (
+                                                    <Draggable key={item.id} draggableId={item.id} index={index}>
+                                                        {(provided, snapshot) =>
+                                                        {
+                                                            return (
+                                                                <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}
+                                                                style={{
+                                                                    userSelect: 'none',
+                                                                    paddingTop: '2vh',
+                                                                    paddingLeft: '1vw',
+                                                                    marginBottom: '3vh',
+                                                                    height: '20vh',
+                                                                    width: '18vw',
+                                                                    borderRadius: '1vh',
+                                                                    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+                                                                    backgroundColor: snapshot.isDragging ? '#09a2fb55' : 'white',
+                                                                    ...provided.draggableProps.style
+                                                                }}>
+                                                                    {item.name}
+                                                                </div>
+                                                            )
+                                                        }}
+                                                    </Draggable>
+                                                ))}
+                                            </div>
+                                            {provided.placeholder}
                                         </div>
-
-                                        <div className={styles.itemsContainer}>
-                                            {col.items.length > 0 && col.items.map((item, index) => (
-                                                <Draggable key={item.id} draggableId={item.id} index={index}>
-                                                    {(provided, snapshot) =>
-                                                    {
-                                                        return (
-                                                            <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}
-                                                            style={{
-                                                                userSelect: 'none',
-                                                                paddingTop: '2vh',
-                                                                paddingLeft: '1vw',
-                                                                marginBottom: '3vh',
-                                                                height: '20vh',
-                                                                width: '18vw',
-                                                                borderRadius: '1vh',
-                                                                boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
-                                                                backgroundColor: snapshot.isDragging ? '#09a2fb55' : 'white',
-                                                                ...provided.draggableProps.style
-                                                            }}>
-                                                                {item.name}
-                                                            </div>
-                                                        )
-                                                    }}
-                                                </Draggable>
-                                            ))}
-                                        </div>
-                                        {provided.placeholder}
-                                    </div>
-                                )
-                            }}
-                        </Droppable>
-                    )
-                })}
-            </DragDropContext>
+                                    )
+                                }}
+                            </Droppable>
+                        )
+                    })}
+                </DragDropContext>
+            </div>
         </div>
     );
 }

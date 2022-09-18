@@ -1,10 +1,61 @@
-.kanbanContainer
+.columnsContainer
 {
+    overflow-x: scroll;
     position: relative;
     display: flex;
-    padding-left: 5vw;
+    margin-left: 5vw;
+
+    width: 66vw;
+
     background-color: transparent;
     color: #374146;
+}
+
+.columnsContainer::-webkit-scrollbar
+{
+    height: 10px;
+}
+
+.columnsContainer::-webkit-scrollbar-thumb
+{
+    background-color: transparent;
+}
+
+.columnsContainer::-webkit-scrollbar-thumb:hover
+{
+    background-color: transparent;
+}
+
+.leftArrow
+{
+    position: absolute;
+
+    top: 40vh;
+    left: 1vw;
+
+    font-size: 3vw;
+}
+
+.leftArrow:hover
+{
+    cursor: pointer;
+    color: #09a2fb;
+}
+
+.rightArrow
+{
+    position: absolute;
+
+    top: 40vh;
+    left: 74vw;
+
+    font-size: 3vw;
+}
+
+.rightArrow:hover
+{
+    cursor: pointer;
+    color: #09a2fb;
 }
 
 .column
