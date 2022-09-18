@@ -2,41 +2,73 @@
 {
     position: relative;
     display: flex;
-    overflow-y: auto;
     padding-left: 5vw;
-    background-color: white;
+    background-color: transparent;
+}
+
+.column
+{
+    display: grid;
+    grid-template-columns: 20vw;
+    grid-template-rows: 10vh 75vh;
+
+    background: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+
+    width: 20vw;
+
+    height: 85vh;
+
+    margin-left: 2vw;
+    margin-top: 2.5vh;
+
+    padding-left: 1vw;
+
+    border-radius: 1vh;
 }
 
 .columnHeaderContainer
 {
     display: grid;
     grid-template-columns: 12vw 6vw;
-    grid-template-rows: 5vh;
 
-    padding-bottom: 2vh;
+    padding-top: 1vh;
 }
 
 .columnHeader
 {
     font-size: 2vw;
-    padding-left: 1vw;
 }
 
 .columnActions
 {
+    display: grid;
+    grid-template-columns: 3vw 3vw;
 
+    font-size: 1.5vw;
+
+    padding-top: 1.2vh;
+    padding-left: 1.2vw;
+}
+
+.addUser:hover
+{
+    color: #09a2fb;
+    cursor: pointer;
+}
+
+.editTeam:hover
+{
+    color: #09a2fb;
+    cursor: pointer;
 }
 
 .itemsContainer
 {
-    position: absolute;
     overflow-y: scroll;
     overflow-x: hidden;
-    height: 81vh;
-    width: 20vw;
-    padding-left: 1vw;
-    padding-right: 3vw;
-    padding-bottom: 2vh;
+    height: 75vh;
+    width: 19vw;
 }
 
 .itemsContainer::-webkit-scrollbar
