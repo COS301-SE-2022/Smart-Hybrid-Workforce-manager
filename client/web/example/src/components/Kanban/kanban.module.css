@@ -4,6 +4,7 @@
     display: flex;
     padding-left: 5vw;
     background-color: transparent;
+    color: #374146;
 }
 
 .column
@@ -61,6 +62,54 @@
 {
     color: #09a2fb;
     cursor: pointer;
+}
+
+.addUserHint
+{
+    display: none;
+
+    background-color: #374146;
+    color: white;
+    
+    border-radius: 1vh;
+
+    text-align: center;
+
+    margin-left: 10vw;
+
+    width: 8vw;
+    height: 3vh;
+
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+
+    font-size: 0.8vw;
+
+    z-index: 1;
+}
+
+.editTeamHint
+{
+    display: none;
+
+    background-color: #374146;
+    color: white;
+    
+    border-radius: 1vh;
+
+    text-align: center;
+
+    margin-left: 13vw;
+
+    width: 8vw;
+    height: 3vh;
+
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+
+    font-size: 0.8vw;
+
+    z-index: 1;
 }
 
 .itemsContainer

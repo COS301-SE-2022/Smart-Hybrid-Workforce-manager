@@ -1,7 +1,7 @@
 import styles from './kanban.module.css';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MdEdit, MdPersonAdd } from 'react-icons/md';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 const Kanban = () =>
 {
@@ -53,9 +53,31 @@ const Kanban = () =>
         console.log(col);
     }
 
+    const ShowAddUserHint = (col) =>
+    {
+        document.getElementById(col + 'AddUserHint').style.display = 'block';
+
+    }
+
+    const HideAddUserHint = (col) =>
+    {
+        document.getElementById(col + 'AddUserHint').style.display = 'none';
+    }
+
     const EditTeam = (col) =>
     {
         console.log(col);
+    }
+
+    const ShowEditTeamHint = (col) =>
+    {
+        document.getElementById(col + 'EditTeamHint').style.display = 'block';
+
+    }
+
+    const HideEditTeamHint = (col) =>
+    {
+        document.getElementById(col + 'EditTeamHint').style.display = 'none';
     }
 
     const onDragEnd = (result, columns, setColumns) =>
@@ -126,9 +148,12 @@ const Kanban = () =>
                                                 {col.name}
                                             </div>
                                             <div className={styles.columnActions}>
-                                                <div className={styles.addUser} onClick={AddUser.bind(this, id)}><MdPersonAdd /></div>
-                                                <div className={styles.editTeam} onClick={EditTeam.bind(this, id)}><MdEdit /></div>
+                                                <div className={styles.addUser} onClick={AddUser.bind(this, id)}><MdPersonAdd onMouseEnter={ShowAddUserHint.bind(this, id)} onMouseLeave={HideAddUserHint.bind(this, id)} /></div>
+                                                <div className={styles.editTeam} onClick={EditTeam.bind(this, id)}><MdEdit onMouseEnter={ShowEditTeamHint.bind(this, id)} onMouseLeave={HideEditTeamHint.bind(this, id)}/></div>
                                             </div>
+
+                                            <div id={id + 'AddUserHint'} className={styles.addUserHint}>Add a new user</div>
+                                            <div id={id + 'EditTeamHint'} className={styles.editTeamHint}>Edit team</div>
                                         </div>
 
                                         <div className={styles.itemsContainer}>
