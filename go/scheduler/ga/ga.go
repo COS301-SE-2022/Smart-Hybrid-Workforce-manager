@@ -3,7 +3,6 @@ package ga
 import (
 	"context"
 	"fmt"
-	cu "lib/collectionutils"
 	"lib/utils"
 	"math/rand"
 	"scheduler/data"
@@ -19,44 +18,6 @@ type Fitness func(domain *Domain, individuals Individuals) []float64
 type Mutate func(domain *Domain, individuals Individuals) Individuals
 type Selection func(domain *Domain, individuals Individuals, count int) Individuals
 type PopulationGenerator func(domain *Domain, popSize int) Individuals
-
-// Domain represents domain information to the problem
-type Domain struct {
-	// Weekly scheduler: User array with user id's duplicated for amount per week
-	Terminals []string
-
-	Config        *data.Config
-	SchedulerData *data.SchedulerData
-	Map           map[int](string)
-	InverseMap    map[string]([]int) // Array due to the assumption Map may have a many-to-one relationship
-}
-
-func (domain *Domain) GetRandomTerminal() string {
-	return domain.Terminals[utils.RandInt(0, len(domain.Terminals))]
-}
-
-func (domain *Domain) GetRandomTerminalArrays(length int) []string {
-	var result []string
-	for i := 0; i < length; i++ {
-		result = append(result, domain.GetRandomTerminal())
-	}
-	return result
-}
-
-// Gets unique* elements from the terminals array
-// unique in this context means that it will not take the exact same element twice,
-// however if duplicates are present, it could happen that an element gets selected twice
-// if len(terminals) < length, panic will result
-func (domain *Domain) GetRandomUniqueTerminalArrays(length int) []string {
-	domainTerminalsCopy := cu.Copy1DArr(domain.Terminals)
-	var result []string
-	for i := 0; i < length; i++ {
-		randi := utils.RandInt(0, len(domainTerminalsCopy))
-		result = append(result, domainTerminalsCopy[randi])
-		domainTerminalsCopy = cu.RemElemenAtI(domainTerminalsCopy, randi)
-	}
-	return result
-}
 
 // Individual represents a solution to the domain problem
 type Individual struct {

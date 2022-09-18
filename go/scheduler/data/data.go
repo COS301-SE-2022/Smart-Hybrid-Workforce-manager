@@ -15,18 +15,26 @@ type Config struct {
 }
 
 type SchedulerData struct {
-	Users           Users                `json:"users"`
-	Teams           []*TeamInfo          `json:"teams"`
-	Buildings       []*BuildingInfo      `json:"buildings"`
-	Rooms           []*RoomInfo          `json:"rooms"`
-	Resources       Resources            `json:"resources"`
-	CurrentBookings *Bookings            `json:"current_bookings"`
-	PastBookings    *Bookings            `json:"past_bookings"`
-	StartDate       *time.Time           `json:"start_date"`
-	TeamsMap        map[string]*TeamInfo `json:"-"` // map[teamId]*TeamInfo
-	RoomsMap        map[string]*RoomInfo `json:"-"` // map[roomId]*RoomInfo
-	ResourcesMap    map[string]*Resource `json:"-"` // map[resourceId]*Resource
-	UserMap         map[string]*User     `json:"-"` // map[UserId]*User
+	Users           Users           `json:"users"`
+	Teams           []*TeamInfo     `json:"teams"`
+	Buildings       []*BuildingInfo `json:"buildings"`
+	Rooms           []*RoomInfo     `json:"rooms"`
+	Resources       Resources       `json:"resources"`
+	CurrentBookings *Bookings       `json:"current_bookings"`
+	PastBookings    *Bookings       `json:"past_bookings"`
+	StartDate       *time.Time      `json:"start_date"`
+
+	// map[teamId]*TeamInfo
+	TeamsMap map[string]*TeamInfo `json:"-"`
+
+	// map[roomId]*RoomInfo
+	RoomsMap map[string]*RoomInfo `json:"-"`
+
+	// map[resourceId]*Resource
+	ResourcesMap map[string]*Resource `json:"-"`
+
+	// map[UserId]*User
+	UserMap map[string]*User `json:"-"`
 }
 
 type BookingInfo struct {

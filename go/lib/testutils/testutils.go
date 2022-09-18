@@ -29,3 +29,5 @@ func Scolour(colour Colour, msg string) string {
 func Scolourf(colour Colour, format string, a ...interface{}) string {
 	return fmt.Sprintf(Scolour(colour, format), a...)
 }
+
+func Ptr[T any](obj T) *T { return &obj }
