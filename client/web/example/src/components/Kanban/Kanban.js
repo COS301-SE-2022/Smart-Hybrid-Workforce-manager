@@ -59,32 +59,48 @@ const Kanban = () =>
                             return (
                                 <div {...provided.droppableProps} ref={provided.innerRef}
                                 style={{
-                                    backgroundColor: snapshot.isDraggingOver ? 'lightblue' : 'lightgray',
-                                    padding: 4,
+                                    backgroundColor: snapshot.isDraggingOver ? 'rgba(218, 223, 254, 0.8)' : 'white',
+                                    paddingTop: '2vh',
+                                    paddingBottom: '5vh',
                                     width: '20vw',
-                                    height: '90vh',
-                                    marginLeft: '1vw',
+                                    minHeight: '90vh',
+                                    marginLeft: '3vw',
                                 }}>
-                                    {col.items.length > 0 && col.items.map((item, index) => (
-                                        <Draggable key={item.id} draggableId={item.id} index={index}>
-                                            {(provided, snapshot) =>
-                                            {
-                                                return (
-                                                    <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}
-                                                    style={{
-                                                        userSelect: 'none',
-                                                        padding: 16,
-                                                        margin: '0 0 8px 0',
-                                                        minHeight: 50,
-                                                        backgroundColor: snapshot.isDragging ? 'red' : 'white',
-                                                        ...provided.draggableProps.style
-                                                    }}>
-                                                        {item.name}
-                                                    </div>
-                                                )
-                                            }}
-                                        </Draggable>
-                                    ))}
+                                    <div className={styles.columnHeaderContainer}>
+                                        <div className={styles.columnHeader}>
+                                            {col.name}
+                                        </div>
+                                        <div className={styles.columnActions}>
+
+                                        </div>
+                                    </div>
+
+                                    <div className={styles.itemsContainer}>
+                                        {col.items.length > 0 && col.items.map((item, index) => (
+                                            <Draggable key={item.id} draggableId={item.id} index={index}>
+                                                {(provided, snapshot) =>
+                                                {
+                                                    return (
+                                                        <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}
+                                                        style={{
+                                                            userSelect: 'none',
+                                                            paddingTop: '2vh',
+                                                            paddingLeft: '1vw',
+                                                            marginTop: '3vh',
+                                                            height: '20vh',
+                                                            width: '18vw',
+                                                            borderRadius: '1vh',
+                                                            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+                                                            backgroundColor: snapshot.isDragging ? '#09a2fb55' : 'white',
+                                                            ...provided.draggableProps.style
+                                                        }}>
+                                                            {item.name}
+                                                        </div>
+                                                    )
+                                                }}
+                                            </Draggable>
+                                        ))}
+                                    </div>
                                     {provided.placeholder}
                                 </div>
                             )

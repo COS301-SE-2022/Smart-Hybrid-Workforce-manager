@@ -1,5 +1,45 @@
 .kanbanContainer
 {
+    position: relative;
     display: flex;
-    padding-left: 11vw;
+    overflow-y: auto;
+    padding-left: 5vw;
+    background-color: white;
+}
+
+.columnHeaderContainer
+{
+    display: grid;
+    grid-template-columns: 12vw 6vw;
+    grid-template-rows: 5vh;
+
+    padding-bottom: 2vh;
+}
+
+.columnHeader
+{
+    font-size: 2vw;
+    padding-left: 1vw;
+}
+
+.columnActions
+{
+
+}
+
+.itemsContainer
+{
+    position: absolute;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 81vh;
+    width: 20vw;
+    padding-left: 1vw;
+    padding-right: 3vw;
+    padding-bottom: 2vh;
+}
+
+.itemsContainer::-webkit-scrollbar
+{
+    width: 8px;
 }
