@@ -15,14 +15,18 @@ type Config struct {
 }
 
 type SchedulerData struct {
-	Users           Users           `json:"users"`
-	Teams           []*TeamInfo     `json:"teams"`
-	Buildings       []*BuildingInfo `json:"buildings"`
-	Rooms           []*RoomInfo     `json:"rooms"`
-	Resources       Resources       `json:"resources"`
-	CurrentBookings *Bookings       `json:"current_bookings"`
-	PastBookings    *Bookings       `json:"past_bookings"`
-	StartDate       *time.Time      `json:"start_date"`
+	Users           Users                `json:"users"`
+	Teams           []*TeamInfo          `json:"teams"`
+	Buildings       []*BuildingInfo      `json:"buildings"`
+	Rooms           []*RoomInfo          `json:"rooms"`
+	Resources       Resources            `json:"resources"`
+	CurrentBookings *Bookings            `json:"current_bookings"`
+	PastBookings    *Bookings            `json:"past_bookings"`
+	StartDate       *time.Time           `json:"start_date"`
+	TeamsMap        map[string]*TeamInfo `json:"-"` // map[teamId]*TeamInfo
+	RoomsMap        map[string]*RoomInfo `json:"-"` // map[roomId]*RoomInfo
+	ResourcesMap    map[string]*Resource `json:"-"` // map[resourceId]*Resource
+	UserMap         map[string]*User     `json:"-"` // map[UserId]*User
 }
 
 type BookingInfo struct {
@@ -200,4 +204,50 @@ func ExtractUserIdMap(schedulerData *SchedulerData) map[int](string) {
 		result[i] = *booking.UserId
 	}
 	return result
+}
+
+func ExtractInverseUserIdMap(userIdMap map[int]string) map[string][]int {
+	userIdToIndicesMap := make(map[string][]int)
+	for index, userId := range userIdMap {
+		if !collectionutils.MapHasKey(userIdToIndicesMap, userId) {
+			userIdToIndicesMap[userId] = make([]int, 0)
+		}
+		userIdToIndicesMap[userId] = append(userIdToIndicesMap[userId], index)
+	}
+	return userIdToIndicesMap
+}
+
+func (data *SchedulerData) MapRooms() {
+	data.RoomsMap = map[string]*RoomInfo{}
+	for _, roomInfo := range data.Rooms {
+		data.RoomsMap[*roomInfo.Id] = roomInfo
+	}
+}
+
+func (data *SchedulerData) MapResources() {
+	data.ResourcesMap = map[string]*Resource{}
+	for _, resource := range data.Resources {
+		data.ResourcesMap[*resource.Id] = resource
+	}
+}
+
+func (data *SchedulerData) MapUsers() {
+	data.UserMap = map[string]*User{}
+	for _, user := range data.Users {
+		data.UserMap[*user.Id] = user
+	}
+}
+
+func (data *SchedulerData) MapTeams() {
+	data.TeamsMap = map[string]*TeamInfo{}
+	for _, teamInfo := range data.Teams {
+		data.TeamsMap[*teamInfo.Id] = teamInfo
+	}
+}
+
+func (data *SchedulerData) ApplyMapping() {
+	data.MapRooms()
+	data.MapResources()
+	data.MapTeams()
+	data.MapUsers()
 }

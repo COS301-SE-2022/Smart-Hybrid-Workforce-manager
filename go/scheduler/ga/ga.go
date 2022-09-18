@@ -28,6 +28,7 @@ type Domain struct {
 	Config        *data.Config
 	SchedulerData *data.SchedulerData
 	Map           map[int](string)
+	InverseMap    map[string]([]int) // Array due to the assumption Map may have a many-to-one relationship
 }
 
 func (domain *Domain) GetRandomTerminal() string {

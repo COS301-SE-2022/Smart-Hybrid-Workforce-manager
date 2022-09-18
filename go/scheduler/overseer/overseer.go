@@ -74,6 +74,7 @@ func DailyOverseer(schedulerData data.SchedulerData) []data.Bookings {
 	domain.Config = &config
 	domain.SchedulerData = &schedulerData
 	domain.Map = data.ExtractUserIdMap(&schedulerData)
+	domain.InverseMap = data.ExtractInverseUserIdMap(domain.Map)
 
 	// Create channel
 	var c chan ga.Individual = make(chan ga.Individual)
