@@ -18,7 +18,7 @@ const LogoutButton = () =>{
     }
 
     return (
-        <Button className='button-user-profile' variant='primary' onClick={handleSubmit}>Log Out</Button>
+        <Button className='button-user-profile' variant='primary' onClick={handleSubmit} data-testid='button-user-profile'>Log Out</Button>
     )
 }
 
