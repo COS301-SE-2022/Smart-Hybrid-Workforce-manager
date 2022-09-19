@@ -365,3 +365,55 @@ func TestCrossoverCaller(t *testing.T) {
 		})
 	}
 }
+
+func Test_OnePointCrossover(t *testing.T) {
+	type args struct {
+		arr1 []int
+		arr2 []int
+		xP   int
+	}
+	tests := []struct {
+		name  string
+		args  args
+		want  []int
+		want1 []int
+	}{
+		{
+			name: "OnePointCrossover crossover point beyond parent length",
+			args: args{
+				arr1: []int{-1, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+				arr2: []int{-10, 10, 20, 30, 40, 50, 60, 70, 80, 90},
+				xP:   10,
+			},
+			want:  []int{-1, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+			want1: []int{-10, 10, 20, 30, 40, 50, 60, 70, 80, 90},
+		},
+		{
+			name: "OnePointCrossover crossover point smaller than 0",
+			args: args{
+				arr1: []int{-1, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+				arr2: []int{-10, 10, 20, 30, 40, 50, 60, 70, 80, 90},
+				xP:   -20,
+			},
+			want:  []int{-10, 10, 20, 30, 40, 50, 60, 70, 80, 90},
+			want1: []int{-1, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+		},
+		{
+			name: "OnePointCrossover crossover point valid",
+			args: args{
+				arr1: []int{-1, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+				arr2: []int{-10, 10, 20, 30, 40, 50, 60, 70, 80, 90},
+				xP:   4,
+			},
+			want:  []int{-1, 1, 2, 3, 40, 50, 60, 70, 80, 90},
+			want1: []int{-10, 10, 20, 30, 4, 5, 6, 7, 8, 9},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, got1 := onePointCrossover(tt.args.arr1, tt.args.arr2, tt.args.xP)
+			assert.True(t, reflect.DeepEqual(got, tt.want), "onePointCrossover() got = %v, want %v", got, tt.want)
+			assert.True(t, reflect.DeepEqual(got1, tt.want1), "onePointCrossover() got = %v, want %v", got, tt.want)
+		})
+	}
+}
