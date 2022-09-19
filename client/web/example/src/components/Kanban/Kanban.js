@@ -1,7 +1,7 @@
 import styles from './kanban.module.css';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { MdEdit, MdPersonAdd } from 'react-icons/md';
-import { useRef, useState } from 'react';
+import { MdEdit, MdPersonAdd, MdClose } from 'react-icons/md';
+import { useEffect, useRef, useState } from 'react';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { AiOutlineUsergroupAdd } from 'react-icons/ai';
 import { FaSave } from 'react-icons/fa';
@@ -13,12 +13,17 @@ const Kanban = () =>
     const rightIntervalRef = useRef(null);
     const leftIntervalRef = useRef(null);
 
+    const [editTeamName, setEditTeamName] = useState('Default');
+    const [editTeamColor, setEditTeamColor] = useState('#ffffff');
+    const [editTeamPicture, setEditTeamPicture] = useState('');
+
     const columnsInit = 
     {
         ['col1']: 
         {
             name: 'Team 1',
             color: '#09a2fb',
+            picture: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
             items: [
                 {
                     id: 't1u1',
@@ -157,7 +162,17 @@ const Kanban = () =>
 
     const EditTeam = (col) =>
     {
-        console.log(col);
+        setEditTeamName(columns[col].name);
+        setEditTeamColor(columns[col].color);
+
+        document.getElementById('BackgroundDimmer').style.display = 'block';
+        document.getElementById('EditTeam').style.display = 'block';
+    }
+
+    const CloseEditTeam = () =>
+    {
+        document.getElementById('BackgroundDimmer').style.display = 'none';
+        document.getElementById('EditTeam').style.display = 'none';
     }
 
     const ShowEditTeamHint = (col) =>
@@ -276,38 +291,42 @@ const Kanban = () =>
             <div className={styles.leftArrow} onMouseDown={StartScrollLeft} onMouseUp={StopScrollLeft} onMouseLeave={StopScrollLeft}><IoIosArrowBack /></div>
             <div className={styles.rightArrow} onMouseDown={StartScrollRight} onMouseUp={StopScrollRight} onMouseLeave={StopScrollRight}><IoIosArrowForward /></div>
 
-            <div className={styles.backgroundDimmer}></div>
+            <div id='BackgroundDimmer' className={styles.backgroundDimmer}></div>
 
-            <div className={styles.editTeamContainer}>
-                <EditTeamForm teamName='Team 1' teamColor='#86ff30' />
+            <div id='EditTeam' className={styles.editTeamContainer}>
+                <div className={styles.editTeamClose} onClick={CloseEditTeam}><MdClose /></div>
+                <EditTeamForm teamName={editTeamName} teamColor={editTeamColor} teamPriority={3} teamPicture={editTeamPicture} />
             </div>
 
             <div ref={columnsContainerRef} className={styles.columnsContainer}>
                 <DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumns)}>
                     {Object.entries(columns).map(([id, col]) => {
                         return (
-                            <Droppable key={id} droppableId={id}>
-                                {(provided, snapshot) =>
-                                {
-                                    return (
-                                        <div {...provided.droppableProps} ref={provided.innerRef} className={styles.column}
-                                        style={{
-                                            background: "linear-gradient(180deg, " + col.color + "66  0%, rgba(255,255,255,0.4) 20%)"
-                                        }}>
-                                            <div className={styles.columnHeaderContainer}>
-                                                <div className={styles.columnHeader}>
-                                                    {col.name}
-                                                </div>
-                                                <div className={styles.columnActions}>
-                                                    <div className={styles.addUser} onClick={AddUser.bind(this, id)}><MdPersonAdd onMouseEnter={ShowAddUserHint.bind(this, id)} onMouseLeave={HideAddUserHint.bind(this, id)} /></div>
-                                                    <div className={styles.editTeam} onClick={EditTeam.bind(this, id)}><MdEdit onMouseEnter={ShowEditTeamHint.bind(this, id)} onMouseLeave={HideEditTeamHint.bind(this, id)}/></div>
-                                                </div>
+                            <div key={id} className={styles.column}
+                            style={{
+                                background: "linear-gradient(180deg, " + col.color + "66  0%, rgba(255,255,255,0.4) 20%)"
+                            }}>
+                                <div className={styles.columnHeaderContainer}>
+                                    <div className={styles.columnPicture}>
+                                        <img className={styles.image} src={col.picture} alt='Team'></img>
+                                    </div>
+                                    <div className={styles.columnHeader}>
+                                        {col.name}
+                                    </div>
+                                    <div className={styles.columnActions}>
+                                        <div className={styles.addUser} onClick={AddUser.bind(this, id)}><MdPersonAdd onMouseEnter={ShowAddUserHint.bind(this, id)} onMouseLeave={HideAddUserHint.bind(this, id)} /></div>
+                                        <div className={styles.editTeam} onClick={EditTeam.bind(this, id)}><MdEdit onMouseEnter={ShowEditTeamHint.bind(this, id)} onMouseLeave={HideEditTeamHint.bind(this, id)}/></div>
+                                    </div>
 
-                                                <div id={id + 'AddUserHint'} className={styles.addUserHint}>Add a new user</div>
-                                                <div id={id + 'EditTeamHint'} className={styles.editTeamHint}>Edit team</div>
-                                            </div>
+                                    <div id={id + 'AddUserHint'} className={styles.addUserHint}>Add a new user</div>
+                                    <div id={id + 'EditTeamHint'} className={styles.editTeamHint}>Edit team</div>
+                                </div>
 
-                                            <div className={styles.itemsContainer}>
+                                <Droppable key={id} droppableId={id}>
+                                    {(provided, snapshot) =>
+                                    {
+                                        return (
+                                            <div {...provided.droppableProps} ref={provided.innerRef} className={styles.itemsContainer}>
                                                 {col.items.length > 0 && col.items.map((item, index) => (
                                                     <Draggable key={item.id} draggableId={item.id} index={index}>
                                                         {(provided, snapshot) =>
@@ -332,12 +351,12 @@ const Kanban = () =>
                                                         }}
                                                     </Draggable>
                                                 ))}
+                                                {provided.placeholder}
                                             </div>
-                                            {provided.placeholder}
-                                        </div>
-                                    )
-                                }}
-                            </Droppable>
+                                        )
+                                    }}
+                                </Droppable>
+                            </div>
                         )
                     })}
                 </DragDropContext>

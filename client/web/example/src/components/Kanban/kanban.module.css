@@ -22,7 +22,7 @@
 
 .columnsContainer
 {
-    overflow-x: scroll;
+    overflow-x: auto;
     position: relative;
     display: flex;
     margin-left: 9.5vw;
@@ -188,9 +188,31 @@
 .columnHeaderContainer
 {
     display: grid;
-    grid-template-columns: 12vw 6vw;
+    grid-template-columns: 4vw 8vw 6vw;
 
     padding-top: 1vh;
+}
+
+.columnPicture
+{
+    background-color: white;
+
+    width: 2vw;
+    height: 2vw;
+
+    border-radius: 2vh;
+
+    margin-top: 0.3vh;
+
+    font-size: 0.5vw;
+}
+
+.image
+{
+    width: 100%;
+    height: 100%;
+
+    border-radius: 2vh;
 }
 
 .columnHeader
@@ -205,7 +227,7 @@
 
     font-size: 1.5vw;
 
-    padding-top: 1.2vh;
+    padding-top: 0.5vh;
     padding-left: 1.2vw;
 }
 
@@ -271,7 +293,7 @@
 
 .itemsContainer
 {
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
     height: 65vh;
     width: 19vw;
@@ -285,11 +307,12 @@
 .backgroundDimmer
 {
     position: absolute;
+    display: none;
 
     width: 85vw;
     height: 80vh;
 
-    background-color: #00000099;
+    background-color: rgba(218, 223, 254, 0.7);
 
     z-index: 2;
 }
@@ -297,6 +320,7 @@
 .editTeamContainer
 {
     position: absolute;
+    display: none;
 
     width: 30vw;
     height: 70vh;
@@ -304,10 +328,43 @@
     margin-left: 27.5vw;
     margin-top: 5vh;
 
-    background-color: rgba(218, 223, 254);
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(4px);
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 
     border-radius: 1vh;
 
     z-index: 3;
+
+    animation: animate-pop-enter 0.5s cubic-bezier(0.26, 0.53, 0.74, 1.48);
+}
+
+@keyframes animate-pop-enter
+{
+    0%
+    {
+        opacity: 0;
+        transform: scale(0.5, 0.5);
+    }
+
+    100%
+    {
+        opacity: 1;
+        transform: scale(1, 1);
+    }
+}
+
+.editTeamClose
+{
+    position: absolute;
+
+    left: 28vw;
+    top: 0.5vh;
+
+    font-size: 1.5vw;
+}
+
+.editTeamClose:hover
+{
+    cursor: pointer;
 }
