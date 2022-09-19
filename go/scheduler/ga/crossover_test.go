@@ -417,3 +417,70 @@ func Test_OnePointCrossover(t *testing.T) {
 		})
 	}
 }
+
+func Test_TwoPointCrossover(t *testing.T) {
+	type args struct {
+		arr1 []int
+		arr2 []int
+		xP1  int
+		xP2  int
+	}
+	tests := []struct {
+		name  string
+		args  args
+		want  []int
+		want1 []int
+	}{
+		{
+			name: "TwoPointCrossover crossover point beyond parent length",
+			args: args{
+				arr1: []int{-1, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+				arr2: []int{-10, 10, 20, 30, 40, 50, 60, 70, 80, 90},
+				xP1:  10,
+				xP2:  10,
+			},
+			want:  []int{-1, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+			want1: []int{-10, 10, 20, 30, 40, 50, 60, 70, 80, 90},
+		},
+		{
+			name: "TwoPointCrossover crossover point smaller than 0",
+			args: args{
+				arr1: []int{-1, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+				arr2: []int{-10, 10, 20, 30, 40, 50, 60, 70, 80, 90},
+				xP1:  -20,
+				xP2:  -20,
+			},
+			want:  []int{-1, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+			want1: []int{-10, 10, 20, 30, 40, 50, 60, 70, 80, 90},
+		},
+		{
+			name: "TwoPointCrossover first crossover point smaller than 0 the other greateer than 0",
+			args: args{
+				arr1: []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+				arr2: []int{-1, -2, -3, -4, -5, -6, -7, -8, -9, -10},
+				xP1:  -20,
+				xP2:  5,
+			},
+			want:  []int{-1, -2, -3, -4, -5, 6, 7, 8, 9, 10},
+			want1: []int{1, 2, 3, 4, 5, -6, -7, -8, -9, -10},
+		},
+		{
+			name: "TwoPointCrossover crossover point valid",
+			args: args{
+				arr1: []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+				arr2: []int{-1, -2, -3, -4, -5, -6, -7, -8, -9, -10},
+				xP1:  2,
+				xP2:  4,
+			},
+			want:  []int{1, 2, -3, -4, 5, 6, 7, 8, 9, 10},
+			want1: []int{-1, -2, 3, 4, -5, -6, -7, -8, -9, -10},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, got1 := twoPointCrossover(tt.args.arr1, tt.args.arr2, tt.args.xP1, tt.args.xP2)
+			assert.True(t, reflect.DeepEqual(got, tt.want), "twoPointCrossover() got = %v, want %v", got, tt.want)
+			assert.True(t, reflect.DeepEqual(got1, tt.want1), "twoPointCrossover() got = %v, want %v", got, tt.want)
+		})
+	}
+}
