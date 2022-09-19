@@ -216,3 +216,66 @@ func onePointCrossover[T comparable](p1, p2 []T, xP int) ([]T, []T) {
 
 	return offspring1, offspring2
 }
+
+//////////////////////
+// Two-Point Crossover
+//////////////////////
+
+// TwoPointCrossover is an invalid crossover that crossovers everything between two crossover points
+func TwoPointCrossover(domain *Domain, individuals Individuals, numOffspring int) Individuals {
+	// Flatten the parents
+	flatParent1, flatParent2 := cu.Flatten2DArr(individuals[0].Gene), cu.Flatten2DArr(individuals[1].Gene)
+
+	// Get the crossover points
+	xPoint1, xPoint2 := utils.RandInt(0, len(flatParent1)), utils.RandInt(0, len(flatParent1))
+
+	// Ensure that the first crossover point is not larger than the second
+	if xPoint1 > xPoint2 {
+		xPoint1, xPoint2 = xPoint2, xPoint1
+	}
+
+	// Crossover
+	offspring1, offspring2 := twoPointCrossover(flatParent1, flatParent2, xPoint1, xPoint2)
+
+	// Calculate the original dimensions of the individuals
+	sizes := make([]int, len(individuals[0].Gene))
+	for i, col := range individuals[0].Gene {
+		sizes[i] = len(col)
+	}
+
+	// child1 and child2 are the de-flattened offspring
+	child1, child2 := cu.PartitionArray(offspring1, sizes), cu.PartitionArray(offspring2, sizes)
+	return []*Individual{{child1, 0.0}, {child2, 0.0}}
+}
+
+func twoPointCrossover[T comparable](p1, p2 []T, xP1, xP2 int) ([]T, []T) {
+	if xP1 < 0  {
+		xP1 = 0
+	}
+	if xP2 < 0  {
+		xP2 = 0
+	}
+
+	// Make offspring arrays
+	offspring1, offspring2 := make([]T, len(p1)), make([]T, len(p2))
+
+	// Copy over start
+	for i := 0; i < len(p1) && i < len(p2) && i < xP1; i++ {
+		offspring1[i] = p1[i]
+		offspring2[i] = p2[i]
+	}
+
+	// CrossOver
+	for i := xP1; i < len(p1) && i < len(p2) && i < xP2; i++ {
+		offspring1[i] = p2[i]
+		offspring2[i] = p1[i]
+	}
+
+	// Copy over end
+	for i := xP2; i < len(p1) && i < len(p2); i++ {
+		offspring1[i] = p1[i]
+		offspring2[i] = p2[i]
+	}
+
+	return offspring1, offspring2
+}
