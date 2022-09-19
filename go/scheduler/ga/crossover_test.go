@@ -484,3 +484,33 @@ func Test_TwoPointCrossover(t *testing.T) {
 		})
 	}
 }
+
+func Test_CycleCrossover(t *testing.T) {
+	type args struct {
+		arr1 []int
+		arr2 []int
+	}
+	tests := []struct {
+		name  string
+		args  args
+		want  []int
+		want1 []int
+	}{
+		{
+			name: "CycleCrossover crossover valid",
+			args: args{
+				arr1: []int{0, 1, 2, 3, 4, 5, 6, 7, 8},
+				arr2: []int{8, 2, 6, 7, 1, 5, 4, 0, 3},
+			},
+			want:  []int{0, 2, 6, 3, 1, 5, 4, 7, 8},
+			want1: []int{8, 1, 2, 7, 4, 5, 6, 0, 3},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, got1 := cycleCrossover(tt.args.arr1, tt.args.arr2)
+			assert.True(t, reflect.DeepEqual(got, tt.want), "cycleCrossover() got = %v, want %v", got, tt.want)
+			assert.True(t, reflect.DeepEqual(got1, tt.want1), "cycleCrossover() got = %v, want %v", got, tt.want)
+		})
+	}
+}
