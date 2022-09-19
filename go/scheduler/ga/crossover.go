@@ -3,6 +3,8 @@ package ga
 import (
 	cu "lib/collectionutils"
 	"lib/utils"
+	"fmt"
+	"strconv"
 )
 
 // Function of this type gets passed into CrossoverCaller
@@ -172,6 +174,7 @@ func FindValid[T comparable](index int, parent []T, otherParentMap map[T]int) T 
 //////////////////////
 // One-Point Crossover
 //////////////////////
+// Wikipedia
 
 // OnePointCrossover is an invalid crossover that selects a random crossover point and crossovers everything to the right
 func OnePointCrossover(domain *Domain, individuals Individuals, numOffspring int) Individuals {
@@ -220,6 +223,7 @@ func onePointCrossover[T comparable](p1, p2 []T, xP int) ([]T, []T) {
 //////////////////////
 // Two-Point Crossover
 //////////////////////
+// Wikipedia
 
 // TwoPointCrossover is an invalid crossover that crossovers everything between two crossover points
 func TwoPointCrossover(domain *Domain, individuals Individuals, numOffspring int) Individuals {
@@ -278,4 +282,126 @@ func twoPointCrossover[T comparable](p1, p2 []T, xP1, xP2 int) ([]T, []T) {
 	}
 
 	return offspring1, offspring2
+}
+
+//////////////////////
+// Cycle Crossover
+//////////////////////
+// https://www.researchgate.net/figure/Cycle-crossover-CX_fig2_226665831#:~:text=Cycle%20crossover%20(CX)%20The%20cycle,from%20one%20of%20the%20parents.
+// The cycle crossover operator(Figure 3) was proposed by Oliver et al. (1987)
+// Can only be used in daily scheduler
+
+// CycleCrossover is a valid crossover method
+func CycleCrossover(domain *Domain, individuals Individuals, numOffspring int) Individuals {
+	// Flatten the parents
+	flatParent1, flatParent2 := cu.Flatten2DArr(individuals[0].Gene), cu.Flatten2DArr(individuals[1].Gene)
+
+	// Resource map
+	resources := make(map[string]int)
+	for i, resource := range domain.SchedulerData.Resources {
+		resources[*resource.Id] = i
+	}
+
+	// Resource reverse map
+	reverseResources := make(map[int]string)
+	for key, value := range reverseResources {
+		resources[value] = key
+	}
+
+	// convert parents to the right representation
+	var intParent1 []int
+	var intParent2 []int
+	for _, resource := range flatParent1 {
+		intParent1 = append(intParent1, resources[resource])
+	}
+	for _, resource := range flatParent2 {
+		intParent2 = append(intParent2, resources[resource])
+	}
+	for i := 0; i < len(domain.SchedulerData.Resources); i++ {
+		if !contains(flatParent1, fmt.Sprint(i)) {
+			intParent1 = append(intParent1, i)
+		}
+	}
+	for i := 0; i < len(domain.SchedulerData.Resources); i++ {
+		if !contains(flatParent2, fmt.Sprint(i)) {
+			intParent2 = append(intParent2, i)
+		}
+	}
+
+	// Crossover
+	offspring1, offspring2 := cycleCrossover(intParent1, intParent2)
+	offspring1 = offspring1[:len(flatParent1) - 1]
+	offspring2 = offspring2[:len(flatParent2) - 1]
+
+	// Convert int array to string array
+	var result1 []string
+	for _, i := range offspring1 {
+		result1 = append(result1, strconv.Itoa(i))
+	}
+
+	var result2 []string
+	for _, i := range offspring2 {
+		result2 = append(result2, strconv.Itoa(i))
+	}
+
+	// Calculate the original dimensions of the individuals
+	sizes := make([]int, len(individuals[0].Gene))
+	for i, col := range individuals[0].Gene {
+		sizes[i] = len(col)
+	}
+
+	// child1 and child2 are the de-flattened offspring
+	child1, child2 := cu.PartitionArray(result1, sizes), cu.PartitionArray(result2, sizes)
+	return []*Individual{{child1, 0.0}, {child2, 0.0}}
+}
+
+func cycleCrossover(p1, p2 []int) ([]int, []int) {
+	// Detect and swap odd number cycles
+	visited := make(map[int]bool)
+	oddCycle := false
+	for i := 0; i < len(p1); i++ {
+		// if not already part of a cycle
+		if !visited[i] {
+			var cycle []int
+			cycle = append(cycle, i)
+			visited[i] = true
+			
+			current := p2[i]
+			odd := false
+			for current != i {
+				if odd {
+					temp:= p2[current]
+					current = temp
+				} else {
+					temp:= p1[current]
+					cycle = append(cycle, temp)
+					current = temp
+					visited[temp] = true
+				}
+				odd = !odd
+			}
+
+			if oddCycle {
+				for _, index := range cycle {
+					temp := p1[index]
+					p1[index] = p2[index]
+					p2[index] = temp
+				}
+			}
+
+			oddCycle = !oddCycle
+		}
+	}
+
+	return p1, p2
+}
+
+func contains(s []string, str string) bool {
+	for _, v := range s {
+		if v == str {
+			return true
+		}
+	}
+
+	return false
 }
