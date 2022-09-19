@@ -1,0 +1,65 @@
+.form
+{
+    padding-top: 2vh;
+
+    width: 20vw;
+
+    margin-left: 5vw;
+    
+    text-align: left;
+
+    color: #374146;
+}
+
+.formGroup
+{
+    margin-bottom: 4vh;
+}
+
+.formLabel
+{
+    font-size: 1.5vw;
+}
+
+.formInput
+{
+    margin-top: 1vh;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    width: 20vw;
+
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+    border-style: none;
+    border-radius: 1.5vh;
+    outline: none;
+
+    font-size: 1vw; 
+}
+
+.formInput:focus
+{
+    outline: none;
+}
+
+.colorLabel
+{
+    display: grid;
+    grid-template-columns: 9vw 11vw;
+}
+
+.colorSwatch
+{
+    width: 1vw;
+    height: 1vw;
+
+    margin-top: 1.3vh;
+
+    border-radius: 0.5vh;
+}
+
+.colorPicker
+{
+    margin-top: 1vh;
+}

@@ -1,11 +1,35 @@
+.kanbanContainer
+{
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.kanbanHeadingContainer
+{
+    height: 10vh;
+
+    background-color: white;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    color: #374146;
+}
+
+.kanbanHeading
+{
+    font-size: 3vw;
+    letter-spacing: 0.3vw;
+
+    margin-left: 3vw;
+}
+
 .columnsContainer
 {
     overflow-x: scroll;
     position: relative;
     display: flex;
-    margin-left: 5vw;
+    margin-left: 9.5vw;
 
     width: 66vw;
+    height: 80vh;
+
 
     background-color: transparent;
     color: #374146;
@@ -26,14 +50,60 @@
     background-color: transparent;
 }
 
+.saveIcon
+{
+    position: absolute;
+
+    top: 11vh;
+    left: 1vw;
+
+    font-size: 1.5vw;
+
+    color: #374146;
+}
+
+.saveIcon:hover
+{
+    cursor: pointer;
+    color: #09a2fb;
+}
+
+.saveHint
+{
+    display: none;
+    position: absolute;
+
+    background-color: #374146;
+    color: white;
+    
+    border-radius: 1vh;
+
+    text-align: center;
+
+    left: 0vw;
+    top: 15vh;
+
+    width: 4vw;
+    height: 3vh;
+
+    padding-top: 0.2vh;
+    padding-bottom: 0.5vh;
+
+    font-size: 0.8vw;
+
+    z-index: 1;
+}
+
 .leftArrow
 {
     position: absolute;
 
-    top: 40vh;
-    left: 1vw;
+    top: 45vh;
+    left: 6.5vw;
 
     font-size: 3vw;
+
+    color: #374146;
 }
 
 .leftArrow:hover
@@ -46,10 +116,12 @@
 {
     position: absolute;
 
-    top: 40vh;
-    left: 74vw;
+    top: 45vh;
+    left: 75.5vw;
 
     font-size: 3vw;
+
+    color: #374146;
 }
 
 .rightArrow:hover
@@ -62,21 +134,55 @@
 {
     display: grid;
     grid-template-columns: 20vw;
-    grid-template-rows: 10vh 75vh;
+    grid-template-rows: 10vh 65vh;
 
-    background: rgba(255, 255, 255, 0.4);
+    /*background: rgba(255, 255, 255, 0.4);*/
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 
     width: 20vw;
 
-    height: 85vh;
+    height: 75vh;
 
-    margin-left: 2vw;
+    margin-left: 1vw;
+    margin-right: 1vw;
     margin-top: 2.5vh;
 
     padding-left: 1vw;
 
     border-radius: 1vh;
+}
+
+.addColumn
+{
+    background: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+
+    width: 20vw;
+
+    height: 10vh;
+
+    margin-left: 1vw;
+    margin-right: 1vw;
+    margin-top: 2.5vh;
+
+    padding-top: 3vh;
+
+    border-radius: 1vh;
+}
+
+.addTeamContainer
+{
+    width: 20vw;
+
+    font-size: 1.2vw;
+
+    text-align: center;
+}
+
+.addTeamContainer:hover
+{
+    cursor: pointer;
+    color: #09a2fb;
 }
 
 .columnHeaderContainer
@@ -89,7 +195,7 @@
 
 .columnHeader
 {
-    font-size: 2vw;
+    font-size: 1.5vw;
 }
 
 .columnActions
@@ -131,7 +237,7 @@
     width: 8vw;
     height: 3vh;
 
-    padding-top: 0.5vh;
+    padding-top: 0.2vh;
     padding-bottom: 0.5vh;
 
     font-size: 0.8vw;
@@ -150,12 +256,12 @@
 
     text-align: center;
 
-    margin-left: 13vw;
+    margin-left: 14vw;
 
-    width: 8vw;
+    width: 5vw;
     height: 3vh;
 
-    padding-top: 0.5vh;
+    padding-top: 0.2vh;
     padding-bottom: 0.5vh;
 
     font-size: 0.8vw;
@@ -167,11 +273,41 @@
 {
     overflow-y: scroll;
     overflow-x: hidden;
-    height: 75vh;
+    height: 65vh;
     width: 19vw;
 }
 
 .itemsContainer::-webkit-scrollbar
 {
     width: 8px;
+}
+
+.backgroundDimmer
+{
+    position: absolute;
+
+    width: 85vw;
+    height: 80vh;
+
+    background-color: #00000099;
+
+    z-index: 2;
+}
+
+.editTeamContainer
+{
+    position: absolute;
+
+    width: 30vw;
+    height: 70vh;
+
+    margin-left: 27.5vw;
+    margin-top: 5vh;
+
+    background-color: rgba(218, 223, 254);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+
+    border-radius: 1vh;
+
+    z-index: 3;
 }

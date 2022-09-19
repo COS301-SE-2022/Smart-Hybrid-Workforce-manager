@@ -3,6 +3,9 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MdEdit, MdPersonAdd } from 'react-icons/md';
 import { useRef, useState } from 'react';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+import { AiOutlineUsergroupAdd } from 'react-icons/ai';
+import { FaSave } from 'react-icons/fa';
+import { EditTeamForm } from '../Team/EditTeam';
 
 const Kanban = () =>
 {
@@ -15,6 +18,7 @@ const Kanban = () =>
         ['col1']: 
         {
             name: 'Team 1',
+            color: '#09a2fb',
             items: [
                 {
                     id: 't1u1',
@@ -30,6 +34,7 @@ const Kanban = () =>
         ['col2']:
         {
             name: 'Team 2',
+            color: '#ff3e30',
             items: [
                 {
                     id: 't2u1',
@@ -53,6 +58,7 @@ const Kanban = () =>
         ['col3']:
         {
             name: 'Team 3',
+            color: '#86ff30',
             items: [
                 {
                     id: 't3u1',
@@ -88,6 +94,7 @@ const Kanban = () =>
         ['col4']:
         {
             name: 'Team 4',
+            color: '#d230ff',
             items: [
                 {
                     id: 't4u1',
@@ -123,6 +130,16 @@ const Kanban = () =>
 
     const [columns, setColumns] = useState(columnsInit);
 
+    const ShowSaveHint = () =>
+    {
+        document.getElementById('SaveHint').style.display = 'block';
+    }
+
+    const HideSaveHint = () =>
+    {
+        document.getElementById('SaveHint').style.display = 'none';
+    }
+
     const AddUser = (col) =>
     {
         console.log(col);
@@ -131,7 +148,6 @@ const Kanban = () =>
     const ShowAddUserHint = (col) =>
     {
         document.getElementById(col + 'AddUserHint').style.display = 'block';
-
     }
 
     const HideAddUserHint = (col) =>
@@ -161,7 +177,7 @@ const Kanban = () =>
         {
             leftIntervalRef.current = setInterval(() =>
             {
-                columnsContainerRef.current.scrollLeft -= 3;
+                columnsContainerRef.current.scrollLeft -= 10;
             }, 10);
         }
     }
@@ -181,7 +197,7 @@ const Kanban = () =>
         {
             rightIntervalRef.current = setInterval(() =>
             {
-                columnsContainerRef.current.scrollLeft += 3;
+                columnsContainerRef.current.scrollLeft += 10;
             }, 10);
         }
     }
@@ -250,8 +266,22 @@ const Kanban = () =>
 
     return (
         <div className={styles.kanbanContainer}>
+            <div className={styles.kanbanHeadingContainer}>
+                <div className={styles.kanbanHeading}>Team and User Management</div>
+            </div>
+
+            <div className={styles.saveIcon} onMouseEnter={ShowSaveHint} onMouseLeave={HideSaveHint}><FaSave /></div>
+            <div id='SaveHint' className={styles.saveHint}>Save</div>
+
             <div className={styles.leftArrow} onMouseDown={StartScrollLeft} onMouseUp={StopScrollLeft} onMouseLeave={StopScrollLeft}><IoIosArrowBack /></div>
             <div className={styles.rightArrow} onMouseDown={StartScrollRight} onMouseUp={StopScrollRight} onMouseLeave={StopScrollRight}><IoIosArrowForward /></div>
+
+            <div className={styles.backgroundDimmer}></div>
+
+            <div className={styles.editTeamContainer}>
+                <EditTeamForm teamName='Team 1' teamColor='#86ff30' />
+            </div>
+
             <div ref={columnsContainerRef} className={styles.columnsContainer}>
                 <DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumns)}>
                     {Object.entries(columns).map(([id, col]) => {
@@ -260,7 +290,10 @@ const Kanban = () =>
                                 {(provided, snapshot) =>
                                 {
                                     return (
-                                        <div {...provided.droppableProps} ref={provided.innerRef} className={styles.column}>
+                                        <div {...provided.droppableProps} ref={provided.innerRef} className={styles.column}
+                                        style={{
+                                            background: "linear-gradient(180deg, " + col.color + "66  0%, rgba(255,255,255,0.4) 20%)"
+                                        }}>
                                             <div className={styles.columnHeaderContainer}>
                                                 <div className={styles.columnHeader}>
                                                     {col.name}
@@ -286,7 +319,7 @@ const Kanban = () =>
                                                                     paddingTop: '2vh',
                                                                     paddingLeft: '1vw',
                                                                     marginBottom: '3vh',
-                                                                    height: '20vh',
+                                                                    height: '15vh',
                                                                     width: '18vw',
                                                                     borderRadius: '1vh',
                                                                     boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
@@ -308,6 +341,12 @@ const Kanban = () =>
                         )
                     })}
                 </DragDropContext>
+                <div className={styles.addColumn}>
+                    <div className={styles.addTeamContainer}>
+                        <AiOutlineUsergroupAdd />
+                        Add team
+                    </div>
+                </div>
             </div>
         </div>
     );

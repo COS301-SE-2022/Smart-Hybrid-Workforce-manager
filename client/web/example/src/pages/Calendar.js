@@ -583,11 +583,11 @@ const Calendar = () =>
                 method: "POST",
                 mode: "cors",
                 body: JSON.stringify({
-                    user_id: userData.user_id
+                    user_id: userData//.user_id
                 }),
                 headers:{
                     'Content-Type': 'application/json',
-                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                    'Authorization': `bearer ${userData}` //Changed for frontend editing .token
                 }
                 }).then((res) => res.json()).then(data => 
                 {
@@ -667,7 +667,7 @@ const Calendar = () =>
 
     const showNavbar = () =>
     {
-        if(!userData.user_identifier.includes("admin"))
+        if(userData !== null && !userData.user_identifier.includes("admin"))
         {
             return <Navbar />;
         }
