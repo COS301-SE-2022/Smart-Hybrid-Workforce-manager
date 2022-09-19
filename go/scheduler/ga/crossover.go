@@ -21,6 +21,7 @@ func CrossoverCaller(crossoverOperator CrossoverOperator, domain *Domain, indivi
 
 ///////////////////////////////////////////////////
 // WEEKLY
+///////////////////////////////////////////////////
 
 func WeeklyStubCrossOver(domain *Domain, individuals Individuals, selectionFunc Selection, offspring int) Individuals {
 	if len(individuals) == 0 || offspring == 0 {
@@ -75,10 +76,12 @@ func weeklyDayVResourceCrossover(domain *Domain, individuals Individuals, offspr
 }
 
 ///////////////////////////////////////////////////
-// DAILY
-
-///////////////////////////////////////////////////
 // General crossover code
+///////////////////////////////////////////////////
+
+//////////////////////
+// Partially mapped crossover
+//////////////////////
 
 // A valid (daily) crossover, that works similarly to PMX 2-point crossover
 // It initially flattens an individual, and then performs pmx crossover on the flattened crossover
@@ -164,4 +167,52 @@ func FindValid[T comparable](index int, parent []T, otherParentMap map[T]int) T 
 	} else {
 		return FindValid(otherParentMap[parent[index]], parent, otherParentMap) // If it is, find and return a valid element
 	}
+}
+
+//////////////////////
+// One-Point Crossover
+//////////////////////
+
+// OnePointCrossover is an invalid crossover that selects a random crossover point and crossovers everything to the right
+func OnePointCrossover(domain *Domain, individuals Individuals, numOffspring int) Individuals {
+	// Flatten the parents
+	flatParent1, flatParent2 := cu.Flatten2DArr(individuals[0].Gene), cu.Flatten2DArr(individuals[1].Gene)
+
+	// Get the crossover points
+	xPoint := utils.RandInt(0, len(flatParent1))
+
+	// Crossover
+	offspring1, offspring2 := onePointCrossover(flatParent1, flatParent2, xPoint)
+
+	// Calculate the original dimensions of the individuals
+	sizes := make([]int, len(individuals[0].Gene))
+	for i, col := range individuals[0].Gene {
+		sizes[i] = len(col)
+	}
+
+	// child1 and child2 are the de-flattened offspring
+	child1, child2 := cu.PartitionArray(offspring1, sizes), cu.PartitionArray(offspring2, sizes)
+	return []*Individual{{child1, 0.0}, {child2, 0.0}}
+}
+
+func onePointCrossover[T comparable](p1, p2 []T, xP int) ([]T, []T) {
+	if xP < 0  {
+		xP = 0
+	}
+	// Make offspring arrays
+	offspring1, offspring2 := make([]T, len(p1)), make([]T, len(p2))
+
+	// Copy over start
+	for i := 0; i < len(p1) && i < len(p2) && i < xP; i++ {
+		offspring1[i] = p1[i]
+		offspring2[i] = p2[i]
+	}
+
+	// CrossOver
+	for i := xP; i < len(p1) && i < len(p2); i++ {
+		offspring1[i] = p2[i]
+		offspring2[i] = p1[i]
+	}
+
+	return offspring1, offspring2
 }
