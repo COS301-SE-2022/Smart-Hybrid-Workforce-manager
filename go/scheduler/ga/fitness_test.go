@@ -233,3 +233,209 @@ func TestIndividual_getTeamsGroupedByRooms(t *testing.T) {
 		})
 	}
 }
+
+func TestIndividual_getUserCoordinate(t *testing.T) {
+	mockSchedulerData := data.SchedulerData{
+		Resources: data.Resources{
+			&data.Resource{Id: tu.Ptr("Apple"), XCoord: tu.Ptr(1.1), YCoord: tu.Ptr(11.1)},
+			&data.Resource{Id: tu.Ptr("Pear"), XCoord: tu.Ptr(2.2), YCoord: tu.Ptr(22.2)},
+			&data.Resource{Id: tu.Ptr("Banana"), XCoord: tu.Ptr(3.3), YCoord: tu.Ptr(33.3)},
+		},
+	}
+	mockDomain := &Domain{
+		SchedulerData: &mockSchedulerData,
+	}
+	mockIndividual := &Individual{
+		Gene: [][]string{
+			{"Apple", "Pear", "Banana"},
+		},
+	}
+	type args struct {
+		domain *Domain
+		index  int
+	}
+	tests := []struct {
+		name       string
+		individual *Individual
+		args       args
+		want       []float64
+	}{
+		{
+			name:       "Test 1",
+			individual: mockIndividual,
+			args: args{
+				domain: mockDomain,
+				index:  0,
+			},
+			want: []float64{1.1, 11.1},
+		},
+		{
+			name:       "Test 2",
+			individual: mockIndividual,
+			args: args{
+				domain: mockDomain,
+				index:  1,
+			},
+			want: []float64{2.2, 22.2},
+		},
+		{
+			name:       "Test 3",
+			individual: mockIndividual,
+			args: args{
+				domain: mockDomain,
+				index:  2,
+			},
+			want: []float64{3.3, 33.3},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.args.domain.SchedulerData.ApplyMapping()
+			if got := tt.individual.getUserCoordinate(tt.args.domain, tt.args.index); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Individual.getUserCoordinate() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestIndividual_getTeamRoomProximities(t *testing.T) {
+	type args struct {
+		domain *Domain
+	}
+	tests := []struct {
+		name       string
+		individual *Individual
+		args       args
+		want       []teamRoomProximity
+	}{
+		{
+			name: "Test 1",
+			args: args{
+				domain: &Domain{
+					SchedulerData: &data.SchedulerData{
+						Teams: []*data.TeamInfo{
+							{
+								Team:    &data.Team{Id: tu.Ptr("Cabbage")},
+								UserIds: []string{"Lime", "Lemon", "Grapefruit", "Banana"},
+							},
+							{
+								Team:    &data.Team{Id: tu.Ptr("Broccoli")},
+								UserIds: []string{"Blueberry", "Gooseberry", "Lemon"},
+							},
+							{
+								Team:    &data.Team{Id: tu.Ptr("Lettuce")},
+								UserIds: []string{"Strawberry", "Blueberry"},
+							},
+							{
+								Team:    &data.Team{Id: tu.Ptr("Eggplant")},
+								UserIds: []string{},
+							},
+						},
+						Rooms: []*data.RoomInfo{
+							{Room: &data.Room{Id: tu.Ptr("Freezer")}},
+							{Room: &data.Room{Id: tu.Ptr("Fridge")}},
+							{Room: &data.Room{Id: tu.Ptr("Pantry")}},
+							{Room: &data.Room{Id: tu.Ptr("Countertop")}},
+						},
+						Resources: []*data.Resource{
+							{Id: tu.Ptr("Shelf1"), RoomId: tu.Ptr("Freezer"), XCoord: tu.Ptr(1.0), YCoord: tu.Ptr(1.0)},
+							{Id: tu.Ptr("Shelf2"), RoomId: tu.Ptr("Freezer"), XCoord: tu.Ptr(2.0), YCoord: tu.Ptr(2.0)},
+							{Id: tu.Ptr("Shelf3"), RoomId: tu.Ptr("Freezer"), XCoord: tu.Ptr(3.0), YCoord: tu.Ptr(3.0)},
+							{Id: tu.Ptr("Shelf4"), RoomId: tu.Ptr("Freezer"), XCoord: tu.Ptr(4.0), YCoord: tu.Ptr(4.0)},
+							{Id: tu.Ptr("Shelf5"), RoomId: tu.Ptr("Freezer"), XCoord: tu.Ptr(5.0), YCoord: tu.Ptr(5.0)},
+							{Id: tu.Ptr("Shelf10"), RoomId: tu.Ptr("Fridge"), XCoord: tu.Ptr(10.0), YCoord: tu.Ptr(10.0)},
+							{Id: tu.Ptr("Shelf20"), RoomId: tu.Ptr("Fridge"), XCoord: tu.Ptr(20.0), YCoord: tu.Ptr(20.0)},
+							{Id: tu.Ptr("Shelf30"), RoomId: tu.Ptr("Fridge"), XCoord: tu.Ptr(30.0), YCoord: tu.Ptr(30.0)},
+							{Id: tu.Ptr("Shelf40"), RoomId: tu.Ptr("Fridge"), XCoord: tu.Ptr(40.0), YCoord: tu.Ptr(40.0)},
+							{Id: tu.Ptr("Shelf50"), RoomId: tu.Ptr("Fridge"), XCoord: tu.Ptr(50.0), YCoord: tu.Ptr(50.0)},
+							{Id: tu.Ptr("Shelf100"), RoomId: tu.Ptr("Pantry"), XCoord: tu.Ptr(100.0), YCoord: tu.Ptr(100.0)},
+							{Id: tu.Ptr("Shelf200"), RoomId: tu.Ptr("Pantry"), XCoord: tu.Ptr(200.0), YCoord: tu.Ptr(200.0)},
+							{Id: tu.Ptr("Shelf300"), RoomId: tu.Ptr("Pantry"), XCoord: tu.Ptr(300.0), YCoord: tu.Ptr(300.0)},
+							{Id: tu.Ptr("Shelf_1"), RoomId: tu.Ptr("Countertop"), XCoord: tu.Ptr(0.1), YCoord: tu.Ptr(0.1)},
+							{Id: tu.Ptr("Shelf_2"), RoomId: tu.Ptr("Countertop"), XCoord: tu.Ptr(0.2), YCoord: tu.Ptr(0.2)},
+							{Id: tu.Ptr("Shelf_3"), RoomId: tu.Ptr("Countertop"), XCoord: tu.Ptr(0.3), YCoord: tu.Ptr(0.3)},
+						},
+					},
+					InverseMap: map[string][]int{
+						"Lime":       {0, 3},
+						"Lemon":      {1},
+						"Grapefruit": {4, 2},
+						"Blueberry":  {5, 8},
+						"Gooseberry": {6},
+						"Strawberry": {7},
+					},
+				},
+			},
+			individual: &Individual{
+				Gene: [][]string{
+					//    0        1         2           3          4          5         6         7         8
+					// Freezer  Freezer    Fridge     Pantry     Fridge     Freezer   Freezer   Freezer   Fridge
+					{"Shelf1", "Shelf2", "Shelf10", "Shelf100", "Shelf30", "Shelf4", "Shelf5", "Shelf3", "Shelf20"},
+				},
+			},
+			want: []teamRoomProximity{
+				{
+					teamRoomGroups: teamRoomGroups{
+						teamId: "Broccoli",
+						roomGroups: map[string][]int{
+							"Freezer": {5, 6, 1},
+							"Fridge":  {8},
+						},
+					},
+					roomProximities: map[string]float64{
+						"Freezer": 1.5713484026367723,
+						"Fridge":  0.0,
+					},
+				},
+				{
+					teamRoomGroups: teamRoomGroups{
+						teamId: "Cabbage",
+						roomGroups: map[string][]int{
+							"Freezer": {0, 1},
+							"Fridge":  {2, 4},
+							"Pantry":  {3},
+						},
+					},
+					roomProximities: map[string]float64{
+						"Freezer": 0.7071067811865476,
+						"Fridge":  14.142135623730951,
+						"Pantry":  0.0,
+					},
+				},
+				{
+					teamRoomGroups: teamRoomGroups{
+						teamId:     "Eggplant",
+						roomGroups: map[string][]int{},
+					},
+					roomProximities: map[string]float64{},
+				},
+				{
+					teamRoomGroups: teamRoomGroups{
+						teamId: "Lettuce",
+						roomGroups: map[string][]int{
+							"Freezer": {7, 5},
+							"Fridge":  {8},
+						},
+					},
+					roomProximities: map[string]float64{
+						"Freezer": 0.7071067811865476,
+						"Fridge":  0.0,
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.args.domain.SchedulerData.ApplyMapping()
+			got := tt.individual.getTeamRoomProximities(tt.args.domain)
+			assert.Len(t, got, len(tt.want), "Expected got to have a length of %v but got len %v", len(tt.want), len(got))
+			sort.Slice(got, func(i, j int) bool {
+				return got[i].teamId < got[j].teamId
+			})
+			for i := range tt.want {
+				tu.MapsWithcSlicesMatchLoosely(t, got[i].roomGroups, tt.want[i].roomGroups, "Individual.getTeamRoomProximities() = %v, want %v")
+			}
+		})
+	}
+}

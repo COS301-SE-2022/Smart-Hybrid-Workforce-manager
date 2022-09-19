@@ -191,15 +191,16 @@ func dailyFitness(domain *Domain, individual *Individual) float64 {
 	return 0.0
 }
 
-type teamRoomProximity struct {
-	teamId     string
-	roomGroups map[string][]int
-}
-
 type teamRoomGroups struct {
 	teamId string
 	// A map mapping roomId to the members part of the team in that room (map[roomId]{arr of user indices in that room})
 	roomGroups map[string][]int
+}
+
+type teamRoomProximity struct {
+	teamRoomGroups
+	// A map mapping roomIds to proximity scores for members in that room
+	roomProximities map[string]float64
 }
 
 // teamProximityScore calculates a score that indicates the proximity of members
@@ -209,8 +210,49 @@ func (individual *Individual) teamProximityScore(domain *Domain) float64 {
 }
 
 // preferredDeskBonus returns a bonus fitness value for users sitting at their preffered desk
-func (indiividual *Individual) preferredDeskBonus(domain *Domain) float64 {
+func (individual *Individual) preferredDeskBonus(domain *Domain) float64 {
 	return 0.0
+}
+
+// Takes in a index of user, and returns the coordinates of the user according to the resource
+// that is assigned to them
+func (individual *Individual) getUserCoordinate(domain *Domain, index int) []float64 {
+	resource := domain.SchedulerData.ResourcesMap[individual.Gene[0][index]]
+	return []float64{
+		*resource.XCoord,
+		*resource.YCoord,
+	} // (x, y)
+}
+
+// Calculates the proximities of teams grouped by the rooms they are in
+func (individual *Individual) getTeamRoomProximities(domain *Domain) []teamRoomProximity {
+	// Get team room groups
+	teamRoomGroupsArr := individual.getTeamsGroupedByRooms(domain)
+	// Create empty teamRoomProximitySlice
+	teamRoomProximities := make([]teamRoomProximity, len(teamRoomGroupsArr))
+	// Function used to compile a slice of coordinates from user indices
+	compileCoordinates := func(userIndices []int) [][]float64 {
+		// Allocate slice
+		coords := make([][]float64, len(userIndices))
+		for i, index := range userIndices {
+			// Get the coordinates for each user
+			coords[i] = individual.getUserCoordinate(domain, index)
+		}
+		return coords
+	}
+	for i, teamRoomGroup := range teamRoomGroupsArr {
+		// Allocate map
+		roomProximites := make(map[string]float64, len(teamRoomGroup.roomGroups))
+		for roomId, usersInRooms := range teamRoomGroup.roomGroups {
+			// For each room, get the proximity by compiling the coordinates and getting avg dist from centroid
+			roomProximites[roomId] = avgDistanceFromCentroid(compileCoordinates(usersInRooms))
+		}
+		teamRoomProximities[i] = teamRoomProximity{
+			teamRoomGroups:  teamRoomGroup,
+			roomProximities: roomProximites,
+		}
+	}
+	return teamRoomProximities
 }
 
 // getTeamsGroupedByRooms returns

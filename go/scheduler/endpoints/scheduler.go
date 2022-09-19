@@ -35,7 +35,7 @@ func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
-
+	schedulerData.ApplyMapping()
 	bookings := overseer.WeeklyOverseer(schedulerData)
 
 	utils.JSONResponse(writer, request, bookings)
@@ -49,7 +49,7 @@ func dailyScheduler(writer http.ResponseWriter, request *http.Request) {
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
-
+	schedulerData.ApplyMapping()
 	bookings := overseer.DailyOverseer(schedulerData)
 
 	utils.JSONResponse(writer, request, bookings)
