@@ -1,7 +1,6 @@
 package ga
 
 import (
-	"reflect"
 	"scheduler/data"
 	"testing"
 
@@ -77,14 +76,14 @@ func TestDomain_GetTeamUserIndices(t *testing.T) {
 				InverseMap: map[string][]int{
 					"Lime":       {0, 3},
 					"Lemon":      {1},
-					"Grapefruit": {4},
+					"Grapefruit": {4, 2},
 					"Blueberry":  {5, 8},
 					"Gooseberry": {6},
 					"Strawberry": {7},
 				},
 			},
 			want: map[string][]int{
-				"Cabbage":  {0, 3, 1, 4},
+				"Cabbage":  {0, 3, 1, 4, 2},
 				"Broccoli": {5, 8, 6, 1},
 				"Lettuce":  {7, 5, 8},
 				"Eggplant": {},
@@ -93,10 +92,8 @@ func TestDomain_GetTeamUserIndices(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-
-			if got := tt.domain.GetTeamUserIndices(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Domain.GetTeamUserIndices() = %v, want %v", got, tt.want)
-			}
+			got := tt.domain.GetTeamUserIndices()
+			tu.MapsWithcSlicesMatchLoosely(t, got, tt.want, "Domain.GetTeamUserIndices() = %v, want %v", got, tt.want)
 		})
 	}
 }

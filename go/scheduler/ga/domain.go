@@ -44,9 +44,9 @@ func (domain *Domain) GetRandomUniqueTerminalArrays(length int) []string {
 	return result
 }
 
-// TODO: @JonathanEnslin look at moving this piece of code into the domain as well since it is common across individuals
-// A map that contains the user indices per team
-// GetTeamUserIndices gets a map where the teamIds, and the value is an array indicating which indices in a daily individual
+// TODO: @JonathanEnslin look at moving this piece of code into the domain as well since it is common across individuals.
+// A map that contains the user indices per team.
+// GetTeamUserIndices gets a map where the keys are teamIds, and the value is an array indicating which indices in a daily individual
 // belongs to the tean
 func (domain *Domain) GetTeamUserIndices() map[string][]int {
 	userIndicesMap := domain.InverseMap

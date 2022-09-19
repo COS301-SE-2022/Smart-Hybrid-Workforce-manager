@@ -191,31 +191,48 @@ func dailyFitness(domain *Domain, individual *Individual) float64 {
 	return 0.0
 }
 
+type teamRoomProximity struct {
+	teamId     string
+	roomGroups map[string][]int
+}
+
+type teamRoomGroups struct {
+	teamId string
+	// A map mapping roomId to the members part of the team in that room (map[roomId]{arr of user indices in that room})
+	roomGroups map[string][]int
+}
+
 // teamProximityScore calculates a score that indicates the proximity of members
 // of a team, scales with team priority (TODO: @JonathanEnslin remember this)
 func (individual *Individual) teamProximityScore(domain *Domain) float64 {
-	schedulerData := domain.SchedulerData
-	gene := individual.Gene
-
-	// =================================================================
-	// TODO: @JonathanEnslin look at moving this piece of code into the domain as well since it is common across individuals
-	// A map that contains the user indices per team
-	teamUserIndices := domain.GetTeamUserIndices()
-	// =================================================================
-
-	roomGroupingFunc := func(userIndex int) string { // returns a roomId
-		return *schedulerData.ResourcesMap[gene[0][userIndex]].RoomId // Return the room that the user will be in
-	}
-	for _, indices := range teamUserIndices {
-		// Additionally group each team by room
-		cu.GroupBy(indices, roomGroupingFunc)
-	}
 	return 0.0
 }
 
 // preferredDeskBonus returns a bonus fitness value for users sitting at their preffered desk
 func (indiividual *Individual) preferredDeskBonus(domain *Domain) float64 {
 	return 0.0
+}
+
+// getTeamsGroupedByRooms returns
+func (individual *Individual) getTeamsGroupedByRooms(domain *Domain) []teamRoomGroups {
+	schedulerData := domain.SchedulerData
+	gene := individual.Gene
+	// =================================================================
+	// TODO: @JonathanEnslin look at moving this piece of code into the domain as well since it is common across individuals
+	// A map that contains the user indices per team
+	teamUserIndices := domain.GetTeamUserIndices()
+	// =================================================================
+
+	// Group each team by room
+	roomGroupingFunc := func(userIndex int) string { // returns a roomId
+		return *schedulerData.ResourcesMap[gene[0][userIndex]].RoomId // Return the room that the user will be in
+	}
+	groups := []teamRoomGroups{}
+	for teamId, indices := range teamUserIndices {
+		_, roomGroups := cu.GroupBy(indices, roomGroupingFunc) // Get the room groups for the team
+		groups = append(groups, teamRoomGroups{teamId: teamId, roomGroups: roomGroups})
+	}
+	return groups
 }
 
 // ================ Functions used for daily fitness ================
