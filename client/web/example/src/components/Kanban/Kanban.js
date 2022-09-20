@@ -8,6 +8,7 @@ import { FaSave } from 'react-icons/fa';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { EditTeamForm } from '../Team/EditTeam';
 import { AddTeamForm } from '../Team/AddTeam';
+import { EditUserPanel, EditUserPanl } from '../User/EditUser';
 
 const Kanban = () =>
 {
@@ -19,6 +20,10 @@ const Kanban = () =>
     const [editTeamColor, setEditTeamColor] = useState('#ffffff');
     const [editTeamPicture, setEditTeamPicture] = useState('');
     const [currTeam, setCurrTeam] = useState('');
+
+    const [currUser, setCurrUser] = useState({id: '', name: '', picture: ''});
+    const [userPanelLeft, setUserPanelLeft] = useState(0.85*window.innerWidth);
+
 
     const columnsInit = 
     {
@@ -150,9 +155,28 @@ const Kanban = () =>
         document.getElementById('SaveHint').style.display = 'none';
     }
 
-    const AddUser = (col) =>
+    
+
+    const CloseEditUser = () =>
     {
-        console.log(col);
+        document.getElementById('BackgroundDimmer').style.display = 'none';
+        document.getElementById('EditUser').style.display = 'none';
+    }
+
+    //Teams
+    const ShowTeamMenu = (id) =>
+    {
+        if(document.getElementById('TeamMenu').style.display === 'none')
+        {
+            document.getElementById('TeamMenu').style.display = 'block';
+            document.getElementById('TeamMenu').style.left = document.getElementById(id + 'ColumnActions').getBoundingClientRect().left - 0.22*window.innerWidth + 'px';
+            document.getElementById('TeamMenu').style.top = document.getElementById(id + 'ColumnActions').getBoundingClientRect().top - 0.10*window.innerHeight + 'px';
+            setCurrTeam(id);
+        }
+        else
+        {
+            document.getElementById('TeamMenu').style.display = 'none';
+        }
     }
 
     const EditTeam = (col) =>
@@ -183,6 +207,7 @@ const Kanban = () =>
         document.getElementById('AddTeam').style.display = 'none';
     }
 
+    //Navigation
     const StartScrollLeft = () =>
     {
         if(columnsContainerRef.current)
@@ -223,14 +248,15 @@ const Kanban = () =>
         }
     }
 
-    const ShowUserMenu = (id) =>
+    //Users
+    const ShowUserMenu = (user) =>
     {
         if(document.getElementById('UserMenu').style.display === 'none')
         {
             document.getElementById('UserMenu').style.display = 'block';
-            document.getElementById('UserMenu').style.left = document.getElementById(id + 'UserActions').getBoundingClientRect().left - 0.23*window.innerWidth + 'px';
-            document.getElementById('UserMenu').style.top = document.getElementById(id + 'UserActions').getBoundingClientRect().top - 0.10*window.innerHeight + 'px';
-            //setCurrTeam(id);
+            document.getElementById('UserMenu').style.left = document.getElementById(user.id + 'UserActions').getBoundingClientRect().left - 0.23*window.innerWidth + 'px';
+            document.getElementById('UserMenu').style.top = document.getElementById(user.id + 'UserActions').getBoundingClientRect().top - 0.10*window.innerHeight + 'px';
+            setCurrUser(user);
         }
         else
         {
@@ -238,29 +264,22 @@ const Kanban = () =>
         }
     }
 
-    const EditUser = (col) =>
+    const AddUser = (col) =>
     {
-        setEditTeamName(columns[col].name);
-        setEditTeamColor(columns[col].color);
-        setEditTeamPicture(columns[col].picture);
-
         document.getElementById('BackgroundDimmer').style.display = 'block';
-        document.getElementById('EditTeam').style.display = 'block';
+        document.getElementById('EditUser').style.display = 'block';
     }
 
-    const ShowTeamMenu = (id) =>
+    const EditUser = (col) =>
     {
-        if(document.getElementById('TeamMenu').style.display === 'none')
-        {
-            document.getElementById('TeamMenu').style.display = 'block';
-            document.getElementById('TeamMenu').style.left = document.getElementById(id + 'ColumnActions').getBoundingClientRect().left - 0.22*window.innerWidth + 'px';
-            document.getElementById('TeamMenu').style.top = document.getElementById(id + 'ColumnActions').getBoundingClientRect().top - 0.10*window.innerHeight + 'px';
-            setCurrTeam(id);
-        }
-        else
-        {
-            document.getElementById('TeamMenu').style.display = 'none';
-        }
+        document.getElementById('BackgroundDimmer').style.display = 'block';
+        setUserPanelLeft(0.65*window.innerWidth);
+    }
+
+    const CloseUserPanel = () =>
+    {
+        document.getElementById('BackgroundDimmer').style.display = 'none';
+        setUserPanelLeft(0.85*window.innerWidth);
     }
 
     document.addEventListener('mousedown', function ClickOutside(event)
@@ -347,21 +366,27 @@ const Kanban = () =>
             </div>
 
             <div id='UserMenu' className={styles.userMenu}>
-                <div className={styles.editUser} onMouseDown={EditUser.bind(this, currTeam)}>Edit user</div>
+                <div className={styles.editUser} onMouseDown={EditUser.bind(this, currUser)}>Edit user</div>
                 <div className={styles.deleteUser}>Remove user</div>
             </div>
 
             <div id='BackgroundDimmer' className={styles.backgroundDimmer}></div>
 
-            <div id='EditTeam' className={styles.formTeamContainer}>
-                <div className={styles.formTeamClose} onClick={CloseEditTeam}><MdClose /></div>
+            <div id='AddTeam' className={styles.formContainer}>
+                <div className={styles.formClose} onClick={CloseAddTeam}><MdClose /></div>
+                <AddTeamForm />
+            </div>
+
+            <div id='EditTeam' className={styles.formContainer}>
+                <div className={styles.formClose} onClick={CloseEditTeam}><MdClose /></div>
                 <EditTeamForm teamName={editTeamName} teamColor={editTeamColor} teamPriority={3} teamPicture={editTeamPicture} />
             </div>
 
-            <div id='AddTeam' className={styles.formTeamContainer}>
-                <div className={styles.formTeamClose} onClick={CloseAddTeam}><MdClose /></div>
-                <AddTeamForm />
+            <div id='EditUser' className={styles.userPanel} style={{left: userPanelLeft}}>
+                <div className={styles.userPanelClose} onClick={CloseUserPanel}><MdClose /></div>
+                <EditUserPanel userName={currUser.name} userPicture={currUser.picture} />
             </div>
+            
 
             <div ref={columnsContainerRef} className={styles.columnsContainer}>
                 <DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumns)}>
@@ -424,7 +449,7 @@ const Kanban = () =>
                                                                     </div>
 
                                                                     <div className={styles.userMenuContainer}>
-                                                                        <BsThreeDotsVertical id={user.id + 'UserActions'} className={styles.menu} onMouseUp={ShowUserMenu.bind(this, user.id)} />
+                                                                        <BsThreeDotsVertical id={user.id + 'UserActions'} className={styles.menu} onMouseUp={ShowUserMenu.bind(this, user)} />
                                                                     </div>
                                                                 </div>
                                                             )

@@ -369,7 +369,7 @@
     z-index: 2;
 }
 
-.formTeamContainer
+.formContainer
 {
     position: absolute;
     display: none;
@@ -406,7 +406,7 @@
     }
 }
 
-.formTeamClose
+.formClose
 {
     position: absolute;
 
@@ -416,7 +416,7 @@
     font-size: 1.5vw;
 }
 
-.formTeamClose:hover
+.formClose:hover
 {
     cursor: pointer;
 }
@@ -579,4 +579,34 @@
 {
     cursor: pointer;
     background-color: #e8e8e8;
+}
+
+.userPanel
+{
+    position: absolute;
+
+    width: 20vw;
+    height: 80vh;
+
+    background-color: white;
+    box-shadow: 0 5px 10px -4px rgba(0, 0, 0, 0.1) inset;
+
+    transition: all 0.5s ease; 
+
+    z-index: 2;
+}
+
+.userPanelClose
+{
+    position: absolute;
+
+    left: 18vw;
+    top: 1vh;
+
+    font-size: 1.5vw;
+}
+
+.userPanelClose:hover
+{
+    cursor: pointer;
 }
