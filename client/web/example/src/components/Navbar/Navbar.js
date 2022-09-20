@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import { useNavigate } from "react-router-dom"
-import { FaCalendar, FaTicketAlt, FaMap, FaChartPie, FaDoorOpen } from 'react-icons/fa'
-import { UserContext } from '../../App';
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaCalendar, FaTicketAlt, FaMap, FaChartPie } from 'react-icons/fa';
+import styles from './navbar.module.css';
 
 const Navbar = (props, ref) =>
 {
@@ -17,8 +17,6 @@ const Navbar = (props, ref) =>
     const [dropDown, setDropDown] = useState();
 
     const navigate = useNavigate();
-
-    const {userData,setUserData} = useContext(UserContext);
 
     const NavigateHome = () =>
     {
@@ -101,35 +99,35 @@ const Navbar = (props, ref) =>
     },[])
 
     return (
-        <div ref={ref} className='navbar-container'>
-            <div className='logo-container'>
+        <div ref={ref} className={styles.navbarContainer}>
+            <div className={styles.logoContainer}>
                 S.H.W.M
             </div>
-            <div className='navlink-container'>
-                <div ref={homeRef} className='navlink' onClick={NavigateHome}>
+            <div className={styles.navlinkContainer}>
+                <div ref={homeRef} className={styles.navlink} onClick={NavigateHome}>
                     <FaMap />
                     &nbsp;
                     Home
                 </div>
-                <div ref={bookingsRef} className='navlink' onClick={ShowBookings}>
+                <div ref={bookingsRef} className={styles.navlink} onClick={ShowBookings}>
                     <FaTicketAlt />
                     &nbsp;
                     Bookings
                 </div>
-                <div ref={dropdownRef} className='navlink-dropdown-container'>
-                    <div ref={deskRef} className='navlink-dropdown' onClick={NavigateDesk}>
+                <div ref={dropdownRef} className={styles.navlinkDropdownContainer}>
+                    <div ref={deskRef} className={styles.navlinkDropdown} onClick={NavigateDesk}>
                         Desk
                     </div>
-                    <div ref={meetingRef} className='navlink-dropdown' onClick={NavigateMeeting}>
+                    <div ref={meetingRef} className={styles.navlinkDropdown} onClick={NavigateMeeting}>
                         Meeting Room
                     </div>
                 </div>
-                <div ref={calendarRef} className='navlink' onClick={NavigateCalendar}>
+                <div ref={calendarRef} className={styles.navlink} onClick={NavigateCalendar}>
                     <FaCalendar />
                     &nbsp;
                     Calendar
                 </div>
-                <div ref={statisticsRef} className='navlink' onClick={NavigateStatistics}>
+                <div ref={statisticsRef} className={styles.navlink} onClick={NavigateStatistics}>
                     <FaChartPie />
                     &nbsp;
                     Statistics

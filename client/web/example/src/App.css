@@ -62,64 +62,7 @@
 }
 
 /*Navbar*/
-.navbar-container
-{
-    position: absolute;
-    background-color: transparent;
-    color: #374146;
 
-    top: 0;
-
-    padding-left: 2vw;
-
-    text-align: left;
-
-    width: 15vw;
-    min-height: 100vh;
-}
-
-.logo-container
-{
-    margin-top: 1vh;
-    font-size: 3vw;
-    height: 8vh;
-}
-
-.navlink-container
-{
-    font-size: 1vw;
-}
-
-.navlink
-{
-    margin-top: 5vh;
-    letter-spacing: 0.5vh;
-}
-
-.navlink:hover
-{
-    cursor: pointer;
-    color: #09a2fb;
-}
-
-.navlink-dropdown-container
-{
-    display: none;
-    margin-left: 2.5vw;
-    font-size: 0.9vw;
-}
-
-.navlink-dropdown
-{
-    margin-top: 2vh;
-    letter-spacing: 0.5vh;
-}
-
-.navlink-dropdown:hover
-{
-    cursor: pointer;
-    color: #09a2fb;
-}
 
 /*Page*/
 .page-container

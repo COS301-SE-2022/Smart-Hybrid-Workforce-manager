@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import { useNavigate } from "react-router-dom"
-import { FaCalendar, FaTicketAlt, FaMap, FaChartPie, FaUserShield } from 'react-icons/fa'
-import { UserContext } from '../../App';
-import { MdAdminPanelSettings } from 'react-icons/md';
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaCalendar, FaTicketAlt, FaMap, FaChartPie, FaUserShield } from 'react-icons/fa';
+import styles from './navbar.module.css';
 
 const NavbarAdmin = (props, ref) =>
 {
@@ -14,13 +13,15 @@ const NavbarAdmin = (props, ref) =>
     const calendarRef = useRef(null);
     const statisticsRef = useRef(null);
     const adminRef = useRef(null);
+    const dropdownAdminRef = useRef(null);
+    const teamRef = useRef(null);
+    const resourceRef = useRef(null);
 
     const [currLocation, setCurrLocation] = useState("");
     const [dropDown, setDropDown] = useState();
+    const [dropDownAdmin, setDropDownAdmin] = useState();
 
     const navigate = useNavigate();
-
-    const {userData,setUserData} = useContext(UserContext);
 
     const NavigateHome = () =>
     {
@@ -38,6 +39,20 @@ const NavbarAdmin = (props, ref) =>
         {
             dropdownRef.current.style.display = "none";
             setDropDown(false);
+        }
+    }
+
+    const ShowAdminOptions = () =>
+    {
+        if(!dropDownAdmin)
+        {
+            dropdownAdminRef.current.style.display = "block";
+            setDropDownAdmin(true);
+        }
+        else
+        {
+            dropdownAdminRef.current.style.display = "none";
+            setDropDownAdmin(false);
         }
     }
 
@@ -66,11 +81,17 @@ const NavbarAdmin = (props, ref) =>
         navigate("/admin");
     }
 
+    const NavigateResources = () =>
+    {
+        navigate("/layout");
+    }
+
     useEffect(() =>
     {
         if(currLocation === "/")
         {
             dropdownRef.current.style.display = "none";
+            dropdownAdminRef.current.style.display = "none";
             homeRef.current.style.color = "#09a2fb";
         }
 
@@ -78,6 +99,7 @@ const NavbarAdmin = (props, ref) =>
         {
             bookingsRef.current.style.color = "#09a2fb";
             dropdownRef.current.style.display = "block";
+            dropdownAdminRef.current.style.display = "none";
             deskRef.current.style.color = "#09a2fb";
         }
 
@@ -85,25 +107,38 @@ const NavbarAdmin = (props, ref) =>
         {
             bookingsRef.current.style.color = "#09a2fb";
             dropdownRef.current.style.display = "block";
+            dropdownAdminRef.current.style.display = "none";
             meetingRef.current.style.color = "#09a2fb";
         }
 
         if(currLocation === "/calendar")
         {
             dropdownRef.current.style.display = "none";
+            dropdownAdminRef.current.style.display = "none";
             calendarRef.current.style.color = "#09a2fb";
         }
 
         if(currLocation === "/statistics")
         {
             dropdownRef.current.style.display = "none";
+            dropdownAdminRef.current.style.display = "none";
             statisticsRef.current.style.color = "#09a2fb";
         }
 
         if(currLocation === "/admin")
         {
             dropdownRef.current.style.display = "none";
+            dropdownAdminRef.current.style.display = "block";
             adminRef.current.style.color = "#09a2fb";
+            teamRef.current.style.color = "#09a2fb";
+        }
+
+        if(currLocation === "/layout")
+        {
+            dropdownRef.current.style.display = "none";
+            dropdownAdminRef.current.style.display = "block";
+            adminRef.current.style.color = "#09a2fb";
+            resourceRef.current.style.color = "#09a2fb";
         }
 
     },[currLocation])
@@ -114,43 +149,51 @@ const NavbarAdmin = (props, ref) =>
     },[])
 
     return (
-        <div ref={ref} className='navbar-container'>
-            <div className='logo-container'>
+        <div ref={ref} className={styles.navbarContainer}>
+            <div className={styles.logoContainer}>
                 S.H.W.M
             </div>
-            <div className='navlink-container'>
-                <div ref={homeRef} className='navlink' onClick={NavigateHome}>
+            <div className={styles.navlinkContainer}>
+                <div ref={homeRef} className={styles.navlink} onClick={NavigateHome}>
                     <FaMap />
                     &nbsp;
                     Home
                 </div>
-                <div ref={bookingsRef} className='navlink' onClick={ShowBookings}>
+                <div ref={bookingsRef} className={styles.navlink} onClick={ShowBookings}>
                     <FaTicketAlt />
                     &nbsp;
                     Bookings
                 </div>
-                <div ref={dropdownRef} className='navlink-dropdown-container'>
-                    <div ref={deskRef} className='navlink-dropdown' onClick={NavigateDesk}>
+                <div ref={dropdownRef} className={styles.navlinkDropdownContainer}>
+                    <div ref={deskRef} className={styles.navlinkDropdown} onClick={NavigateDesk}>
                         Desk
                     </div>
-                    <div ref={meetingRef} className='navlink-dropdown' onClick={NavigateMeeting}>
+                    <div ref={meetingRef} className={styles.navlinkDropdown} onClick={NavigateMeeting}>
                         Meeting Room
                     </div>
                 </div>
-                <div ref={calendarRef} className='navlink' onClick={NavigateCalendar}>
+                <div ref={calendarRef} className={styles.navlink} onClick={NavigateCalendar}>
                     <FaCalendar />
                     &nbsp;
                     Calendar
                 </div>
-                <div ref={statisticsRef} className='navlink' onClick={NavigateStatistics}>
+                <div ref={statisticsRef} className={styles.navlink} onClick={NavigateStatistics}>
                     <FaChartPie />
                     &nbsp;
                     Statistics
                 </div>
-                <div ref={adminRef} className='navlink' onClick={NavigateAdmin}>
+                <div ref={adminRef} className={styles.navlink} onClick={ShowAdminOptions}>
                     <FaUserShield />
                     &nbsp;
                     Admin
+                </div>
+                <div ref={dropdownAdminRef} className={styles.navlinkDropdownContainer}>
+                    <div ref={teamRef} className={styles.navlinkDropdown} onClick={NavigateAdmin}>
+                        Team Management
+                    </div>
+                    <div ref={resourceRef} className={styles.navlinkDropdown} onClick={NavigateResources}>
+                        Office Creator
+                    </div>
                 </div>
             </div>
         </div>
