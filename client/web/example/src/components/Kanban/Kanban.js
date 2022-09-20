@@ -6,6 +6,7 @@ import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { AiOutlineUsergroupAdd } from 'react-icons/ai';
 import { FaSave } from 'react-icons/fa';
 import { EditTeamForm } from '../Team/EditTeam';
+import { AddTeamForm } from '../Team/AddTeam';
 
 const Kanban = () =>
 {
@@ -164,6 +165,7 @@ const Kanban = () =>
     {
         setEditTeamName(columns[col].name);
         setEditTeamColor(columns[col].color);
+        setEditTeamPicture(columns[col].picture);
 
         document.getElementById('BackgroundDimmer').style.display = 'block';
         document.getElementById('EditTeam').style.display = 'block';
@@ -184,6 +186,18 @@ const Kanban = () =>
     const HideEditTeamHint = (col) =>
     {
         document.getElementById(col + 'EditTeamHint').style.display = 'none';
+    }
+
+    const AddTeam = () =>
+    {
+        document.getElementById('BackgroundDimmer').style.display = 'block';
+        document.getElementById('AddTeam').style.display = 'block';
+    }
+
+    const CloseAddTeam = () =>
+    {
+        document.getElementById('BackgroundDimmer').style.display = 'none';
+        document.getElementById('AddTeam').style.display = 'none';
     }
 
     const StartScrollLeft = () =>
@@ -293,9 +307,14 @@ const Kanban = () =>
 
             <div id='BackgroundDimmer' className={styles.backgroundDimmer}></div>
 
-            <div id='EditTeam' className={styles.editTeamContainer}>
-                <div className={styles.editTeamClose} onClick={CloseEditTeam}><MdClose /></div>
+            <div id='EditTeam' className={styles.formTeamContainer}>
+                <div className={styles.formTeamClose} onClick={CloseEditTeam}><MdClose /></div>
                 <EditTeamForm teamName={editTeamName} teamColor={editTeamColor} teamPriority={3} teamPicture={editTeamPicture} />
+            </div>
+
+            <div id='AddTeam' className={styles.formTeamContainer}>
+                <div className={styles.formTeamClose} onClick={CloseAddTeam}><MdClose /></div>
+                <AddTeamForm />
             </div>
 
             <div ref={columnsContainerRef} className={styles.columnsContainer}>
@@ -360,8 +379,9 @@ const Kanban = () =>
                         )
                     })}
                 </DragDropContext>
+
                 <div className={styles.addColumn}>
-                    <div className={styles.addTeamContainer}>
+                    <div className={styles.addTeamContainer} onClick={AddTeam}>
                         <AiOutlineUsergroupAdd />
                         Add team
                     </div>

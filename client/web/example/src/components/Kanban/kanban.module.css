@@ -99,17 +99,22 @@
     position: absolute;
 
     top: 45vh;
-    left: 6.5vw;
+    left: 5.5vw;
+
+    height: 3.5vw;
+    width: 3.5vw;
 
     font-size: 3vw;
 
     color: #374146;
+
+    border-radius: 10vh;
 }
 
 .leftArrow:hover
 {
     cursor: pointer;
-    color: #09a2fb;
+    background-color: #e8e8e8;
 }
 
 .rightArrow
@@ -117,17 +122,24 @@
     position: absolute;
 
     top: 45vh;
-    left: 75.5vw;
+    left: 76.5vw;
+
+    height: 3.5vw;
+    width: 3.5vw;
+
+    padding-left: 0.4vw;
 
     font-size: 3vw;
 
     color: #374146;
+
+    border-radius: 10vh;
 }
 
 .rightArrow:hover
 {
     cursor: pointer;
-    color: #09a2fb;
+    background-color: #e8e8e8;
 }
 
 .column
@@ -317,7 +329,7 @@
     z-index: 2;
 }
 
-.editTeamContainer
+.formTeamContainer
 {
     position: absolute;
     display: none;
@@ -354,7 +366,7 @@
     }
 }
 
-.editTeamClose
+.formTeamClose
 {
     position: absolute;
 
@@ -364,7 +376,7 @@
     font-size: 1.5vw;
 }
 
-.editTeamClose:hover
+.formTeamClose:hover
 {
     cursor: pointer;
 }

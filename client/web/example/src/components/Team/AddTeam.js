@@ -3,11 +3,11 @@ import Button from 'react-bootstrap/Button';
 import styles from './team.module.css';
 import { useEffect, useState } from 'react';
 
-const EditTeam = ({teamName, teamColor, teamPriority, teamPicture}) =>
+const AddTeam = () =>
 {
-    const [color, setColor] = useState(teamColor);
-    const [name, setName] = useState(teamName);
-    const [priority, setPriority] = useState(teamPriority);
+    const [color, setColor] = useState('#ffffff');
+    const [name, setName] = useState('');
+    const [priority, setPriority] = useState('');
     const [picture, setPicture] = useState('');
 
     const CheckPriority = (value) =>
@@ -35,29 +35,14 @@ const EditTeam = ({teamName, teamColor, teamPriority, teamPicture}) =>
         }
     }
 
-    const EditTeamSubmit = () =>
+    const AddTeamSubmit = () =>
     {
 
     }
 
-    useEffect(() =>
-    {
-        setName(teamName);
-    }, [teamName]);
-
-    useEffect(() =>
-    {
-        setColor(teamColor);
-    }, [teamColor]);
-
-    useEffect(() =>
-    {
-        setPicture('');
-    }, [teamPicture]);
-
 
     return (
-        <Form className={styles.form} onSubmit={EditTeamSubmit}>
+        <Form className={styles.form} onSubmit={AddTeamSubmit}>
             <Form.Group className={styles.formGroup} controlId="formBasicName">
                 <Form.Label className={styles.formLabel}>Team name</Form.Label>
                 <Form.Control className={styles.formInput} type='text' placeholder="Team name" value={name} onChange={(e) => setName(e.target.value)} />
@@ -79,10 +64,10 @@ const EditTeam = ({teamName, teamColor, teamPriority, teamPicture}) =>
             </Form.Group>
 
 
-            <Button className={styles.submit} type='submit'>Edit Team</Button>
+            <Button className={styles.submit} type='submit'>Add Team</Button>
         </Form>
     );
 
 }
 
-export {EditTeam as EditTeamForm}
+export {AddTeam as AddTeamForm}
