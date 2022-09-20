@@ -547,7 +547,7 @@ func TestIndividual_teamProximityScore(t *testing.T) {
 					SchedulerData: &data.SchedulerData{
 						Teams: []*data.TeamInfo{
 							{
-								Team:    &data.Team{Id: tu.Ptr("Cabbage")},
+								Team:    &data.Team{Id: tu.Ptr("Cabbage"), Priority: tu.Ptr(2)},
 								UserIds: []string{"Lime", "Lemon", "Grapefruit", "Banana"},
 							},
 							{
@@ -555,7 +555,7 @@ func TestIndividual_teamProximityScore(t *testing.T) {
 								UserIds: []string{"Blueberry", "Gooseberry", "Lemon"},
 							},
 							{
-								Team:    &data.Team{Id: tu.Ptr("Lettuce")},
+								Team:    &data.Team{Id: tu.Ptr("Lettuce"), Priority: tu.Ptr(0)},
 								UserIds: []string{"Strawberry", "Blueberry"},
 							},
 							{
@@ -605,7 +605,7 @@ func TestIndividual_teamProximityScore(t *testing.T) {
 					{"Shelf1", "Shelf2", "Shelf10", "Shelf100", "Shelf30", "Shelf4", "Shelf5", "Shelf3", "Shelf20"},
 				},
 			},
-			want: 1.0/(0.7071067+0.0+1.0) + 1.0/(0.7071067+14.1421356+1.0) + 1.0/(1.571348+1.0) + 1.0/(0.0+1.0),
+			want: 1.0/(0.7071067+0.0+1.0) + 2.0/(0.7071067+14.1421356+1.0) + 1.0/(1.571348+1.0) + 1.0/(0.0+1.0),
 		},
 		// {
 		// 	name: "Test 2",
@@ -683,5 +683,3 @@ func TestIndividual_teamProximityScore(t *testing.T) {
 		})
 	}
 }
-
-// TODO: @JonathanEnslin TEAM PRIORITY

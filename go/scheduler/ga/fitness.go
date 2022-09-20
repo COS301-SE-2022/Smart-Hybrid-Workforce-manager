@@ -204,8 +204,44 @@ type teamRoomProximity struct {
 }
 
 // preferredDeskBonus returns a bonus fitness value for users sitting at their preffered desk
-func (individual *Individual) preferredDeskBonus(domain *Domain) float64 {
+func (individual *Individual) preferredDeskBonuses(domain *Domain) float64 {
 	return 0.0
+}
+
+// Calculates the distance the user is from their preferred desk
+// returns -1.0 if the user does not have a preferred resource
+func userPreferredDeskProximity(indiv *Individual, domain *Domain, userIndex int) float64 {
+	// Get the users coordinates
+	userCoords := indiv.getUserCoordinate(domain, userIndex)
+	// Get the users preferred resources
+	preferredResource := getUserPreferredResource(domain, userIndex)
+	if preferredResource == nil { // If the user has no preferred resource
+		return -1.0
+	}
+	resourceCoords := []float64{*preferredResource.XCoord, *preferredResource.YCoord}
+	return math.Sqrt(distanceRadicand(userCoords, resourceCoords))
+}
+
+// Gets the users preferred resource, or nil if it does not exist
+func getUserPreferredResource(domain *Domain, userIndex int) *data.Resource {
+	userId := domain.Map[userIndex]              // Get the users Id
+	user := domain.SchedulerData.UserMap[userId] // Get the user
+	if user.PreferredDesk == nil {               // If the user has not preferred desk
+		return nil
+	}
+	if !cu.MapHasKey(domain.SchedulerData.ResourcesMap, *user.PreferredDesk) { // If the preferred desk does not exist
+		return nil
+	}
+	return domain.SchedulerData.ResourcesMap[*user.PreferredDesk]
+}
+
+// Gets the priority of the team, returns -1 if priority is nil
+func getTeamPriority(domain *Domain, teamId string) int {
+	prio := domain.SchedulerData.TeamsMap[teamId].Priority
+	if prio == nil {
+		return -1
+	}
+	return *prio
 }
 
 // teamProximityScore calculates a score that indicates the proximity of members
@@ -217,7 +253,7 @@ func (individual *Individual) teamProximityScore(domain *Domain) float64 {
 	for i, teamRoomProx := range teamRoomProximities {
 		// Use reciprocal, since if the teams have a larger avg distance from the centroid
 		// the fitness should be smaller
-		scores[i] = 1 / (individualTeamProximityScore(teamRoomProx) + 1)
+		scores[i] = math.Max(1.0, float64(getTeamPriority(domain, teamRoomProx.teamId))) / (individualTeamProximityScore(teamRoomProx) + 1.0)
 	}
 
 	return cu.Sum(scores)
