@@ -223,9 +223,29 @@ const Kanban = () =>
         }
     }
 
-    const ShowUserMenu = () =>
+    const ShowUserMenu = (id) =>
     {
-        window.alert("Yo");
+        if(document.getElementById('UserMenu').style.display === 'none')
+        {
+            document.getElementById('UserMenu').style.display = 'block';
+            document.getElementById('UserMenu').style.left = document.getElementById(id + 'UserActions').getBoundingClientRect().left - 0.23*window.innerWidth + 'px';
+            document.getElementById('UserMenu').style.top = document.getElementById(id + 'UserActions').getBoundingClientRect().top - 0.10*window.innerHeight + 'px';
+            //setCurrTeam(id);
+        }
+        else
+        {
+            document.getElementById('UserMenu').style.display = 'none';
+        }
+    }
+
+    const EditUser = (col) =>
+    {
+        setEditTeamName(columns[col].name);
+        setEditTeamColor(columns[col].color);
+        setEditTeamPicture(columns[col].picture);
+
+        document.getElementById('BackgroundDimmer').style.display = 'block';
+        document.getElementById('EditTeam').style.display = 'block';
     }
 
     const ShowTeamMenu = (id) =>
@@ -248,6 +268,11 @@ const Kanban = () =>
         if(document.getElementById('TeamMenu').style.display === 'block')
         {
             document.getElementById('TeamMenu').style.display = 'none';
+        }
+
+        if(document.getElementById('UserMenu').style.display === 'block')
+        {
+            document.getElementById('UserMenu').style.display = 'none';
         }
     });
 
@@ -319,6 +344,11 @@ const Kanban = () =>
             <div id='TeamMenu' className={styles.teamMenu}>
                 <div className={styles.editTeam} onMouseDown={EditTeam.bind(this, currTeam)}>Edit team</div>
                 <div className={styles.deleteTeam}>Delete team</div>
+            </div>
+
+            <div id='UserMenu' className={styles.userMenu}>
+                <div className={styles.editUser} onMouseDown={EditUser.bind(this, currTeam)}>Edit user</div>
+                <div className={styles.deleteUser}>Remove user</div>
             </div>
 
             <div id='BackgroundDimmer' className={styles.backgroundDimmer}></div>
@@ -394,7 +424,7 @@ const Kanban = () =>
                                                                     </div>
 
                                                                     <div className={styles.userMenuContainer}>
-                                                                        <BsThreeDotsVertical className={styles.menu} onClick={ShowUserMenu} />
+                                                                        <BsThreeDotsVertical id={user.id + 'UserActions'} className={styles.menu} onMouseUp={ShowUserMenu.bind(this, user.id)} />
                                                                     </div>
                                                                 </div>
                                                             )

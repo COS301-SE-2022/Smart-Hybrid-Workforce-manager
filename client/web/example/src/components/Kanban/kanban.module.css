@@ -501,6 +501,56 @@
     cursor: pointer;
 }
 
+.userMenu
+{
+    position: absolute;
+    display: none;
+    font-size: 0.8vw;
+
+    width: 8vw;
+
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+
+    border-radius: 1vh;
+
+    z-index: 2;
+}
+
+.editUser
+{
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+
+    border-top-left-radius: 1vh;
+    border-top-right-radius: 1vh;
+}
+
+.editUser:hover
+{
+    background-color: #e8e8e8;
+    cursor: pointer;
+}
+
+.deleteUser
+{
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+
+    border-bottom-left-radius: 1vh;
+    border-bottom-right-radius: 1vh;
+}
+
+.deleteUser:hover
+{
+    background-color: #e8e8e8;
+    cursor: pointer;
+}
+
 .addUser
 {
     user-select: 'none';
