@@ -1,9 +1,11 @@
 package overseer
 
 import (
-	"fmt"
+	"context"
+	"lib/logger"
 	"scheduler/data"
 	"scheduler/ga"
+	"time"
 )
 
 func WeeklyOverseer(schedulerData data.SchedulerData) []data.Bookings {
@@ -25,24 +27,32 @@ func WeeklyOverseer(schedulerData data.SchedulerData) []data.Bookings {
 	domain.Config = &config
 	domain.SchedulerData = &schedulerData
 
-	results := ga.GA(domain, ga.WeeklyDayVResourceCrossover, ga.WeeklyDayVResourceFitness, ga.WeeklyDayVResourceMutateSwapValid, ga.WeeklyTournamentSelection, ga.WeeklyDayVResourcePopulationGenerator)
-	// results := ga.GA(domain, ga.WeeklyDayVResourceCrossover, ga.WeeklyDayVResourceFitness, ga.WeeklyDayVResouceMutate, ga.WeeklyTournamentSelection, ga.WeeklyDayVResourcePopulationGenerator)
+	// Create channel
+	var c chan ga.Individual = make(chan ga.Individual)
+	var s context.Context = context.Background()
 
-	if len(results) == 0 { // todo add check
+	go ga.GA(domain, ga.WeeklyDayVResourceCrossover, ga.WeeklyDayVResourceFitness, ga.WeeklyDayVResourceMutateSwapValid, ga.WeeklyTournamentSelection, ga.WeeklyDayVResourcePopulationGenerator, c, &s)
 
-	}
-
-	// Get best individual
-	for i, indiv := range results {
-		// todo put through validation function
-
-		// transform into what the backend needs
-		if i == 0 {
-			bookings = append(bookings, indiv.ConvertIndividualToWeeklyBookings(domain))
+	// Listen on channel for best individual for x seconds
+	var best ga.Individual
+	best.Fitness = -1
+	for {
+		select {
+		case <-time.After(time.Second * 5):
+			s.Done()
+			bookings = append(bookings, best.ConvertIndividualToWeeklyBookings(domain))
+			return bookings
+		case candidate, ok := <-c: // if ok is false close event happened
+			if !ok {
+				bookings = append(bookings, best.ConvertIndividualToWeeklyBookings(domain))
+				return bookings
+			}
+			if candidate.Fitness > best.Fitness {
+				best = candidate
+				logger.Error.Printf("BEST INDIVIDUAL \n %v", best)
+			}
 		}
 	}
-
-	return bookings
 }
 
 func DailyOverseer(schedulerData data.SchedulerData) []data.Bookings {
@@ -64,15 +74,32 @@ func DailyOverseer(schedulerData data.SchedulerData) []data.Bookings {
 	domain.Config = &config
 	domain.SchedulerData = &schedulerData
 	domain.Map = data.ExtractUserIdMap(&schedulerData)
+	domain.InverseMap = data.ExtractInverseUserIdMap(domain.Map)
 
-	indvs := ga.DailyPopulationGenerator(&domain, 1)
+	// Create channel
+	var c chan ga.Individual = make(chan ga.Individual)
+	var s context.Context = context.Background()
 
-	for _, indiv := range indvs {
-		fmt.Println(indiv.StringDomain(domain))
-		// mutated := ga.DailyMutate(&domain, ga.Individuals{indiv})
-		// fmt.Println(mutated[0].StringDomain(domain))
-		bookings = append(bookings, indiv.ConvertIndividualToDailyBookings(domain))
+	go ga.GA(domain, ga.WeeklyStubCrossOver, ga.WeeklyStubFitness, ga.DailyMutate, ga.WeeklyTournamentSelection, ga.DailyPopulationGenerator, c, &s)
+
+	// Listen on channel for best individual for x seconds
+	var best ga.Individual
+	best.Fitness = -1
+	for {
+		select {
+		case <-time.After(time.Second * 5):
+			s.Done()
+			bookings = append(bookings, best.ConvertIndividualToDailyBookings(domain))
+			return bookings
+		case candidate, ok := <-c: // if ok is false close event happened
+			if !ok {
+				bookings = append(bookings, best.ConvertIndividualToDailyBookings(domain))
+				return bookings
+			}
+			if candidate.Fitness > best.Fitness {
+				best = candidate
+				logger.Error.Printf("BEST INDIVIDUAL \n %v", best)
+			}
+		}
 	}
-
-	return bookings
 }

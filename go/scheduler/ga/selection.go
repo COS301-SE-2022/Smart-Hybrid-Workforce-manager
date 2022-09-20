@@ -9,7 +9,7 @@ func WeeklyStubSelection(domain *Domain, individuals Individuals, count int) Ind
 
 func WeeklyTournamentSelection(domain *Domain, individuals Individuals, count int) Individuals {
 	var results Individuals
-	for i := 0; i <= count; i++ {
+	for i := 0; i < count; i++ {
 		results = append(results, weeklyTournamentSelection(domain, individuals))
 	}
 	return results

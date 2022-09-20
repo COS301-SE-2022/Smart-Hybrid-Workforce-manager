@@ -7,6 +7,7 @@ import (
 	"lib/logger"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -116,6 +117,11 @@ func main() {
 	methods := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
 
 	// Start API on port 8080 in its docker container
+	server := http.Server{
+		Addr:              ":8080",
+		Handler:           handlers.CORS(credentials, methods, headers, origins)(router),
+		ReadHeaderTimeout: 5 * time.Second,
+	}
 	logger.Info.Println("Starting API on 8080")
-	logger.Error.Fatal(http.ListenAndServe(":8080", handlers.CORS(credentials, methods, headers, origins)(router)))
+	logger.Error.Fatal(server.ListenAndServe())
 }
