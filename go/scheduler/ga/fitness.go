@@ -205,18 +205,33 @@ type teamRoomProximity struct {
 
 // preferredDeskBonus returns a bonus fitness value for users sitting at their preffered desk
 func (individual *Individual) preferredDeskBonuses(domain *Domain) float64 {
-	return 0.0
+	gene := individual.Gene
+	bonusSum := 0.0
+	for i := 0; i < len(gene[0]); i++ {
+		// Get the users preferred resource
+		userPrefResourceProx := userPreferredDeskProximity(individual, domain, i)
+		if userPrefResourceProx >= 0 {
+			userPrefResourceProx += 1.0 // In case it is 0
+			bonusSum += 1 / userPrefResourceProx
+		}
+	}
+	return bonusSum / float64(len(gene[0])) // Take the average score, this should usually keep the value below the team scores
 }
 
 // Calculates the distance the user is from their preferred desk
-// returns -1.0 if the user does not have a preferred resource
+// returns -1.0 if the user does not have a preferred resource, -2.0 if the user
+// is in a different room than the preferred resource
 func userPreferredDeskProximity(indiv *Individual, domain *Domain, userIndex int) float64 {
-	// Get the users coordinates
+	// Get the users coordinates and roomId
 	userCoords := indiv.getUserCoordinate(domain, userIndex)
+	userRoomId := domain.SchedulerData.ResourcesMap[indiv.Gene[0][userIndex]].RoomId
 	// Get the users preferred resources
 	preferredResource := getUserPreferredResource(domain, userIndex)
 	if preferredResource == nil { // If the user has no preferred resource
 		return -1.0
+	}
+	if *preferredResource.RoomId != *userRoomId {
+		return -2.0
 	}
 	resourceCoords := []float64{*preferredResource.XCoord, *preferredResource.YCoord}
 	return math.Sqrt(distanceRadicand(userCoords, resourceCoords))
@@ -255,7 +270,7 @@ func (individual *Individual) teamProximityScore(domain *Domain) float64 {
 		// the fitness should be smaller
 		scores[i] = math.Max(1.0, float64(getTeamPriority(domain, teamRoomProx.teamId))) / (individualTeamProximityScore(teamRoomProx) + 1.0)
 	}
-
+	// Sum all the reciprocals
 	return cu.Sum(scores)
 }
 
@@ -265,7 +280,7 @@ func individualTeamProximityScore(teamRoomProx teamRoomProximity) float64 {
 	for _, prox := range teamRoomProx.roomProximities {
 		sum += prox
 	}
-	// TODO: @JonathanEnslin add panalty for teams split over rooms
+	// TODO: @JonathanEnslin add penalty for teams split over rooms
 	return sum
 }
 
