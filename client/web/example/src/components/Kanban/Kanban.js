@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { AiOutlineUsergroupAdd } from 'react-icons/ai';
 import { FaSave } from 'react-icons/fa';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 import { EditTeamForm } from '../Team/EditTeam';
 import { AddTeamForm } from '../Team/AddTeam';
 
@@ -25,14 +26,16 @@ const Kanban = () =>
             name: 'Team 1',
             color: '#09a2fb',
             picture: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
-            items: [
+            users: [
                 {
                     id: 't1u1',
-                    name: 'User 1'
+                    name: 'Walter White',
+                    picture: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Walter_White_S5B.png/220px-Walter_White_S5B.png'
                 },
                 {
                     id: 't1u2',
-                    name: 'User 2'
+                    name: 'Jesse Pinkman',
+                    picture: 'https://upload.wikimedia.org/wikipedia/en/thumb/c/c6/Jesse_Pinkman_S5B.png/220px-Jesse_Pinkman_S5B.png'
                 }
             ]
         },
@@ -41,7 +44,7 @@ const Kanban = () =>
         {
             name: 'Team 2',
             color: '#ff3e30',
-            items: [
+            users: [
                 {
                     id: 't2u1',
                     name: 'User 1'
@@ -65,7 +68,7 @@ const Kanban = () =>
         {
             name: 'Team 3',
             color: '#86ff30',
-            items: [
+            users: [
                 {
                     id: 't3u1',
                     name: 'User 1'
@@ -101,7 +104,7 @@ const Kanban = () =>
         {
             name: 'Team 4',
             color: '#d230ff',
-            items: [
+            users: [
                 {
                     id: 't4u1',
                     name: 'User 1'
@@ -240,6 +243,11 @@ const Kanban = () =>
         }
     }
 
+    const ShowUserMenu = () =>
+    {
+        window.alert("Yo");
+    }
+
     const onDragEnd = (result, columns, setColumns) =>
     {
         if(!result.destination)
@@ -254,10 +262,10 @@ const Kanban = () =>
             const sourceColumn = columns[source.droppableId]; //Gets current column
             const destinationColumn = columns[destination.droppableId]; //Gets new column
 
-            const sourceItems = [...sourceColumn.items]; //Copies items from current column
+            const sourceItems = [...sourceColumn.users]; //Copies items from current column
             const [removed] = sourceItems.splice(source.index, 1); //Removes item from the source index
 
-            const destinationItems = [...destinationColumn.items]; //Copies items from new column
+            const destinationItems = [...destinationColumn.users]; //Copies items from new column
             destinationItems.splice(destination.index, 0, removed); //Adds item to the destination index
 
             setColumns({
@@ -265,13 +273,13 @@ const Kanban = () =>
                 [source.droppableId]:
                 {
                     ...sourceColumn,
-                    items: sourceItems
+                    users: sourceItems
                 },
 
                 [destination.droppableId]:
                 {
                     ...destinationColumn,
-                    items: destinationItems
+                    users: destinationItems
                 }
             });
         }
@@ -279,7 +287,7 @@ const Kanban = () =>
         {
             const {source, destination} = result; //Source and destination is position in column
             const column = columns[source.droppableId]; //Gets current column
-            const copiedItems = [...column.items]; //Copies items from current column
+            const copiedItems = [...column.users]; //Copies items from current column
             const [removed] = copiedItems.splice(source.index, 1); //Removes item from the source index
             copiedItems.splice(destination.index, 0, removed); //Adds item to the destination index
             setColumns({
@@ -287,7 +295,7 @@ const Kanban = () =>
                 [source.droppableId]:
                 {
                     ...column,
-                    items: copiedItems
+                    users: copiedItems
                 }
             });
         }
@@ -346,25 +354,33 @@ const Kanban = () =>
                                     {
                                         return (
                                             <div {...provided.droppableProps} ref={provided.innerRef} className={styles.itemsContainer}>
-                                                {col.items.length > 0 && col.items.map((item, index) => (
-                                                    <Draggable key={item.id} draggableId={item.id} index={index}>
+                                                {col.users.length > 0 && col.users.map((user, index) => (
+                                                    <Draggable key={user.id} draggableId={user.id} index={index}>
                                                         {(provided, snapshot) =>
                                                         {
                                                             return (
-                                                                <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}
+                                                                <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} className={styles.userCard}
                                                                 style={{
-                                                                    userSelect: 'none',
-                                                                    paddingTop: '2vh',
-                                                                    paddingLeft: '1vw',
-                                                                    marginBottom: '3vh',
-                                                                    height: '15vh',
-                                                                    width: '18vw',
-                                                                    borderRadius: '1vh',
-                                                                    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
                                                                     backgroundColor: snapshot.isDragging ? '#09a2fb55' : 'white',
                                                                     ...provided.draggableProps.style
                                                                 }}>
-                                                                    {item.name}
+                                                                    <div className={styles.userPictureContainer}>
+                                                                        <img className={styles.image} src={user.picture}></img>
+                                                                    </div>
+
+                                                                    <div className={styles.userDetailsContainer}>
+                                                                        <div className={styles.userName}>{user.name}</div>
+                                                                        <div className={styles.userRolesContainer}>
+                                                                            <div className={styles.role}>Developer</div>
+                                                                            <div className={styles.role}>Secretary</div>
+                                                                            <div className={styles.role}>Team Lead</div>
+                                                                            <div className={styles.role}>CEO</div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className={styles.userMenuContainer}>
+                                                                        <BsThreeDotsVertical className={styles.userMenu} onClick={ShowUserMenu} />
+                                                                    </div>
                                                                 </div>
                                                             )
                                                         }}
