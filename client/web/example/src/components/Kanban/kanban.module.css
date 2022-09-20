@@ -22,14 +22,13 @@
 
 .columnsContainer
 {
-    overflow-x: auto;
+    overflow-x: scroll;
     position: relative;
     display: flex;
     margin-left: 9.5vw;
 
     width: 66vw;
     height: 80vh;
-
 
     background-color: transparent;
     color: #374146;
@@ -146,7 +145,7 @@
 {
     display: grid;
     grid-template-columns: 20vw;
-    grid-template-rows: 10vh 65vh;
+    grid-template-rows: 20vh 55vh;
 
     /*background: rgba(255, 255, 255, 0.4);*/
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
@@ -158,8 +157,6 @@
     margin-left: 1vw;
     margin-right: 1vw;
     margin-top: 2.5vh;
-
-    padding-left: 1vw;
 
     border-radius: 1vh;
 }
@@ -191,30 +188,39 @@
     text-align: center;
 }
 
-.addTeamContainer:hover
+.addColumn:hover
 {
     cursor: pointer;
-    color: #09a2fb;
+    background-color: #e8e8e8;
 }
 
 .columnHeaderContainer
 {
     display: grid;
-    grid-template-columns: 4vw 8vw 6vw;
+    grid-template-rows: 12vh 8vh;
 
     padding-top: 1vh;
+
+    text-align: center;
+}
+
+.columnHeaderTop
+{
+    display: grid;
+    grid-template-columns: 18vw 2vw;
 }
 
 .columnPicture
 {
     background-color: white;
 
-    width: 2vw;
-    height: 2vw;
+    width: 5vw;
+    height: 5vw;
 
-    border-radius: 2vh;
+    border-radius: 10vh;
 
     margin-top: 0.3vh;
+    margin-left: 7.5vw;
 
     font-size: 0.5vw;
 }
@@ -227,32 +233,65 @@
     border-radius: 10vh;
 }
 
-.columnHeader
-{
-    font-size: 1.5vw;
-}
-
 .columnActions
 {
-    display: grid;
-    grid-template-columns: 3vw 3vw;
-
     font-size: 1.5vw;
 
     padding-top: 0.5vh;
-    padding-left: 1.2vw;
 }
 
-.addUser:hover
+.teamMenu
 {
-    color: #09a2fb;
-    cursor: pointer;
+    position: absolute;
+    display: none;
+    font-size: 0.8vw;
+
+    width: 7vw;
+
+    background-color: white;
+
+    border-radius: 1vh;
+
+    z-index: 2;
+}
+
+.editTeam
+{
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+
+    border-top-left-radius: 1vh;
+    border-top-right-radius: 1vh;
 }
 
 .editTeam:hover
 {
-    color: #09a2fb;
+    background-color: #e8e8e8;
     cursor: pointer;
+}
+
+.deleteTeam
+{
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+
+    border-bottom-left-radius: 1vh;
+    border-bottom-right-radius: 1vh;
+}
+
+.deleteTeam:hover
+{
+    background-color: #e8e8e8;
+    cursor: pointer;
+}
+
+.columnHeader
+{
+    font-size: 1.5vw;
 }
 
 .addUserHint
@@ -305,10 +344,11 @@
 
 .itemsContainer
 {
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
-    height: 65vh;
+    height: 55vh;
     width: 19vw;
+    margin-left: 1vw;
 }
 
 .itemsContainer::-webkit-scrollbar
@@ -456,7 +496,37 @@
     margin-top: 1vh;
 }
 
-.userMenu:hover
+.menu:hover
 {
     cursor: pointer;
+}
+
+.addUser
+{
+    user-select: 'none';
+
+    margin-bottom: 3vh;
+
+    height: 5vh;
+    width: 18vw;
+
+    border-radius: 1vh;
+
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.addUserContainer
+{
+    width: 18vw;
+
+    padding-top: 1vh;
+
+    text-align: center;
+}
+
+.addUser:hover
+{
+    cursor: pointer;
+    background-color: #e8e8e8;
 }

@@ -18,6 +18,7 @@ const Kanban = () =>
     const [editTeamName, setEditTeamName] = useState('Default');
     const [editTeamColor, setEditTeamColor] = useState('#ffffff');
     const [editTeamPicture, setEditTeamPicture] = useState('');
+    const [currTeam, setCurrTeam] = useState('');
 
     const columnsInit = 
     {
@@ -25,7 +26,7 @@ const Kanban = () =>
         {
             name: 'Team 1',
             color: '#09a2fb',
-            picture: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
+            picture: 'https://seeklogo.com/images/B/breaking-bad-logo-032E797C11-seeklogo.com.jpg',
             users: [
                 {
                     id: 't1u1',
@@ -154,16 +155,6 @@ const Kanban = () =>
         console.log(col);
     }
 
-    const ShowAddUserHint = (col) =>
-    {
-        document.getElementById(col + 'AddUserHint').style.display = 'block';
-    }
-
-    const HideAddUserHint = (col) =>
-    {
-        document.getElementById(col + 'AddUserHint').style.display = 'none';
-    }
-
     const EditTeam = (col) =>
     {
         setEditTeamName(columns[col].name);
@@ -178,17 +169,6 @@ const Kanban = () =>
     {
         document.getElementById('BackgroundDimmer').style.display = 'none';
         document.getElementById('EditTeam').style.display = 'none';
-    }
-
-    const ShowEditTeamHint = (col) =>
-    {
-        document.getElementById(col + 'EditTeamHint').style.display = 'block';
-
-    }
-
-    const HideEditTeamHint = (col) =>
-    {
-        document.getElementById(col + 'EditTeamHint').style.display = 'none';
     }
 
     const AddTeam = () =>
@@ -247,6 +227,29 @@ const Kanban = () =>
     {
         window.alert("Yo");
     }
+
+    const ShowTeamMenu = (id) =>
+    {
+        if(document.getElementById('TeamMenu').style.display === 'none')
+        {
+            document.getElementById('TeamMenu').style.display = 'block';
+            document.getElementById('TeamMenu').style.left = document.getElementById(id + 'ColumnActions').getBoundingClientRect().left - 0.22*window.innerWidth + 'px';
+            document.getElementById('TeamMenu').style.top = document.getElementById(id + 'ColumnActions').getBoundingClientRect().top - 0.10*window.innerHeight + 'px';
+            setCurrTeam(id);
+        }
+        else
+        {
+            document.getElementById('TeamMenu').style.display = 'none';
+        }
+    }
+
+    document.addEventListener('mousedown', function ClickOutside(event)
+    {
+        if(document.getElementById('TeamMenu').style.display === 'block')
+        {
+            document.getElementById('TeamMenu').style.display = 'none';
+        }
+    });
 
     const onDragEnd = (result, columns, setColumns) =>
     {
@@ -313,6 +316,11 @@ const Kanban = () =>
             <div className={styles.leftArrow} onMouseDown={StartScrollLeft} onMouseUp={StopScrollLeft} onMouseLeave={StopScrollLeft}><IoIosArrowBack /></div>
             <div className={styles.rightArrow} onMouseDown={StartScrollRight} onMouseUp={StopScrollRight} onMouseLeave={StopScrollRight}><IoIosArrowForward /></div>
 
+            <div id='TeamMenu' className={styles.teamMenu}>
+                <div className={styles.editTeam} onMouseDown={EditTeam.bind(this, currTeam)}>Edit team</div>
+                <div className={styles.deleteTeam}>Delete team</div>
+            </div>
+
             <div id='BackgroundDimmer' className={styles.backgroundDimmer}></div>
 
             <div id='EditTeam' className={styles.formTeamContainer}>
@@ -328,32 +336,39 @@ const Kanban = () =>
             <div ref={columnsContainerRef} className={styles.columnsContainer}>
                 <DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumns)}>
                     {Object.entries(columns).map(([id, col]) => {
-                        return (
-                            <div key={id} className={styles.column}
-                            style={{
-                                background: "linear-gradient(180deg, " + col.color + "66  0%, rgba(255,255,255,0.4) 20%)"
-                            }}>
-                                <div className={styles.columnHeaderContainer}>
-                                    <div className={styles.columnPicture}>
-                                        <img className={styles.image} src={col.picture} alt='Team'></img>
-                                    </div>
-                                    <div className={styles.columnHeader}>
-                                        {col.name}
-                                    </div>
-                                    <div className={styles.columnActions}>
-                                        <div className={styles.addUser} onClick={AddUser.bind(this, id)}><MdPersonAdd onMouseEnter={ShowAddUserHint.bind(this, id)} onMouseLeave={HideAddUserHint.bind(this, id)} /></div>
-                                        <div className={styles.editTeam} onClick={EditTeam.bind(this, id)}><MdEdit onMouseEnter={ShowEditTeamHint.bind(this, id)} onMouseLeave={HideEditTeamHint.bind(this, id)}/></div>
-                                    </div>
+                        return (                             
+                            <Droppable key={id} droppableId={id}>
+                                {(provided, snapshot) =>
+                                {
+                                    return (
+                                        <div {...provided.droppableProps} ref={provided.innerRef} className={styles.column}
+                                        style={{
+                                            background: "linear-gradient(180deg, " + col.color + "66  0%, rgba(255,255,255,0.4) 20%)"
+                                        }}>
+                                            <div className={styles.columnHeaderContainer}>
+                                                <div className={styles.columnHeaderTop}>
+                                                    <div className={styles.columnPicture}>
+                                                        <img className={styles.image} src={col.picture} alt='Team'></img>
+                                                    </div>
 
-                                    <div id={id + 'AddUserHint'} className={styles.addUserHint}>Add a new user</div>
-                                    <div id={id + 'EditTeamHint'} className={styles.editTeamHint}>Edit team</div>
-                                </div>
+                                                    <div id={id + 'ColumnActions'} className={styles.columnActions}>
+                                                        <BsThreeDotsVertical className={styles.menu} onMouseUp={ShowTeamMenu.bind(this, id)} />
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className={styles.columnHeader}>
+                                                    {col.name}
+                                                </div>
+                                            </div>
 
-                                <Droppable key={id} droppableId={id}>
-                                    {(provided, snapshot) =>
-                                    {
-                                        return (
-                                            <div {...provided.droppableProps} ref={provided.innerRef} className={styles.itemsContainer}>
+                                            <div className={styles.itemsContainer}>
+                                                <div className={styles.addUser}>
+                                                    <div className={styles.addUserContainer} onClick={AddUser.bind(this, id)}>
+                                                        <AiOutlineUsergroupAdd />
+                                                        Add user
+                                                    </div>
+                                                </div>
+
                                                 {col.users.length > 0 && col.users.map((user, index) => (
                                                     <Draggable key={user.id} draggableId={user.id} index={index}>
                                                         {(provided, snapshot) =>
@@ -365,7 +380,7 @@ const Kanban = () =>
                                                                     ...provided.draggableProps.style
                                                                 }}>
                                                                     <div className={styles.userPictureContainer}>
-                                                                        <img className={styles.image} src={user.picture}></img>
+                                                                        <img className={styles.image} src={user.picture} alt='user'></img>
                                                                     </div>
 
                                                                     <div className={styles.userDetailsContainer}>
@@ -379,19 +394,20 @@ const Kanban = () =>
                                                                     </div>
 
                                                                     <div className={styles.userMenuContainer}>
-                                                                        <BsThreeDotsVertical className={styles.userMenu} onClick={ShowUserMenu} />
+                                                                        <BsThreeDotsVertical className={styles.menu} onClick={ShowUserMenu} />
                                                                     </div>
                                                                 </div>
                                                             )
                                                         }}
                                                     </Draggable>
                                                 ))}
-                                                {provided.placeholder}
                                             </div>
-                                        )
-                                    }}
-                                </Droppable>
-                            </div>
+                                            
+                                            {provided.placeholder}
+                                        </div>
+                                    )
+                                }}
+                            </Droppable>
                         )
                     })}
                 </DragDropContext>
