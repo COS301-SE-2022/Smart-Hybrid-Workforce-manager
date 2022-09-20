@@ -1,4 +1,4 @@
-name: Go
+name: Go Scheduler
 
 on:
   pull_request:
