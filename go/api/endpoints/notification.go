@@ -2,8 +2,8 @@ package endpoints
 
 import (
 	"api/data"
-	"lib/utils"
 	"fmt"
+	"lib/utils"
 	"net/http"
 	"net/smtp"
 	"os"
@@ -61,4 +61,36 @@ func SendNotificationHandler(writer http.ResponseWriter, request *http.Request) 
 	fmt.Println("Notification email sent")
 
 	utils.Ok(writer, request)
+}
+
+func SendNotification(message string, recipient string) {
+	//Receiver data
+	to := []string{
+		recipient,
+	}
+
+	//Sender data
+	from := os.Getenv("SENDER")
+	password := os.Getenv("PASSWORD")
+
+	//smtp Server
+	smtpHost := "smtp.gmail.com"
+	smptPort := "587"
+
+	//Message
+	theMessage := []byte("From: archecapstoneteam@gmail.com\r\n" +
+		"To: " + recipient + "\r\n" + message)
+
+	//Authentication
+	auth := smtp.PlainAuth("", from, password, smtpHost)
+
+	//Sending email
+	err := smtp.SendMail(smtpHost+":"+smptPort, auth, from, to, theMessage)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println("Notification email sent")
+
 }

@@ -133,3 +133,7 @@ func clientIP(request *http.Request) string {
 func RandInt(min int, max int) int {
 	return min + rand.Intn(max-min)
 }
+
+func RandFloat64() float64 {
+	return rand.Float64()
+}
