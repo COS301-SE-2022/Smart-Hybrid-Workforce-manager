@@ -203,15 +203,34 @@ type teamRoomProximity struct {
 	roomProximities map[string]float64
 }
 
-// teamProximityScore calculates a score that indicates the proximity of members
-// of a team, scales with team priority (TODO: @JonathanEnslin remember this)
-func (individual *Individual) teamProximityScore(domain *Domain) float64 {
-	return 0.0
-}
-
 // preferredDeskBonus returns a bonus fitness value for users sitting at their preffered desk
 func (individual *Individual) preferredDeskBonus(domain *Domain) float64 {
 	return 0.0
+}
+
+// teamProximityScore calculates a score that indicates the proximity of members
+// of a team, scales with team priority (TODO: @JonathanEnslin remember this)
+func (individual *Individual) teamProximityScore(domain *Domain) float64 {
+	teamRoomProximities := individual.getTeamRoomProximities(domain)
+	scores := make([]float64, len(teamRoomProximities))
+	// TODO: @JonathanEnslin filter out empties and stuff if necessary
+	for i, teamRoomProx := range teamRoomProximities {
+		// Use reciprocal, since if the teams have a larger avg distance from the centroid
+		// the fitness should be smaller
+		scores[i] = 1 / (individualTeamProximityScore(teamRoomProx) + 1)
+	}
+
+	return cu.Sum(scores)
+}
+
+func individualTeamProximityScore(teamRoomProx teamRoomProximity) float64 {
+	// Sum over the proximity of all rooms
+	sum := 0.0
+	for _, prox := range teamRoomProx.roomProximities {
+		sum += prox
+	}
+	// TODO: @JonathanEnslin add panalty for teams split over rooms
+	return sum
 }
 
 // Takes in a index of user, and returns the coordinates of the user according to the resource

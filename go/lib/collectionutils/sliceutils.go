@@ -152,3 +152,11 @@ func GroupBy[T comparable, G comparable](slice []T, groupingFunc func(item T) G)
 	}
 	return
 }
+
+func Sum[N float64 | float32 | int64 | int32](vals []N) N {
+	sum := N(0)
+	for _, v := range vals {
+		sum += v
+	}
+	return sum
+}

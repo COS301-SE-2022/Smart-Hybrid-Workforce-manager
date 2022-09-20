@@ -583,3 +583,10 @@ func TestGroupBy(t *testing.T) {
 		})
 	}
 }
+
+func TestSum(t *testing.T) {
+	s1 := Sum([]float64{5.0, 7.0, 13.0})
+	assert.Equalf(t, float64(25.0), s1, "Sum()=%v want=%v", s1, 25.0)
+	s2 := Sum([]rune{5, 7, 13})
+	assert.Equalf(t, rune(25), s2, "Sum()=%v want=%v", s2, 25)
+}
