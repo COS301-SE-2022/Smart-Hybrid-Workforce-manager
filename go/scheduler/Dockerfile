@@ -1,10 +1,10 @@
 # build image
-FROM golang:1.14-alpine3.11 AS builder
+FROM golang:1.18.6-alpine3.16 AS builder
 
 WORKDIR /opt/arche-scheduler
 
 RUN apk add git
-RUN wget -O - -q https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s v2.4.0
+RUN wget -O - -q https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s v2.13.1
 
 ADD ./scheduler/go.mod ./scheduler/
 ADD ./scheduler/go.sum ./scheduler/
@@ -22,7 +22,7 @@ RUN go build -o arche-scheduler
 RUN ../bin/gosec ./...
 
 # final image
-FROM alpine:3.11
+FROM alpine:3.16
 RUN apk add bash
 RUN adduser --disabled-password -h /opt/arche-scheduler -G tty --shell /bin/bash arche-scheduler
 USER arche-scheduler

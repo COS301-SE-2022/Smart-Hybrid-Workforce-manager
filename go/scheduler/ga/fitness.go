@@ -1,6 +1,8 @@
 package ga
 
 import (
+	cu "lib/collectionutils"
+	"math"
 	"scheduler/data"
 )
 
@@ -173,3 +175,164 @@ func (individual *Individual) getUserCountMapsPerDay() []map[string]int {
 
 ///////////////////////////////////////////////////
 // DAILY
+
+func DailyFitness(domain *Domain, individuals Individuals) []float64 {
+	var result []float64
+	for _, individual := range individuals {
+		fitness := dailyFitness(domain, individual)
+		result = append(result, fitness)
+		individual.Fitness = fitness
+		//fmt.Println(fitness)
+	}
+	return result
+}
+
+func dailyFitness(domain *Domain, individual *Individual) float64 {
+	return 0.0
+}
+
+type teamRoomGroups struct {
+	teamId string
+	// A map mapping roomId to the members part of the team in that room (map[roomId]{arr of user indices in that room})
+	roomGroups map[string][]int
+}
+
+type teamRoomProximity struct {
+	teamRoomGroups
+	// A map mapping roomIds to proximity scores for members in that room
+	roomProximities map[string]float64
+}
+
+// preferredDeskBonus returns a bonus fitness value for users sitting at their preffered desk
+func (individual *Individual) preferredDeskBonus(domain *Domain) float64 {
+	return 0.0
+}
+
+// teamProximityScore calculates a score that indicates the proximity of members
+// of a team, scales with team priority (TODO: @JonathanEnslin remember this)
+func (individual *Individual) teamProximityScore(domain *Domain) float64 {
+	teamRoomProximities := individual.getTeamRoomProximities(domain)
+	scores := make([]float64, len(teamRoomProximities))
+	// TODO: @JonathanEnslin filter out empties and stuff if necessary
+	for i, teamRoomProx := range teamRoomProximities {
+		// Use reciprocal, since if the teams have a larger avg distance from the centroid
+		// the fitness should be smaller
+		scores[i] = 1 / (individualTeamProximityScore(teamRoomProx) + 1)
+	}
+
+	return cu.Sum(scores)
+}
+
+func individualTeamProximityScore(teamRoomProx teamRoomProximity) float64 {
+	// Sum over the proximity of all rooms
+	sum := 0.0
+	for _, prox := range teamRoomProx.roomProximities {
+		sum += prox
+	}
+	// TODO: @JonathanEnslin add panalty for teams split over rooms
+	return sum
+}
+
+// Takes in a index of user, and returns the coordinates of the user according to the resource
+// that is assigned to them
+func (individual *Individual) getUserCoordinate(domain *Domain, index int) []float64 {
+	resource := domain.SchedulerData.ResourcesMap[individual.Gene[0][index]]
+	return []float64{
+		*resource.XCoord,
+		*resource.YCoord,
+	} // (x, y)
+}
+
+// Calculates the proximities of teams grouped by the rooms they are in
+func (individual *Individual) getTeamRoomProximities(domain *Domain) []teamRoomProximity {
+	// Get team room groups
+	teamRoomGroupsArr := individual.getTeamsGroupedByRooms(domain)
+	// Create empty teamRoomProximitySlice
+	teamRoomProximities := make([]teamRoomProximity, len(teamRoomGroupsArr))
+	// Function used to compile a slice of coordinates from user indices
+	compileCoordinates := func(userIndices []int) [][]float64 {
+		// Allocate slice
+		coords := make([][]float64, len(userIndices))
+		for i, index := range userIndices {
+			// Get the coordinates for each user
+			coords[i] = individual.getUserCoordinate(domain, index)
+		}
+		return coords
+	}
+	for i, teamRoomGroup := range teamRoomGroupsArr {
+		// Allocate map
+		roomProximites := make(map[string]float64, len(teamRoomGroup.roomGroups))
+		for roomId, usersInRooms := range teamRoomGroup.roomGroups {
+			// For each room, get the proximity by compiling the coordinates and getting avg dist from centroid
+			roomProximites[roomId] = avgDistanceFromCentroid(compileCoordinates(usersInRooms))
+		}
+		teamRoomProximities[i] = teamRoomProximity{
+			teamRoomGroups:  teamRoomGroup,
+			roomProximities: roomProximites,
+		}
+	}
+	return teamRoomProximities
+}
+
+// getTeamsGroupedByRooms returns
+func (individual *Individual) getTeamsGroupedByRooms(domain *Domain) []teamRoomGroups {
+	schedulerData := domain.SchedulerData
+	gene := individual.Gene
+	// =================================================================
+	// TODO: @JonathanEnslin look at moving this piece of code into the domain as well since it is common across individuals
+	// A map that contains the user indices per team
+	teamUserIndices := domain.GetTeamUserIndices()
+	// =================================================================
+
+	// Group each team by room
+	roomGroupingFunc := func(userIndex int) string { // returns a roomId
+		return *schedulerData.ResourcesMap[gene[0][userIndex]].RoomId // Return the room that the user will be in
+	}
+	groups := []teamRoomGroups{}
+	for teamId, indices := range teamUserIndices {
+		_, roomGroups := cu.GroupBy(indices, roomGroupingFunc) // Get the room groups for the team
+		groups = append(groups, teamRoomGroups{teamId: teamId, roomGroups: roomGroups})
+	}
+	return groups
+}
+
+// ================ Functions used for daily fitness ================
+
+// avgDistanceFromCentroid calculates the centroid of a set of points and then calculates
+// the avg point-to-centroid distance
+// param coords is an array of float64 arrays, where each inner array corresponds to a set of coordinates
+// the length of the array correspons to the coordinate dimension, e.g. len=2 would be 2D, or x and y
+func avgDistanceFromCentroid(coords [][]float64) float64 {
+	centroid := getCentroid(coords) // Get the centroid
+	avgDistance := 0.0
+	for _, coord := range coords {
+		avgDistance += math.Sqrt(distanceRadicand(centroid, coord)) // get the total distance
+	}
+	avgDistance /= float64(len(coords)) // calculate the avg distance from the total
+	return avgDistance
+}
+
+// Gets the centroid a set of coordinates
+// See avgDistanceFromCentroid explanation on how the coordinates work
+func getCentroid(coords [][]float64) []float64 {
+	means := make([]float64, len(coords[0]))
+	for _, coord := range coords {
+		for i := range coord {
+			means[i] += coord[i] // sum the total value for each part of the coordinate
+		}
+	}
+	for i := range means {
+		means[i] /= float64(len(coords)) // calculate the average from the totals
+	}
+	return means
+}
+
+// Returns the value of the distance formula before sqrt is applied
+// See avgDistanceFromCentroid explanation on how the coordinates work
+func distanceRadicand(origin []float64, coord []float64) float64 {
+	result := 0.0
+	for i := range coord {
+		result += math.Pow(coord[i]-origin[i], 2)
+	}
+	return result
+}
