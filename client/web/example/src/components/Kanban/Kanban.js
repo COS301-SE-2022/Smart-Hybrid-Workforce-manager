@@ -8,7 +8,7 @@ import { FaSave } from 'react-icons/fa';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { EditTeamForm } from '../Team/EditTeam';
 import { AddTeamForm } from '../Team/AddTeam';
-import { EditUserPanel, EditUserPanl } from '../User/EditUser';
+import { EditUserPanel } from '../User/EditUser';
 
 const Kanban = () =>
 {
@@ -32,16 +32,28 @@ const Kanban = () =>
             name: 'Team 1',
             color: '#09a2fb',
             picture: 'https://seeklogo.com/images/B/breaking-bad-logo-032E797C11-seeklogo.com.jpg',
-            users: [
+            users:
+            [
                 {
                     id: 't1u1',
                     name: 'Walter White',
-                    picture: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Walter_White_S5B.png/220px-Walter_White_S5B.png'
+                    picture: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Walter_White_S5B.png/220px-Walter_White_S5B.png',
+                    roles:
+                    [
+                        'Developer',
+                        'CEO'
+                    ]
                 },
                 {
                     id: 't1u2',
                     name: 'Jesse Pinkman',
-                    picture: 'https://upload.wikimedia.org/wikipedia/en/thumb/c/c6/Jesse_Pinkman_S5B.png/220px-Jesse_Pinkman_S5B.png'
+                    picture: 'https://upload.wikimedia.org/wikipedia/en/thumb/c/c6/Jesse_Pinkman_S5B.png/220px-Jesse_Pinkman_S5B.png',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 }
             ]
         },
@@ -53,19 +65,43 @@ const Kanban = () =>
             users: [
                 {
                     id: 't2u1',
-                    name: 'User 1'
+                    name: 'User 1',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 },
                 {
                     id: 't2u2',
-                    name: 'User 2'
+                    name: 'User 2',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 },
                 {
                     id: 't2u3',
-                    name: 'User 3'
+                    name: 'User 3',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 },
                 {
                     id: 't2u4',
-                    name: 'User 4'
+                    name: 'User 4',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 }
             ]
         },
@@ -77,31 +113,73 @@ const Kanban = () =>
             users: [
                 {
                     id: 't3u1',
-                    name: 'User 1'
+                    name: 'User 1',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 },
                 {
                     id: 't3u2',
-                    name: 'User 2'
+                    name: 'User 2',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 },
                 {
                     id: 't3u3',
-                    name: 'User 3'
+                    name: 'User 3',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 },
                 {
                     id: 't3u4',
-                    name: 'User 4'
+                    name: 'User 4',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 },
                 {
                     id: 't3u5',
-                    name: 'User 5'
+                    name: 'User 5',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 },
                 {
                     id: 't3u6',
-                    name: 'User 6'
+                    name: 'User 6',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 },
                 {
                     id: 't3u7',
-                    name: 'User 7'
+                    name: 'User 7',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 }
             ]
         },
@@ -113,31 +191,73 @@ const Kanban = () =>
             users: [
                 {
                     id: 't4u1',
-                    name: 'User 1'
+                    name: 'User 1',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 },
                 {
                     id: 't4u2',
-                    name: 'User 2'
+                    name: 'User 2',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 },
                 {
                     id: 't4u3',
-                    name: 'User 3'
+                    name: 'User 3',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 },
                 {
                     id: 't4u4',
-                    name: 'User 4'
+                    name: 'User 4',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 },
                 {
                     id: 't4u5',
-                    name: 'User 5'
+                    name: 'User 5',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 },
                 {
                     id: 't4u6',
-                    name: 'User 6'
+                    name: 'User 6',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 },
                 {
                     id: 't4u7',
-                    name: 'User 7'
+                    name: 'User 7',
+                    roles:
+                    [
+                        'Developer',
+                        'Secretary',
+                        'Engineer'
+                    ]
                 }
             ]
         }
@@ -384,7 +504,7 @@ const Kanban = () =>
 
             <div id='EditUser' className={styles.userPanel} style={{left: userPanelLeft}}>
                 <div className={styles.userPanelClose} onClick={CloseUserPanel}><MdClose /></div>
-                <EditUserPanel userName={currUser.name} userPicture={currUser.picture} />
+                <EditUserPanel userName={currUser.name} userPicture={currUser.picture} userRoles={currUser.roles} />
             </div>
             
 
@@ -441,10 +561,13 @@ const Kanban = () =>
                                                                     <div className={styles.userDetailsContainer}>
                                                                         <div className={styles.userName}>{user.name}</div>
                                                                         <div className={styles.userRolesContainer}>
-                                                                            <div className={styles.role}>Developer</div>
-                                                                            <div className={styles.role}>Secretary</div>
-                                                                            <div className={styles.role}>Team Lead</div>
-                                                                            <div className={styles.role}>CEO</div>
+                                                                            {user.roles.map((role) =>
+                                                                            {
+                                                                                return (
+                                                                                    <div key={role} className={styles.role}>{role}</div>
+                                                                                );
+                                                                                
+                                                                            })}
                                                                         </div>
                                                                     </div>
 
@@ -467,8 +590,8 @@ const Kanban = () =>
                     })}
                 </DragDropContext>
 
-                <div className={styles.addColumn}>
-                    <div className={styles.addTeamContainer} onClick={AddTeam}>
+                <div className={styles.addColumn} onClick={AddTeam}>
+                    <div className={styles.addTeamContainer}>
                         <AiOutlineUsergroupAdd />
                         Add team
                     </div>

@@ -1,23 +1,53 @@
-import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import styles from './user.module.css';
 import { useEffect, useState } from 'react';
 
-const EditUser = ({userName, userPicture}) =>
+const EditUser = ({userName, userPicture, userRoles}) =>
 {
     const [name, setName] = useState(userName);
     const [picture, setPicture] = useState(userPicture);
+    const [activeRoles, setActiveRoles] = useState(userRoles);
 
-    const CheckPicture = (value) =>
+    const rolesInit = 
     {
-        const extension = value.substring(value.length - 3, value.length);
-        if(!(extension === 'png' || extension === 'jpg'))
+        ['role1']:
         {
-            setPicture('');
+            name: 'Developer',
+            color: '#09a2fb'
+        },
+
+        ['role2']:
+        {
+            name: 'Secretary',
+            color: '#09a2fb'
+        },
+
+        ['role3']:
+        {
+            name: 'CEO',
+            color: '#09a2fb'
+        },
+
+        ['role4']:
+        {
+            name: 'Engineer',
+            color: '#09a2fb'
+        },
+    }
+
+    const [roles, setRoles] = useState(rolesInit);
+
+    const EditActiveRoles = (role) =>
+    {
+        if(activeRoles.includes(role))
+        {
+            setActiveRoles(activeRoles.filter((curr, _) =>
+                curr !== role
+            ));
         }
         else
         {
-            setPicture(value);
+            setActiveRoles([...activeRoles, role]);
         }
     }
 
@@ -36,6 +66,10 @@ const EditUser = ({userName, userPicture}) =>
         setPicture(userPicture);
     }, [userPicture]);
 
+    useEffect(() =>
+    {
+        setActiveRoles(userRoles);
+    }, [userRoles]);
 
     return (
         <div className={styles.editUserContainer}>
@@ -45,6 +79,18 @@ const EditUser = ({userName, userPicture}) =>
                 </div>
 
                 <div className={styles.userName}>{name}</div>
+            </div>
+
+            <div className={styles.rolesContainer}>
+                {Object.entries(roles).map(([id, role]) =>
+                {
+                    return (
+                        <div key={id}>
+                            <input type='checkbox' id={id} name={id} value={role.name} checked={activeRoles && activeRoles.includes(role.name) ? true : false} onChange={EditActiveRoles.bind(this, role.name)}></input>
+                            <label className={styles.roleLabel} htmlFor={role.name}>{role.name}</label>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

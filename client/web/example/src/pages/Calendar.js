@@ -665,6 +665,11 @@ const Calendar = () =>
         }
     },[isToday]);
 
+    useEffect(() =>
+    {
+        document.getElementById('ColumnContainer').scrollTop = 0.08*5*window.innerHeight;
+    },[]);
+
     const showNavbar = () =>
     {
         if(userData !== null && !userData.user_identifier.includes("admin"))
@@ -780,7 +785,7 @@ const Calendar = () =>
                             <div className='day-date-border'></div>
                         </div>
 
-                        <div className='column-container'>
+                        <div id='ColumnContainer' className='column-container'>
                             <Times />
 
                             <Borders />
