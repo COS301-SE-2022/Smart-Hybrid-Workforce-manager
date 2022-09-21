@@ -39,7 +39,7 @@ func WeeklyOverseer(schedulerData data.SchedulerData) []data.Bookings {
 	best.Fitness = -1
 	for {
 		select {
-		case <-time.After(time.Second * 5):
+		case <-time.After(time.Second * 2):
 			logger.Debug.Println(testutils.Scolour(testutils.RED, "DEADLINE EXCEDED"))
 			s.Done()
 			bookings = append(bookings, best.ConvertIndividualToWeeklyBookings(domain))
@@ -101,7 +101,7 @@ func DailyOverseer(schedulerData data.SchedulerData) []data.Bookings {
 	best.Fitness = -1
 	for {
 		select {
-		case <-time.After(time.Second * 5):
+		case <-time.After(time.Second * 1):
 			logger.Debug.Println(testutils.Scolour(testutils.RED, "DEADLINE EXCEDED"))
 			s.Done()
 			bookings = append(bookings, best.ConvertIndividualToDailyBookings(domain))

@@ -48,7 +48,7 @@ func SchedulerInvoker(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 	// Call daily scheduler 5 times
-	for i := 0; i < 7; i++ {
+	for i := 0; i < 5; i++ {
 		now := nextMonday
 		yyyy, mm, dd := now.Date()
 		startDate := time.Date(yyyy, mm, dd+i, 0, 0, 0, 0, now.Location())
