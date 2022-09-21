@@ -4,7 +4,7 @@ import { Image } from 'react-konva'
 import { useRef, useEffect, Fragment } from 'react'
 import { Transformer } from 'react-konva'
 
-const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, stage}) =>
+const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, draggable}) =>
 {
     const shapeRef = useRef(null);
     const transformRef = useRef(null);
@@ -28,7 +28,7 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, stage}) =>
                 offsetY = {shapeProps.height / 2.0}
                 {...shapeProps}
                 ref={shapeRef}
-                draggable
+                draggable = {draggable}
 
                 onClick={onSelect}
                 onTap={onSelect}
