@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaCalendar, FaTicketAlt, FaMap, FaChartPie } from 'react-icons/fa';
+import { FaCalendar, FaTicketAlt, FaMap, FaChartPie, FaUserShield } from 'react-icons/fa';
 import styles from './navbar.module.css';
 
-const Navbar = (props, ref) =>
+const NavbarAdmin = (props, ref) =>
 {
     const homeRef = useRef(null);
     const bookingsRef = useRef(null);
@@ -12,9 +12,14 @@ const Navbar = (props, ref) =>
     const meetingRef = useRef(null);
     const calendarRef = useRef(null);
     const statisticsRef = useRef(null);
+    const adminRef = useRef(null);
+    const dropdownAdminRef = useRef(null);
+    const teamRef = useRef(null);
+    const resourceRef = useRef(null);
 
     const [currLocation, setCurrLocation] = useState("");
     const [dropDown, setDropDown] = useState();
+    const [dropDownAdmin, setDropDownAdmin] = useState();
 
     const navigate = useNavigate();
 
@@ -34,6 +39,20 @@ const Navbar = (props, ref) =>
         {
             dropdownRef.current.style.display = "none";
             setDropDown(false);
+        }
+    }
+
+    const ShowAdminOptions = () =>
+    {
+        if(!dropDownAdmin)
+        {
+            dropdownAdminRef.current.style.display = "block";
+            setDropDownAdmin(true);
+        }
+        else
+        {
+            dropdownAdminRef.current.style.display = "none";
+            setDropDownAdmin(false);
         }
     }
 
@@ -57,11 +76,22 @@ const Navbar = (props, ref) =>
         navigate("/statistics");
     }
 
+    const NavigateAdmin = () =>
+    {
+        navigate("/admin");
+    }
+
+    const NavigateResources = () =>
+    {
+        navigate("/layout");
+    }
+
     useEffect(() =>
     {
         if(currLocation === "/")
         {
             dropdownRef.current.style.display = "none";
+            dropdownAdminRef.current.style.display = "none";
             homeRef.current.style.color = "#09a2fb";
         }
 
@@ -69,6 +99,7 @@ const Navbar = (props, ref) =>
         {
             bookingsRef.current.style.color = "#09a2fb";
             dropdownRef.current.style.display = "block";
+            dropdownAdminRef.current.style.display = "none";
             deskRef.current.style.color = "#09a2fb";
         }
 
@@ -76,19 +107,38 @@ const Navbar = (props, ref) =>
         {
             bookingsRef.current.style.color = "#09a2fb";
             dropdownRef.current.style.display = "block";
+            dropdownAdminRef.current.style.display = "none";
             meetingRef.current.style.color = "#09a2fb";
         }
 
         if(currLocation === "/calendar")
         {
             dropdownRef.current.style.display = "none";
+            dropdownAdminRef.current.style.display = "none";
             calendarRef.current.style.color = "#09a2fb";
         }
 
         if(currLocation === "/statistics")
         {
             dropdownRef.current.style.display = "none";
+            dropdownAdminRef.current.style.display = "none";
             statisticsRef.current.style.color = "#09a2fb";
+        }
+
+        if(currLocation === "/admin")
+        {
+            dropdownRef.current.style.display = "none";
+            dropdownAdminRef.current.style.display = "block";
+            adminRef.current.style.color = "#09a2fb";
+            teamRef.current.style.color = "#09a2fb";
+        }
+
+        if(currLocation === "/layout")
+        {
+            dropdownRef.current.style.display = "none";
+            dropdownAdminRef.current.style.display = "block";
+            adminRef.current.style.color = "#09a2fb";
+            resourceRef.current.style.color = "#09a2fb";
         }
 
     },[currLocation])
@@ -132,9 +182,22 @@ const Navbar = (props, ref) =>
                     &nbsp;
                     Statistics
                 </div>
+                <div ref={adminRef} className={styles.navlink} onClick={ShowAdminOptions}>
+                    <FaUserShield />
+                    &nbsp;
+                    Admin
+                </div>
+                <div ref={dropdownAdminRef} className={styles.navlinkDropdownContainer}>
+                    <div ref={teamRef} className={styles.navlinkDropdown} onClick={NavigateAdmin}>
+                        Team Management
+                    </div>
+                    <div ref={resourceRef} className={styles.navlinkDropdown} onClick={NavigateResources}>
+                        Office Creator
+                    </div>
+                </div>
             </div>
         </div>
     )
 }
 
-export default React.forwardRef(Navbar)
+export default React.forwardRef(NavbarAdmin)

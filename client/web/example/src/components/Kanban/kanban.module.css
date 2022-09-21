@@ -1,0 +1,613 @@
+.kanbanContainer
+{
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.kanbanHeadingContainer
+{
+    height: 10vh;
+
+    background-color: white;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    color: #374146;
+}
+
+.kanbanHeading
+{
+    font-size: 3vw;
+    letter-spacing: 0.3vw;
+
+    margin-left: 3vw;
+}
+
+.columnsContainer
+{
+    overflow-x: scroll;
+    position: relative;
+    display: flex;
+    margin-left: 9.5vw;
+
+    width: 66vw;
+    height: 80vh;
+
+    background-color: transparent;
+    color: #374146;
+}
+
+.columnsContainer::-webkit-scrollbar
+{
+    height: 10px;
+}
+
+.columnsContainer::-webkit-scrollbar-thumb
+{
+    background-color: transparent;
+}
+
+.columnsContainer::-webkit-scrollbar-thumb:hover
+{
+    background-color: transparent;
+}
+
+.saveIcon
+{
+    position: absolute;
+
+    top: 11vh;
+    left: 1vw;
+
+    font-size: 1.5vw;
+
+    color: #374146;
+}
+
+.saveIcon:hover
+{
+    cursor: pointer;
+    color: #09a2fb;
+}
+
+.saveHint
+{
+    display: none;
+    position: absolute;
+
+    background-color: #374146;
+    color: white;
+    
+    border-radius: 1vh;
+
+    text-align: center;
+
+    left: 0vw;
+    top: 15vh;
+
+    width: 4vw;
+    height: 3vh;
+
+    padding-top: 0.2vh;
+    padding-bottom: 0.5vh;
+
+    font-size: 0.8vw;
+
+    z-index: 1;
+}
+
+.leftArrow
+{
+    position: absolute;
+
+    top: 45vh;
+    left: 5.5vw;
+
+    height: 3.5vw;
+    width: 3.5vw;
+
+    font-size: 3vw;
+
+    color: #374146;
+
+    border-radius: 10vh;
+}
+
+.leftArrow:hover
+{
+    cursor: pointer;
+    background-color: #e8e8e8;
+}
+
+.rightArrow
+{
+    position: absolute;
+
+    top: 45vh;
+    left: 76.5vw;
+
+    height: 3.5vw;
+    width: 3.5vw;
+
+    padding-left: 0.4vw;
+
+    font-size: 3vw;
+
+    color: #374146;
+
+    border-radius: 10vh;
+}
+
+.rightArrow:hover
+{
+    cursor: pointer;
+    background-color: #e8e8e8;
+}
+
+.column
+{
+    display: grid;
+    grid-template-columns: 20vw;
+    grid-template-rows: 20vh 55vh;
+
+    /*background: rgba(255, 255, 255, 0.4);*/
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+
+    width: 20vw;
+
+    height: 75vh;
+
+    margin-left: 1vw;
+    margin-right: 1vw;
+    margin-top: 2.5vh;
+
+    border-radius: 1vh;
+}
+
+.addColumn
+{
+    background: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+
+    width: 20vw;
+
+    height: 10vh;
+
+    margin-left: 1vw;
+    margin-right: 1vw;
+    margin-top: 2.5vh;
+
+    padding-top: 3vh;
+
+    border-radius: 1vh;
+}
+
+.addTeamContainer
+{
+    width: 20vw;
+
+    font-size: 1.2vw;
+
+    text-align: center;
+}
+
+.addColumn:hover
+{
+    cursor: pointer;
+    background-color: #e8e8e8;
+}
+
+.columnHeaderContainer
+{
+    display: grid;
+    grid-template-rows: 12vh 8vh;
+
+    padding-top: 1vh;
+
+    text-align: center;
+}
+
+.columnHeaderTop
+{
+    display: grid;
+    grid-template-columns: 18vw 2vw;
+}
+
+.columnPicture
+{
+    background-color: white;
+
+    width: 5vw;
+    height: 5vw;
+
+    border-radius: 10vh;
+
+    margin-top: 0.3vh;
+    margin-left: 7.5vw;
+
+    font-size: 0.5vw;
+}
+
+.image
+{
+    width: 100%;
+    height: 100%;
+
+    border-radius: 10vh;
+}
+
+.columnActions
+{
+    font-size: 1.5vw;
+
+    padding-top: 0.5vh;
+}
+
+.teamMenu
+{
+    position: absolute;
+    display: none;
+    font-size: 0.8vw;
+
+    width: 7vw;
+
+    background-color: white;
+
+    border-radius: 1vh;
+
+    z-index: 2;
+}
+
+.editTeam
+{
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+
+    border-top-left-radius: 1vh;
+    border-top-right-radius: 1vh;
+}
+
+.editTeam:hover
+{
+    background-color: #e8e8e8;
+    cursor: pointer;
+}
+
+.deleteTeam
+{
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+
+    border-bottom-left-radius: 1vh;
+    border-bottom-right-radius: 1vh;
+}
+
+.deleteTeam:hover
+{
+    background-color: #e8e8e8;
+    cursor: pointer;
+}
+
+.columnHeader
+{
+    font-size: 1.5vw;
+}
+
+.addUserHint
+{
+    display: none;
+
+    background-color: #374146;
+    color: white;
+    
+    border-radius: 1vh;
+
+    text-align: center;
+
+    margin-left: 10vw;
+
+    width: 8vw;
+    height: 3vh;
+
+    padding-top: 0.2vh;
+    padding-bottom: 0.5vh;
+
+    font-size: 0.8vw;
+
+    z-index: 1;
+}
+
+.editTeamHint
+{
+    display: none;
+
+    background-color: #374146;
+    color: white;
+    
+    border-radius: 1vh;
+
+    text-align: center;
+
+    margin-left: 14vw;
+
+    width: 5vw;
+    height: 3vh;
+
+    padding-top: 0.2vh;
+    padding-bottom: 0.5vh;
+
+    font-size: 0.8vw;
+
+    z-index: 1;
+}
+
+.itemsContainer
+{
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 55vh;
+    width: 19vw;
+    margin-left: 1vw;
+}
+
+.itemsContainer::-webkit-scrollbar
+{
+    width: 8px;
+}
+
+.backgroundDimmer
+{
+    position: absolute;
+    display: none;
+
+    width: 85vw;
+    height: 80vh;
+
+    background-color: rgba(218, 223, 254, 0.7);
+
+    z-index: 2;
+}
+
+.formContainer
+{
+    position: absolute;
+    display: none;
+
+    width: 30vw;
+    height: 70vh;
+
+    margin-left: 27.5vw;
+    margin-top: 5vh;
+
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+
+    border-radius: 1vh;
+
+    z-index: 3;
+
+    animation: animate-pop-enter 0.5s cubic-bezier(0.26, 0.53, 0.74, 1.48);
+}
+
+@keyframes animate-pop-enter
+{
+    0%
+    {
+        opacity: 0;
+        transform: scale(0.5, 0.5);
+    }
+
+    100%
+    {
+        opacity: 1;
+        transform: scale(1, 1);
+    }
+}
+
+.formClose
+{
+    position: absolute;
+
+    left: 28vw;
+    top: 0.5vh;
+
+    font-size: 1.5vw;
+}
+
+.formClose:hover
+{
+    cursor: pointer;
+}
+
+.userCard
+{
+    display: grid;
+    grid-template-columns: 5vw 11vw 2vw;
+
+    user-select: 'none';
+
+    margin-bottom: 3vh;
+
+    height: 15vh;
+    width: 18vw;
+
+    border-radius: 1vh;
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.userPictureContainer
+{
+    background-color: #374146;
+
+    margin-top: 3.5vh;
+    margin-left: 0.5vw;
+
+    width: 4vw;
+    height: 4vw;
+
+    border-radius: 10vh;
+}
+
+.userDetailsContainer
+{
+    display: grid;
+    grid-template-rows: 5vh 10vh;
+
+    padding-left: 0.5vw;
+    padding-top: 2vh;
+}
+
+.userName
+{
+    font-size: 0.9vw;
+}
+
+.userRolesContainer
+{
+    font-size: 0.7vw;
+
+    padding-top: 1vh;
+}
+
+.role
+{
+    float: left;
+    margin-right: 0.5vw;
+    margin-bottom: 0.7vh;
+
+    padding-left: 0.5vw;
+    padding-right: 0.5vw;
+    padding-bottom: 2.3vh;
+
+    height: 2vh;
+
+    border-radius: 4vh;
+
+    color: white;
+    background-color: #09a2fb;
+}
+
+.userMenuContainer
+{
+    font-size: 1.2vw;
+    margin-left: 0.5vw;
+    margin-top: 1vh;
+}
+
+.menu:hover
+{
+    cursor: pointer;
+}
+
+.userMenu
+{
+    position: absolute;
+    display: none;
+    font-size: 0.8vw;
+
+    width: 8vw;
+
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+
+    border-radius: 1vh;
+
+    z-index: 2;
+}
+
+.editUser
+{
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+
+    border-top-left-radius: 1vh;
+    border-top-right-radius: 1vh;
+}
+
+.editUser:hover
+{
+    background-color: #e8e8e8;
+    cursor: pointer;
+}
+
+.deleteUser
+{
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+
+    border-bottom-left-radius: 1vh;
+    border-bottom-right-radius: 1vh;
+}
+
+.deleteUser:hover
+{
+    background-color: #e8e8e8;
+    cursor: pointer;
+}
+
+.addUser
+{
+    user-select: 'none';
+
+    margin-bottom: 3vh;
+
+    height: 5vh;
+    width: 18vw;
+
+    border-radius: 1vh;
+
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.addUserContainer
+{
+    width: 18vw;
+
+    padding-top: 1vh;
+
+    text-align: center;
+}
+
+.addUser:hover
+{
+    cursor: pointer;
+    background-color: #e8e8e8;
+}
+
+.userPanel
+{
+    position: absolute;
+
+    width: 20vw;
+    height: 80vh;
+
+    background-color: white;
+    box-shadow: 0 5px 10px -4px rgba(0, 0, 0, 0.1) inset;
+
+    transition: all 0.5s ease; 
+
+    z-index: 2;
+}
+
+.userPanelClose
+{
+    position: absolute;
+
+    left: 18vw;
+    top: 1vh;
+
+    font-size: 1.5vw;
+}
+
+.userPanelClose:hover
+{
+    cursor: pointer;
+}
