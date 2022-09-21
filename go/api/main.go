@@ -40,6 +40,14 @@ func main() {
 		os.Exit(-1)
 	}
 
+	// Statistics endpoints
+	statisticsRouter := router.PathPrefix("/api/statistics").Subrouter()
+	err = endpoints.StatisticsHandlers(statisticsRouter)
+	if err != nil {
+		logger.Error.Fatal(err)
+		os.Exit(-1)
+	}
+
 	// Team endpoints
 	teamRouter := router.PathPrefix("/api/team").Subrouter()
 	err = endpoints.TeamHandlers(teamRouter)
