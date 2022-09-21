@@ -80,3 +80,14 @@ for file in ${DIR}/mock/*.sql
 do
   psql "$CONFIG" -f "$file"
 done
+
+######### statistics
+for file in ${DIR}/statistics/*.schema.*sql
+do
+  psql "$CONFIG" -f "$file"
+done
+
+for file in ${DIR}/statistics/*.function.*sql
+do
+  psql "$CONFIG" -f "$file"
+done
