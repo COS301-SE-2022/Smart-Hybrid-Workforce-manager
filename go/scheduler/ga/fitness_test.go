@@ -741,3 +741,113 @@ func Test_userPreferredDeskProximity(t *testing.T) {
 		})
 	}
 }
+
+func TestIndividual_preferredDeskBonuses(t *testing.T) {
+	__test_domain.SchedulerData.ApplyMapping()
+	gene := [][]string{
+		//    0        1         2           3          4          5         6         7         8
+		// Freezer  Freezer    Fridge     Pantry     Fridge     Freezer   Freezer   Freezer   Fridge
+		{"Shelf1", "Shelf2", "Shelf10", "Shelf100", "Shelf30", "Shelf4", "Shelf5", "Shelf3", "Shelf20"},
+	}
+	type args struct {
+		domain *Domain
+	}
+	tests := []struct {
+		name       string
+		individual *Individual
+		args       args
+		want       float64
+	}{
+		{
+			name: "Test 1",
+			individual: &Individual{
+				Gene: gene,
+			},
+			args: args{
+				domain: __test_domain,
+			},
+			want: 0.1401337,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.individual.preferredDeskBonuses(tt.args.domain)
+			assert.InDeltaf(t, tt.want, got, 0.0001, "Individual.preferredDeskBonuses() = %v, want %v", got, tt.want)
+		})
+	}
+}
+
+func Test_dailyFitness(t *testing.T) {
+	__test_domain.SchedulerData.ApplyMapping()
+	gene := [][]string{
+		//    0        1         2           3          4          5         6         7         8
+		// Freezer  Freezer    Fridge     Pantry     Fridge     Freezer   Freezer   Freezer   Fridge
+		{"Shelf1", "Shelf2", "Shelf10", "Shelf100", "Shelf30", "Shelf4", "Shelf5", "Shelf3", "Shelf20"},
+	}
+	type args struct {
+		domain     *Domain
+		individual *Individual
+	}
+	tests := []struct {
+		name string
+		args args
+		want float64
+	}{
+		{
+			name: "Test 1",
+			args: args{
+				domain: __test_domain,
+				individual: &Individual{
+					Gene:    gene,
+					Fitness: -1.0,
+				},
+			},
+			want: 2.24101021,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := dailyFitness(tt.args.domain, tt.args.individual)
+			assert.InDeltaf(t, tt.want, got, 0.0001, "dailyFitness() = %v, want %v", got, tt.want)
+		})
+	}
+}
+
+func TestDailyFitness(t *testing.T) {
+	gene := [][]string{
+		//    0        1         2           3          4          5         6         7         8
+		// Freezer  Freezer    Fridge     Pantry     Fridge     Freezer   Freezer   Freezer   Fridge
+		{"Shelf1", "Shelf2", "Shelf10", "Shelf100", "Shelf30", "Shelf4", "Shelf5", "Shelf3", "Shelf20"},
+	}
+	__test_domain.SchedulerData.ApplyMapping()
+	type args struct {
+		domain      *Domain
+		individuals Individuals
+	}
+	tests := []struct {
+		name string
+		args args
+		want []float64
+	}{
+		{
+			name: "Test 1",
+			args: args{
+				domain: __test_domain,
+				individuals: []*Individual{
+					{Gene: gene, Fitness: -1.0},
+					{Gene: gene, Fitness: -1.0},
+				},
+			},
+			want: []float64{2.24101021, 2.24101021},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := DailyFitness(tt.args.domain, tt.args.individuals)
+			assert.InDeltaSlice(t, tt.want, got, 0.0001, "DailyFitness() = %v, want %v", got, tt.want)
+			for i, fitness := range tt.want {
+				assert.InDeltaf(t, fitness, tt.args.individuals[i].Fitness, 0.0001, "Expected to individual fitness to be %v, got %v", fitness, tt.args.individuals[i].Fitness)
+			}
+		})
+	}
+}

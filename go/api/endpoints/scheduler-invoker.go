@@ -4,7 +4,9 @@ import (
 	"api/data"
 	"api/db"
 	"api/scheduler"
+	"fmt"
 	"lib/logger"
+	"lib/testutils"
 	"lib/utils"
 	"net/http"
 	"os"
@@ -73,6 +75,7 @@ func WeeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 	nextMonday := scheduler.TimeOfNextWeekDay(now, "Monday")            // Start of next week
 	nextSaturday := scheduler.TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
 	schedulerData, err := scheduler.GetSchedulerData(nextMonday, nextSaturday)
+	logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running daily scheduler fro %v -> %v", nextMonday, nextSaturday))
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
@@ -95,7 +98,8 @@ func DailyScheduler(writer http.ResponseWriter, request *http.Request) {
 	var requestedDate SchedulerRequest
 	err := utils.UnmarshalJSON(writer, request, &requestedDate)
 	if err != nil {
-		utils.BadRequest(writer, request, "invalid_request")
+		utils.BadRequest(writer, request, fmt.Sprintf("invalid_request: %v", err))
+		return
 	}
 	now := time.Now()
 	if requestedDate.StartDate != nil { // Use passed in date if a date was supplied
@@ -108,6 +112,7 @@ func DailyScheduler(writer http.ResponseWriter, request *http.Request) {
 	endDate := startDate.AddDate(0, 0, 1) // Add one day
 	// Get data between start and end of date
 	schedulerData, err := scheduler.GetSchedulerData(startDate, endDate)
+	logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running daily scheduler fro %v -> %v", startDate, endDate))
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
