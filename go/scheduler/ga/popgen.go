@@ -223,3 +223,13 @@ func DailyPopulationGenerator(domain *Domain, popSize int) Individuals {
 	}
 	return population
 }
+
+func DailyPopulationGeneratorValid(domain *Domain, popSize int) Individuals {
+	var population Individuals
+	for j := 0; j < popSize; j++ {
+		var individual Individual
+		individual.Gene = append(individual.Gene, domain.GetRandomUniqueTerminalArrays(len(domain.Map)))
+		population = append(population, &individual)
+	}
+	return population
+}

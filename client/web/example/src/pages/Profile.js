@@ -8,7 +8,7 @@ import TeamUserList from '../components/Team/TeamUserList'
 import { UserContext } from '../App'
 import { useNavigate } from 'react-router-dom'
 import ProfileBar from '../components/Navbar/ProfileBar';
-import { FaWheelchair, FaHouseUser } from 'react-icons/fa';
+import { FaWheelchair, FaHouseUser, FaUserEdit } from 'react-icons/fa';
 import NavbarAdmin from '../components/Navbar/NavbarAdmin.js'
 
 function Profile()
@@ -79,7 +79,7 @@ function Profile()
                 method: "POST",
                 mode: "cors",
                 body: JSON.stringify({
-                    identifier: userData.user_identifier
+                    user_id: userData.user_id
                 }),
                 headers:{
                     'Content-Type': 'application/json',
@@ -98,7 +98,7 @@ function Profile()
                 method: "POST",
                 mode: "cors",
                 body: JSON.stringify({
-                    identifier: userData.user_identifier
+                    user_id: userData.user_id
                 }),
                 headers:{
                     'Content-Type': 'application/json',
@@ -107,6 +107,7 @@ function Profile()
             }).then((res) => res.json()).then(data => 
             {
                 SetTeams(data);
+                console.log(data);
             });
         }
 
@@ -132,6 +133,11 @@ function Profile()
     window.sessionStorage.setItem("EndTime", endTime);
     navigate("/profile-configuration")
   }
+
+    const EditProfile = () =>
+    {
+        navigate('/profile-configuration');
+    }
 
     const renderWheelchair = () =>
     {
@@ -204,6 +210,9 @@ function Profile()
                         </div>
 
                         <div className="profile-image-container"></div>
+                        <div className='profile-edit' onClick={EditProfile}>
+                            <FaUserEdit />
+                        </div>
 
                     </div>
                 </div>

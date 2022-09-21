@@ -1,6 +1,9 @@
 package data
 
-import "time"
+import (
+	"lib/collectionutils"
+	"time"
+)
 
 type Config struct {
 	Seed           int     `json:"seed"`
@@ -20,6 +23,18 @@ type SchedulerData struct {
 	CurrentBookings *Bookings       `json:"current_bookings"`
 	PastBookings    *Bookings       `json:"past_bookings"`
 	StartDate       *time.Time      `json:"start_date"`
+
+	// map[teamId]*TeamInfo
+	TeamsMap map[string]*TeamInfo `json:"-"`
+
+	// map[roomId]*RoomInfo
+	RoomsMap map[string]*RoomInfo `json:"-"`
+
+	// map[resourceId]*Resource
+	ResourcesMap map[string]*Resource `json:"-"`
+
+	// map[UserId]*User
+	UserMap map[string]*User `json:"-"`
 }
 
 type BookingInfo struct {
@@ -167,12 +182,80 @@ func ExtractResourceIds(schedulerData *SchedulerData) []string {
 	return resources
 }
 
+// ExtractResourceIds extracts all available desk ids from schedulerdata into a string array
+func ExtractAvailableDeskIds(schedulerData *SchedulerData) []string {
+	// Build map of all resources that have arleady been assigned to a booking
+	bookedResources := make(map[string]bool)
+	for _, booking := range *schedulerData.CurrentBookings {
+		if booking.ResourceId != nil && *booking.ResourceId != "" {
+			bookedResources[*booking.ResourceId] = true
+		}
+	}
+
+	// Add resources to string array
+	resources := []string{}
+	for _, resource := range schedulerData.Resources {
+		if resource.ResourceType != nil &&
+			*resource.ResourceType == "DESK" &&
+			!collectionutils.MapHasKey(bookedResources, *resource.Id) { // Check if resource is a desk
+			resources = append(resources, *resource.Id) // Append to available resources
+		}
+	}
+	return resources
+}
+
 // ExtractUserIdMap extracts all user ids from the schedulerdata into an indexed map
 func ExtractUserIdMap(schedulerData *SchedulerData) map[int](string) {
 	var result map[int](string)
 	result = make(map[int]string)
-	for i, user := range schedulerData.Users {
-		result[i] = *user.Id
+	for i, booking := range *schedulerData.CurrentBookings {
+		result[i] = *booking.UserId
 	}
 	return result
+}
+
+func ExtractInverseUserIdMap(userIdMap map[int]string) map[string][]int {
+	userIdToIndicesMap := make(map[string][]int)
+	for index, userId := range userIdMap {
+		if !collectionutils.MapHasKey(userIdToIndicesMap, userId) {
+			userIdToIndicesMap[userId] = make([]int, 0)
+		}
+		userIdToIndicesMap[userId] = append(userIdToIndicesMap[userId], index)
+	}
+	return userIdToIndicesMap
+}
+
+func (data *SchedulerData) MapRooms() {
+	data.RoomsMap = map[string]*RoomInfo{}
+	for _, roomInfo := range data.Rooms {
+		data.RoomsMap[*roomInfo.Id] = roomInfo
+	}
+}
+
+func (data *SchedulerData) MapResources() {
+	data.ResourcesMap = map[string]*Resource{}
+	for _, resource := range data.Resources {
+		data.ResourcesMap[*resource.Id] = resource
+	}
+}
+
+func (data *SchedulerData) MapUsers() {
+	data.UserMap = map[string]*User{}
+	for _, user := range data.Users {
+		data.UserMap[*user.Id] = user
+	}
+}
+
+func (data *SchedulerData) MapTeams() {
+	data.TeamsMap = map[string]*TeamInfo{}
+	for _, teamInfo := range data.Teams {
+		data.TeamsMap[*teamInfo.Id] = teamInfo
+	}
+}
+
+func (data *SchedulerData) ApplyMapping() {
+	data.MapRooms()
+	data.MapResources()
+	data.MapTeams()
+	data.MapUsers()
 }
