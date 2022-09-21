@@ -1668,6 +1668,17 @@
     left: 0;
 }
 
+.canvas-container2
+{
+    position: absolute;
+    /*background-color: #EDF3F8;*/
+    background: #ced8fb;
+
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+}
+
 .properties-pane
 {
     position: fixed;
@@ -1679,8 +1690,8 @@
 
     background-color: #444444;
     width: 15vw;
-    height: 95vh;
-    top: 5vh;
+    height: 100vh;
+    top: 0vh;
     left: 85vw;
 
     z-index: 1;

@@ -1,14 +1,20 @@
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import styles from './team.module.css';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { UserContext } from '../../App';
+import { useNavigate } from 'react-router-dom';
 
-const EditTeam = ({teamName, teamColor, teamPriority, teamPicture}) =>
+const EditTeam = ({teamName, teamColor, teamPriority, teamPicture, teamID}) =>
 {
+    const [id, setID] = useState(teamID);
     const [color, setColor] = useState(teamColor);
     const [name, setName] = useState(teamName);
     const [priority, setPriority] = useState(teamPriority);
     const [picture, setPicture] = useState('');
+
+    const {userData} = useContext(UserContext);
+    const navigate = useNavigate();
 
     const CheckPriority = (value) =>
     {
@@ -35,10 +41,41 @@ const EditTeam = ({teamName, teamColor, teamPriority, teamPicture}) =>
         }
     }
 
-    const EditTeamSubmit = () =>
+    const EditTeamSubmit = async () =>
     {
+        try
+        {
+            let res = await fetch("http://localhost:8080/api/team/create", 
+            {
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify({
+                    id: id,
+                    name: name,
+                    priority: priority
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
+            });
 
+            if(res.status === 200)
+            {
+                alert("Team Successfully Updated!");
+                navigate("/admin");
+            }
+        }
+        catch(err)
+        {
+
+        }
     }
+
+    useEffect(() =>
+    {
+        setID(teamID);
+    }, [teamID]);
 
     useEffect(() =>
     {
@@ -49,6 +86,11 @@ const EditTeam = ({teamName, teamColor, teamPriority, teamPicture}) =>
     {
         setColor(teamColor);
     }, [teamColor]);
+
+    useEffect(() =>
+    {
+        setPriority(teamPriority);
+    }, [teamPriority]);
 
     useEffect(() =>
     {

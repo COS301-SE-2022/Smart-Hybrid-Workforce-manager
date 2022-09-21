@@ -1,7 +1,7 @@
 import styles from './kanban.module.css';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MdEdit, MdPersonAdd, MdClose } from 'react-icons/md';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { AiOutlineUsergroupAdd } from 'react-icons/ai';
 import { FaSave } from 'react-icons/fa';
@@ -9,6 +9,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { EditTeamForm } from '../Team/EditTeam';
 import { AddTeamForm } from '../Team/AddTeam';
 import { EditUserPanel } from '../User/EditUser';
+import { UserContext } from '../../App';
 
 const Kanban = () =>
 {
@@ -16,18 +17,24 @@ const Kanban = () =>
     const rightIntervalRef = useRef(null);
     const leftIntervalRef = useRef(null);
 
+    const [editTeamID, setEditTeamID] = useState('');
     const [editTeamName, setEditTeamName] = useState('Default');
     const [editTeamColor, setEditTeamColor] = useState('#ffffff');
     const [editTeamPicture, setEditTeamPicture] = useState('');
+    const [editTeamPriority, setEditTeamPriority] = useState(0);
     const [currTeam, setCurrTeam] = useState('');
 
     const [currUser, setCurrUser] = useState({id: '', name: '', picture: ''});
     const [userPanelLeft, setUserPanelLeft] = useState(0.85*window.innerWidth);
 
+    const {userData} = useContext(UserContext);
+
+    const [roles, setRoles] = useState([]);
+
 
     const columnsInit = 
     {
-        ['col1']: 
+        /*['col1']: 
         {
             name: 'Team 1',
             color: '#09a2fb',
@@ -260,7 +267,7 @@ const Kanban = () =>
                     ]
                 }
             ]
-        }
+        }*/
     }
 
     const [columns, setColumns] = useState(columnsInit);
@@ -304,6 +311,8 @@ const Kanban = () =>
         setEditTeamName(columns[col].name);
         setEditTeamColor(columns[col].color);
         setEditTeamPicture(columns[col].picture);
+        setEditTeamPriority(columns[col].priority);
+        setEditTeamID(col);
 
         document.getElementById('BackgroundDimmer').style.display = 'block';
         document.getElementById('EditTeam').style.display = 'block';
@@ -468,6 +477,154 @@ const Kanban = () =>
         }
     }
 
+    useEffect(() =>
+    {
+        fetch("http://localhost:8080/api/team/information", 
+        {
+            method: "POST",
+            mode: "cors",
+            body: JSON.stringify({
+            }),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+            }
+        }).then((res) => res.json()).then(data => 
+        {
+            let teams = {};
+            data.forEach(function CreateTeamsObject(team)
+            {
+                teams = 
+                {
+                    ...teams,
+                    [team.id]:
+                    {
+                        name: team.name,
+                        color: '#86ff30',
+                        picture: team.picture,
+                        priority: team.priority,
+                        users:
+                        [
+
+                        ]
+                    }
+                }
+            })
+
+            fetch("http://localhost:8080/api/user/information", 
+            {
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify({
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
+            }).then((res) => res.json()).then(data => 
+            {
+                let usersData = [];
+                data.forEach(function CreateUsersObject(user)
+                {
+                    usersData.push(
+                        {
+                            id: user.id,
+                            name: user.first_name + ' ' + user.last_name,
+                            picture: user.picture,
+                            roles:
+                            [
+
+                            ]
+                        }
+                    );
+                });
+
+                fetch("http://localhost:8080/api/role/information", 
+                {
+                    method: "POST",
+                    mode: "cors",
+                    body: JSON.stringify({
+                    }),
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                    }
+                }).then((res) => res.json()).then(data => 
+                {
+                    let rolesData = {};
+                    let rolesForEdit = [];
+                    data.forEach(function CreateRolesObject(role)
+                    {
+                        rolesForEdit.push(role.role_name);
+                        rolesData =
+                        {
+                            ...rolesData,
+                            [role.id]:
+                            {
+                                name: role.role_name
+                            }
+                        };
+                    });
+
+                    setRoles(rolesForEdit);
+
+                    fetch("http://localhost:8080/api/role/user/information", 
+                    {
+                        method: "POST",
+                        mode: "cors",
+                        body: JSON.stringify({
+                        }),
+                        headers:{
+                            'Content-Type': 'application/json',
+                            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                        }
+                    }).then((res) => res.json()).then(data => 
+                    {
+                        data.forEach(function AddRoles(role)
+                        {
+                            for(var i = 0; i < usersData.length; i++)
+                            {
+                                if(usersData[i].id === role.user_id)
+                                {
+                                    usersData[i].roles.push(rolesData[role.role_id].name);
+                                    break;
+                                }
+                            }
+                        });
+
+                        fetch("http://localhost:8080/api/team/user/information", 
+                        {
+                            method: "POST",
+                            mode: "cors",
+                            body: JSON.stringify({
+                            }),
+                            headers:{
+                                'Content-Type': 'application/json',
+                                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                            }
+                        }).then((res) => res.json()).then(data => 
+                        {
+                            data.forEach(function AddTeamMembers(teamMember)
+                            {
+                                for(var i = 0; i < usersData.length; i++)
+                                {
+                                    if(usersData[i].id === teamMember.user_id)
+                                    {
+                                        teams[teamMember.team_id].users.push(usersData[i]);
+                                        break;
+                                    }
+                                }
+                            });
+
+                            setColumns(teams);
+                        });
+                    });
+                });
+            });
+        });
+
+    }, [userData.token]);
+
     return (
         <div className={styles.kanbanContainer}>
             <div className={styles.kanbanHeadingContainer}>
@@ -499,12 +656,12 @@ const Kanban = () =>
 
             <div id='EditTeam' className={styles.formContainer}>
                 <div className={styles.formClose} onClick={CloseEditTeam}><MdClose /></div>
-                <EditTeamForm teamName={editTeamName} teamColor={editTeamColor} teamPriority={3} teamPicture={editTeamPicture} />
+                <EditTeamForm teamName={editTeamName} teamColor={editTeamColor} teamPriority={editTeamPriority} teamPicture={editTeamPicture} teamID={editTeamID} />
             </div>
 
             <div id='EditUser' className={styles.userPanel} style={{left: userPanelLeft}}>
                 <div className={styles.userPanelClose} onClick={CloseUserPanel}><MdClose /></div>
-                <EditUserPanel userName={currUser.name} userPicture={currUser.picture} userRoles={currUser.roles} />
+                <EditUserPanel userName={currUser.name} userPicture={currUser.picture} userRoles={currUser.roles} allRoles={roles} />
             </div>
             
 
@@ -544,8 +701,8 @@ const Kanban = () =>
                                                     </div>
                                                 </div>
 
-                                                {col.users.length > 0 && col.users.map((user, index) => (
-                                                    <Draggable key={user.id} draggableId={user.id} index={index}>
+                                                {col.users.map((user, index) => (
+                                                    <Draggable key={user.id} draggableId={id + user.id} index={index}>
                                                         {(provided, snapshot) =>
                                                         {
                                                             return (

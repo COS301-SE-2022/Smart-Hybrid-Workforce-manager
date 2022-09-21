@@ -49,8 +49,13 @@ const Layout = () =>
         fetch("http://localhost:8080/api/resource/building/information", 
             {
             method: "POST",
+            mode: 'cors',
             body: JSON.stringify({
-            })
+            }),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+            }
             }).then((res) => res.json()).then(data => 
             {
                 SetBuildings(data);
@@ -69,9 +74,14 @@ const Layout = () =>
         fetch("http://localhost:8080/api/resource/room/information", 
             {
             method: "POST",
+            mode: 'cors',
             body: JSON.stringify({
                 building_id: e.target.value
-            })
+            }),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+            }
             }).then((res) => res.json()).then(data => 
             {
                 SetRooms(data);
@@ -87,9 +97,14 @@ const Layout = () =>
         fetch("http://localhost:8080/api/resource/information", 
             {
             method: "POST",
+            mode: 'cors',
             body: JSON.stringify({
                 room_id: e.target.value
-            })
+            }),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+            }
             }).then((res) => res.json()).then(data => 
             {
                 SetResources(data);
@@ -484,7 +499,12 @@ const Layout = () =>
             let res = await fetch("http://localhost:8080/api/resource/batch-create", 
             {
                 method: "POST",
-                body: JSON.stringify(resources)
+                mode: 'cors',
+                body: JSON.stringify(resources),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
             });
 
             if(res.status === 200)
@@ -598,7 +618,6 @@ const Layout = () =>
                     </div>
 
                     <div className='building-pane'>
-                        <span className='tooltip' style={{width: 0.15*window.innerWidth, top: 0.04*window.innerHeight, left: -0.16*window.innerWidth}}>Select a building to edit or add a new one.</span>
                         <p className='building-label'>Buildings</p>
                         <MdAdd className='add-building-img' size={35} onClick={AddBuilding} />
                         <MdEdit className='edit-building-img' size={25} onClick={EditBuilding} />
@@ -607,14 +626,13 @@ const Layout = () =>
                                 <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
                                 {buildings.length > 0 && (
                                     buildings.map(building => (
-                                        <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
+                                        <option key={building.id} value={building.id}>{building.name + ' (' + building.location + ')'}</option>
                                     ))
                                 )}
                             </select>
                     </div>
 
                     <div className='room-pane'>
-                        <span className='tooltip' style={{width: 0.15*window.innerWidth, top: 0.43*window.innerHeight, left: -0.16*window.innerWidth}}>Select a room to edit or add a new one.</span>
                         <p className='room-label'>Rooms</p>
                         <MdAdd className='add-room-img' size={35} onClick={AddRoom} />
                         <MdEdit className='edit-room-img' size={25} onClick={EditRoom} />
@@ -623,7 +641,7 @@ const Layout = () =>
                                 <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
                                 {rooms.length > 0 && (
                                     rooms.map(room => (
-                                        <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>
+                                        <option key={room.id} value={room.id}>{room.name + ' (' + room.location + ')'}</option>
                                     ))
                                 )}
                             </select>
@@ -633,23 +651,20 @@ const Layout = () =>
                 <div className='actions-pane'>
                     <div className='save-container' onClick={SaveLayout}>
                         <FaSave className='save-icon' size={30}/>
-                        <span className='tooltip'>Save</span>
                     </div>
 
                     <div className='add-desk-container' onClick={AddDesk}>
                         <img src={desk_white} alt='Add Desk' className='add-desk-img'></img>
-                        <span className='tooltip' style={{width: 0.06*window.innerWidth, top: 0.1*window.innerHeight}}>Add Desk</span>
                     </div>
 
                     <div className='add-meetingroom-container' onClick={AddMeetingRoom}>
                         <img src={meetingroom_white} alt='Add Meeting Room' className='add-meetingroom-img'></img>
-                        <span className='tooltip' style={{width: 0.08*window.innerWidth, top: 0.16*window.innerHeight}}>Add Meeting Room</span>
                     </div>
                                        
 
                 </div>                                       
 
-                <div ref={canvasRef} className='canvas-container'>
+                <div ref={canvasRef} className='canvas-container2'>
                     <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onTouchStart={CheckDeselect} draggable onWheel={ZoomInOut} ref={stageRef}>
                         <Layer>
                             {deskProps.length > 0 && (
@@ -671,6 +686,8 @@ const Layout = () =>
                                             newDeskProps[i] = newProps;
                                             SetDeskProps(newDeskProps)
                                         }}
+
+                                        draggable = {true}
                                     />
                                 ))
                             )}
@@ -695,7 +712,7 @@ const Layout = () =>
                                             SetMeetingRoomProps(newMeetingRoomProps)
                                         }}
 
-                                        stage = {stageRef.current}
+                                        draggable = {true}
                                     />
                                 ))
                             )}                             
