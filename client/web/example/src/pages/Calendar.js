@@ -583,11 +583,11 @@ const Calendar = () =>
                 method: "POST",
                 mode: "cors",
                 body: JSON.stringify({
-                    user_id: userData//.user_id
+                    user_id: userData.user_id
                 }),
                 headers:{
                     'Content-Type': 'application/json',
-                    'Authorization': `bearer ${userData}` //Changed for frontend editing .token
+                    'Authorization': `bearer ${userData.token}`
                 }
                 }).then((res) => res.json()).then(data => 
                 {

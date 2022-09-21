@@ -381,7 +381,7 @@ const Home = () =>
                             <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
                                 {buildings.length > 0 && (
                                     buildings.map(building => (
-                                        <option value={building.id}>{building.name + ' (' + building.location + ')'}</option>
+                                        <option key={building.id} value={building.id}>{building.name + ' (' + building.location + ')'}</option>
                                     ))
                                 )}
                         </select>
@@ -392,7 +392,7 @@ const Home = () =>
                             <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
                                 {rooms.length > 0 && (
                                     rooms.map(room => (
-                                        <option value={room.id}>{room.name + ' (' + room.location + ')'}</option>
+                                        <option key={room.id} value={room.id}>{room.name + ' (' + room.location + ')'}</option>
                                     ))
                                 )}
                         </select>

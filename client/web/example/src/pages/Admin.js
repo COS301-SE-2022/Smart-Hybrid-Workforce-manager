@@ -1,5 +1,4 @@
 import Navbar from '../components/Navbar/Navbar.js';
-import AdminCard from "../components/AdminCard/AdminCard";
 import NavbarAdmin from '../components/Navbar/NavbarAdmin.js';
 import { useContext } from 'react';
 import { UserContext } from '../App.js';
