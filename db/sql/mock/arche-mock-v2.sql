@@ -138,9 +138,9 @@ INSERT INTO booking.identifier (id, user_id, resource_type, resource_preference_
 -- Data for Name: identifier; Type: TABLE DATA; Schema: team; Owner: admin
 --
 
-INSERT INTO team.identifier (id, name, description, capacity, picture, priority, team_lead_id, date_created) VALUES ('47474747-dc08-4a06-9983-8b374586e459', 'Aerial Photography', 'Project on Aerial Photography', 5, 'picture', 1, '11111111-3333-4a06-9983-8b374586e459', '2022-08-24 14:10:00.455691');
-INSERT INTO team.identifier (id, name, description, capacity, picture, priority, team_lead_id, date_created) VALUES ('12121212-dc08-4a06-9983-8b374586e459', 'Android', 'Android project', 5, NULL, 0, '11111111-3333-4a06-9983-8b374586e459', '2022-08-24 14:10:00.429145');
-INSERT INTO team.identifier (id, name, description, capacity, picture, priority, team_lead_id, date_created) VALUES ('f7599dba-64fc-4dcc-a097-d2823f76bd3a', 'GOT', 'Game of Thrones teams', 20, '', 1, NULL, '2022-09-05 14:05:25.315944');
+INSERT INTO team.identifier (id, name, description, capacity, picture, priority, team_lead_id, date_created) VALUES ('47474747-dc08-4a06-9983-8b374586e459', 'Aerial Photography', 'Project on Aerial Photography', 5, 'https://thumbs.dreamstime.com/b/flying-drone-air-100755092.jpg', 1, '11111111-3333-4a06-9983-8b374586e459', '2022-08-24 14:10:00.455691');
+INSERT INTO team.identifier (id, name, description, capacity, picture, priority, team_lead_id, date_created) VALUES ('12121212-dc08-4a06-9983-8b374586e459', 'Android', 'Android project', 5, 'https://media.kasperskydaily.com/wp-content/uploads/sites/103/2019/12/09155714/android-device-identifiers-featured-1024x673.jpg', 0, '11111111-3333-4a06-9983-8b374586e459', '2022-08-24 14:10:00.429145');
+INSERT INTO team.identifier (id, name, description, capacity, picture, priority, team_lead_id, date_created) VALUES ('f7599dba-64fc-4dcc-a097-d2823f76bd3a', 'GOT', 'Game of Thrones teams', 20, 'https://flxt.tmsimg.com/assets/p8553063_b_v13_ax.jpg', 1, NULL, '2022-09-05 14:05:25.315944');
 
 
 --
@@ -389,10 +389,10 @@ INSERT INTO team."user" (team_id, user_id, date_added) VALUES ('f7599dba-64fc-4d
 INSERT INTO team."user" (team_id, user_id, date_added) VALUES ('f7599dba-64fc-4dcc-a097-d2823f76bd3a', '0352f508-2341-4c76-8022-659bb03a8322', '2022-09-05 14:06:56.611255');
 INSERT INTO team."user" (team_id, user_id, date_added) VALUES ('12121212-dc08-4a06-9983-8b374586e459', 'befc26bf-9ce7-4d71-a9ee-ac4588e6e7c5', '2022-09-05 14:07:33.983565');
 INSERT INTO team."user" (team_id, user_id, date_added) VALUES ('47474747-dc08-4a06-9983-8b374586e459', 'bbbb6a26-19f5-4526-840e-3e1ee6fb547c', '2022-09-05 14:07:48.452783');
-INSERT INTO team."user" (team_id, user_id, date_added) VALUES ('12121212-dc08-4a06-9983-8b374586e459', 'f528bfa7-b0d5-48c9-a4a4-787a3ed01e0e', '2022-09-05 14:08:16.218013');
+--INSERT INTO team."user" (team_id, user_id, date_added) VALUES ('12121212-dc08-4a06-9983-8b374586e459', 'f528bfa7-b0d5-48c9-a4a4-787a3ed01e0e', '2022-09-05 14:08:16.218013');
 INSERT INTO team."user" (team_id, user_id, date_added) VALUES ('47474747-dc08-4a06-9983-8b374586e459', 'f528bfa7-b0d5-48c9-a4a4-787a3ed01e0e', '2022-09-05 14:08:23.903434');
 INSERT INTO team."user" (team_id, user_id, date_added) VALUES ('12121212-dc08-4a06-9983-8b374586e459', 'e2e30ef4-5d59-4302-b2a1-d3b575e86700', '2022-09-05 14:08:33.146527');
-INSERT INTO team."user" (team_id, user_id, date_added) VALUES ('47474747-dc08-4a06-9983-8b374586e459', 'e2e30ef4-5d59-4302-b2a1-d3b575e86700', '2022-09-05 14:08:40.110466');
+--INSERT INTO team."user" (team_id, user_id, date_added) VALUES ('47474747-dc08-4a06-9983-8b374586e459', 'e2e30ef4-5d59-4302-b2a1-d3b575e86700', '2022-09-05 14:08:40.110466');
 INSERT INTO team."user" (team_id, user_id, date_added) VALUES ('47474747-dc08-4a06-9983-8b374586e459', 'cc948e72-8a6b-4733-9b59-4e1193c4fe94', '2022-09-05 14:08:54.215739');
 INSERT INTO team."user" (team_id, user_id, date_added) VALUES ('12121212-dc08-4a06-9983-8b374586e459', '11111111-3333-4a06-9983-8b374586e459', '2022-09-05 14:09:08.186529');
 
