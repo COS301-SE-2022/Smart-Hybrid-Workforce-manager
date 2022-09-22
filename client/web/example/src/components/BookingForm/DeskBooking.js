@@ -29,8 +29,8 @@ const DeskBooking = (props, ref) =>
                     resource_type: "DESK",
                     resource_preference_id: null,
                     resource_id: null,
-                    start: startDate + "T" + startTime + ":43.511Z",
-                    end: startDate + "T" + endTime + ":43.511Z",
+                    start: startDate + "T" + startTime + ":00.000Z",
+                    end: startDate + "T" + endTime + ":00.000Z",
                     booked: false
                 }),
                 headers:{
