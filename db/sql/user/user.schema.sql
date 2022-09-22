@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS "user".identifier (
     preferred_start_time TIME WITHOUT TIME ZONE DEFAULT NULL,
     preferred_end_time TIME WITHOUT TIME ZONE DEFAULT NULL,
     preferred_desk uuid DEFAULT NULL,
+    building_id uuid REFERENCES resource.building(id) ON DELETE CASCADE DEFAULT NULL,
 	
     PRIMARY KEY (id)
 );

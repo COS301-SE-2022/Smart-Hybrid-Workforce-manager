@@ -13,7 +13,8 @@ RETURNS TABLE (
     parking parking.type,
     office_days INTEGER,
     preferred_start_time TIME WITHOUT TIME ZONE,
-    preferred_end_time TIME WITHOUT TIME ZONE
+    preferred_end_time TIME WITHOUT TIME ZONE,
+    building_id uuid
 ) AS 
 $$
 BEGIN

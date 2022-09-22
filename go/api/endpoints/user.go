@@ -275,11 +275,11 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) { // TO
 		logger.Error.Fatalf("\nerror\n%v\n", err)
 		return
 	}
-	if(len(credentials) == 0){
+	if len(credentials) == 0 {
 		utils.AccessDenied(writer, request, errors.New("incorrect email password combination"))
 		return
 	}
-	
+
 	users, err := da.FindIdentifier(&data.User{Identifier: credentials[0].Identifier})
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
@@ -292,7 +292,7 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) { // TO
 		return
 	}
 
-	authData, err := redis.UserLogin(*user.Id,*credentials[0].Identifier,*user.FirstName,*user.LastName)
+	authData, err := redis.UserLogin(*user.Id, *credentials[0].Identifier, *user.FirstName, *user.LastName)
 	if err != nil {
 		logger.Error.Println("Error user login endpoint")
 		utils.InternalServerError(writer, request, err)
