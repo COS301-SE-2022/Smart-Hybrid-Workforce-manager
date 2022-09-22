@@ -13,11 +13,11 @@ import (
 	"testing"
 )
 
-func createTeam(id string, name string, picture string, capacity int, picture string) data.Team {
+func createTeam(id string, name string, color string, capacity int, picture string) data.Team {
 	var team data.Team
 	team.Id = &id
 	team.Name = &name
-	team.Picture = &picture
+	team.Color = &color
 	team.Capacity = &capacity
 	team.Picture = &picture
 	return team
@@ -69,7 +69,7 @@ func TestInformationTeamHandler(t *testing.T) {
 				{
 					id: null,
 					name: "Team A",
-					picture: "Team A's picture...",
+					color: "Team A's color...",
 					capacity: 5
 					picture : "/pic.jpg"
 				}`)),
@@ -88,7 +88,7 @@ func TestInformationTeamHandler(t *testing.T) {
 					{
 						id: null,
 						name: "Team A",
-						picture: "Team A's picture...",
+						color: "Team A's color...",
 						capacity: 5
 						picture : "/pic.jpg"
 					}
@@ -164,7 +164,7 @@ func TestCreateTeamHandler(t *testing.T) {
 				{
 					id: null,
 					name: "Team A",
-					picture: "Team A's picture...",
+					color: "Team A's color...",
 					capacity: 5
 					picture : "/pic.jpg"
 				}`)),
@@ -183,7 +183,7 @@ func TestCreateTeamHandler(t *testing.T) {
 					{
 						id: null,
 						name: "Team A",
-						picture: "Team A's picture...",
+						color: "Team A's color...",
 						capacity: 5
 						picture : "/pic.jpg"
 					}
@@ -259,7 +259,7 @@ func TestDeleteTeamHandler(t *testing.T) {
 				{
 					id: null,
 					name: "Team A",
-					picture: "Team A's picture...",
+					color: "Team A's color...",
 					capacity: 5
 					picture : "/pic.jpg"
 				}`)),
@@ -278,7 +278,7 @@ func TestDeleteTeamHandler(t *testing.T) {
 					{
 						id: null,
 						name: "Team A",
-						picture: "Team A's picture...",
+						color: "Team A's color...",
 						capacity: 5
 						picture : "/pic.jpg"
 					}
