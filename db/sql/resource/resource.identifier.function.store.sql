@@ -7,7 +7,6 @@ CREATE OR REPLACE FUNCTION resource.identifier_store(
     _width float,
     _height float,
     _rotation float,
-	_role_id uuid,
 	_resource_type resource.type,
     _decorations JSON
 )
@@ -25,13 +24,12 @@ BEGIN
             width = _width,
             height = _height,
             rotation = _rotation,        
-            role_id = _role_id,
             resource_type = _resource_type
         WHERE id = _id
 		RETURNING identifier.id INTO __id;
     ELSE
-        INSERT INTO resource.identifier(id, room_id, name, xcoord, ycoord, width, height, rotation, role_id, resource_type, decorations)
-        VALUES (COALESCE(_id, uuid_generate_v4()), _room_id, _name, _xcoord, _ycoord, _width, _height, _rotation, _role_id, _resource_type, _decorations)
+        INSERT INTO resource.identifier(id, room_id, name, xcoord, ycoord, width, height, rotation, resource_type, decorations)
+        VALUES (COALESCE(_id, uuid_generate_v4()), _room_id, _name, _xcoord, _ycoord, _width, _height, _rotation, _resource_type, _decorations)
         RETURNING identifier.id INTO __id;
     END IF;
 	RETURN __id;

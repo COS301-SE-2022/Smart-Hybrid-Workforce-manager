@@ -9,6 +9,17 @@ echo "Using database $DBNAME"
 
 CONFIG=" dbname=$DBNAME user=$USER"
 
+######### resource
+for file in ${DIR}/resource/*.schema.*sql
+do
+  psql "$CONFIG" -f "$file"
+done
+
+for file in ${DIR}/resource/*.function.*sql
+do
+  psql "$CONFIG" -f "$file"
+done
+
 ######### user
 for file in ${DIR}/user/*.schema.*sql
 do
@@ -49,17 +60,6 @@ do
 done
 
 for file in ${DIR}/permission/*.function.*sql
-do
-  psql "$CONFIG" -f "$file"
-done
-
-######### resource
-for file in ${DIR}/resource/*.schema.*sql
-do
-  psql "$CONFIG" -f "$file"
-done
-
-for file in ${DIR}/resource/*.function.*sql
 do
   psql "$CONFIG" -f "$file"
 done

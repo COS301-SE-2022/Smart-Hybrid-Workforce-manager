@@ -4,9 +4,9 @@ CREATE OR REPLACE FUNCTION team.identifier_remove(
 RETURNS TABLE (
     id uuid,
 	name VARCHAR(256),
-	description VARCHAR(256),
+	color VARCHAR(256),
 	capacity INT,
-	picture VARCHAR(256),
+	picture TEXT,
     priority INT,
     team_lead_id uuid,
     date_created TIMESTAMP

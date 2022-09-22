@@ -7,7 +7,6 @@ CREATE OR REPLACE FUNCTION resource.identifier_find(
     _width float DEFAULT NULL,
     _height float DEFAULT NULL,
     _rotation float DEFAULT NULL,
-    _role_id uuid DEFAULT NULL,
     _resource_type resource.type DEFAULT NULL,
     _date_created TIMESTAMP DEFAULT NULL,
     _permissions JSONB DEFAULT NULL
@@ -21,7 +20,6 @@ RETURNS TABLE (
     width float,
     height float,
     rotation float,
-	role_id uuid,
 	resource_type resource.type,
     date_created TIMESTAMP,
     decorations JSON
@@ -50,7 +48,7 @@ BEGIN
         AND permission_category = 'RESOURCE'::permission.category
         AND permission_tenant = 'IDENTIFIER'::permission.tenant
     )
-    SELECT i.id, i.room_id, i.name, i.xcoord, i.ycoord, i.width, i.height, i.rotation, i.role_id, i.resource_type, i.date_created, i.decorations
+    SELECT i.id, i.room_id, i.name, i.xcoord, i.ycoord, i.width, i.height, i.rotation, i.resource_type, i.date_created, i.decorations
     FROM resource.identifier as i
     WHERE (EXISTS(SELECT 1 FROM permitted_identifiers WHERE permission_tenant_id is null) OR i.id = ANY(SELECT * FROM permitted_identifiers))
     AND (_id IS NULL OR i.id = _id)
@@ -61,7 +59,6 @@ BEGIN
     AND (_width IS NULL OR i.width = _width)
     AND (_height IS NULL OR i.height = _height)
     AND (_rotation IS NULL OR i.rotation = _rotation)
-    AND (_role_id IS NULL OR i.role_id = _role_id)
     AND (_resource_type IS NULL OR i.resource_type = _resource_type)
     AND (_date_created IS NULL OR i.date_created >= _date_created);
 
