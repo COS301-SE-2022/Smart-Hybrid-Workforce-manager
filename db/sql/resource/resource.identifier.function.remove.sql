@@ -10,7 +10,6 @@ RETURNS TABLE (
     width float,
     height float,
     rotation float,
-	role_id uuid,
 	resource_type resource.type,
     date_created TIMESTAMP,
     decorations JSON

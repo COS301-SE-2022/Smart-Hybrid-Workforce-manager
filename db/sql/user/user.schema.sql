@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS "user".identifier (
     office_days INTEGER NOT NULL DEFAULT 0,
     preferred_start_time TIME WITHOUT TIME ZONE DEFAULT NULL,
     preferred_end_time TIME WITHOUT TIME ZONE DEFAULT NULL,
-    preferred_desk uuid DEFAULT NULL,
+    preferred_desk uuid REFERENCES resource.identifier(id) ON DELETE CASCADE DEFAULT NULL,
     building_id uuid REFERENCES resource.building(id) ON DELETE CASCADE DEFAULT NULL,
 	
     PRIMARY KEY (id)
