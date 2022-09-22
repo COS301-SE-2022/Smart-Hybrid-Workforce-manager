@@ -1,0 +1,11 @@
+{
+    "create_user": {
+        "password_override": null,
+        "lowest_preferred_start_time": "2022-08-24T09:00:00.000Z",
+        "highest_preferred_end_time": "2022-08-24T16:00:00.000Z",
+        "preferred_time_step_minutes": 60,
+        "work_from_home_probability": 0.8,
+        "office_days_options": [1, 2, 3, 4, 5],
+        "office_days_probabilities": [0.2, 0.2, 0.2, 0.2, 0.2]
+    }
+}
