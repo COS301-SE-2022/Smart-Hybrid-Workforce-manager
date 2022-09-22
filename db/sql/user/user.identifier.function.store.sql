@@ -4,7 +4,7 @@ CREATE OR REPLACE FUNCTION "user".identifier_store(
 	_first_name VARCHAR(256),
 	_last_name VARCHAR(256),
 	_email VARCHAR(256),
-	_picture VARCHAR(256),
+	_picture TEXT,
     _work_from_home BOOLEAN,
     _parking parking.type,
     _office_days INTEGER,

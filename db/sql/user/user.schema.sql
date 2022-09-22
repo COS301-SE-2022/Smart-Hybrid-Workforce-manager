@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS "user".identifier (
     first_name VARCHAR(256) CHECK(first_name <> ''),
     last_name VARCHAR(256) CHECK(last_name <> ''),
     email VARCHAR(256) CHECK(email <> ''),
-    picture VARCHAR(256) CHECK(picture <> ''),
+    picture TEXT CHECK(picture <> ''),
     date_created TIMESTAMP WITHOUT TIME ZONE DEFAULT(now() AT TIME ZONE 'uct'),
     work_from_home BOOLEAN NOT NULL DEFAULT false,
     parking parking.type NOT NULL DEFAULT 'STANDARD',

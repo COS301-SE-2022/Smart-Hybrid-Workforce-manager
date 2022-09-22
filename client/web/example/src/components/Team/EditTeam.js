@@ -4,6 +4,9 @@ import styles from './team.module.css';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
+import { storage } from '../../firebase';
+import { ref, uploadBytes } from 'firebase/storage';
+import { v4 } from 'uuid';
 
 const EditTeam = ({teamName, teamColor, teamPriority, teamPicture, teamID}) =>
 {
@@ -12,6 +15,7 @@ const EditTeam = ({teamName, teamColor, teamPriority, teamPicture, teamID}) =>
     const [name, setName] = useState(teamName);
     const [priority, setPriority] = useState(teamPriority);
     const [picture, setPicture] = useState('');
+    const [pictureUpload, setPictureUpload] = useState(null);
 
     const {userData} = useContext(UserContext);
     const navigate = useNavigate();
@@ -28,22 +32,32 @@ const EditTeam = ({teamName, teamColor, teamPriority, teamPicture, teamID}) =>
         }
     }
 
-    const CheckPicture = (value) =>
+    const CheckPicture = (file) =>
     {
-        const extension = value.substring(value.length - 3, value.length);
+        const extension = file.substring(file.length - 3, file.length);
         if(!(extension === 'png' || extension === 'jpg'))
         {
             setPicture('');
         }
         else
         {
-            setPicture(value);
+            setPictureUpload(file);
+            //setPicture(file);
         }
     }
 
     const EditTeamSubmit = async () =>
     {
-        try
+        if(pictureUpload !== null)
+        {
+            const pictureRef = ref(storage, `teams/${pictureUpload.name + v4()}`);
+            uploadBytes(pictureRef, pictureUpload).then(() =>
+            {
+                alert('Image uploaded');
+            });
+        }
+
+        /*try
         {
             let res = await fetch("http://localhost:8080/api/team/create", 
             {
@@ -69,7 +83,7 @@ const EditTeam = ({teamName, teamColor, teamPriority, teamPicture, teamID}) =>
         catch(err)
         {
 
-        }
+        }*/
     }
 
     useEffect(() =>
@@ -117,7 +131,7 @@ const EditTeam = ({teamName, teamColor, teamPriority, teamPicture, teamID}) =>
 
             <Form.Group className={styles.formGroup} controlId="formBasicName">
                 <Form.Label className={styles.formLabel}>Team picture</Form.Label>
-                <Form.Control className={styles.fileUpload} type='file' value={picture} onChange={(e) => CheckPicture(e.target.value)} />
+                <Form.Control className={styles.fileUpload} type='file' value={picture} onChange={(e) => CheckPicture(e.target.files[0])} />
             </Form.Group>
 
 
