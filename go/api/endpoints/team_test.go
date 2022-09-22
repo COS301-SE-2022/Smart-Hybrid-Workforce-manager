@@ -5,19 +5,19 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	dtdb "lib/dockertest_db"
-	tu "lib/testutils"
 	ts "lib/test_setup"
+	tu "lib/testutils"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 )
 
-func createTeam(id string, name string, description string, capacity int, picture string) data.Team {
+func createTeam(id string, name string, picture string, capacity int, picture string) data.Team {
 	var team data.Team
 	team.Id = &id
 	team.Name = &name
-	team.Description = &description
+	team.Picture = &picture
 	team.Capacity = &capacity
 	team.Picture = &picture
 	return team
@@ -69,7 +69,7 @@ func TestInformationTeamHandler(t *testing.T) {
 				{
 					id: null,
 					name: "Team A",
-					description: "Team A's description...",
+					picture: "Team A's picture...",
 					capacity: 5
 					picture : "/pic.jpg"
 				}`)),
@@ -88,7 +88,7 @@ func TestInformationTeamHandler(t *testing.T) {
 					{
 						id: null,
 						name: "Team A",
-						description: "Team A's description...",
+						picture: "Team A's picture...",
 						capacity: 5
 						picture : "/pic.jpg"
 					}
@@ -164,7 +164,7 @@ func TestCreateTeamHandler(t *testing.T) {
 				{
 					id: null,
 					name: "Team A",
-					description: "Team A's description...",
+					picture: "Team A's picture...",
 					capacity: 5
 					picture : "/pic.jpg"
 				}`)),
@@ -183,7 +183,7 @@ func TestCreateTeamHandler(t *testing.T) {
 					{
 						id: null,
 						name: "Team A",
-						description: "Team A's description...",
+						picture: "Team A's picture...",
 						capacity: 5
 						picture : "/pic.jpg"
 					}
@@ -259,7 +259,7 @@ func TestDeleteTeamHandler(t *testing.T) {
 				{
 					id: null,
 					name: "Team A",
-					description: "Team A's description...",
+					picture: "Team A's picture...",
 					capacity: 5
 					picture : "/pic.jpg"
 				}`)),
@@ -278,7 +278,7 @@ func TestDeleteTeamHandler(t *testing.T) {
 					{
 						id: null,
 						name: "Team A",
-						description: "Team A's description...",
+						picture: "Team A's picture...",
 						capacity: 5
 						picture : "/pic.jpg"
 					}
