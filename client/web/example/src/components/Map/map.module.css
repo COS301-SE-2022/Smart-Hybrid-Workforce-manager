@@ -1,0 +1,67 @@
+.canvasContainer
+{
+    position: absolute;
+    background: #ced8fb;
+
+    width: 85vw;
+    height: 90vh;
+    left: 0;
+}
+
+.buildingSelectorContainer
+{
+    position: absolute;
+    top: 2vh;
+    left: 1vw;
+}
+
+.roomSelectorContainer
+{
+    position: absolute;
+    top: 2vh;
+    left: 25vw;
+}
+
+.resourceSelector
+{
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+
+    color: #374146;
+
+    border-style: none;
+    border-radius: 1.5vh;
+    outline: none;
+
+    margin-top: 1vh;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+
+    width: 20vw;
+
+    font-size: 1vw;
+}
+
+.dateContainer
+{
+    position: absolute;
+    top: 2vh;
+    left: 50vw;
+}
+
+.date
+{
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+    border-style: none;
+    border-radius: 1.5vh;
+    outline: none;
+}
+
+.date:focus
+{
+    outline: none;
+}

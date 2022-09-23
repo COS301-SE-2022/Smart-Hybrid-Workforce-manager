@@ -12,9 +12,6 @@ import Calendar from './pages/Calendar'
 
 import Admin from './pages/Admin'
 
-import Teams from './pages/Teams'
-import CreateTeam from './pages/TeamsCreate'
-import EditTeam from './pages/TeamsEdit'
 import PermissionsTeam from './pages/TeamsPermissions'
 
 import Layout from './pages/CreateLayout'
@@ -79,10 +76,7 @@ function App()
             <Route path="/user-edit" exact element={<EditUser />} />
             <Route path="/user-create" exact element={<CreateUser />} />
             <Route path="/user-permissions" exact element={<PermissionsUser />} />
-            
-            <Route path="/team" exact element={<Teams />} />
-            <Route path="/team-create" exact element={<CreateTeam />} />
-            <Route path="/team-edit" exact element={<EditTeam />} />
+
             <Route path="/team-permissions" exact element={<PermissionsTeam />} />
 
             <Route path="/layout" exact element={<Layout />} />

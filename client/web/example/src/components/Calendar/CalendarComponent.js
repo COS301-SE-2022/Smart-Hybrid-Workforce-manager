@@ -486,12 +486,6 @@ const CalendarComponent = () =>
                 }).then((res) => res.json()).then(data => 
                 {
                     setBookings(data);
-                    console.log(data);
-                    window.sessionStorage.removeItem("BookingID");
-                    window.sessionStorage.removeItem("StartDate");
-                    window.sessionStorage.removeItem("StartTime");
-                    window.sessionStorage.removeItem("EndDate");
-                    window.sessionStorage.removeItem("EndTime");
                 });
         }
 
