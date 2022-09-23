@@ -1,9 +1,8 @@
 import json
 import dateutil.parser
 import pprint
-
-
 from typing import Dict
+
 
 def parse(data: Dict, indent = 0) -> Dict:
     # where possible, parse time
@@ -17,8 +16,9 @@ def parse(data: Dict, indent = 0) -> Dict:
             print(f'{" " * indent}Parsed "{key}" as datetime in ISO8601 format')
         except:
             ...
-    print(f'Config parsed as:\n{pprint.pformat(data)}')
+    # print(f'Config parsed as:\n{pprint.pformat(data)}')
     return data
+
 
 def parse_config(path: str) -> Dict:
     with open(path) as f:

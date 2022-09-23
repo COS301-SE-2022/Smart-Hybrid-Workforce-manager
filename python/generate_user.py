@@ -20,8 +20,8 @@ class UserGenerator:
         self.team_num_bins = list(range(len(self.config["team_probabilities"])))
         self.team_num_probs = self.config["team_probabilities"]
 
-        # self.role_num_bins = list(range(len(self.config["role_probabilities"])))
-        # self.role_num_probs = self.config["role_probabilities"]
+        self.role_num_bins = list(range(len(self.config["role_probabilities"])))
+        self.role_num_probs = self.config["role_probabilities"]
 
     # returns true if the name was already used
     def search_history_names(self, first_name: str, last_name: str) -> bool:
@@ -30,7 +30,8 @@ class UserGenerator:
                 return True
 
     def generate(self, first_names: List[str], last_names: List[str], *, passwords: List[str] = None,
-                 teams: List[str] = None, roles: List[str] = None, profile_pics: List[str] = None, seed: int = None) -> Dict:
+                 teams: List[str] = None, roles: List[str] = None, desks: List[str] = None,
+                 profile_pics: List[str] = None, seed: int = None) -> Dict:
         if seed is not None:
             random.seed(seed)
 
@@ -45,7 +46,10 @@ class UserGenerator:
             "preferred_end_time": "2022-08-24T16:00:00.000Z",
             "work_from_home": False,
             "building_id": None,
+            "preferred_desk": None,
             "picture": None,
+            "_teams": [],
+            "_roles": [],
         }
 
         # names
@@ -76,9 +80,22 @@ class UserGenerator:
         user["preferred_start_time"] = self.time_bins[start_time_i].replace(tzinfo=None).isoformat() + "Z"
         user["preferred_end_time"] = self.time_bins[end_time_i].replace(tzinfo=None).isoformat() + "Z"
 
-        if profile_pics is not None:
+        if profile_pics is not None and len(profile_pics) > 0:
             user["picture"] = random.choice(profile_pics)
 
+        if desks is not None and len(desks) > 0:
+            user["preferred_desk"] = random.choice(desks)
 
+        if teams is not None:
+            num_teams = random.choices(self.team_num_bins, self.team_num_probs, k=1)[0]
+            num_teams = min(num_teams, len(teams))
+            if num_teams > 0:
+                user["_teams"] = random.sample(teams, num_teams)
+
+        if roles is not None:
+            num_roles = random.choices(self.role_num_bins, self.role_num_probs, k=1)[0]
+            num_roles = min(num_roles, len(roles))
+            if num_roles > 0:
+                user["_roles"] = random.sample(roles, num_roles)
 
         return user
