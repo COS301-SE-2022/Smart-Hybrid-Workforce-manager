@@ -9,8 +9,12 @@ class UserGenerator:
         self.config = config["create_user"]
         self.office_days_options = self.config["office_days_options"]
         self.office_days_probabilities = self.config["office_days_probabilities"]
-        self.time_bins: List[datetime.datetime] = []
-        
+        self.time_bins: List[datetime.datetime] = [self.config["lowest_preferred_start_time"]]
+        step_minutes: datetime.timedelta = datetime.timedelta(self.config["preferred_time_step_minutes"])
+        time_slot: datetime.datetime = self.config["lowest_preferred_start_time"] + step_minutes
+        while time_slot <= self.config["highest_preferred_end_time"]:
+            self.time_bins.append(time_slot)
+            time_slot += step_minutes
 
     # returns true if the name was already used
     def search_history_names(self, first_name: str, last_name: str) -> bool:
@@ -24,14 +28,14 @@ class UserGenerator:
 
         # noinspection PyDictCreation
         user = {
-                "first_name": None,
-                "last_name": None,
-                "email": None,
-                "password": None,
-                "office_days": 0,
-                "preferred_start_time": "2022-08-24T09:00:00.000Z",
-                "preferred_end_time": "2022-08-24T16:00:00.000Z",
-                "work_from_home": False
+            "first_name": None,
+            "last_name": None,
+            "email": None,
+            "password": None,
+            "office_days": 0,
+            "preferred_start_time": "2022-08-24T09:00:00.000Z",
+            "preferred_end_time": "2022-08-24T16:00:00.000Z",
+            "work_from_home": False
         }
 
         # names
@@ -55,3 +59,9 @@ class UserGenerator:
             user["password"] = self.config["password_override"]
         else:
             user["password"] = random.choice(passwords)
+
+        # office time
+        start_time_i: int = random.randint(0, len(self.time_bins) - 2)
+        end_time_i: int = random.randint(start_time_i + 1, len(self.time_bins) - 1)
+        user["preferred_start_time"] = self.time_bins[start_time_i]
+        user["preferred_end_time"] = self.time_bins[end_time_i]
