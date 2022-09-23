@@ -11,14 +11,15 @@ CREATE TABLE IF NOT EXISTS "user".identifier (
     first_name VARCHAR(256) CHECK(first_name <> ''),
     last_name VARCHAR(256) CHECK(last_name <> ''),
     email VARCHAR(256) CHECK(email <> ''),
-    picture VARCHAR(256) CHECK(picture <> ''),
+    picture TEXT CHECK(picture <> ''),
     date_created TIMESTAMP WITHOUT TIME ZONE DEFAULT(now() AT TIME ZONE 'uct'),
     work_from_home BOOLEAN NOT NULL DEFAULT false,
     parking parking.type NOT NULL DEFAULT 'STANDARD',
     office_days INTEGER NOT NULL DEFAULT 0,
     preferred_start_time TIME WITHOUT TIME ZONE DEFAULT NULL,
     preferred_end_time TIME WITHOUT TIME ZONE DEFAULT NULL,
-    preferred_desk uuid DEFAULT NULL,
+    preferred_desk uuid REFERENCES resource.identifier(id) ON DELETE CASCADE DEFAULT NULL,
+    building_id uuid REFERENCES resource.building(id) ON DELETE CASCADE DEFAULT NULL,
 	
     PRIMARY KEY (id)
 );

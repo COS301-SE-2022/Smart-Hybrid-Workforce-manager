@@ -11,14 +11,53 @@
     color: #374146;
 }
 
+.pictureEditContainer
+{
+    width: 10vw;
+    margin-left: 5vw;
+    margin-bottom: 2vh;
+
+    text-align: center;
+}
+
+.pictureContainer
+{
+    width: 4vw;
+    height: 4vw;
+
+    margin-left: 3vw;
+
+    border-radius: 10vh;
+}
+
+.picture
+{
+    width: 100%;
+    height: 100%;
+    border-radius: 10vh;
+}
+
+.fileUpload
+{
+    margin-top: 1vh;
+
+    font-size: 0.8vw; 
+}
+
+.fileUpload:hover
+{
+    cursor: pointer;
+    color: #09a2fb;
+}
+
 .formGroup
 {
-    margin-bottom: 4vh;
+    margin-bottom: 3vh;
 }
 
 .formLabel
 {
-    font-size: 1.5vw;
+    font-size: 1vw;
     letter-spacing: 0.1vw;
 }
 
@@ -36,14 +75,13 @@
     border-radius: 1.5vh;
     outline: none;
 
-    font-size: 1vw; 
+    font-size: 0.8vw; 
 }
 
 .formInput:focus
 {
     outline: none;
 }
-
 
 .colorPicker
 {
@@ -63,22 +101,32 @@
     outline: none;
 }
 
-.fileUpload
+.radioLabel
 {
-    margin-top: 1vh;
-    padding-left: 1vw;
-    padding-top: 1vh;
-    padding-bottom: 1vh;
-    width: 20vw;
+    font-size: 1vw;
+    
+    margin-left: 0.5vw;
+    margin-right: 2vw;
+}
 
+.lead
+{
+    background: white;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    background-color: white;
+    backdrop-filter: blur(4px);
 
     border-style: none;
     border-radius: 1.5vh;
     outline: none;
 
-    font-size: 1vw; 
+    margin-top: 1vh;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+
+    width: 20vw;
+
+    font-size: 0.8vw;
 }
 
 .submit
