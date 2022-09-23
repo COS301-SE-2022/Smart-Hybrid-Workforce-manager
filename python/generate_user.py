@@ -6,6 +6,7 @@ from typing import Dict, List
 class UserGenerator:
     def __init__(self, config: Dict) -> None:
         self.history: List[Dict] = []
+        self.building = config["building_id"]
         self.config = config["create_user"]
         self.office_days_options = self.config["office_days_options"]
         self.office_days_probabilities = self.config["office_days_probabilities"]
@@ -22,6 +23,8 @@ class UserGenerator:
 
         self.role_num_bins = list(range(len(self.config["role_probabilities"])))
         self.role_num_probs = self.config["role_probabilities"]
+
+        self.preferred_desk_prob = 1 - self.config["no_preferred_desk_probability"]
 
     # returns true if the name was already used
     def search_history_names(self, first_name: str, last_name: str) -> bool:
@@ -45,11 +48,12 @@ class UserGenerator:
             "preferred_start_time": "2022-08-24T09:00:00.000Z",
             "preferred_end_time": "2022-08-24T16:00:00.000Z",
             "work_from_home": False,
-            "building_id": None,
+            "building_id": self.building,
             "preferred_desk": None,
             "picture": None,
             "_teams": [],
             "_roles": [],
+            "parking": "STANDARD",
         }
 
         # names
@@ -64,6 +68,7 @@ class UserGenerator:
 
         # email
         user["email"] = user["first_name"].lower() + "." + user["last_name"].lower() + str(user["office_days"]) + random.choice(self.email_domains)
+        user["email"] = user["email"].replace(" ", "_")
 
         # work from home
         wfh_prob = self.config["work_from_home_probability"]  # work from home probability
@@ -83,7 +88,7 @@ class UserGenerator:
         if profile_pics is not None and len(profile_pics) > 0:
             user["picture"] = random.choice(profile_pics)
 
-        if desks is not None and len(desks) > 0:
+        if desks is not None and len(desks) > 0 and random.uniform(0, 1) < self.preferred_desk_prob:
             user["preferred_desk"] = random.choice(desks)
 
         if teams is not None:
@@ -98,4 +103,5 @@ class UserGenerator:
             if num_roles > 0:
                 user["_roles"] = random.sample(roles, num_roles)
 
+        user["identifier"] = user["email"]
         return user
