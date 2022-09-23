@@ -4,13 +4,14 @@ CREATE OR REPLACE FUNCTION "user".identifier_store(
 	_first_name VARCHAR(256),
 	_last_name VARCHAR(256),
 	_email VARCHAR(256),
-	_picture VARCHAR(256),
+	_picture TEXT,
     _work_from_home BOOLEAN,
     _parking parking.type,
     _office_days INTEGER,
     _preferred_start_time TIME WITHOUT TIME ZONE,
     _preferred_end_time TIME WITHOUT TIME ZONE,
-    _preferred_desk uuid DEFAULT NULL
+    _preferred_desk uuid DEFAULT NULL,
+    _building_id uuid DEFAULT NULL
 )
 RETURNS uuid AS 
 $$
@@ -28,12 +29,13 @@ BEGIN
             office_days = _office_days,
             preferred_start_time = _preferred_start_time,
             preferred_end_time = _preferred_end_time,
-            preferred_desk = _preferred_desk
+            preferred_desk = _preferred_desk,
+            building_id = _building_id
         WHERE identifier = _identifier
         RETURNING identifier.id INTO __id;
     ELSE
-        INSERT INTO "user".identifier (id, identifier, first_name, last_name, email, picture, work_from_home, parking, office_days, preferred_start_time, preferred_end_time, preferred_desk)
-        VALUES (COALESCE(_id, uuid_generate_v4()), _identifier, _first_name, _last_name, _email, _picture, _work_from_home, _parking, _office_days, _preferred_start_time, _preferred_end_time, _preferred_desk)
+        INSERT INTO "user".identifier (id, identifier, first_name, last_name, email, picture, work_from_home, parking, office_days, preferred_start_time, preferred_end_time, preferred_desk, building_id)
+        VALUES (COALESCE(_id, uuid_generate_v4()), _identifier, _first_name, _last_name, _email, _picture, _work_from_home, _parking, _office_days, _preferred_start_time, _preferred_end_time, _preferred_desk, _building_id)
         RETURNING identifier.id INTO __id;
     END IF;
     RETURN __id;

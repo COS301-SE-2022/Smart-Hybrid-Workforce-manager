@@ -1,10 +1,11 @@
 import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
 import { useNavigate } from "react-router-dom"
+import { UserContext } from '../App.js'
 
 function ProfileConfiguration()
 {
@@ -21,6 +22,7 @@ function ProfileConfiguration()
   const [endTime, SetEndTime] = useState("")
 
   const navigate=useNavigate();
+  const {userData,setUserData}=useContext(UserContext)
 
   let handleSubmit = async (e) =>
   {
@@ -30,6 +32,7 @@ function ProfileConfiguration()
       let res = await fetch("http://localhost:8080/api/user/update", 
       {
         method: "POST",
+        mode: 'cors',
         body: JSON.stringify({
           id: window.sessionStorage.getItem("UserID"),
           identifier: identifier,
@@ -43,7 +46,11 @@ function ProfileConfiguration()
           office_days: parseInt(officeDays),
           preferred_start_time: "0000-01-01T" + startTime + ":00Z",
           preferred_end_time: "0000-01-01T" + endTime + ":00Z"
-        })
+        }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+        }
       });
 
       if(res.status === 200)

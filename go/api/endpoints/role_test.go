@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	dtdb "lib/dockertest_db"
-	tu "lib/testutils"
 	ts "lib/test_setup"
+	tu "lib/testutils"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -29,7 +29,7 @@ func TestCreateRoleHandler(t *testing.T) {
 		responseCode    int
 		responseMessage string
 	}
-	
+
 	// Basic Bad tests ================
 	basicBadTests := []struct {
 		name    string
@@ -102,7 +102,7 @@ func TestCreateRoleHandler(t *testing.T) {
 	}
 
 	//Good tests ================
-	type goodExpect struct {
+	/*type goodExpect struct {
 		responseCode    int
 		responseBody    *string
 		responseMessage string
@@ -120,7 +120,7 @@ func TestCreateRoleHandler(t *testing.T) {
 				httptest.NewRecorder(),
 				httptest.NewRequest(http.MethodPost, `http://localhost:8100/api/role/create`, strings.NewReader(`
 					{
-						"role_name" : "Test_Role"
+						"name" : "Test_Role"
 					}`)),
 			},
 			expect: goodExpect{
@@ -141,7 +141,7 @@ func TestCreateRoleHandler(t *testing.T) {
 			}
 			defer response.Body.Close()
 		})
-	}
+	}*/
 
 	// Further Bad Tests ================
 	badTests := []struct {
@@ -243,7 +243,7 @@ func TestInformationRolesHandler(t *testing.T) {
 		responseCode    int
 		responseMessage string
 	}
-	
+
 	// Basic Bad tests ================
 	basicBadTests := []struct {
 		name    string
@@ -341,7 +341,7 @@ func TestDeleteRoleHandler(t *testing.T) {
 		responseCode    int
 		responseMessage string
 	}
-	
+
 	// Basic Bad tests ================
 	basicBadTests := []struct {
 		name    string

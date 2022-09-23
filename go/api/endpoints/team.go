@@ -4,9 +4,9 @@ import (
 	"api/data"
 	"api/db"
 	"api/security"
-	"lib/utils"
 	"fmt"
 	"lib/logger"
+	"lib/utils"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -152,6 +152,7 @@ func InformationTeamHandler(writer http.ResponseWriter, request *http.Request, p
 		utils.InternalServerError(writer, request, err)
 		return
 	}
+
 	logger.Access.Printf("%v team information requested\n", team.Id)
 	utils.JSONResponse(writer, request, teams)
 }

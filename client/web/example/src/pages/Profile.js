@@ -136,6 +136,17 @@ function Profile()
 
     const EditProfile = () =>
     {
+        window.sessionStorage.setItem("Identifier", identifier);
+        window.sessionStorage.setItem("FirstName", firstName);
+        window.sessionStorage.setItem("LastName", lastName);
+        window.sessionStorage.setItem("Email", email);
+        window.sessionStorage.setItem("Picture", picture);
+        window.sessionStorage.setItem("DateCreated", dateCreated);
+        window.sessionStorage.setItem("WorkFromHome", workFromHome);
+        window.sessionStorage.setItem("Parking", parking);
+        window.sessionStorage.setItem("OfficeDays", officeDays);
+        window.sessionStorage.setItem("StartTime", startTime);
+        window.sessionStorage.setItem("EndTime", endTime);
         navigate('/profile-configuration');
     }
 

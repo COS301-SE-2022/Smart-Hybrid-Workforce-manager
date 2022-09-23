@@ -3,7 +3,9 @@ CREATE OR REPLACE FUNCTION role.identifier_remove(
 )
 RETURNS TABLE (
     id uuid,
-	role_name VarChar(256),
+	name VARCHAR(256),
+    color VARCHAR(256),
+    lead_id uuid,
 	date_added TIMESTAMP
 ) AS
 $$

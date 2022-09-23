@@ -1,7 +1,7 @@
 import styles from './kanban.module.css';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MdEdit, MdPersonAdd, MdClose } from 'react-icons/md';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { AiOutlineUsergroupAdd } from 'react-icons/ai';
 import { FaSave } from 'react-icons/fa';
@@ -9,6 +9,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { EditTeamForm } from '../Team/EditTeam';
 import { AddTeamForm } from '../Team/AddTeam';
 import { EditUserPanel } from '../User/EditUser';
+import { UserContext } from '../../App';
 
 const Kanban = () =>
 {
@@ -16,254 +17,16 @@ const Kanban = () =>
     const rightIntervalRef = useRef(null);
     const leftIntervalRef = useRef(null);
 
-    const [editTeamName, setEditTeamName] = useState('Default');
-    const [editTeamColor, setEditTeamColor] = useState('#ffffff');
-    const [editTeamPicture, setEditTeamPicture] = useState('');
-    const [currTeam, setCurrTeam] = useState('');
+    const [columns, setColumns] = useState({});
+
+    const [editTeam, setEditTeam] = useState(null);
 
     const [currUser, setCurrUser] = useState({id: '', name: '', picture: ''});
     const [userPanelLeft, setUserPanelLeft] = useState(0.85*window.innerWidth);
 
+    const {userData} = useContext(UserContext);
 
-    const columnsInit = 
-    {
-        ['col1']: 
-        {
-            name: 'Team 1',
-            color: '#09a2fb',
-            picture: 'https://seeklogo.com/images/B/breaking-bad-logo-032E797C11-seeklogo.com.jpg',
-            users:
-            [
-                {
-                    id: 't1u1',
-                    name: 'Walter White',
-                    picture: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Walter_White_S5B.png/220px-Walter_White_S5B.png',
-                    roles:
-                    [
-                        'Developer',
-                        'CEO'
-                    ]
-                },
-                {
-                    id: 't1u2',
-                    name: 'Jesse Pinkman',
-                    picture: 'https://upload.wikimedia.org/wikipedia/en/thumb/c/c6/Jesse_Pinkman_S5B.png/220px-Jesse_Pinkman_S5B.png',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                }
-            ]
-        },
-
-        ['col2']:
-        {
-            name: 'Team 2',
-            color: '#ff3e30',
-            users: [
-                {
-                    id: 't2u1',
-                    name: 'User 1',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                },
-                {
-                    id: 't2u2',
-                    name: 'User 2',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                },
-                {
-                    id: 't2u3',
-                    name: 'User 3',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                },
-                {
-                    id: 't2u4',
-                    name: 'User 4',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                }
-            ]
-        },
-        
-        ['col3']:
-        {
-            name: 'Team 3',
-            color: '#86ff30',
-            users: [
-                {
-                    id: 't3u1',
-                    name: 'User 1',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                },
-                {
-                    id: 't3u2',
-                    name: 'User 2',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                },
-                {
-                    id: 't3u3',
-                    name: 'User 3',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                },
-                {
-                    id: 't3u4',
-                    name: 'User 4',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                },
-                {
-                    id: 't3u5',
-                    name: 'User 5',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                },
-                {
-                    id: 't3u6',
-                    name: 'User 6',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                },
-                {
-                    id: 't3u7',
-                    name: 'User 7',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                }
-            ]
-        },
-
-        ['col4']:
-        {
-            name: 'Team 4',
-            color: '#d230ff',
-            users: [
-                {
-                    id: 't4u1',
-                    name: 'User 1',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                },
-                {
-                    id: 't4u2',
-                    name: 'User 2',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                },
-                {
-                    id: 't4u3',
-                    name: 'User 3',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                },
-                {
-                    id: 't4u4',
-                    name: 'User 4',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                },
-                {
-                    id: 't4u5',
-                    name: 'User 5',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                },
-                {
-                    id: 't4u6',
-                    name: 'User 6',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                },
-                {
-                    id: 't4u7',
-                    name: 'User 7',
-                    roles:
-                    [
-                        'Developer',
-                        'Secretary',
-                        'Engineer'
-                    ]
-                }
-            ]
-        }
-    }
-
-    const [columns, setColumns] = useState(columnsInit);
+    const [roles, setRoles] = useState([]);
 
     const ShowSaveHint = () =>
     {
@@ -275,23 +38,15 @@ const Kanban = () =>
         document.getElementById('SaveHint').style.display = 'none';
     }
 
-    
-
-    const CloseEditUser = () =>
-    {
-        document.getElementById('BackgroundDimmer').style.display = 'none';
-        document.getElementById('EditUser').style.display = 'none';
-    }
-
     //Teams
-    const ShowTeamMenu = (id) =>
+    const ShowTeamMenu = (col) =>
     {
         if(document.getElementById('TeamMenu').style.display === 'none')
         {
             document.getElementById('TeamMenu').style.display = 'block';
-            document.getElementById('TeamMenu').style.left = document.getElementById(id + 'ColumnActions').getBoundingClientRect().left - 0.22*window.innerWidth + 'px';
-            document.getElementById('TeamMenu').style.top = document.getElementById(id + 'ColumnActions').getBoundingClientRect().top - 0.10*window.innerHeight + 'px';
-            setCurrTeam(id);
+            document.getElementById('TeamMenu').style.left = document.getElementById(col.id + 'ColumnActions').getBoundingClientRect().left - 0.22*window.innerWidth + 'px';
+            document.getElementById('TeamMenu').style.top = document.getElementById(col.id + 'ColumnActions').getBoundingClientRect().top - 0.10*window.innerHeight + 'px';
+            setEditTeam(col);
         }
         else
         {
@@ -299,12 +54,8 @@ const Kanban = () =>
         }
     }
 
-    const EditTeam = (col) =>
+    const EditTeam = () =>
     {
-        setEditTeamName(columns[col].name);
-        setEditTeamColor(columns[col].color);
-        setEditTeamPicture(columns[col].picture);
-
         document.getElementById('BackgroundDimmer').style.display = 'block';
         document.getElementById('EditTeam').style.display = 'block';
     }
@@ -313,6 +64,7 @@ const Kanban = () =>
     {
         document.getElementById('BackgroundDimmer').style.display = 'none';
         document.getElementById('EditTeam').style.display = 'none';
+        GetData();
     }
 
     const AddTeam = () =>
@@ -468,6 +220,307 @@ const Kanban = () =>
         }
     }
 
+    const GetData = () =>
+    {
+        fetch("http://localhost:8080/api/team/information", 
+        {
+            method: "POST",
+            mode: "cors",
+            body: JSON.stringify({
+            }),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+            }
+        }).then((res) => res.json()).then(data => 
+        {
+            let teams = {};
+            data.forEach(function CreateTeamsObject(team)
+            {
+                teams = 
+                {
+                    ...teams,
+                    [team.id]:
+                    {
+                        id: team.id,
+                        name: team.name,
+                        color: team.color,
+                        picture: team.picture,
+                        priority: team.priority,
+                        lead: team.lead,
+                        users:
+                        [
+
+                        ]
+                    }
+                }
+            })
+
+            fetch("http://localhost:8080/api/user/information", 
+            {
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify({
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
+            }).then((res) => res.json()).then(data => 
+            {
+                let usersData = [];
+                data.forEach(function CreateUsersObject(user)
+                {
+                    usersData.push(
+                        {
+                            id: user.id,
+                            name: user.first_name + ' ' + user.last_name,
+                            picture: user.picture,
+                            roles:
+                            [
+
+                            ]
+                        }
+                    );
+                });
+
+                fetch("http://localhost:8080/api/role/information", 
+                {
+                    method: "POST",
+                    mode: "cors",
+                    body: JSON.stringify({
+                    }),
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                    }
+                }).then((res) => res.json()).then(data => 
+                {
+                    let rolesData = {};
+                    let rolesForEdit = [];
+                    data.forEach(function CreateRolesObject(role)
+                    {
+                        rolesForEdit.push(role.name);
+                        rolesData =
+                        {
+                            ...rolesData,
+                            [role.id]:
+                            {
+                                name: role.name,
+                                color: role.color
+                            }
+                        };
+                    });
+
+                    setRoles(rolesForEdit);
+
+                    fetch("http://localhost:8080/api/role/user/information", 
+                    {
+                        method: "POST",
+                        mode: "cors",
+                        body: JSON.stringify({
+                        }),
+                        headers:{
+                            'Content-Type': 'application/json',
+                            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                        }
+                    }).then((res) => res.json()).then(data => 
+                    {
+                        data.forEach(function AddRoles(role)
+                        {
+                            for(var i = 0; i < usersData.length; i++)
+                            {
+                                if(usersData[i].id === role.user_id)
+                                {
+                                    usersData[i].roles.push(rolesData[role.role_id].name);
+                                    break;
+                                }
+                            }
+                        });
+
+                        fetch("http://localhost:8080/api/team/user/information", 
+                        {
+                            method: "POST",
+                            mode: "cors",
+                            body: JSON.stringify({
+                            }),
+                            headers:{
+                                'Content-Type': 'application/json',
+                                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                            }
+                        }).then((res) => res.json()).then(data => 
+                        {
+                            data.forEach(function AddTeamMembers(teamMember)
+                            {
+                                for(var i = 0; i < usersData.length; i++)
+                                {
+                                    if(usersData[i].id === teamMember.user_id)
+                                    {
+                                        teams[teamMember.team_id].users.push(usersData[i]);
+                                        break;
+                                    }
+                                }
+                            });
+
+                            setColumns(teams);
+                        });
+                    });
+                });
+            });
+        });
+    }
+
+    useEffect(() =>
+    {
+        fetch("http://localhost:8080/api/team/information", 
+        {
+            method: "POST",
+            mode: "cors",
+            body: JSON.stringify({
+            }),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+            }
+        }).then((res) => res.json()).then(data => 
+        {
+            let teams = {};
+            data.forEach(function CreateTeamsObject(team)
+            {
+                teams = 
+                {
+                    ...teams,
+                    [team.id]:
+                    {
+                        id: team.id,
+                        name: team.name,
+                        color: team.color,
+                        picture: team.picture,
+                        priority: team.priority,
+                        lead: team.lead,
+                        users:
+                        [
+
+                        ]
+                    }
+                }
+            })
+
+            fetch("http://localhost:8080/api/user/information", 
+            {
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify({
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
+            }).then((res) => res.json()).then(data => 
+            {
+                let usersData = [];
+                data.forEach(function CreateUsersObject(user)
+                {
+                    usersData.push(
+                        {
+                            id: user.id,
+                            name: user.first_name + ' ' + user.last_name,
+                            picture: user.picture,
+                            roles:
+                            [
+
+                            ]
+                        }
+                    );
+                });
+
+                fetch("http://localhost:8080/api/role/information", 
+                {
+                    method: "POST",
+                    mode: "cors",
+                    body: JSON.stringify({
+                    }),
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                    }
+                }).then((res) => res.json()).then(data => 
+                {
+                    let rolesData = {};
+                    let rolesForEdit = [];
+                    data.forEach(function CreateRolesObject(role)
+                    {
+                        rolesForEdit.push(role.name);
+                        rolesData =
+                        {
+                            ...rolesData,
+                            [role.id]:
+                            {
+                                name: role.name,
+                                color: role.color
+                            }
+                        };
+                    });
+
+                    setRoles(rolesForEdit);
+
+                    fetch("http://localhost:8080/api/role/user/information", 
+                    {
+                        method: "POST",
+                        mode: "cors",
+                        body: JSON.stringify({
+                        }),
+                        headers:{
+                            'Content-Type': 'application/json',
+                            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                        }
+                    }).then((res) => res.json()).then(data => 
+                    {
+                        data.forEach(function AddRoles(role)
+                        {
+                            for(var i = 0; i < usersData.length; i++)
+                            {
+                                if(usersData[i].id === role.user_id)
+                                {
+                                    usersData[i].roles.push(rolesData[role.role_id].name);
+                                    break;
+                                }
+                            }
+                        });
+
+                        fetch("http://localhost:8080/api/team/user/information", 
+                        {
+                            method: "POST",
+                            mode: "cors",
+                            body: JSON.stringify({
+                            }),
+                            headers:{
+                                'Content-Type': 'application/json',
+                                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                            }
+                        }).then((res) => res.json()).then(data => 
+                        {
+                            data.forEach(function AddTeamMembers(teamMember)
+                            {
+                                for(var i = 0; i < usersData.length; i++)
+                                {
+                                    if(usersData[i].id === teamMember.user_id)
+                                    {
+                                        teams[teamMember.team_id].users.push(usersData[i]);
+                                        break;
+                                    }
+                                }
+                            });
+
+                            setColumns(teams);
+                        });
+                    });
+                });
+            });
+        });
+
+    }, [userData.token]);
+
     return (
         <div className={styles.kanbanContainer}>
             <div className={styles.kanbanHeadingContainer}>
@@ -481,7 +534,7 @@ const Kanban = () =>
             <div className={styles.rightArrow} onMouseDown={StartScrollRight} onMouseUp={StopScrollRight} onMouseLeave={StopScrollRight}><IoIosArrowForward /></div>
 
             <div id='TeamMenu' className={styles.teamMenu}>
-                <div className={styles.editTeam} onMouseDown={EditTeam.bind(this, currTeam)}>Edit team</div>
+                <div className={styles.editTeam} onMouseDown={EditTeam.bind(this)}>Edit team</div>
                 <div className={styles.deleteTeam}>Delete team</div>
             </div>
 
@@ -499,12 +552,12 @@ const Kanban = () =>
 
             <div id='EditTeam' className={styles.formContainer}>
                 <div className={styles.formClose} onClick={CloseEditTeam}><MdClose /></div>
-                <EditTeamForm teamName={editTeamName} teamColor={editTeamColor} teamPriority={3} teamPicture={editTeamPicture} />
+                <EditTeamForm team={editTeam} />
             </div>
 
             <div id='EditUser' className={styles.userPanel} style={{left: userPanelLeft}}>
                 <div className={styles.userPanelClose} onClick={CloseUserPanel}><MdClose /></div>
-                <EditUserPanel userName={currUser.name} userPicture={currUser.picture} userRoles={currUser.roles} />
+                <EditUserPanel userName={currUser.name} userPicture={currUser.picture} userRoles={currUser.roles} allRoles={roles} />
             </div>
             
 
@@ -527,7 +580,7 @@ const Kanban = () =>
                                                     </div>
 
                                                     <div id={id + 'ColumnActions'} className={styles.columnActions}>
-                                                        <BsThreeDotsVertical className={styles.menu} onMouseUp={ShowTeamMenu.bind(this, id)} />
+                                                        <BsThreeDotsVertical className={styles.menu} onMouseUp={ShowTeamMenu.bind(this, col)} />
                                                     </div>
                                                 </div>
                                                 
@@ -544,8 +597,8 @@ const Kanban = () =>
                                                     </div>
                                                 </div>
 
-                                                {col.users.length > 0 && col.users.map((user, index) => (
-                                                    <Draggable key={user.id} draggableId={user.id} index={index}>
+                                                {col.users.map((user, index) => (
+                                                    <Draggable key={user.id} draggableId={id + user.id} index={index}>
                                                         {(provided, snapshot) =>
                                                         {
                                                             return (
