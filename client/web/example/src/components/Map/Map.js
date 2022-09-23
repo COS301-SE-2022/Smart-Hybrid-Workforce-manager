@@ -22,7 +22,7 @@ const Map = () =>
     const roomRef = useRef(null);
 
     //Date
-    const [date, setDate] = useState();
+    const [date, setDate] = useState('');
 
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
@@ -155,7 +155,7 @@ const Map = () =>
     //Ensures that the zooming in/out is oriented with the center of viewable canvas
     const ZoomInOut = (event) =>
     {
-        if(stageRef.current !== null)
+        /*if(stageRef.current !== null)
         {
             const stage = stageRef.current;
             const oldScale = stage.scaleX();
@@ -192,7 +192,7 @@ const Map = () =>
 
             stage.position(newPos);
             stage.batchDraw();
-        }        
+        }        */
     }
 
     //Effect on the loading of the web page
@@ -354,7 +354,10 @@ const Map = () =>
         {
             bookings.forEach((booking) =>
             {
-                console.log(booking);
+                if(booking.start.includes(date))
+                {
+                    console.log(booking);
+                }
             });
         }
     },[date, bookings]);
@@ -382,6 +385,67 @@ const Map = () =>
                                         const newDeskProps = deskProps.slice();
                                         newDeskProps[i] = newProps;
                                         SetDeskProps(newDeskProps)
+                                    }}
+
+                                    ShowUserCard = {(coords) =>
+                                    {
+                                        const card = document.getElementById('UserCard');
+                                        card.style.display = 'block';
+
+                                        const rad = coords.rotation * Math.PI / 180;
+
+                                        const origin = 
+                                        {
+                                            x: Math.abs(coords.x + stageRef.current.x()) + Math.cos(rad)*coords.width/2 + Math.sin(rad)*coords.height*0.35,
+                                            y: Math.abs(coords.y + stageRef.current.y()) + Math.cos(rad)*coords.height*0.35 + Math.sin(rad)*coords.width/2
+                                        }
+
+                                        if((coords.rotation >= -10 && coords.rotation <= 10) || (coords.rotation >= 350 && coords.rotation <= 370) || (coords.rotation >= -370 && coords.rotation <= -350)) //Top
+                                        {
+                                            card.style.left = origin.x + 'px';
+                                            card.style.top = origin.y - 0.15*window.innerHeight + 'px';
+                                        }
+                                        else if((coords.rotation >= 80 && coords.rotation <= 100) || (coords.rotation >= -280 && coords.rotation <= -260)) //Right
+                                        {
+                                            card.style.left = origin.x + 0.02*window.innerHeight + 'px';
+                                            card.style.top = origin.y - 0.10*window.innerHeight + 'px';
+                                        }
+                                        else if((coords.rotation >= 170 && coords.rotation <= 190) || (coords.rotation >= -190 && coords.rotation <= -170)) //Bottom
+                                        {
+                                            card.style.left = origin.x + 'px';
+                                            card.style.top = origin.y + 0.05*window.innerHeight + 'px';
+                                        }
+                                        else if((coords.rotation >= 260 && coords.rotation <= 280) || (coords.rotation >= -100 && coords.rotation <= -80)) //Left
+                                        {
+                                            card.style.left = origin.x - 0.11*window.innerWidth + 'px';
+                                            card.style.top = origin.y - 0.10*window.innerHeight + 'px';
+                                        }
+
+                                        console.log(coords.rotation);
+
+                                        /*const rad = coords.rotation * Math.PI / 180;
+
+                                        const x = Math.sin(rad) * 0.02*window.innerHeight;
+                                        const y = Math.cos(rad) * 0.15*window.innerHeight;
+
+                                        const origin = 
+                                        {
+                                            x: Math.abs(coords.x + stageRef.current.x()) + Math.cos(rad)*coords.width/2 + Math.sin(rad)*coords.height*0.35,
+                                            y: Math.abs(coords.y + stageRef.current.y()) + Math.cos(rad)*coords.height*0.35 + Math.sin(rad)*coords.width/2
+                                        }
+
+                                        //if((coords.rotation >= 0 ) || ())
+
+                                        card.style.left = origin.x + x + 'px';
+                                        card.style.top = origin.y - y + 'px';
+
+                                        console.log(card.offsetWidth);
+                                        console.log(stageRef.current.x() + ' ' + stageRef.current.y());*/
+                                    }}
+
+                                    HideUserCard = {() =>
+                                    {
+                                        document.getElementById('UserCard').style.display = 'none';
                                     }}
 
                                     draggable = {false}
@@ -444,8 +508,10 @@ const Map = () =>
             </div>
 
             <div className={styles.dateContainer}>
-                <input className={styles.resourceSelector} type='date' id='BookingDate' onChange={(e) => console.log(e.target.value)}></input>
+                <input className={styles.resourceSelector} type='date' id='BookingDate' onChange={(e) => setDate(e.target.value)}></input>
             </div>
+
+            <div id='UserCard' className={styles.userCard}>E</div>
 
         </Fragment>
     )

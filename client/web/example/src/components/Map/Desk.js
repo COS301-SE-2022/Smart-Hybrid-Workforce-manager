@@ -2,8 +2,9 @@ import useImage from 'use-image';
 import desk_grey from '../../img/desk_light.svg';
 import { Image, Path, Transformer } from 'react-konva';
 import { useRef, useEffect, Fragment } from 'react';
+import styles from './map.module.css';
 
-const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform}) =>
+const Desk = ({ shapeProps, isSelected, onSelect, onChange, ShowUserCard, HideUserCard, draggable, transform}) =>
 {
     const shapeRef = useRef(null);
     const transformRef = useRef(null);
@@ -103,12 +104,16 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
 
                 onMouseEnter={(e) =>
                 {
-                    e.target.getStage().container().style.cursor = 'move';
+                    e.target.getStage().container().style.cursor = transform ? 'move' : 'default';
+                    e.target.fill('#09a2fb');
+                    ShowUserCard({x: e.target.x(), y: e.target.y(), width: e.target.width(), height: e.target.height(), rotation: e.target.rotation()});
                 }}
 
                 onMouseLeave={(e) =>
                 {
                     e.target.getStage().container().style.cursor = 'default';
+                    e.target.fill('#374146');
+                    HideUserCard();
                 }}
             />
             
