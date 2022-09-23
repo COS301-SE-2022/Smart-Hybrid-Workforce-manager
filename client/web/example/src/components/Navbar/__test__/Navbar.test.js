@@ -32,17 +32,17 @@ describe('When clicking on Calendar', () => {
 
     expect(screen.getByText(/Calendar/i)).toBeInTheDocument();
     fireEvent.click(screen.getByText(/Calendar/i));
-    expect(navigate).toHaveBeenCalledWith('/');
+    expect(navigate).toHaveBeenCalledWith('/calendar');
   });
 });
 
-describe('When clicking on Office Map', () => {
+describe('When clicking on Home', () => {
   it('should navigate to /map', () => {
     render(<MockNavbar/> );
 
-    expect(screen.getByText(/Office Map/i)).toBeInTheDocument();
-    fireEvent.click(screen.getByText(/Office Map/i));
-    expect(navigate).toHaveBeenCalledWith('/map');
+    expect(screen.getByText(/Home/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByText(/Home/i));
+    expect(navigate).toHaveBeenCalledWith('/');
   });
 });
 

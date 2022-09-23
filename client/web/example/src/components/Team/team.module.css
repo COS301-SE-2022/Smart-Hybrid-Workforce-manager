@@ -1,0 +1,104 @@
+.form
+{
+    padding-top: 2vh;
+
+    width: 20vw;
+
+    margin-left: 5vw;
+    
+    text-align: left;
+
+    color: #374146;
+}
+
+.formGroup
+{
+    margin-bottom: 4vh;
+}
+
+.formLabel
+{
+    font-size: 1.5vw;
+    letter-spacing: 0.1vw;
+}
+
+.formInput
+{
+    margin-top: 1vh;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    width: 20vw;
+
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+    border-style: none;
+    border-radius: 1.5vh;
+    outline: none;
+
+    font-size: 1vw; 
+}
+
+.formInput:focus
+{
+    outline: none;
+}
+
+
+.colorPicker
+{
+    margin-top: 1vh;
+    width: 20vw;
+    height: 5vh;
+    padding-left: 0.5vw;
+    padding-right: 0.5vw;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    background-color: white;
+
+    border-style: none;
+    border-radius: 1vh;
+    outline: none;
+}
+
+.fileUpload
+{
+    margin-top: 1vh;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    width: 20vw;
+
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    background-color: white;
+
+    border-style: none;
+    border-radius: 1.5vh;
+    outline: none;
+
+    font-size: 1vw; 
+}
+
+.submit
+{
+    width: 10vw;
+    height: 4vh;
+
+    margin-left: 5vw;
+
+    border-radius: 1vh;
+    border-style: none;
+
+    font-size: 1vw;
+
+    background-color: #09a2fb;
+    color: white;
+}
+
+.submit:hover
+{
+    cursor: pointer;
+    background-color: #03639b;
+}
