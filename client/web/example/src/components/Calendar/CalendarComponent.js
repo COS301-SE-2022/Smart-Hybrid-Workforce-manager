@@ -4,6 +4,7 @@ import { UserContext } from '../../App';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import Borders from './Borders.js';
 import Times from './Times.js';
+import styles from './calendar.module.css';
 
 const CalendarComponent = () =>
 {
@@ -547,88 +548,88 @@ const CalendarComponent = () =>
 
     return (
         <div>
-            <div className='top-bar'>
-                <div className='calendar-title'>
-                    <div className='month'>{month}</div>
-                    <div className='year'>{year}</div>
+            <div className={styles.topBar}>
+                <div className={styles.title}>
+                    <div className={styles.month}>{month}</div>
+                    <div className={styles.year}>{year}</div>
                 </div>
 
-                <div className='today-container'>
-                    <div ref={todaySelectorRef} className='today-selector' onClick={SelectToday} onMouseOver={MouseOverToday} onMouseLeave={MouseLeaveToday}>
+                <div className={styles.todayContainer}>
+                    <div ref={todaySelectorRef} className={styles.todaySelector} onClick={SelectToday} onMouseOver={MouseOverToday} onMouseLeave={MouseLeaveToday}>
                         Today
                     </div>
                 </div>
 
-                <div className='nav-container'>
-                    <div ref={prevRef} className='prev' onMouseEnter={MouseOverPrev} onMouseLeave={MouseLeavePrev} onClick={PrevClick}>
+                <div className={styles.navContainer}>
+                    <div ref={prevRef} className={styles.prev} onMouseEnter={MouseOverPrev} onMouseLeave={MouseLeavePrev} onClick={PrevClick}>
                         <IoIosArrowBack />
-                        <div ref={prevWeekRef} className='tooltip-prev'>
+                        <div ref={prevWeekRef} className={styles.tooltipPrev}>
                             Previous Week
                         </div>
                     </div>
 
-                    <div ref={nextRef} className='next' onMouseEnter={MouseOverNext} onMouseLeave={MouseLeaveNext} onClick={NextClick}>
+                    <div ref={nextRef} className={styles.next} onMouseEnter={MouseOverNext} onMouseLeave={MouseLeaveNext} onClick={NextClick}>
                         <IoIosArrowForward />
-                        <div ref={nextWeekRef} className='tooltip-next'>
+                        <div ref={nextWeekRef} className={styles.tooltipNext}>
                             Next Week
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className='calendar-content-week'>
-                <div className='days-of-week'>
-                    <div className='timezone'>
+            <div className={styles.contentWeek}>
+                <div className={styles.daysOfWeek}>
+                    <div className={styles.timezone}>
                         GMT+02
                     </div>
 
-                    <div className='day-date'>
-                        <p className='day'>Sun</p>
-                        <div ref={sunRef} className='date'>{days[0].date}</div>
+                    <div className={styles.dayDate}>
+                        <p className={styles.day}>Sun</p>
+                        <div ref={sunRef} className={styles.date}>{days[0].date}</div>
                     </div>
 
-                    <div className='day-date'>
-                        <p className='day'>Mon</p>
-                        <div ref={monRef} className='date'>{days[1].date}</div>
+                    <div className={styles.dayDate}>
+                        <p className={styles.day}>Mon</p>
+                        <div ref={monRef} className={styles.date}>{days[1].date}</div>
                     </div>
 
-                    <div className='day-date'>
-                        <p className='day'>Tue</p>
-                        <div ref={tueRef} className='date'>{days[2].date}</div>
+                    <div className={styles.dayDate}>
+                        <p className={styles.day}>Tue</p>
+                        <div ref={tueRef} className={styles.date}>{days[2].date}</div>
                     </div>
 
-                    <div className='day-date'>
-                        <p className='day'>Wed</p>
-                        <div ref={wedRef} className='date'>{days[3].date}</div>
+                    <div className={styles.dayDate}>
+                        <p className={styles.day}>Wed</p>
+                        <div ref={wedRef} className={styles.date}>{days[3].date}</div>
                     </div>
 
-                    <div className='day-date'>
-                        <p className='day'>Thu</p>
-                        <div ref={thuRef} className='date'>{days[4].date}</div>
+                    <div className={styles.dayDate}>
+                        <p className={styles.day}>Thu</p>
+                        <div ref={thuRef} className={styles.date}>{days[4].date}</div>
                     </div>
 
-                    <div className='day-date'>
-                        <p className='day'>Fri</p>
-                        <div ref={friRef} className='date'>{days[5].date}</div>
+                    <div className={styles.dayDate}>
+                        <p className={styles.day}>Fri</p>
+                        <div ref={friRef} className={styles.date}>{days[5].date}</div>
                     </div>
 
-                    <div className='day-date'>
-                        <p className='day'>Sat</p>
-                        <div ref={satRef} className='date'>{days[6].date}</div>
+                    <div className={styles.dayDate}>
+                        <p className={styles.day}>Sat</p>
+                        <div ref={satRef} className={styles.date}>{days[6].date}</div>
                     </div>
                 </div>
 
-                <div className='days-of-week-borders'>
-                    <div className='day-date-border'></div>
-                    <div className='day-date-border'></div>
-                    <div className='day-date-border'></div>
-                    <div className='day-date-border'></div>
-                    <div className='day-date-border'></div>
-                    <div className='day-date-border'></div>
-                    <div className='day-date-border'></div>
+                <div className={styles.daysOfWeekBorders}>
+                    <div className={styles.dayDateBorder}></div>
+                    <div className={styles.dayDateBorder}></div>
+                    <div className={styles.dayDateBorder}></div>
+                    <div className={styles.dayDateBorder}></div>
+                    <div className={styles.dayDateBorder}></div>
+                    <div className={styles.dayDateBorder}></div>
+                    <div className={styles.dayDateBorder}></div>
                 </div>
 
-                <div id='ColumnContainer' className='column-container'>
+                <div id='ColumnContainer' className={styles.columnContainer}>
                     <Times />
 
                     <Borders />
@@ -639,12 +640,12 @@ const CalendarComponent = () =>
                     <Borders />
                     <Borders />
                     
-                    <div ref={indicatorRef} className='time-indicator-container'>
-                        <div className='time-indicator-circle'></div>
-                        <div className='time-indicator-line'></div>
+                    <div ref={indicatorRef} className={styles.timeIndicatorContainer}>
+                        <div className={styles.timeIndicatorCircle}></div>
+                        <div className={styles.timeIndicatorLine}></div>
                     </div>
 
-                    <div className='bookings-container'>
+                    <div className={styles.bookingsContainer}>
                         {bookings.length > 0 && (
                             bookings.map((booking, i) => (
                                 <BookingTicket id={booking.id} startDate={booking.start.substring(0,10)} startTime={booking.start.substring(11,16)} endTime={booking.end.substring(11,16)} confirmed={booking.booked} type={booking.resource_type} days={days} />
