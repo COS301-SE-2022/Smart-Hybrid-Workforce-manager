@@ -11,7 +11,7 @@ import (
 type CandidateBookings []data.Bookings
 
 // makeBookings stores the created bookings in the database
-func makeBookings(candidates CandidateBookings) error {
+func makeBookings(candidates CandidateBookings, schedulerData *SchedulerData) error {
 	choose := 0 // Right now just choose any set of bookings, no heuristic yet
 	if len(candidates) == 0 {
 		return nil // No bookings to be made
