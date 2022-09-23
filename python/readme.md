@@ -1,3 +1,6 @@
+Run the script with the command `python generate_users.py`  
+Python 3.10 is required, and some dependencies might need to be installed using pip.
+
 # Create User Config
 ## building_id
 Used to specify which building these users should be created for, must be a valid ID of a building in the database. Specifies the `building_id` field in users.
@@ -27,3 +30,24 @@ The office_days field in generated users will be set to one of these integers
 Each probability corresponds to the office days option in the same position, and represents the probability that that option is chosen
 - **no_preferred_desk_probability** `float in range [0, 1]`  
 A probability determine the chance that a user has no preferred desk
+
+Example  
+```json
+{
+    "building_id": "98989898-dc08-4a06-9983-8b374586e459",
+    "create_user": {
+        "num_users": 100,
+        "password_override": "P@ssword123",
+        "email_domains": ["@gmail.com", "@outlook.com"],
+        "lowest_preferred_start_time": "2022-08-24T07:00:00.000Z",
+        "highest_preferred_end_time": "2022-08-24T19:00:00.000Z",
+        "preferred_time_step_minutes": 180,
+        "work_from_home_probability": 0.8,
+        "team_probabilities": [0.05, 0.15, 0.15, 0.5, 0.15],
+        "role_probabilities": [0.1, 0.2, 0.3, 0.3, 0.1],
+        "office_days_options": [1, 2, 3, 4, 5],
+        "office_days_probabilities": [0.1, 0.1, 0.5, 0.1, 0.2],
+        "no_preferred_desk_probability": 0.15
+    }
+}
+```

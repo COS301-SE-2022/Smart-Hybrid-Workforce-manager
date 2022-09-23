@@ -1,12 +1,13 @@
 import csv
 import json
+import os
 from typing import List, Dict
-
+import time
 import requests
-
 import config
 import generate_user
 import user
+import webbrowser
 
 def read_in_col(path: str) -> List:
     names: List
@@ -152,11 +153,35 @@ if __name__ == "__main__":
                                             desks=resource_ids, teams=team_ids, roles=role_ids))
     print(f"Generated.")
     print()
+    with open("./preview.json", "w") as pf:
+        pf.write(json.dumps(generated_users, indent=4))
+
+    webbrowser.open("preview.json")
+
+    user_input = input("Please close the preview.json file, and enter PROCEED to persist the user, or CANCEL to abort:")
+    user_input = user_input.lstrip().rstrip().upper()
+    while user_input != "PROCEED" and user_input != "CANCEL":
+        user_input = input(
+            "Invalid input: Please close the preview.json file, and enter PROCEED to persist the users, or CANCEL to abort")
+        user_input = user_input.lstrip().rstrip().upper()
+
+    try:
+        os.remove("preview.json")
+    except:
+        ...
+
+    if user_input == "CANCEL":
+        print("Cancelling")
+        exit(0)
+
+
     print("Persisting users...")
     all_success = True
+    start = time.time()
     for _user in generated_users:
         print(f"     Persisting: {_user['email']}", end="")
         success = user.create_new_user(_user, auth_token, call_count)
         all_success = all_success and success
         print(":", ("SUCCESS" if success else "FAILED"))
-    print("Done:", ("SUCCESS" if all_success else "FAILED"), "Num API calls:", call_count[0])
+    end = time.time()
+    print("Done:", ("SUCCESS" if all_success else "FAILED"), "\nNum API calls:", call_count[0], "\nTime elapsed:", f'{end - start}s')
