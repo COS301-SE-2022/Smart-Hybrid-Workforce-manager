@@ -26,7 +26,6 @@ const EditTeam = ({team, edited}) =>
     const pictureInputRef = useRef(null);
 
     const {userData} = useContext(UserContext);
-    const navigate = useNavigate();
 
     const ClickPictureInput = () =>
     {
