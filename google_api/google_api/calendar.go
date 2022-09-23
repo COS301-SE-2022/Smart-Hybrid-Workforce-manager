@@ -1,18 +1,22 @@
+/*
+Base code from https://developers.google.com/calendar/api/quickstart/go
+*/
 package main
 
 import (
-        "context"
-        "encoding/json"
-        "fmt"
-        "log"
-        "net/http"
-        "os"
-        "time"
+	"context"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+	// "time"
 
-        "golang.org/x/oauth2"
-        "golang.org/x/oauth2/google"
-        "google.golang.org/api/calendar/v3"
-        "google.golang.org/api/option"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
+	"google.golang.org/api/calendar/v3"
+	"google.golang.org/api/option"
+	// "google.golang.org/genproto/googleapis/apps/script/type/calendar"
 )
 
 // Retrieve a token, saves the token, then returns the generated client.
@@ -70,6 +74,29 @@ func saveToken(path string, token *oauth2.Token) {
         json.NewEncoder(f).Encode(token)
 }
 
+func createEvent(summary *string, location *string, desc *string, starttime *string, endtime *string) (*calendar.Event){
+
+        event := &calendar.Event{
+                Summary: "Google I/O 2015",
+                Location: "800 Howard St., San Francisco, CA 94103",
+                Description: "A chance to hear more about Google's developer products.",
+                Start: &calendar.EventDateTime{
+                        DateTime: "2022-09-24T09:00:00-07:00",
+                        TimeZone: "America/Los_Angeles",
+                },
+                End: &calendar.EventDateTime{
+                        DateTime: "2022-09-24T17:00:00-07:00",
+                        TimeZone: "America/Los_Angeles",
+                },
+                Recurrence: []string{"RRULE:FREQ=DAILY;COUNT=2"},
+                Attendees: []*calendar.EventAttendee{
+                        &calendar.EventAttendee{Email:"lpage@example.com"},
+                        &calendar.EventAttendee{Email:"sbrin@example.com"},
+                },
+                }
+        return event
+}
+
 func main() {
         ctx := context.Background()
         b, err := os.ReadFile("credentials.json")
@@ -78,7 +105,7 @@ func main() {
         }
 
         // If modifying these scopes, delete your previously saved token.json.
-        config, err := google.ConfigFromJSON(b, calendar.CalendarReadonlyScope)
+        config, err := google.ConfigFromJSON(b, calendar.CalendarScope)
         if err != nil {
                 log.Fatalf("Unable to parse client secret file to config: %v", err)
         }
@@ -88,23 +115,13 @@ func main() {
         if err != nil {
                 log.Fatalf("Unable to retrieve Calendar client: %v", err)
         }
-
-        t := time.Now().Format(time.RFC3339)
-        events, err := srv.Events.List("primary").ShowDeleted(false).
-                SingleEvents(true).TimeMin(t).MaxResults(10).OrderBy("startTime").Do()
-        if err != nil {
-                log.Fatalf("Unable to retrieve next ten of the user's events: %v", err)
-        }
-        fmt.Println("Upcoming events:")
-        if len(events.Items) == 0 {
-                fmt.Println("No upcoming events found.")
-        } else {
-                for _, item := range events.Items {
-                        date := item.Start.DateTime
-                        if date == "" {
-                                date = item.Start.Date
-                        }
-                        fmt.Printf("%v (%v)\n", item.Summary, date)
-                }
-        }
+        
+        // // event := createEvent("Testing",nil,"")
+        // calendarId := "primary"
+        // event, err = srv.Events.Insert(calendarId, event).Do()
+        // if err != nil {
+        // log.Fatalf("Unable to create event. %v\n", err)
+        // }
+        // fmt.Printf("Event created: %s\n", event.HtmlLink)
+              
 }

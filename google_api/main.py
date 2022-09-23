@@ -11,7 +11,7 @@ from googleapiclient.errors import HttpError
 import json
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 
 def main():
@@ -62,4 +62,4 @@ def main():
     except HttpError as error:
         print('An error occurred: %s' % error)
 
-701698
+main()
