@@ -4,14 +4,15 @@ CREATE OR REPLACE FUNCTION "user".identifier_find(
     _first_name VARCHAR(256) DEFAULT NULL,
     _last_name VARCHAR(256) DEFAULT NULL,
     _email VARCHAR(256) DEFAULT NULL,
-    _picture VARCHAR(256) DEFAULT NULL,
+    _picture TEXT DEFAULT NULL,
     _date_created TIMESTAMP DEFAULT NULL,
     _work_from_home BOOLEAN DEFAULT NULL,
     _parking parking.type DEFAULT NULL,
     _office_days INTEGER DEFAULT NULL,
     _preferred_start_time TIME WITHOUT TIME ZONE DEFAULT NULL,
     _preferred_end_time TIME WITHOUT TIME ZONE DEFAULT NULL,
-    _preferred_desk uuid DEFAULT NULL
+    _preferred_desk uuid DEFAULT NULL,
+    _building_id uuid DEFAULT NULL
 )
 RETURNS TABLE (
     id uuid,
@@ -19,19 +20,20 @@ RETURNS TABLE (
 	first_name VARCHAR(256),
 	last_name VARCHAR(256),
 	email VARCHAR(256),
-	picture VARCHAR(256),
+	picture TEXT,
     date_created TIMESTAMP,
     work_from_home BOOLEAN,
     parking parking.type,
     office_days INTEGER,
     preferred_start_time TIME WITHOUT TIME ZONE,
     preferred_end_time TIME WITHOUT TIME ZONE,
-    preferred_desk uuid
+    preferred_desk uuid,
+    building_id uuid
 ) AS 
 $$
 BEGIN
     RETURN QUERY
-    SELECT i.id, i.identifier, i.first_name, i.last_name, i.email, i.picture, i.date_created, i.work_from_home, i.parking, i.office_days, i.preferred_start_time, i.preferred_end_time, i.preferred_desk
+    SELECT i.id, i.identifier, i.first_name, i.last_name, i.email, i.picture, i.date_created, i.work_from_home, i.parking, i.office_days, i.preferred_start_time, i.preferred_end_time, i.preferred_desk, i.building_id
     FROM "user".identifier as i
     WHERE (_id IS NULL OR i.id = _id)
     AND (_identifier IS NULL OR i.identifier = _identifier)
@@ -45,6 +47,7 @@ BEGIN
     AND (_office_days IS NULL OR i.office_days = _office_days)
     AND (_preferred_start_time IS NULL OR i.preferred_start_time = _preferred_start_time)
     AND (_preferred_end_time IS NULL OR i.preferred_end_time = _preferred_end_time)
-    AND (_preferred_desk IS NULL OR i.preferred_desk = _preferred_desk);
+    AND (_preferred_desk IS NULL OR i.preferred_desk = _preferred_desk)
+    AND (_building_id IS NULL OR i.building_id = _building_id);
 END
 $$ LANGUAGE plpgsql;

@@ -14,7 +14,7 @@ import (
 type Team struct {
 	Id          *string    `json:"id,omitempty"`
 	Name        *string    `json:"name,omitempty"`
-	Description *string    `json:"description,omitempty"`
+	Color       *string    `json:"color,omitempty"`
 	Capacity    *int       `json:"capacity,omitempty"`
 	Picture     *string    `json:"picture,omitempty"`
 	Priority    *int       `json:"priority,omitempty"`
@@ -69,7 +69,7 @@ func mapTeam(rows *sql.Rows) (interface{}, error) {
 	err := rows.Scan(
 		&identifier.Id,
 		&identifier.Name,
-		&identifier.Description,
+		&identifier.Color,
 		&identifier.Capacity,
 		&identifier.Picture,
 		&identifier.Priority,
@@ -117,7 +117,7 @@ func mapTeamAssociation(rows *sql.Rows) (interface{}, error) {
 func (access *TeamDA) CreateTeam(identifier *Team) (string, error) {
 	results, err := access.access.Query(
 		`SELECT * FROM team.identifier_store($1, $2, $3, $4, $5, $6, $7)`, mapString,
-		identifier.Id, identifier.Name, identifier.Description, identifier.Capacity, identifier.Picture, identifier.Priority, identifier.TeamLeadId)
+		identifier.Id, identifier.Name, identifier.Color, identifier.Capacity, identifier.Picture, identifier.Priority, identifier.TeamLeadId)
 	if err != nil {
 		return "", err
 	}
@@ -137,7 +137,7 @@ func (access *TeamDA) FindIdentifier(identifier *Team, permissions *Permissions)
 	}
 	results, err := access.access.Query(
 		`SELECT * FROM team.identifier_find($1, $2, $3, $4, $5, $6, $7, $8, $9)`, mapTeam,
-		identifier.Id, identifier.Name, identifier.Description, identifier.Capacity, identifier.Picture, identifier.Priority, identifier.TeamLeadId, identifier.DateCreated, permissionContent)
+		identifier.Id, identifier.Name, identifier.Color, identifier.Capacity, identifier.Picture, identifier.Priority, identifier.TeamLeadId, identifier.DateCreated, permissionContent)
 	if err != nil {
 		return nil, err
 	}
