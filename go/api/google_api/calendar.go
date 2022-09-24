@@ -5,7 +5,7 @@ Base code from https://developers.google.com/calendar/api/quickstart/go
 https://developers.google.com/calendar/api/guides/create-events#go
 */
 
-package google_calender
+package google_calendar
 
 import (
 	"context"
@@ -101,31 +101,31 @@ func createEvent(summary string, location *string, desc *string, starttime strin
 }
 
 func TestingFunc() bool{
-	ctx := context.Background()
-	b, err := os.ReadFile("credentials.json")
-	if err != nil {
-	        log.Fatalf("Unable to read client secret file: %v", err)
-	}
+	// ctx := context.Background()
+	// b, err := os.ReadFile("credentials.json")
+	// if err != nil {
+	//         log.Fatalf("Unable to read client secret file: %v", err)
+	// }
 
-	// If modifying these scopes, delete your previously saved token.json.
-	config, err := google.ConfigFromJSON(b, calendar.CalendarScope)
-	if err != nil {
-	        log.Fatalf("Unable to parse client secret file to config: %v", err)
-	}
-	client := getClient(config)
+	// // If modifying these scopes, delete your previously saved token.json.
+	// config, err := google.ConfigFromJSON(b, calendar.CalendarScope)
+	// if err != nil {
+	//         log.Fatalf("Unable to parse client secret file to config: %v", err)
+	// }
+	// client := getClient(config)
 
-	srv, err := calendar.NewService(ctx, option.WithHTTPClient(client))
-	if err != nil {
-	        log.Fatalf("Unable to retrieve Calendar client: %v", err)
-	}
-    var arr []string
-	event := createEvent("Testing",nil,nil,time.Now().Format(time.RFC3339),time.Now().Add(time.Hour * 5).Format(time.RFC3339),arr)
-	calendarId := "primary"
-	event, err = srv.Events.Insert(calendarId, event).Do()
-	if err != nil {
-	log.Fatalf("Unable to create event. %v\n", err)
-	}
-	fmt.Printf("Event created: %s\n", event.HtmlLink)
+	// srv, err := calendar.NewService(ctx, option.WithHTTPClient(client))
+	// if err != nil {
+	//         log.Fatalf("Unable to retrieve Calendar client: %v", err)
+	// }
+    // var arr []string
+	// event := createEvent("Testing",nil,nil,time.Now().Format(time.RFC3339),time.Now().Add(time.Hour * 5).Format(time.RFC3339),arr)
+	// calendarId := "primary"
+	// event, err = srv.Events.Insert(calendarId, event).Do()
+	// if err != nil {
+	// log.Fatalf("Unable to create event. %v\n", err)
+	// }
+	// fmt.Printf("Event created: %s\n", event.HtmlLink)
 	return true
 }
 

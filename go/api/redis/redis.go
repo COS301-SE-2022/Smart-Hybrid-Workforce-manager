@@ -25,7 +25,7 @@ import (
 //Databases
 // 0 : testing
 // 1 : User Session Token
-// 2 : Google Calender Integration
+// 2 : Google Calendar Integration
 // 3 : open
 // 4 : open
 
@@ -41,8 +41,8 @@ type RedisData struct{
 	ExpirationTime 			time.Time	`json:"ExpirationTime"`
 }
 
-type CalenderBookings struct{
-	Calender_id				string 		`json:"caleneder_id"`
+type CalendarBookings struct{
+	Calendar_id				string 		`json:"calendar_id"`
 	Time_end				time.Time	`json:"time_end"`
 }
 
@@ -117,7 +117,7 @@ func getAuthClient() redis.Client{
 	return getRedisClient(1);
 }
 
-func getCalenderClient() redis.Client{
+func getCalendarClient() redis.Client{
 	return getRedisClient(2);
 }
 
@@ -233,10 +233,10 @@ func UserLogin(user_id string, user_identifier string, user_name string, user_su
 	return redisData,nil;
 }
 
-func CreateBooking(booking_id string, calender_id string,end_time time.Time) bool{
-	client := getCalenderClient()
-	data := CalenderBookings{
-		Calender_id: calender_id,
+func CreateBooking(booking_id string, calendar_id string,end_time time.Time) bool{
+	client := getCalendarClient()
+	data := CalendarBookings{
+		Calendar_id: calendar_id,
 		Time_end: end_time,
 	}
 
