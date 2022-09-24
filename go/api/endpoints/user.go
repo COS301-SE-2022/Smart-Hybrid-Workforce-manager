@@ -4,6 +4,7 @@ import (
 	"api/data"
 	"api/db"
 	"api/redis"
+	"api/security"
 	"errors"
 	"lib/utils"
 
@@ -35,6 +36,11 @@ type RegisterUserStruct struct {
 	Parking            *string    `json:"parking,omitempty"`
 }
 
+type ResetPasswordRequest struct {
+	UserId   *string `json:"user_id,omitempty"`
+	Password string  `json:"password"`
+}
+
 /////////////////////////////////////////////
 // Endpoints
 
@@ -45,6 +51,9 @@ func UserHandlers(router *mux.Router) error {
 	router.HandleFunc("/update", UpdateUserHandler).Methods("POST")
 	router.HandleFunc("/remove", RemoveUserHandler).Methods("POST")
 	router.HandleFunc("/login", LoginUserHandler).Methods("POST")
+
+	router.HandleFunc("/resetpassword", security.Validate(ResetPasswordHandler,
+		&data.Permissions{data.CreateGenericPermission("EDIT", "USER", "IDENTIFIER")})).Methods("POST")
 	return nil
 }
 
@@ -178,7 +187,11 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 
 func addDefaultPermissions(user string, access *db.Access) error {
 	dp := data.NewPermissionDA(access)
-	err := dp.StorePermission(data.CreatePermission(user, "USER", "CREATE", "BOOKING", "USER", user))
+	err := dp.StorePermission(data.CreatePermission(user, "USER", "EDIT", "USER", "IDENTIFIER", user))
+	if err != nil {
+		return err
+	}
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "CREATE", "BOOKING", "USER", user))
 	if err != nil {
 		return err
 	}
@@ -379,4 +392,88 @@ func RemoveUserHandler(writer http.ResponseWriter, request *http.Request) {
 	}
 	logger.Access.Printf("%v User removed\n", identifier.Id)
 	utils.JSONResponse(writer, request, identifierRemoved)
+}
+
+//ResetPasswordHandler resets the logged in users password.
+func ResetPasswordHandler(writer http.ResponseWriter, request *http.Request, permissions *data.Permissions) {
+	// Unmarshal reset password
+	var resetPasswordRequest ResetPasswordRequest
+	err := utils.UnmarshalJSON(writer, request, &resetPasswordRequest)
+	if err != nil {
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	// Check if user has permission
+	if resetPasswordRequest.UserId != nil {
+		authorized := false
+		for _, permission := range *permissions {
+			// A permission tenant id of nil means the user is allowed to perform the action on all tenants of the type
+			if *permission.PermissionTenantId == *resetPasswordRequest.UserId {
+				authorized = true
+			}
+		}
+		if !authorized {
+			utils.AccessDenied(writer, request, fmt.Errorf("doesn't have permission to execute query")) // TODO [KP]: Be more descriptive
+			return
+		}
+	}
+
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	da := data.NewUserDA(access)
+
+	// Find user credential identifier
+	users, err := da.FindIdentifier(&data.User{Id: resetPasswordRequest.UserId})
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	if len(users) == 0 {
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	var userCred data.Credential
+	temp := *users[0].Email
+	userCred.Identifier = &temp
+
+	credentials, err := da.FindCredential(&userCred)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		logger.Error.Fatalf("\nerror\n%v\n", err)
+		return
+	}
+
+	if len(credentials) == 0 {
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	err = da.StoreCredential(*credentials[0].Id, &resetPasswordRequest.Password, *credentials[0].Identifier)
+	if err != nil {
+		if err.Error() == "invalid_crednetial" {
+			utils.BadRequest(writer, request, "invalid_crednetial")
+		} else {
+			utils.InternalServerError(writer, request, err)
+		}
+		return
+	}
+
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	logger.Access.Printf("%v reset password\n", *credentials[0].Identifier)
+
+	utils.Ok(writer, request)
 }
