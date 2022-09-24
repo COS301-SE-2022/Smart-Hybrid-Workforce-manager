@@ -17,10 +17,10 @@ func WeeklyOverseer(schedulerData data.SchedulerData) []data.Bookings {
 	var config data.Config
 	config.Seed = 2
 	config.PopulationSize = 15
-	config.Generations = 100
+	config.Generations = 1000
 	config.MutationRate = 1.0
 	config.CrossOverRate = 0.0
-	config.TournamentSize = 15
+	config.TournamentSize = 5
 
 	// Create domain
 	var domain ga.Domain
@@ -37,7 +37,9 @@ func WeeklyOverseer(schedulerData data.SchedulerData) []data.Bookings {
 		func(domain *ga.Domain, individuals ga.Individuals, selectionFunc ga.Selection, offspring int) ga.Individuals {
 			return ga.CrossoverCaller(ga.WeeklyDayVResourceCrossover, domain, individuals, selectionFunc, offspring)
 		},
-		ga.WeeklyDayVResourceFitness,
+		func(domain *ga.Domain, individuals ga.Individuals) []float64 {
+			return ga.WeeklyDayVResourceFitnessCaller(domain, individuals, ga.WeeklyDayVResourceFitnessValid)
+		},
 		ga.WeeklyDayVResourceMutateSwapValid,
 		ga.WeeklyTournamentSelection,
 		ga.WeeklyDayVResourcePopulationGenerator,
@@ -55,7 +57,7 @@ func WeeklyOverseer(schedulerData data.SchedulerData) []data.Bookings {
 			s.Done()
 			bookings = append(bookings, best.ConvertIndividualToWeeklyBookings(domain))
 			logger.Debug.Println(len(bookings))
-			logger.Debug.Println(best)
+			logger.Debug.Println("\n+++++++++++++++++++++++++++++", best, "\n", best.Fitness)
 			return bookings
 		case candidate, ok := <-c: // if ok is false close event happened
 			if !ok {

@@ -6,6 +6,8 @@ import (
 	"scheduler/data"
 )
 
+type FitnessFunc func(domain *Domain, individual *Individual) float64
+
 ///////////////////////////////////////////////////
 // WEEKLY
 
@@ -14,6 +16,16 @@ func WeeklyStubFitness(domain *Domain, individuals Individuals) []float64 {
 	for i := 0; i < len(individuals); i++ {
 		result = append(result, 0.0)
 		individuals[i].Fitness = 0.0
+	}
+	return result
+}
+
+func WeeklyDayVResourceFitnessCaller(domain *Domain, individuals Individuals, fitnessFunc FitnessFunc) []float64 {
+	var result []float64
+	for _, individual := range individuals {
+		fitness := fitnessFunc(domain, individual)
+		result = append(result, fitness)
+		individual.Fitness = fitness
 	}
 	return result
 }
@@ -54,6 +66,48 @@ func weeklyDayVResourceFitness(domain *Domain, individual *Individual) float64 {
 	}
 	return float64(differentUsersCount) * teamsAttendingSameDays
 	// return float64(differentUsersCount) * teamsAttendingSameDays / (float64(doubleBookings) * float64(usersNotCommingInTheirSpecifiedAmountCount))
+}
+
+func WeeklyDayVResourceFitnessValid(domain *Domain, individual *Individual) float64 {
+	dailyMaps := individual.getUserCountMapsPerDay()
+	differentUsersCount := individual.DifferentUsersCount(domain)
+	teamUsersCountByDayArr := teamUsersCountByDay(domain, dailyMaps)
+	overAllTeamBonus := 0
+	for _, teamUserCount := range teamUsersCountByDayArr {
+		for teamId, count := range teamUserCount {
+			teamPriority := getTeamPriority(domain, teamId)
+			if teamPriority < 0 {
+				teamPriority = 0
+			}
+			overAllTeamBonus += teamPriority * count * (count + 1) / 2 // Strong bonus for teams coming in together
+		}
+	}
+	if differentUsersCount == 0 {
+		differentUsersCount = 1
+	}
+	return float64(differentUsersCount) + float64(overAllTeamBonus)
+	// return float64(differentUsersCount) * teamsAttendingSameDays / (float64(doubleBookings) * float64(usersNotCommingInTheirSpecifiedAmountCount))
+}
+
+// For each day, it returns a count of the number of users in a team that come in together on that day
+// returns {array containing a map[teamid]#users for each day}
+func teamUsersCountByDay(domain *Domain, dailyMaps []map[string]int) []map[string]int {
+	teamUserCountsByDay := make([]map[string]int, len(dailyMaps))
+	for i := 0; i < len(teamUserCountsByDay); i++ {
+		teamUserCountsByDay[i] = make(map[string]int)
+	}
+
+	for _, team := range domain.SchedulerData.Teams {
+		for _, userid := range team.UserIds {
+			for i := 0; i < len(teamUserCountsByDay); i++ {
+				if cu.MapHasKey(dailyMaps[i], userid) {
+					teamUserCountsByDay[i][*team.Id]++
+				}
+			}
+		}
+	}
+
+	return teamUserCountsByDay
 }
 
 // DifferentUsersCount takes the sum of the amount of times users come in on a different day as the week before
