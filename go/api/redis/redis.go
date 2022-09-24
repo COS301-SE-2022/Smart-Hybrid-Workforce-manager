@@ -32,16 +32,19 @@ import (
 ////////////////////////////////////////////////
 //Structures and Variables
 type RedisData struct{
-	User_id 			string		`json:"user_id"`
-	User_Identifier		string		`json:"user_identifier"`
-	User_Name			string		`json:"user_name"`
-	User_Surname		string		`json:"user_surname"`
-	Token 				string 		`json:"token"`
-	CreationTime 		time.Time 	`json:"CreationTime"`
-	ExpirationTime 		time.Time	`json:"ExpirationTime"`
+	User_id 				string		`json:"user_id"`
+	User_Identifier			string		`json:"user_identifier"`
+	User_Name				string		`json:"user_name"`
+	User_Surname			string		`json:"user_surname"`
+	Token 					string 		`json:"token"`
+	CreationTime 			time.Time 	`json:"CreationTime"`
+	ExpirationTime 			time.Time	`json:"ExpirationTime"`
 }
 
-
+type CalenderBookings struct{
+	Calender_id				string 		`json:"caleneder_id"`
+	Time_end				time.Time	`json:"time_end"`
+}
 
 //Redis clients
 var redisClients[5] *redis.Client
@@ -228,4 +231,9 @@ func UserLogin(user_id string, user_identifier string, user_name string, user_su
 	_ = val;
 
 	return redisData,nil;
+}
+
+func CreateBooking(booking_id string, calender_id string) bool{
+	
+	return true
 }
