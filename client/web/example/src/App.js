@@ -24,6 +24,7 @@ import CreateDesk from './pages/ResourcesDeskCreate'
 import EditDesk from './pages/ResourcesDeskEdit'
 import EditMeetingRoom from './pages/ResourcesMeetingRoomEdit'
 import CreateMeetingRoom from './pages/ResourcesMeetingRoomCreate'
+import Statistics from './pages/Statistics'
 
 import Profile from './pages/Profile'
 import ProfileConfiguration from './pages/ProfileConfiguration'
@@ -99,6 +100,7 @@ function App()
             <Route path="/role-permissions" exact element={<PermissionsRole />} /> 
 
             <Route path="/admin" exact element={<Admin />} />
+            <Route path="/statistics" exact element={<Statistics />} />
           </Route>          
           <Route path="/login" exact element={<Login />} />
           <Route path="/signup" exact element={<Signup/>} />
