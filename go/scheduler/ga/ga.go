@@ -109,21 +109,8 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 
 	// Create initial pop and calculate fitnesses
 	population := populationGenerator(&domain, domain.Config.PopulationSize)
-	// for _, indiv := range population {
-	// 	fmt.Printf("Initial population\n%v\n\n\n", indiv)
-	// }
 
 	fitness(&domain, population)
-
-	// selectPrint := selection(&domain, population, 2)
-	// for _, indiv := range selectPrint {
-	// 	logger.Error.Printf("Initial population\n%v\n\n\n", indiv)
-	// }
-
-	// selectPrint = selection(&domain, population, 1)
-	// for _, indiv := range selectPrint {
-	// 	logger.Error.Printf("Initial Validated population\n%v\n\n\n", indiv)
-	// }
 
 	// Get max and avg fitness
 	totalFitness := 0.0
@@ -135,10 +122,21 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 		totalFitness += indiv.Fitness
 	}
 
-	// fmt.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f\n", maxFitness, minFitness, totalFitness/float64(len(population)))
-
+	fmt.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f\n", maxFitness, minFitness, totalFitness/float64(len(population)))
+	multiplier := 50.0 / (totalFitness / float64(len(population)))
+	maxMultiplier := 50.0 / maxFitness
+	if int(multiplier*totalFitness/float64(len(population))) <= 0 {
+		logger.Debug.Print("-")
+	} else {
+		logger.Debug.Print(strings.Repeat("*", int(multiplier*totalFitness/float64(len(population)))))
+	}
+	if int(maxMultiplier*maxFitness) <= 0 {
+		logger.Debug.Print("-")
+	} else {
+		logger.Debug.Print(strings.Repeat("=", int(multiplier*maxFitness)))
+	}
 	// return selection(&domain, population, 1)
-
+	logger.Debug.Println("\n", *selection(&domain, population, 1)[0])
 	// Run ga
 	stoppingCondition := true
 	for i := 0; i < domain.Config.Generations && stoppingCondition; i++ {
@@ -153,31 +151,16 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 
 		// evolve
 		individualsOffspring := crossover(&domain, population, selection, crossOverAmount)
-		// for _, indiv := range individualsOffspring {
-		// 	fmt.Printf("Offsprings \n %v\n\n\n", indiv)
-		// }
 		individualsMutated := mutate(&domain, selection(&domain, population, mutateAmount))
-		// for _, indiv := range individualsMutated {
-		// 	fmt.Printf("Mutated \n %v\n\n\n", indiv)
-		// }
+
 		individualsCarry := selection(&domain, population, carryAmount)
-		// for _, indiv := range individualsMutated {
-		// 	fmt.Printf("Carry \n %v\n\n\n", indiv)
-		// }
 
 		population = append(individualsOffspring, individualsMutated...)
 		population = append(population, individualsCarry...)
 
-		// for indivi := range population {
-		// ValidateIndividual(&domain, population[indivi])
-		// }
-
 		fitness(&domain, population)
 
-		// send individual on channel
-		solutionChannel <- *selection(&domain, population, 1)[0]
-
-		if i%1 == 0 {
+		if i%10 == 0 {
 			totalFitness = 0.0
 			maxFitness = math.Inf(-1)
 			minFitness = math.Inf(1)
@@ -188,41 +171,40 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 			}
 
 			logger.Debug.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f  ", maxFitness, minFitness, totalFitness/float64(len(population)))
-			if int(50.0*totalFitness/float64(len(population))) <= 0 {
+			// multiplier = 75.0 / (totalFitness / float64(len(population)))
+			if int(multiplier*totalFitness/float64(len(population))) <= 0 {
 				logger.Debug.Print("-")
 			} else {
-				logger.Debug.Print(strings.Repeat("*", int(50.0*totalFitness/float64(len(population)))))
+				logger.Debug.Print(strings.Repeat("*", int(multiplier*totalFitness/float64(len(population)))))
 			}
-
+			if int(maxMultiplier*maxFitness) <= 0 {
+				logger.Debug.Print("-")
+			} else {
+				logger.Debug.Print(strings.Repeat("=", int(multiplier*maxFitness)))
+			}
 			logger.Debug.Println()
 		}
+
+		maxi := -1
+		maxFitness = -1000.0
+		for indivi, indiv := range population {
+			if indiv.Fitness > maxFitness {
+				maxi = indivi
+			}
+			maxFitness = math.Max(maxFitness, indiv.Fitness)
+		}
+		// send individual on channel
+		solutionChannel <- *population[maxi]
 	}
-	//end := time.Now()
-	// for _, indiv := range population {
-	// 	fmt.Printf("Final population\n%v\n\n\n", indiv)
-	// }
-
-	// selectPrint = selection(&domain, population, 5)
-	// for _, indiv := range selectPrint {
-	// 	fmt.Printf("Final population\n%v\n\nFitness: %v\n\n", indiv, fitness(&domain, Individuals{indiv}))
-	// }
-
-	// for _, indiv := range population {
-	// 	fmt.Printf("%v|%v\n", fitness(&domain, Individuals{indiv})[0], indiv.Fitness)
-	// }
-
-	// Get max and avg fitness
-	// totalFitness = 0.0
-	// maxFitness = math.Inf(-1)
-	// minFitness = math.Inf(1)
-	// for _, indiv := range population {
-	// 	maxFitness = math.Max(maxFitness, indiv.Fitness)
-	// 	minFitness = math.Min(minFitness, indiv.Fitness)
-	// 	totalFitness += indiv.Fitness
-	// }
-
-	// fmt.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f\n", maxFitness, minFitness, totalFitness/float64(len(population)))
-	// fmt.Printf(testutils.Scolour(testutils.BLUE, "+++++++Exec time: %v\n"), end.Sub(start))
+	maxi := -1
+	maxFitness = -1000.0
+	for indivi, indiv := range population {
+		if indiv.Fitness > maxFitness {
+			maxi = indivi
+		}
+		maxFitness = math.Max(maxFitness, indiv.Fitness)
+	}
+	logger.Debug.Println("\n", *population[maxi])
 }
 
 // String method for printing individuals
