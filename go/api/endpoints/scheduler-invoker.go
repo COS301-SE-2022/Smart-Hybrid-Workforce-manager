@@ -10,6 +10,7 @@ import (
 	"lib/utils"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -48,23 +49,28 @@ func SchedulerInvoker(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 	// Call daily scheduler 5 times
+	now = nextMonday
+	yyyy, mm, dd := now.Date()
+	var wg sync.WaitGroup
 	for i := 0; i < 5; i++ {
-		now := nextMonday
-		yyyy, mm, dd := now.Date()
-		startDate := time.Date(yyyy, mm, dd+i, 0, 0, 0, 0, now.Location())
-		endDate := startDate.AddDate(0, 0, 1) // Add one day
-		// Get data between start and end of specified date
-		schedulerData, err := scheduler.GetSchedulerData(startDate, endDate)
-		if err != nil {
-			utils.InternalServerError(writer, request, err)
-			return
-		}
-		err = scheduler.Call(schedulerData, dailyEndpointURL)
-		if err != nil {
-			utils.InternalServerError(writer, request, err)
-			return
-		}
+		wg.Add(1)
+		go func(_now time.Time, _i int) {
+			defer wg.Done()
+			startDate := time.Date(yyyy, mm, dd+_i, 0, 0, 0, 0, now.Location())
+			endDate := startDate.AddDate(0, 0, 1) // Add one day
+			schedulerData, err := scheduler.GetSchedulerData(startDate, endDate)
+			if err != nil {
+				utils.InternalServerError(writer, request, err)
+				return
+			}
+			err = scheduler.Call(schedulerData, dailyEndpointURL)
+			if err != nil {
+				utils.InternalServerError(writer, request, err)
+				return
+			}
+		}(now, i)
 	}
+	wg.Wait()
 	utils.Ok(writer, request)
 }
 
