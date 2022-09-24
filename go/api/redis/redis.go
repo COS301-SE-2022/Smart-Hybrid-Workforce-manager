@@ -233,7 +233,31 @@ func UserLogin(user_id string, user_identifier string, user_name string, user_su
 	return redisData,nil;
 }
 
-func CreateBooking(booking_id string, calender_id string) bool{
-	
+func CreateBooking(booking_id string, calender_id string,end_time time.Time) bool{
+	client := getCalenderClient()
+	data := CalenderBookings{
+		Calender_id: calender_id,
+		Time_end: end_time,
+	}
+
+	rdata,err := json.Marshal(data)
+	if err != nil{
+		logger.Error.Fatal(err)
+		return false
+	}
+	end_time.Add(time.Hour * 24)
+	err = client.Set(ctx, booking_id, rdata, time.Until(end_time)).Err();
+	if err != nil{
+		logger.Error.Fatal(err)
+		return false
+	}
+	val, err := client.Get(ctx, booking_id).Result();
+	if err != nil {
+		logger.Error.Fatal(err)
+		return false;
+	}
+	_ = val;
 	return true
 }
+
+
