@@ -5,7 +5,7 @@ Base code from https://developers.google.com/calendar/api/quickstart/go
 https://developers.google.com/calendar/api/guides/create-events#go
 */
 
-package main
+package google_calender
 
 import (
 	"context"
@@ -100,8 +100,7 @@ func createEvent(summary string, location *string, desc *string, starttime strin
 	return event
 }
 
-
-func main() {
+func TestingFunc() bool{
 	ctx := context.Background()
 	b, err := os.ReadFile("credentials.json")
 	if err != nil {
@@ -127,4 +126,7 @@ func main() {
 	log.Fatalf("Unable to create event. %v\n", err)
 	}
 	fmt.Printf("Event created: %s\n", event.HtmlLink)
+	return true
 }
+
+
