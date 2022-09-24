@@ -2,30 +2,30 @@ package redis
 
 ////////////
 //TODO
-//Check if token has expired
 //
-
+//
 
 import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"lib/logger"
 	"math"
 	"net/http"
 	"time"
-	"errors"
+
 	"github.com/go-redis/redis/v8"
 	_ "github.com/gorilla/mux"
-	"lib/logger"
 )
 
 ////////////////////////////////////////////////
 //Databases
 // 0 : testing
-// 1 : user session token
-// 2 : open
+// 1 : User Session Token
+// 2 : Google Calender Integration
 // 3 : open
 // 4 : open
 
@@ -112,6 +112,10 @@ func getRedisClient(database int) redis.Client {
 
 func getAuthClient() redis.Client{
 	return getRedisClient(1);
+}
+
+func getCalenderClient() redis.Client{
+	return getRedisClient(2);
 }
 
 // func ValidateUserToken(token string) bool{
