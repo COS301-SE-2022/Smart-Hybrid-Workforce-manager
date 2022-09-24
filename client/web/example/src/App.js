@@ -30,6 +30,7 @@ import CreateMeetingRoom from './pages/ResourcesMeetingRoomCreate'
 
 import Profile from './pages/Profile'
 import ProfileConfiguration from './pages/ProfileConfiguration'
+import ResetPassword from './pages/ResetPassword'
 import Users from './pages/Users'
 import EditUser from './pages/UsersEdit'
 import CreateUser from './pages/UsersCreate'
@@ -98,6 +99,7 @@ function App()
 
             <Route path="/profile" exact element={<Profile />} />
             <Route path="/profile-configuration" exact element={<ProfileConfiguration />} />
+            <Route path="/reset-password" exact element={<ResetPassword />} />
 
             <Route path="/role" exact element={<Roles/>} />
             <Route path="/role-create" exact element={<CreateRole/>} />
