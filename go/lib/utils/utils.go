@@ -130,6 +130,7 @@ func clientIP(request *http.Request) string {
 	return request.RemoteAddr
 }
 
+// Random int in range [min, max)
 func RandInt(min int, max int) int {
 	return min + rand.Intn(max-min)
 }

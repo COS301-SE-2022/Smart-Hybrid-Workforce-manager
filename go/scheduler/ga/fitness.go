@@ -34,25 +34,26 @@ func weeklyDayVResourceFitness(domain *Domain, individual *Individual) float64 {
 	// fmt.Printf("daily maps: %v\n", dailyMaps)
 	differentUsersCount := individual.DifferentUsersCount(domain)
 	// fmt.Printf("diff user counts: %v\n", differentUsersCount)
-	doubleBookings := individual.DoubleBookingsCount(domain, dailyMaps)
+	// doubleBookings := individual.DoubleBookingsCount(domain, dailyMaps)
 	// fmt.Printf("double bookings: %v\n", doubleBookings)
-	usersNotCommingInTheirSpecifiedAmountCount := individual.UsersNotCommingInTheirSpecifiedAmountCount(domain, dailyMaps)
+	// usersNotCommingInTheirSpecifiedAmountCount := individual.UsersNotCommingInTheirSpecifiedAmountCount(domain, dailyMaps)
 	// fmt.Printf("usersNotCommingInTheirSpecifiedAmountCountmaps: %v\n", usersNotCommingInTheirSpecifiedAmountCount)
-	teamsAttendingSameDays := individual.TeamsAttendingSameDays(domain, dailyMaps)
+	teamsAttendingSameDays := individual.TeamsAttendingSameDays(domain, dailyMaps) + 1.0
 	// fmt.Printf("teamsAttendingSameDays: %v\n", teamsAttendingSameDays)
-	if doubleBookings == 0 {
-		doubleBookings = 1
-	}
-	if usersNotCommingInTheirSpecifiedAmountCount == 0 {
-		usersNotCommingInTheirSpecifiedAmountCount = 1
-	}
+	// if doubleBookings == 0 {
+	// 	doubleBookings = 1
+	// }
+	// if usersNotCommingInTheirSpecifiedAmountCount == 0 {
+	// 	usersNotCommingInTheirSpecifiedAmountCount = 1
+	// }
 	if differentUsersCount == 0 {
 		differentUsersCount = 1
 	}
 	if teamsAttendingSameDays == 0 {
 		teamsAttendingSameDays = 1
 	}
-	return float64(differentUsersCount) * teamsAttendingSameDays / (float64(doubleBookings) * float64(usersNotCommingInTheirSpecifiedAmountCount))
+	return float64(differentUsersCount) * teamsAttendingSameDays
+	// return float64(differentUsersCount) * teamsAttendingSameDays / (float64(doubleBookings) * float64(usersNotCommingInTheirSpecifiedAmountCount))
 }
 
 // DifferentUsersCount takes the sum of the amount of times users come in on a different day as the week before
@@ -174,7 +175,31 @@ func (individual *Individual) getUserCountMapsPerDay() []map[string]int {
 }
 
 ///////////////////////////////////////////////////
-// DAILY
+// WEEKLY Valid
+
+// WeeklyCountTeamMembersTogether calculate the bonus for teams coming in on the same
+// day as eachother
+// func (individual *Individual) WeeklyCountTeamMembersTogether(team *data.TeamInfo, dailyMaps []map[string]int) int {
+// 	if len(team.UserIds) == 0 {
+// 		return 0.0
+// 	}
+// 	usersNotTogether := 0
+// 	for _, day := range dailyMaps {
+// 		usersTogether := 0
+// 		for _, teamMember := range team.UserIds {
+// 			if day[teamMember] > 0 {
+// 				usersTogether++
+// 			}
+// 		}
+// 		if usersTogether == 0 {
+// 			usersNotTogether++
+// 		}
+// 	}
+// 	return (float64(len(team.UserIds)) - float64(usersNotTogether)) / float64(len(team.UserIds))
+// }
+
+///////////////////////////////////////////////////
+// DAILY Valid
 
 func DailyFitness(domain *Domain, individuals Individuals) []float64 {
 	var result []float64

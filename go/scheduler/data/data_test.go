@@ -1,6 +1,7 @@
 package data
 
 import (
+	tu "lib/testutils"
 	"reflect"
 	"testing"
 
@@ -78,9 +79,8 @@ func TestExtractInverseUserIdMap(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := ExtractInverseUserIdMap(tt.args.userIdMap); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("ExtractInverseUserIdMap() = %v, want %v", got, tt.want)
-			}
+			got := ExtractInverseUserIdMap(tt.args.userIdMap)
+			tu.MapsWithcSlicesMatchLoosely(t, got, tt.want, "ExtractInverseUserIdMap() = %v, want %v", got, tt.want)
 		})
 	}
 }
