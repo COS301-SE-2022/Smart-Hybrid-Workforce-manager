@@ -43,7 +43,6 @@
     background: rgba(255, 255, 255, 0.5);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
 
     color: #374146;
 
@@ -91,7 +90,8 @@
     width: 20vw;
     height: 80vh;
 
-    background-color: white;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(6px);
     box-shadow: 0 5px 10px -4px rgba(0, 0, 0, 0.1) inset;
 
     transition: all 0.5s ease; 
@@ -115,19 +115,97 @@
     font-size: 1vw;
 }
 
+.userCardContainer
+{
+    overflow-y: scroll;
+    margin-left: 1vw;
+}
+
 .userCard
 {
-    display: none;
-    position: absolute;
+    display: grid;
+    grid-template-columns: 6vw 12vw;
+    user-select: 'none';
 
-    background-color: white;
+    margin-bottom: 3vh;
 
-    width: 10vw;
-    height: 10vh;
+    padding-bottom: 2vh;
+
+    min-height: 15vh;
+    width: 18vw;
 
     border-radius: 1vh;
 
-    animation: animate-pop-enter 0.5s cubic-bezier(0.26, 0.53, 0.74, 1.48);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    background-color: white;
+}
+
+.userPictureContainer
+{
+    background-color: #374146;
+
+    margin-top: 3.5vh;
+    margin-left: 0.5vw;
+
+    width: 4vw;
+    height: 4vw;
+
+    border-radius: 10vh;
+}
+
+.image
+{
+    width: 100%;
+    height: 100%;
+    border-radius: 10vh;
+}
+
+.userDetailsContainer
+{
+    padding-top: 1vh;
+}
+
+.userName
+{
+    font-size: 0.7vw;
+}
+
+.userTime
+{
+    font-size: 0.7vw;
+}
+
+.userRolesContainer
+{
+    font-size: 0.7vw;
+
+    padding-top: 1vh;
+
+    margin-bottom: 2vh;
+}
+
+.userTeamsContainer
+{
+    font-size: 0.7vw;
+
+    padding-top: 1vh;
+}
+
+.pill
+{
+    float: left;
+    margin-right: 0.5vw;
+    margin-bottom: 0.7vh;
+
+    padding-left: 0.5vw;
+    padding-right: 0.5vw;
+    padding-bottom: 2.3vh;
+
+    height: 2vh;
+
+    border-radius: 4vh;
+
+    color: white;
 }
 
 @keyframes animate-pop-enter

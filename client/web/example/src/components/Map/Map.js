@@ -15,6 +15,7 @@ const Map = () =>
     const meetingRoomPropsRef = useRef([]);
     const deskCount = useRef(0);
     const meetingRoomCount = useRef(0);
+    const dateRef = useRef(null);
 
     //Selector refs
     const buildingRef = useRef(null);
@@ -26,7 +27,8 @@ const Map = () =>
     //Side panel
     const [sidePanel, setSidePanel] = useState(0.85*window.innerWidth);
     const [currResource, setCurrResource] = useState(null);
-    const [allUsers, setAllUsers] = useState(null);
+    const [allUsers, setAllUsers] = useState({});
+    const [currUsers, setCurrUsers] = useState({});
 
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
@@ -39,6 +41,7 @@ const Map = () =>
     const [rooms, SetRooms] = useState([]);
     const [resources, SetResources] = useState([]);
     const [bookings, setBookings] = useState([]);
+    const [currBookings, setCurrBookings] = useState(null);
 
     const {userData} = useContext(UserContext);
 
@@ -215,7 +218,7 @@ const Map = () =>
                     [user.id]:
                     {
                         id: user.id,
-                        name: user.first_name + user.last_name,
+                        name: user.first_name + " " + user.last_name,
                         picture: user.picture,
                         roles: [],
                         teams: []
@@ -437,6 +440,11 @@ const Map = () =>
         }
 
         setDate(`${date.getFullYear()}-${month}-${day}`);
+
+        if(dateRef.current)
+        {
+            dateRef.current.value = `${date.getFullYear()}-${month}-${day}`;
+        }
     },[]);
 
     useEffect(() =>
@@ -488,11 +496,37 @@ const Map = () =>
                 </div>
 
                 <div className={styles.userCardContainer}>
-                    <div className={styles.userCard}>
-                        <div className={styles.userPicture}>
+                    {allUsers && Object.entries(allUsers).map(([id, user]) =>
+                    (
+                        <div className={styles.userCard}>
+                            <div className={styles.userPictureContainer}>
+                                <img className={styles.image} src={user.picture} alt='user'></img>
+                            </div>
 
+                            <div className={styles.userDetailsContainer}>
+                                <div className={styles.userName}>{user.name}</div>
+
+                                <div className={styles.userTime}>13:00 - 17:00</div>
+
+                                <div className={styles.userRolesContainer}>
+                                    <div>Roles:</div>
+                                    {user.roles.map((role) =>
+                                    (
+                                        <div key={role.id} className={styles.pill} style={{backgroundColor: role.color}}>{role.name}</div>                                        
+                                    ))}
+                                </div>
+
+                                <div className={styles.userTeamsContainer}>
+                                    <div>Teams:</div>
+                                    {user.teams.map((team) =>
+                                    (
+                                        <div key={team.id} className={styles.pill} style={{backgroundColor: team.color}}>{team.name}</div>                                        
+                                    ))}
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    ))}
+                    
                 </div>
             </div>
 
@@ -578,7 +612,7 @@ const Map = () =>
                 </div>
 
                 <div className={styles.dateContainer}>
-                    <input className={styles.resourceSelector} type='date' id='BookingDate' onChange={(e) => setDate(e.target.value)}></input>
+                    <input ref={dateRef} className={styles.resourceSelector} type='date' onChange={(e) => setDate(e.target.value)}></input>
                 </div>
             </div>
         </Fragment>
