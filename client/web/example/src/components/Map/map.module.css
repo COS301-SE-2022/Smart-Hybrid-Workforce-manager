@@ -85,6 +85,8 @@
 .sidePanel
 {
     position: absolute;
+    display: grid;
+    grid-template-rows: 8vh 5vh 67vh;
 
     width: 20vw;
     height: 80vh;
@@ -95,6 +97,22 @@
     transition: all 0.5s ease; 
 
     z-index: 2;
+}
+
+.resourceHeading
+{
+    padding-top: 1vh;
+
+    text-align: center;
+
+    font-size: 1.5vw;
+}
+
+.resourceType
+{
+    text-align: center;
+
+    font-size: 1vw;
 }
 
 .userCard

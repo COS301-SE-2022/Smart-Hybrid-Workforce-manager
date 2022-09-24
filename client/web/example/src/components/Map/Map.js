@@ -11,7 +11,6 @@ const Map = () =>
     //Canvas references
     const canvasRef = useRef(null);
     const stageRef = useRef(null);
-    const scaleFactor = 1.3;
     const deskPropsRef = useRef([]);
     const meetingRoomPropsRef = useRef([]);
     const deskCount = useRef(0);
@@ -26,6 +25,8 @@ const Map = () =>
 
     //Side panel
     const [sidePanel, setSidePanel] = useState(0.85*window.innerWidth);
+    const [currResource, setCurrResource] = useState(null);
+    const [allUsers, setAllUsers] = useState(null);
 
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
@@ -44,6 +45,7 @@ const Map = () =>
     //POST requests
     const UpdateRooms = (e) =>
     {
+        SelectShape(null);
         fetch("http://localhost:8080/api/resource/room/information", 
             {
             method: "POST",
@@ -65,6 +67,7 @@ const Map = () =>
 
     const UpdateResources = (e) =>
     {
+        SelectShape(null);
         fetch("http://localhost:8080/api/resource/information", 
             {
             method: "POST",
@@ -103,7 +106,7 @@ const Map = () =>
             [
                 ...deskPropsRef.current,
                 {
-                    key : "desk" + id,
+                    key : id,
                     id : id,
                     name : name,
                     x : x,
@@ -130,7 +133,7 @@ const Map = () =>
             [
                 ...meetingRoomPropsRef.current,
                 {
-                    key : "meetingroom" + meetingRoomCount.current,
+                    key : id,
                     id : id,
                     name : name,
                     x : x,
@@ -154,49 +157,6 @@ const Map = () =>
     }
 
     window.addEventListener('resize', HandleResize);
-
-    //Ensures that the zooming in/out is oriented with the center of viewable canvas
-    const ZoomInOut = (event) =>
-    {
-        /*if(stageRef.current !== null)
-        {
-            const stage = stageRef.current;
-            const oldScale = stage.scaleX();
-
-            const stageCenter =
-            {
-                x : stage.width() / 2.0,
-                y : stage.height() / 2.0
-            }
-
-            const newStageCenter = 
-            {
-                x : (stageCenter.x - stage.x()) / oldScale,
-                y : (stageCenter.y - stage.y()) / oldScale,
-            }
-
-            var newScale;
-            if(event.evt.deltaY < 0)
-            {
-                newScale = oldScale * scaleFactor;
-            }
-            else
-            {
-                newScale = oldScale / scaleFactor;
-            }
-
-            stage.scale({x : newScale, y : newScale});
-
-            const newPos = 
-            {
-                x : stageCenter.x - newStageCenter.x * newScale,
-                y : stageCenter.y - newStageCenter.y * newScale,
-            }
-
-            stage.position(newPos);
-            stage.batchDraw();
-        }        */
-    }
 
     //Effect on the loading of the web page
     useEffect(() =>
@@ -233,6 +193,136 @@ const Map = () =>
             setBookings(data);
         });
 
+        fetch("http://localhost:8080/api/user/information", 
+        {
+            method: "POST",
+            mode: "cors",
+            body: JSON.stringify({
+            }),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+            }
+        }).then((res) => res.json()).then(data => 
+        {
+            //Get info for all users
+            var users = {};
+            data.forEach((user) =>
+            {
+                users =  
+                {
+                    ...users,
+                    [user.id]:
+                    {
+                        id: user.id,
+                        name: user.first_name + user.last_name,
+                        picture: user.picture,
+                        roles: [],
+                        teams: []
+                    }
+                }
+            });
+
+            //Get info for all roles
+            fetch("http://localhost:8080/api/role/information", 
+            {
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify({
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
+            }).then((res) => res.json()).then(data => 
+            {
+                var roles = {};
+                data.forEach((role) =>
+                {
+                    roles =
+                    {
+                        ...roles,
+                        [role.id]:
+                        {
+                            id: role.id,
+                            name: role.name,
+                            color: role.color
+                        }
+                    }
+                });
+
+                //Add role to user based on role association
+                fetch("http://localhost:8080/api/role/user/information", 
+                {
+                    method: "POST",
+                    mode: "cors",
+                    body: JSON.stringify({
+                    }),
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                    }
+                }).then((res) => res.json()).then(data => 
+                {
+                    data.forEach((roleUser) =>
+                    {
+                        users[roleUser.user_id].roles.push(roles[roleUser.role_id]);
+                    });
+                });
+
+                //Get info for all teams
+                fetch("http://localhost:8080/api/team/information", 
+                {
+                    method: "POST",
+                    mode: "cors",
+                    body: JSON.stringify({
+                    }),
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                    }
+                }).then((res) => res.json()).then(data => 
+                {
+                    var teams = {};
+                    data.forEach((team) =>
+                    {
+                        teams =
+                        {
+                            ...teams,
+                            [team.id]:
+                            {
+                                id: team.id,
+                                name: team.name,
+                                color: team.color
+                            }
+                        }
+                    });
+
+                    //Add team to user based on team association
+                    fetch("http://localhost:8080/api/team/user/information", 
+                    {
+                        method: "POST",
+                        mode: "cors",
+                        body: JSON.stringify({
+                        }),
+                        headers:{
+                            'Content-Type': 'application/json',
+                            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                        }
+                    }).then((res) => res.json()).then(data => 
+                    {
+                        data.forEach((teamUser) =>
+                        {
+                            users[teamUser.user_id].teams.push(teams[teamUser.team_id]);
+                        });
+
+                        setAllUsers(users);
+                        console.log(users);
+                    });
+                });
+            });
+        });
+
     }, [userData.token]);
 
     //Loads desks and meeting rooms from database after room is selected
@@ -246,8 +336,6 @@ const Map = () =>
 
         SetDeskProps(deskPropsRef.current);
         SetMeetingRoomProps(meetingRoomPropsRef.current);
-
-        
 
         //Loop through resources and load desks and meeting rooms respectively
         for(var i = 0; i < resources.length; i++)
@@ -365,6 +453,25 @@ const Map = () =>
         }
     },[date, bookings]);
 
+    useEffect(() =>
+    {
+        if(selectedId)
+        {
+            setSidePanel(0.65*window.innerWidth);
+            resources.map((resource) =>
+            {
+                if(resource.id === selectedId)
+                {
+                    setCurrResource(resource);
+                }
+            })
+        }
+        else
+        {
+            setSidePanel(0.85*window.innerWidth);
+        }
+    },[selectedId])
+
     return (
         <Fragment>
             <div className={styles.mapHeadingContainer}>
@@ -372,11 +479,25 @@ const Map = () =>
             </div>
 
             <div className={styles.sidePanel} style={{left: sidePanel}}>
+                <div className={styles.resourceHeading}>
+                    {currResource ? currResource.name : 'Default name'}
+                </div>
 
+                <div className={styles.resourceType}>
+                    Type: {currResource ? currResource.resource_type : 'Default type'}
+                </div>
+
+                <div className={styles.userCardContainer}>
+                    <div className={styles.userCard}>
+                        <div className={styles.userPicture}>
+
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div ref={canvasRef} className={styles.canvasContainer}>
-                <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onTouchStart={CheckDeselect} draggable onWheel={ZoomInOut} ref={stageRef}>
+                <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onTouchStart={CheckDeselect} draggable ref={stageRef}>
                     <Layer>
                         {deskProps.length > 0 && (
                             deskProps.map((desk, i) => (
@@ -397,69 +518,6 @@ const Map = () =>
                                         newDeskProps[i] = newProps;
                                         SetDeskProps(newDeskProps)
                                     }}
-
-                                    /*ShowUserCard = {(coords) =>
-                                    {
-                                        /*const card = document.getElementById('UserCard');
-                                        card.style.display = 'block';
-
-                                        const rad = coords.rotation * Math.PI / 180;
-
-                                        const origin = 
-                                        {
-                                            x: Math.abs(coords.x + stageRef.current.x()) + Math.cos(rad)*coords.width/2 + Math.sin(rad)*coords.height*0.35,
-                                            y: Math.abs(coords.y + stageRef.current.y()) + Math.cos(rad)*coords.height*0.35 + Math.sin(rad)*coords.width/2
-                                        }
-
-                                        if((coords.rotation >= -10 && coords.rotation <= 10) || (coords.rotation >= 350 && coords.rotation <= 370) || (coords.rotation >= -370 && coords.rotation <= -350)) //Top
-                                        {
-                                            card.style.left = origin.x + 'px';
-                                            card.style.top = origin.y - 0.15*window.innerHeight + 'px';
-                                        }
-                                        else if((coords.rotation >= 80 && coords.rotation <= 100) || (coords.rotation >= -280 && coords.rotation <= -260)) //Right
-                                        {
-                                            card.style.left = origin.x + 0.02*window.innerHeight + 'px';
-                                            card.style.top = origin.y - 0.10*window.innerHeight + 'px';
-                                        }
-                                        else if((coords.rotation >= 170 && coords.rotation <= 190) || (coords.rotation >= -190 && coords.rotation <= -170)) //Bottom
-                                        {
-                                            card.style.left = origin.x + 'px';
-                                            card.style.top = origin.y + 0.05*window.innerHeight + 'px';
-                                        }
-                                        else if((coords.rotation >= 260 && coords.rotation <= 280) || (coords.rotation >= -100 && coords.rotation <= -80)) //Left
-                                        {
-                                            card.style.left = origin.x - 0.11*window.innerWidth + 'px';
-                                            card.style.top = origin.y - 0.10*window.innerHeight + 'px';
-                                        }
-
-                                        console.log(coords.rotation);
-
-                                        /*const rad = coords.rotation * Math.PI / 180;
-
-                                        const x = Math.sin(rad) * 0.02*window.innerHeight;
-                                        const y = Math.cos(rad) * 0.15*window.innerHeight;
-
-                                        const origin = 
-                                        {
-                                            x: Math.abs(coords.x + stageRef.current.x()) + Math.cos(rad)*coords.width/2 + Math.sin(rad)*coords.height*0.35,
-                                            y: Math.abs(coords.y + stageRef.current.y()) + Math.cos(rad)*coords.height*0.35 + Math.sin(rad)*coords.width/2
-                                        }
-
-                                        //if((coords.rotation >= 0 ) || ())
-
-                                        card.style.left = origin.x + x + 'px';
-                                        card.style.top = origin.y - y + 'px';
-
-                                        console.log(card.offsetWidth);
-                                        console.log(stageRef.current.x() + ' ' + stageRef.current.y());
-                                    }}
-
-                                    HideUserCard = {() =>
-                                    {
-                                        document.getElementById('UserCard').style.display = 'none';
-                                    }}*/
-
-                                    moveSidePanel = {setSidePanel}
 
                                     draggable = {false}
 
@@ -523,11 +581,6 @@ const Map = () =>
                     <input className={styles.resourceSelector} type='date' id='BookingDate' onChange={(e) => setDate(e.target.value)}></input>
                 </div>
             </div>
-
-            
-
-            <div id='UserCard' className={styles.userCard}>E</div>
-
         </Fragment>
     )
 }

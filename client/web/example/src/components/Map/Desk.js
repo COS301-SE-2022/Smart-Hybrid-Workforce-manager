@@ -4,7 +4,7 @@ import { Image, Path, Transformer } from 'react-konva';
 import { useRef, useEffect, Fragment } from 'react';
 import styles from './map.module.css';
 
-const Desk = ({ shapeProps, isSelected, onSelect, onChange, moveSidePanel, draggable, transform}) =>
+const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform}) =>
 {
     const shapeRef = useRef(null);
     const transformRef = useRef(null);
@@ -12,11 +12,6 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, moveSidePanel, dragg
 
     useEffect(() =>
     {
-        if(isSelected)
-        {
-            moveSidePanel(0.65*window.innerWidth);
-        }
-
         if(isSelected && transform)
         {
             transformRef.current.nodes([shapeRef.current]);
@@ -26,7 +21,6 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, moveSidePanel, dragg
         if(!isSelected)
         {
             shapeRef.current.fill('#374146');
-            moveSidePanel(0.85*window.innerWidth);
         }
     }, [isSelected, transform]);
 
