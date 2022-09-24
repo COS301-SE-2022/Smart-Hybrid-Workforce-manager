@@ -851,3 +851,111 @@ func TestDailyFitness(t *testing.T) {
 		})
 	}
 }
+
+func Test_teamUsersCountByDay(t *testing.T) {
+	// gene := [][]string{
+	// 	{"Lime", "", "Lemon", "Strawberry", "Grapefruit", "Blueberry"},
+	// 	{"", "Blueberry", "", "Lemon", "", },
+	// 	{"Banana", "", "", "", "Gooseberry", },
+	// }
+	type args struct {
+		domain    *Domain
+		dailyMaps []map[string]int
+	}
+	tests := []struct {
+		name string
+		args args
+		want []map[string]int
+	}{
+		{
+			name: "Test 1",
+			args: args{
+				domain: __test_domain,
+				dailyMaps: []map[string]int{
+					{
+						"Lime":       1,
+						"Lemon":      1,
+						"Strawberry": 1,
+						"Grapefruit": 1,
+						"Blueberry":  1,
+					},
+					{
+						"Blueberry": 1,
+						"Lemon":     1,
+					},
+					{
+						"Banana":     1,
+						"Gooseberry": 1,
+					},
+				},
+			},
+			want: []map[string]int{
+				{
+					"Cabbage":  3,
+					"Broccoli": 2,
+					"Lettuce":  2,
+				},
+				{
+					"Cabbage":  1,
+					"Broccoli": 2,
+					"Lettuce":  1,
+				},
+				{
+					"Cabbage":  1,
+					"Broccoli": 1,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := teamUsersCountByDay(tt.args.domain, tt.args.dailyMaps); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("teamUsersCountByDay() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestIndividual_getUserCountMapsPerDay(t *testing.T) {
+	gene := [][]string{
+		{"Lime", "", "Lemon", "Strawberry", "Grapefruit", "Blueberry"},
+		{"", "Blueberry", "", "Lemon", ""},
+		{"Banana", "", "", "", "Gooseberry"},
+	}
+	tests := []struct {
+		name       string
+		individual *Individual
+		want       []map[string]int
+	}{
+		{
+			name: "Test 1",
+			individual: &Individual{
+				Gene: gene,
+			},
+			want: []map[string]int{
+				{
+					"Lime":       1,
+					"Lemon":      1,
+					"Strawberry": 1,
+					"Grapefruit": 1,
+					"Blueberry":  1,
+				},
+				{
+					"Blueberry": 1,
+					"Lemon":     1,
+				},
+				{
+					"Banana":     1,
+					"Gooseberry": 1,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.individual.getUserCountMapsPerDay(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Individual.getUserCountMapsPerDay() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

@@ -8,6 +8,7 @@ import (
 	"math"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -519,5 +520,41 @@ func TestClientIP(t *testing.T) {
 	}
 	if ip == "" {
 		t.Errorf(testutils.Scolour(testutils.RED, "Ip adress is empty"), http.StatusOK, resp.StatusCode)
+	}
+}
+
+func TestReturnAltIfNil(t *testing.T) {
+	type args struct {
+		wanted *string
+		alt    *string
+	}
+	tests := []struct {
+		name string
+		args args
+		want *string
+	}{
+		{
+			name: "Test 1",
+			args: args{
+				wanted: testutils.Ptr("Wanted"),
+				alt:    testutils.Ptr("Alt"),
+			},
+			want: testutils.Ptr("Wanted"),
+		},
+		{
+			name: "Test 2",
+			args: args{
+				wanted: nil,
+				alt:    testutils.Ptr("Alt"),
+			},
+			want: testutils.Ptr("Alt"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ReturnAltIfNil(tt.args.wanted, tt.args.alt); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ReturnAltIfNil() = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
