@@ -193,6 +193,9 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 			}
 			maxFitness = math.Max(maxFitness, indiv.Fitness)
 		}
+		if maxi == -1 {
+			maxi = 0
+		}
 		// send individual on channel
 		solutionChannel <- *population[maxi]
 	}
@@ -204,7 +207,10 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 		}
 		maxFitness = math.Max(maxFitness, indiv.Fitness)
 	}
-	logger.Debug.Println("\n", *population[maxi])
+	if maxi == -1 {
+		maxi = 0
+	}
+	logger.Debug.Println("\n", *population[maxi], "\n", maxFitness)
 }
 
 // String method for printing individuals

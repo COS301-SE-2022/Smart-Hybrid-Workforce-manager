@@ -5,13 +5,19 @@ import (
 	"time"
 )
 
+type SchedulerConfig struct {
+	DailyConfig  *Config `json:"daily_config"`
+	WeeklyConfig *Config `json:"weekly_config"`
+}
+
 type Config struct {
-	Seed           int     `json:"seed"`
-	PopulationSize int     `json:"populationSize"`
-	Generations    int     `json:"generations"`
-	MutationRate   float64 `json:"mutationRate"`
-	CrossOverRate  float64 `json:"crossOverRate"`
-	TournamentSize int     `json:"tournamentSize"`
+	Seed             int     `json:"seed"`
+	PopulationSize   int     `json:"populationSize"`
+	Generations      int     `json:"generations"`
+	MutationRate     float64 `json:"mutationRate"`
+	CrossOverRate    float64 `json:"crossOverRate"`
+	TournamentSize   int     `json:"tournamentSize"`
+	TimeLimitSeconds int     `json:"time_limit_seconds"`
 }
 
 type SchedulerData struct {

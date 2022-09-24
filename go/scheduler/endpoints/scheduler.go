@@ -1,8 +1,14 @@
 package endpoints
 
 import (
+	"encoding/json"
+	"errors"
+	"io/ioutil"
+	"lib/logger"
 	"lib/utils"
 	"net/http"
+	"os"
+	"path/filepath"
 	"scheduler/data"
 	"scheduler/overseer"
 
@@ -28,6 +34,7 @@ func TEST(writer http.ResponseWriter, request *http.Request) {
 }
 
 func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
+	config, _ := parseConfig("/run/secrets/config.json")
 	var schedulerData data.SchedulerData
 
 	err := utils.UnmarshalJSON(writer, request, &schedulerData)
@@ -36,12 +43,13 @@ func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 	schedulerData.ApplyMapping()
-	bookings := overseer.WeeklyOverseer(schedulerData)
+	bookings := overseer.WeeklyOverseer(schedulerData, config)
 
 	utils.JSONResponse(writer, request, bookings)
 }
 
 func dailyScheduler(writer http.ResponseWriter, request *http.Request) {
+	config, _ := parseConfig("/run/secrets/config.json")
 	var schedulerData data.SchedulerData
 
 	err := utils.UnmarshalJSON(writer, request, &schedulerData)
@@ -50,30 +58,38 @@ func dailyScheduler(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 	schedulerData.ApplyMapping()
-	bookings := overseer.DailyOverseer(schedulerData)
+	bookings := overseer.DailyOverseer(schedulerData, config)
 
 	utils.JSONResponse(writer, request, bookings)
 }
 
-// TODO: FIX THIS FUNCTION SOMEBODY PLEASE UWU
-// func parseConfig(path string) (*data.Config, error) {
-// 	filePath := filepath.Clean(path)
-// 	file, err := os.Open(filePath)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	defer func() {
-// 		err := file.Close()
-// 		if err != nil {
-// Log stuff
-// 			panic(err)
-// 		}
-// 	}()
-// 	decoder := json.NewDecoder(file)
-// 	Config := data.Config{}
-// 	err = decoder.Decode(&Config)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return &Config, nil
-// }
+// Loads the schedulers config file
+func parseConfig(filePath string) (*data.SchedulerConfig, error) {
+	if _, err := os.Stat(filepath.Join("", filepath.Clean(filePath))); errors.Is(err, os.ErrNotExist) {
+		logger.Info.Println("Could not find scheduler config file")
+		return nil, nil
+	} else {
+		logger.Info.Println("Loading scheduler config")
+		configJson, err := os.Open(filepath.Join("", filepath.Clean(filePath)))
+		if err != nil {
+			logger.Error.Println("Could not open scheduler config file")
+			return nil, err
+		}
+		fileBytes, err := ioutil.ReadAll(configJson)
+		closeErr := configJson.Close()
+		if closeErr != nil {
+			logger.Error.Println("Could not close config file")
+		}
+		if err != nil {
+			logger.Error.Println("Could not read scheduler config file, err: ", err)
+			return nil, err
+		}
+		var schedulerConfig data.SchedulerConfig
+		err = json.Unmarshal(fileBytes, &schedulerConfig)
+		if err != nil {
+			logger.Error.Println("Could not parse JSON")
+			return nil, err
+		}
+		return &schedulerConfig, nil
+	}
+}
