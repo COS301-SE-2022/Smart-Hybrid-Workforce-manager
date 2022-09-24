@@ -98,8 +98,12 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 		return
 	}
 	if len(bookings) > 0 {
-		utils.BadRequest(writer, request, "booking_exists")
-		return
+		for _, existingBooking := range bookings {
+			if (booking.Start.Before(*existingBooking.End) && booking.Start.After(*existingBooking.Start)) || (booking.End.After(*existingBooking.Start) && booking.End.Before(*existingBooking.End)) {
+				utils.BadRequest(writer, request, "booking_exists")
+				return
+			}
+		}
 	}
 
 	// On Demand scheduler
@@ -123,7 +127,9 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 		// Create a list of Resources booked
 		var resourcesBooked []string
 		for _, booking := range bookings {
-			resourcesBooked = append(resourcesBooked, *booking.ResourceId)
+			if booking.ResourceId != nil {
+				resourcesBooked = append(resourcesBooked, *booking.ResourceId)
+			}
 		}
 		// Get all resources available
 		resourceType := &data.Resource{

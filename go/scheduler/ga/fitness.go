@@ -188,7 +188,9 @@ func DailyFitness(domain *Domain, individuals Individuals) []float64 {
 }
 
 func dailyFitness(domain *Domain, individual *Individual) float64 {
-	return 0.0
+	prefDeskBonus := individual.preferredDeskBonuses(domain)
+	teamProxScore := individual.teamProximityScore(domain)
+	return prefDeskBonus + teamProxScore
 }
 
 type teamRoomGroups struct {
@@ -203,11 +205,6 @@ type teamRoomProximity struct {
 	roomProximities map[string]float64
 }
 
-// preferredDeskBonus returns a bonus fitness value for users sitting at their preffered desk
-func (individual *Individual) preferredDeskBonus(domain *Domain) float64 {
-	return 0.0
-}
-
 // teamProximityScore calculates a score that indicates the proximity of members
 // of a team, scales with team priority (TODO: @JonathanEnslin remember this)
 func (individual *Individual) teamProximityScore(domain *Domain) float64 {
@@ -217,10 +214,67 @@ func (individual *Individual) teamProximityScore(domain *Domain) float64 {
 	for i, teamRoomProx := range teamRoomProximities {
 		// Use reciprocal, since if the teams have a larger avg distance from the centroid
 		// the fitness should be smaller
-		scores[i] = 1 / (individualTeamProximityScore(teamRoomProx) + 1)
+		scores[i] = math.Max(1.0, float64(getTeamPriority(domain, teamRoomProx.teamId))) / (individualTeamProximityScore(teamRoomProx) + 1.0)
 	}
-
+	// Sum all the reciprocals
 	return cu.Sum(scores)
+	// return cu.Sum(scores) / float64(len(scores))
+}
+
+// preferredDeskBonus returns a bonus fitness value for users sitting at their preffered desk
+func (individual *Individual) preferredDeskBonuses(domain *Domain) float64 {
+	gene := individual.Gene
+	bonusSum := 0.0
+	for i := 0; i < len(gene[0]); i++ {
+		// Get the users preferred resource
+		userPrefResourceProx := userPreferredDeskProximity(individual, domain, i)
+		if userPrefResourceProx >= 0 {
+			userPrefResourceProx += 1.0 // In case it is 0
+			bonusSum += 1 / userPrefResourceProx
+		}
+	}
+	return bonusSum / float64(len(gene[0])) // Take the average score, this should usually keep the value below the team scores
+}
+
+// Calculates the distance the user is from their preferred desk
+// returns -1.0 if the user does not have a preferred resource, -2.0 if the user
+// is in a different room than the preferred resource
+func userPreferredDeskProximity(indiv *Individual, domain *Domain, userIndex int) float64 {
+	// Get the users coordinates and roomId
+	userCoords := indiv.getUserCoordinate(domain, userIndex)
+	userRoomId := domain.SchedulerData.ResourcesMap[indiv.Gene[0][userIndex]].RoomId
+	// Get the users preferred resources
+	preferredResource := getUserPreferredResource(domain, userIndex)
+	if preferredResource == nil { // If the user has no preferred resource
+		return -1.0
+	}
+	if *preferredResource.RoomId != *userRoomId {
+		return -2.0
+	}
+	resourceCoords := []float64{*preferredResource.XCoord, *preferredResource.YCoord}
+	return math.Sqrt(distanceRadicand(userCoords, resourceCoords))
+}
+
+// Gets the users preferred resource, or nil if it does not exist
+func getUserPreferredResource(domain *Domain, userIndex int) *data.Resource {
+	userId := domain.Map[userIndex]              // Get the users Id
+	user := domain.SchedulerData.UserMap[userId] // Get the user
+	if user.PreferredDesk == nil {               // If the user has not preferred desk
+		return nil
+	}
+	if !cu.MapHasKey(domain.SchedulerData.ResourcesMap, *user.PreferredDesk) { // If the preferred desk does not exist
+		return nil
+	}
+	return domain.SchedulerData.ResourcesMap[*user.PreferredDesk]
+}
+
+// Gets the priority of the team, returns -1 if priority is nil
+func getTeamPriority(domain *Domain, teamId string) int {
+	prio := domain.SchedulerData.TeamsMap[teamId].Priority
+	if prio == nil {
+		return -1
+	}
+	return *prio
 }
 
 func individualTeamProximityScore(teamRoomProx teamRoomProximity) float64 {
@@ -229,7 +283,7 @@ func individualTeamProximityScore(teamRoomProx teamRoomProximity) float64 {
 	for _, prox := range teamRoomProx.roomProximities {
 		sum += prox
 	}
-	// TODO: @JonathanEnslin add panalty for teams split over rooms
+	// TODO: @JonathanEnslin add penalty for teams split over rooms
 	return sum
 }
 

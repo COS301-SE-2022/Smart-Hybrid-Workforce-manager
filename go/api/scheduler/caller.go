@@ -104,7 +104,7 @@ func Call(data *SchedulerData, endpoint string) error { // TODO: @JonathanEnslin
 	if err != nil {
 		return err
 	}
-	err = makeBookings(*candidateBookings)
+	err = makeBookings(*candidateBookings, data)
 	if err != nil {
 		return err
 	}

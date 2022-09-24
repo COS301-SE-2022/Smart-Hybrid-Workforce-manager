@@ -23,7 +23,7 @@ const UserListItem = ({id, name, email}) => {
                     <MdAccountCircle className='resource-icon' size={50} />
                 </div>                
                 <div className='user-popup'>
-                    <div className='resource-edit'><MdEdit size={30} className="resource-edit-icon" onClick={EditUser}/></div>
+                    <div className='resource-edit'><MdEdit size={30} className="resource-edit-icon" onClick={EditUser} data-testid='resource-edit-icon'/></div>
                 </div>
             </div>
         </div>

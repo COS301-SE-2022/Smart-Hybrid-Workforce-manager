@@ -1,0 +1,17 @@
+{
+    "building_id": "98989898-dc08-4a06-9983-8b374586e459",
+    "create_user": {
+        "num_users": 100,
+        "password_override": "P@ssword123",
+        "email_domains": ["@gmail.com", "@outlook.com"],
+        "lowest_preferred_start_time": "2022-08-24T07:00:00.000Z",
+        "highest_preferred_end_time": "2022-08-24T19:00:00.000Z",
+        "preferred_time_step_minutes": 180,
+        "work_from_home_probability": 0.8,
+        "team_probabilities": [0.05, 0.15, 0.15, 0.5, 0.15],
+        "role_probabilities": [0.1, 0.2, 0.3, 0.3, 0.1],
+        "office_days_options": [1, 2, 3, 4, 5],
+        "office_days_probabilities": [0.1, 0.1, 0.5, 0.1, 0.2],
+        "no_preferred_desk_probability": 0.15
+    }
+}
