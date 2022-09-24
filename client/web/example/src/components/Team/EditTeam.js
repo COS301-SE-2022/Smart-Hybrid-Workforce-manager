@@ -185,7 +185,7 @@ const EditTeam = ({team, edited}) =>
 
             <Form.Group className={styles.formGroup} controlId="formBasicName">
                 <div className={styles.formLabel}>Name</div>
-                <Form.Control className={styles.formInput} type='text' placeholder="Team name" value={name} onChange={(e) => setName(e.target.value)} />
+                <input className={styles.formInput} type='text' placeholder="Team name" value={name} onChange={(e) => setName(e.target.value)}></input>
             </Form.Group>
 
             <Form.Group className={styles.formGroup} controlId="formBasicName">
@@ -195,7 +195,7 @@ const EditTeam = ({team, edited}) =>
 
             <Form.Group className={styles.formGroup} controlId="formBasicName">
                 <div className={styles.formLabel}>Capacity</div>
-                <Form.Control className={styles.formInput} type='number' min='2' placeholder="Capacity" value={capacity} onChange={(e) => setCapacity(e.target.value)} />
+                <input className={styles.formInput} type='number' min='2' placeholder="Capacity" value={capacity} onChange={(e) => setCapacity(e.target.value)}></input>
             </Form.Group>
 
             <Form.Group className={styles.formGroup} controlId="formBasicName">

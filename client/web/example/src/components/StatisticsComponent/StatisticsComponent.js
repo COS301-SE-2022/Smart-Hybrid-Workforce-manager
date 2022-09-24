@@ -12,7 +12,7 @@ import { EditUserPanel } from '../User/EditUser';
 import { UserContext } from '../../App';
 import GaugeChart from 'react-gauge-chart'
 import Gauge from 'react-svg-gauge'
-import 'bootstrap/dist/css/bootstrap.css';
+//import 'bootstrap/dist/css/bootstrap.css';
 import Card from 'react-bootstrap/Card';
 
 const StatisticsComponent = () => {

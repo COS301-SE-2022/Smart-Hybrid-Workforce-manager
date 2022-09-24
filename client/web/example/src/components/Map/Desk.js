@@ -4,7 +4,7 @@ import { Image, Path, Transformer } from 'react-konva';
 import { useRef, useEffect, Fragment } from 'react';
 import styles from './map.module.css';
 
-const Desk = ({ shapeProps, isSelected, onSelect, onChange, ShowUserCard, HideUserCard, draggable, transform}) =>
+const Desk = ({ shapeProps, isSelected, onSelect, onChange, moveSidePanel, draggable, transform}) =>
 {
     const shapeRef = useRef(null);
     const transformRef = useRef(null);
@@ -12,10 +12,21 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, ShowUserCard, HideUs
 
     useEffect(() =>
     {
+        if(isSelected)
+        {
+            moveSidePanel(0.65*window.innerWidth);
+        }
+
         if(isSelected && transform)
         {
             transformRef.current.nodes([shapeRef.current]);
             transformRef.current.getLayer().batchDraw();
+        }
+
+        if(!isSelected)
+        {
+            shapeRef.current.fill('#374146');
+            moveSidePanel(0.85*window.innerWidth);
         }
     }, [isSelected, transform]);
 
@@ -78,7 +89,11 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, ShowUserCard, HideUs
 
                 draggable={draggable}
 
-                onClick={onSelect}
+                onClick={(e) =>
+                {
+                    onSelect();
+                }}
+
                 onTap={onSelect}
 
                 onDragEnd={(e) =>
@@ -104,16 +119,14 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, ShowUserCard, HideUs
 
                 onMouseEnter={(e) =>
                 {
-                    e.target.getStage().container().style.cursor = transform ? 'move' : 'default';
+                    e.target.getStage().container().style.cursor = transform ? 'move' : 'pointer';
                     e.target.fill('#09a2fb');
-                    ShowUserCard({x: e.target.x(), y: e.target.y(), width: e.target.width(), height: e.target.height(), rotation: e.target.rotation()});
                 }}
 
                 onMouseLeave={(e) =>
                 {
                     e.target.getStage().container().style.cursor = 'default';
-                    e.target.fill('#374146');
-                    HideUserCard();
+                    isSelected ? e.target.fill('#09a2fb') : e.target.fill('#374146');
                 }}
             />
             

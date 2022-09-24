@@ -24,6 +24,9 @@ const Map = () =>
     //Date
     const [date, setDate] = useState('');
 
+    //Side panel
+    const [sidePanel, setSidePanel] = useState(0.85*window.innerWidth);
+
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
     const [meetingRoomProps, SetMeetingRoomProps] = useState([]);
@@ -364,6 +367,14 @@ const Map = () =>
 
     return (
         <Fragment>
+            <div className={styles.mapHeadingContainer}>
+                <div className={styles.mapHeading}>Office map</div>
+            </div>
+
+            <div className={styles.sidePanel} style={{left: sidePanel}}>
+
+            </div>
+
             <div ref={canvasRef} className={styles.canvasContainer}>
                 <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onTouchStart={CheckDeselect} draggable onWheel={ZoomInOut} ref={stageRef}>
                     <Layer>
@@ -387,9 +398,9 @@ const Map = () =>
                                         SetDeskProps(newDeskProps)
                                     }}
 
-                                    ShowUserCard = {(coords) =>
+                                    /*ShowUserCard = {(coords) =>
                                     {
-                                        const card = document.getElementById('UserCard');
+                                        /*const card = document.getElementById('UserCard');
                                         card.style.display = 'block';
 
                                         const rad = coords.rotation * Math.PI / 180;
@@ -440,13 +451,15 @@ const Map = () =>
                                         card.style.top = origin.y - y + 'px';
 
                                         console.log(card.offsetWidth);
-                                        console.log(stageRef.current.x() + ' ' + stageRef.current.y());*/
+                                        console.log(stageRef.current.x() + ' ' + stageRef.current.y());
                                     }}
 
                                     HideUserCard = {() =>
                                     {
                                         document.getElementById('UserCard').style.display = 'none';
-                                    }}
+                                    }}*/
+
+                                    moveSidePanel = {setSidePanel}
 
                                     draggable = {false}
 
@@ -483,33 +496,35 @@ const Map = () =>
                         )}                             
                     </Layer>
                 </Stage>
+
+                <div className={styles.buildingSelectorContainer}>
+                    <select ref={buildingRef} className={styles.resourceSelector} name='building' onChange={UpdateRooms.bind(this)}>
+                        <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
+                            {buildings.length > 0 && (
+                                buildings.map(building => (
+                                    <option key={building.id} value={building.id}>{building.name + ' (' + building.location + ')'}</option>
+                                ))
+                            )}
+                    </select>
+                </div>
+
+                <div className={styles.roomSelectorContainer}>
+                    <select ref={roomRef} className={styles.resourceSelector} name='room' onChange={UpdateResources.bind(this)}>
+                        <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
+                            {rooms.length > 0 && (
+                                rooms.map(room => (
+                                    <option key={room.id} value={room.id}>{room.name + ' (' + room.location + ')'}</option>
+                                ))
+                            )}
+                    </select>
+                </div>
+
+                <div className={styles.dateContainer}>
+                    <input className={styles.resourceSelector} type='date' id='BookingDate' onChange={(e) => setDate(e.target.value)}></input>
+                </div>
             </div>
 
-            <div className={styles.buildingSelectorContainer}>
-                <select ref={buildingRef} className={styles.resourceSelector} name='building' onChange={UpdateRooms.bind(this)}>
-                    <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
-                        {buildings.length > 0 && (
-                            buildings.map(building => (
-                                <option key={building.id} value={building.id}>{building.name + ' (' + building.location + ')'}</option>
-                            ))
-                        )}
-                </select>
-            </div>
-
-            <div className={styles.roomSelectorContainer}>
-                <select ref={roomRef} className={styles.resourceSelector} name='room' onChange={UpdateResources.bind(this)}>
-                    <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
-                        {rooms.length > 0 && (
-                            rooms.map(room => (
-                                <option key={room.id} value={room.id}>{room.name + ' (' + room.location + ')'}</option>
-                            ))
-                        )}
-                </select>
-            </div>
-
-            <div className={styles.dateContainer}>
-                <input className={styles.resourceSelector} type='date' id='BookingDate' onChange={(e) => setDate(e.target.value)}></input>
-            </div>
+            
 
             <div id='UserCard' className={styles.userCard}>E</div>
 

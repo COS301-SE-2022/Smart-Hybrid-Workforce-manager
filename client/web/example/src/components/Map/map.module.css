@@ -1,24 +1,40 @@
+.mapHeadingContainer
+{
+    height: 10vh;
+
+    background-color: white;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    color: #374146;
+}
+
+.mapHeading
+{
+    font-size: 3vw;
+    letter-spacing: 0.3vw;
+
+    margin-left: 3vw;
+}
+
 .canvasContainer
 {
-    position: absolute;
     background: #ced8fb;
 
     width: 85vw;
-    height: 90vh;
+    height: 80vh;
     left: 0;
 }
 
 .buildingSelectorContainer
 {
     position: absolute;
-    top: 2vh;
+    top: 12vh;
     left: 1vw;
 }
 
 .roomSelectorContainer
 {
     position: absolute;
-    top: 2vh;
+    top: 12vh;
     left: 25vw;
 }
 
@@ -48,7 +64,7 @@
 .dateContainer
 {
     position: absolute;
-    top: 2vh;
+    top: 12vh;
     left: 50vw;
 }
 
@@ -64,6 +80,21 @@
 .date:focus
 {
     outline: none;
+}
+
+.sidePanel
+{
+    position: absolute;
+
+    width: 20vw;
+    height: 80vh;
+
+    background-color: white;
+    box-shadow: 0 5px 10px -4px rgba(0, 0, 0, 0.1) inset;
+
+    transition: all 0.5s ease; 
+
+    z-index: 2;
 }
 
 .userCard
