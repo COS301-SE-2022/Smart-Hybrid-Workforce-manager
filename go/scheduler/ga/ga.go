@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"lib/logger"
+	"lib/testutils"
 	"lib/utils"
 	"math"
 	"math/rand"
@@ -100,11 +101,11 @@ func (population Individuals) GetRandomIndividual() *Individual {
 	return population[utils.RandInt(0, len(population))]
 }
 
-func calculateGAStats(population Individuals) (maxi int, avg, max, min float64) {
+func calculateGAStats(population Individuals) (maxi int, avg, maxFitness, minFitness float64) {
 	// Get max and avg fitness
 	totalFitness := 0.0
-	maxFitness := math.Inf(-1)
-	minFitness := math.Inf(1)
+	maxFitness = math.Inf(-1)
+	minFitness = math.Inf(1)
 	for i, indiv := range population {
 		maxFitness = math.Max(maxFitness, indiv.Fitness)
 		minFitness = math.Min(minFitness, indiv.Fitness)
@@ -155,18 +156,18 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 	fitness(&domain, population)
 
 	_, avg, maxFitness, minFitness := calculateGAStats(population)
-	multiplier := 50.0 / avg
-	maxMultiplier := 50.0 / maxFitness
-	printGAGraphs(multiplier, maxMultiplier, avg, maxFitness, minFitness)
+	// multiplier := 50.0 / avg
+	maxMultiplier := 40.0 / maxFitness
+	printGAGraphs(maxMultiplier, maxMultiplier, avg, maxFitness, minFitness)
 
 	// return selection(&domain, population, 1)
 	logger.Debug.Println("\n", *selection(&domain, population, 1)[0])
 	// Run ga
 	stoppingCondition := true
 	for i := 0; i < domain.Config.Generations && stoppingCondition; i++ {
-		// if i%10 == 0 {
-		// 	logger.Debug.Println(testutils.Scolourf(testutils.BLUE, "Generation %v", i))
-		// }
+		if i%10 == 0 {
+			logger.Debug.Println(testutils.Scolourf(testutils.BLUE, "Generation %v", i))
+		}
 
 		// Check if GA must be stopped after this run
 		stoppingCondition = (*forceStop).Err() == nil
@@ -197,17 +198,17 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 		// Calculate the fitness of the population
 		fitness(&domain, population)
 
-		// if i%10 == 0 {
-		// 	_, avg, maxFitness, minFitness = calculateGAStats(population)
-		// 	printGAGraphs(multiplier, maxMultiplier, avg, maxFitness, minFitness)
-		// }
+		if i%10 == 0 {
+			_, avg, maxFitness, minFitness = calculateGAStats(population)
+			printGAGraphs(maxMultiplier, maxMultiplier, avg, maxFitness, minFitness)
+		}
 
 		maxi := population.getBestI()
 		// send individual on channel
 		solutionChannel <- *population[maxi]
 	}
 	_, avg, maxFitness, minFitness = calculateGAStats(population)
-	printGAGraphs(multiplier, maxMultiplier, avg, maxFitness, minFitness)
+	printGAGraphs(maxMultiplier, maxMultiplier, avg, maxFitness, minFitness)
 
 	// Send final best individual
 	maxi := population.getBestI()

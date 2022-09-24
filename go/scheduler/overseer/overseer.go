@@ -74,6 +74,7 @@ func WeeklyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sche
 		select {
 		case <-timeoutChanel:
 			logger.Debug.Println(testutils.Scolour(testutils.RED, "DEADLINE EXCEDED"))
+			logger.Error.Println("\n", best)
 			// Stop the GA
 			stopGA()
 			bookings = append(bookings, best.ConvertIndividualToWeeklyBookings(domain))
@@ -87,6 +88,7 @@ func WeeklyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sche
 			}
 			count++
 			if candidate.Fitness > best.Fitness {
+				logger.Debug.Println(testutils.Scolourf(testutils.PURPLE, "IMPROVEMENT RECIEVED: %v, %v", count, improvements))
 				improvements++
 				best = candidate
 				// logger.Error.Printf("BEST INDIVIDUAL \n %v", best)

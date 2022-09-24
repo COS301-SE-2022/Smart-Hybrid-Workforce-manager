@@ -46,7 +46,9 @@ func WeeklyDayVResourceCrossover(domain *Domain, individuals Individuals, offspr
 	// pick random gene to crossover
 	crossoverParent1 := parent1.Gene[utils.RandInt(0, len(parent1.Gene))]
 	crossoverParent2 := parent2.Gene[utils.RandInt(0, len(parent2.Gene))]
-
+	if len(crossoverParent1) == 0 || len(crossoverParent2) == 0 {
+		return Individuals{parent1, parent2}
+	}
 	// pick random slot to crossover
 	crossoverParent1Slot := utils.RandInt(0, len(crossoverParent1))
 	crossoverParent2Slot := utils.RandInt(0, len(crossoverParent2))
