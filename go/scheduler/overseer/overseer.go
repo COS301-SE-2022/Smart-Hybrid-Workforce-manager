@@ -31,7 +31,7 @@ func WeeklyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sche
 			config.Seed = *utils.ReturnAltIfNil(&conf.Seed, &config.Seed)
 			config.PopulationSize = *utils.ReturnAltIfNil(&conf.PopulationSize, &config.PopulationSize)
 			config.Generations = *utils.ReturnAltIfNil(&conf.Generations, &config.Generations)
-			// config.CrossOverRate = *utils.ReturnAltIfNil(&conf.CrossOverRate, &config.CrossOverRate)
+			config.CrossOverRate = *utils.ReturnAltIfNil(&conf.CrossOverRate, &config.CrossOverRate)
 			config.MutationRate = *utils.ReturnAltIfNil(&conf.MutationRate, &config.MutationRate)
 			config.TournamentSize = *utils.ReturnAltIfNil(&conf.TournamentSize, &config.TournamentSize)
 			config.TimeLimitSeconds = *utils.ReturnAltIfNil(&conf.TimeLimitSeconds, &config.TimeLimitSeconds)
@@ -46,7 +46,8 @@ func WeeklyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sche
 
 	// Create channel
 	var c chan ga.Individual = make(chan ga.Individual)
-	var s context.Context = context.Background()
+	s, stopGA := context.WithCancel(context.Background())
+	defer stopGA()
 
 	go ga.GA(
 		domain,
@@ -66,26 +67,28 @@ func WeeklyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sche
 	// Listen on channel for best individual for x seconds
 	var best ga.Individual
 	best.Fitness = -1
+	count := -1
+	improvements := 0
+	timeoutChanel := time.After(time.Second * time.Duration(config.TimeLimitSeconds))
 	for {
 		select {
-		case <-time.After(time.Second * time.Duration(config.TimeLimitSeconds)):
+		case <-timeoutChanel:
 			logger.Debug.Println(testutils.Scolour(testutils.RED, "DEADLINE EXCEDED"))
-			s.Done()
+			// Stop the GA
+			stopGA()
 			bookings = append(bookings, best.ConvertIndividualToWeeklyBookings(domain))
-			logger.Debug.Println(len(bookings))
-			logger.Debug.Println("\n+++++++++++++++++++++++++++++", best, "\n", best.Fitness)
 			return bookings
 		case candidate, ok := <-c: // if ok is false close event happened
 			if !ok {
 				bookings = append(bookings, best.ConvertIndividualToWeeklyBookings(domain))
-				logger.Debug.Println(len(bookings))
 				logger.Debug.Println(best)
-				logger.Debug.Println("//////////////////////////////////")
+				logger.Debug.Println(testutils.Scolourf(testutils.PURPLE, "SOLUTIONS RECIEVED: %v, %v", count, improvements))
 				return bookings
 			}
+			count++
 			if candidate.Fitness > best.Fitness {
+				improvements++
 				best = candidate
-				logger.Debug.Println("ASJDHAKJSHDKAJSHDKAJHSDKJH")
 				// logger.Error.Printf("BEST INDIVIDUAL \n %v", best)
 			}
 		}
@@ -113,7 +116,7 @@ func DailyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sched
 			config.Seed = *utils.ReturnAltIfNil(&conf.Seed, &config.Seed)
 			config.PopulationSize = *utils.ReturnAltIfNil(&conf.PopulationSize, &config.PopulationSize)
 			config.Generations = *utils.ReturnAltIfNil(&conf.Generations, &config.Generations)
-			// config.CrossOverRate = *utils.ReturnAltIfNil(&conf.CrossOverRate, &config.CrossOverRate)
+			config.CrossOverRate = *utils.ReturnAltIfNil(&conf.CrossOverRate, &config.CrossOverRate)
 			config.MutationRate = *utils.ReturnAltIfNil(&conf.MutationRate, &config.MutationRate)
 			config.TournamentSize = *utils.ReturnAltIfNil(&conf.TournamentSize, &config.TournamentSize)
 			config.TimeLimitSeconds = *utils.ReturnAltIfNil(&conf.TimeLimitSeconds, &config.TimeLimitSeconds)
@@ -130,7 +133,8 @@ func DailyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sched
 
 	// Create channel
 	var c chan ga.Individual = make(chan ga.Individual)
-	var s context.Context = context.Background()
+	s, stopGA := context.WithCancel(context.Background())
+	defer stopGA()
 
 	go ga.GA(
 		domain,
@@ -149,19 +153,28 @@ func DailyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sched
 	// Listen on channel for best individual for x seconds
 	var best ga.Individual
 	best.Fitness = -1
+	count := -1
+	improvements := 0
+	timeoutChanel := time.After(time.Second * time.Duration(config.TimeLimitSeconds))
 	for {
 		select {
-		case <-time.After(time.Second * time.Duration(config.TimeLimitSeconds)):
+		case <-timeoutChanel:
 			logger.Debug.Println(testutils.Scolour(testutils.RED, "DEADLINE EXCEDED"))
-			s.Done()
+			// Stop the GA
+			stopGA()
 			bookings = append(bookings, best.ConvertIndividualToDailyBookings(domain))
+			logger.Debug.Println(len(bookings))
 			return bookings
 		case candidate, ok := <-c: // if ok is false close event happened
 			if !ok {
 				bookings = append(bookings, best.ConvertIndividualToDailyBookings(domain))
+				logger.Debug.Println(best)
+				logger.Debug.Println(testutils.Scolourf(testutils.PURPLE, "SOLUTIONS RECIEVED: %v, %v", count, improvements))
 				return bookings
 			}
+			count++
 			if candidate.Fitness > best.Fitness {
+				improvements++
 				best = candidate
 				// logger.Error.Printf("BEST INDIVIDUAL \n %v", best)
 			}
