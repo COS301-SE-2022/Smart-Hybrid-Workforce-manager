@@ -138,3 +138,11 @@ func RandInt(min int, max int) int {
 func RandFloat64() float64 {
 	return rand.Float64()
 }
+
+// Returns alt if wanted is nil
+func ReturnAltIfNil[T any](wanted *T, alt *T) *T {
+	if wanted == nil {
+		return alt
+	}
+	return wanted
+}
