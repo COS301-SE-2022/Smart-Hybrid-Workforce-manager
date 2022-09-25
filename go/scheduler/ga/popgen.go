@@ -84,9 +84,9 @@ func WeeklyDayVResourcePopulationGenerator(domain *Domain, popSize int) Individu
 	}
 
 	// DEBUG ================
-	logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
-	logger.Error.Println(testutils.Scolour(testutils.GREEN, "Done"))
-	logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
+	// logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
+	// logger.Error.Println(testutils.Scolour(testutils.GREEN, "Done"))
+	// logger.Error.Println(testutils.Scolour(testutils.PURPLE, "============================="))
 	// END DEBUG ================
 
 	return population

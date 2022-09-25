@@ -10,6 +10,7 @@ import (
 	"lib/utils"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -42,29 +43,42 @@ func SchedulerInvoker(writer http.ResponseWriter, request *http.Request) {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
-	err = scheduler.Call(schedulerData, weeklyEndpointURL) // TODO: @JonathanEnslin handle the return data
+	buildingGroups := scheduler.GroupByBuilding(schedulerData)
+	for _, data := range buildingGroups {
+		schedulerData = data
+		err = scheduler.Call(schedulerData, weeklyEndpointURL) // TODO: @JonathanEnslin handle the return data
+	}
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
 	// Call daily scheduler 5 times
+	now = nextMonday
+	yyyy, mm, dd := now.Date()
+	var wg sync.WaitGroup
 	for i := 0; i < 5; i++ {
-		now := nextMonday
-		yyyy, mm, dd := now.Date()
-		startDate := time.Date(yyyy, mm, dd+i, 0, 0, 0, 0, now.Location())
-		endDate := startDate.AddDate(0, 0, 1) // Add one day
-		// Get data between start and end of specified date
-		schedulerData, err := scheduler.GetSchedulerData(startDate, endDate)
-		if err != nil {
-			utils.InternalServerError(writer, request, err)
-			return
-		}
-		err = scheduler.Call(schedulerData, dailyEndpointURL)
-		if err != nil {
-			utils.InternalServerError(writer, request, err)
-			return
-		}
+		wg.Add(1)
+		go func(_now time.Time, _i int) {
+			defer wg.Done()
+			startDate := time.Date(yyyy, mm, dd+_i, 0, 0, 0, 0, now.Location())
+			endDate := startDate.AddDate(0, 0, 1) // Add one day
+			schedulerData, err := scheduler.GetSchedulerData(startDate, endDate)
+			buildingGroups := scheduler.GroupByBuilding(schedulerData)
+			for _, data := range buildingGroups {
+				schedulerData = data
+				if err != nil {
+					utils.InternalServerError(writer, request, err)
+					return
+				}
+				err = scheduler.Call(schedulerData, dailyEndpointURL)
+				if err != nil {
+					utils.InternalServerError(writer, request, err)
+					return
+				}
+			}
+		}(now, i)
 	}
+	wg.Wait()
 	utils.Ok(writer, request)
 }
 
@@ -88,15 +102,19 @@ func WeeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 	nextMonday := scheduler.TimeOfNextWeekDay(now, "Monday")            // Start of next week
 	nextSaturday := scheduler.TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
 	schedulerData, err := scheduler.GetSchedulerData(nextMonday, nextSaturday)
-	logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running weekly scheduler from %v -> %v", nextMonday, nextSaturday))
-	if err != nil {
-		utils.InternalServerError(writer, request, err)
-		return
-	}
-	err = scheduler.Call(schedulerData, weeklyEndpointURL)
-	if err != nil {
-		utils.InternalServerError(writer, request, err)
-		return
+	buildingGroups := scheduler.GroupByBuilding(schedulerData)
+	for _, data := range buildingGroups {
+		schedulerData = data
+		logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running weekly scheduler from %v -> %v for building: %v", nextMonday, nextSaturday, *schedulerData.Buildings[0].Id))
+		if err != nil {
+			utils.InternalServerError(writer, request, err)
+			return
+		}
+		err = scheduler.Call(schedulerData, weeklyEndpointURL)
+		if err != nil {
+			utils.InternalServerError(writer, request, err)
+			return
+		}
 	}
 	utils.Ok(writer, request)
 }
@@ -125,15 +143,19 @@ func DailyScheduler(writer http.ResponseWriter, request *http.Request) {
 	endDate := startDate.AddDate(0, 0, 1) // Add one day
 	// Get data between start and end of date
 	schedulerData, err := scheduler.GetSchedulerData(startDate, endDate)
-	logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running daily scheduler fro %v -> %v", startDate, endDate))
-	if err != nil {
-		utils.InternalServerError(writer, request, err)
-		return
-	}
-	err = scheduler.Call(schedulerData, dailyEndpointURL)
-	if err != nil {
-		utils.InternalServerError(writer, request, err)
-		return
+	buildingGroups := scheduler.GroupByBuilding(schedulerData)
+	for _, data := range buildingGroups {
+		schedulerData = data
+		logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running daily scheduler fro %v -> %v for building: %v", startDate, endDate, *schedulerData.Buildings[0].Id))
+		if err != nil {
+			utils.InternalServerError(writer, request, err)
+			return
+		}
+		err = scheduler.Call(schedulerData, dailyEndpointURL)
+		if err != nil {
+			utils.InternalServerError(writer, request, err)
+			return
+		}
 	}
 	utils.Ok(writer, request)
 }

@@ -1,0 +1,22 @@
+/* Statistics styling */
+.statisticsContainer
+{
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.statisticsHeadingContainer
+{
+    height: 10vh;
+
+    background-color: white;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    color: #374146;
+}
+
+.statisticsHeading
+{
+    font-size: 3vw;
+    letter-spacing: 0.3vw;
+
+    margin-left: 3vw;
+}

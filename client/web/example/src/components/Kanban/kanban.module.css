@@ -375,10 +375,10 @@
     display: none;
 
     width: 30vw;
-    height: 70vh;
+    height: 76vh;
 
     margin-left: 27.5vw;
-    margin-top: 5vh;
+    margin-top: 1vh;
 
     background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(4px);

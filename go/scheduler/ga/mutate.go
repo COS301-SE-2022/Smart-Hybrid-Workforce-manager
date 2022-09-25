@@ -202,7 +202,7 @@ func DailyMutate(domain *Domain, individuals Individuals) Individuals {
 func DailyMutateValid(domain *Domain, individuals Individuals) Individuals {
 	var results Individuals
 	for _, indiv := range individuals {
-		results = append(results, dailyMutateValid(domain, indiv, 0.5, 1, 1))
+		results = append(results, dailyMutateValid(domain, indiv, 0.5, len(indiv.Gene[0])/12, len(indiv.Gene[0])/12))
 	}
 	return results
 }

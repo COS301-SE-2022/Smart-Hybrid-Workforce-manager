@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"lib/logger"
-	"lib/testutils"
 	"lib/utils"
 	"math"
 	"math/rand"
@@ -101,6 +100,49 @@ func (population Individuals) GetRandomIndividual() *Individual {
 	return population[utils.RandInt(0, len(population))]
 }
 
+func calculateGAStats(population Individuals) (maxi int, avg, maxFitness, minFitness float64) {
+	// Get max and avg fitness
+	totalFitness := 0.0
+	maxFitness = math.Inf(-1)
+	minFitness = math.Inf(1)
+	for i, indiv := range population {
+		maxFitness = math.Max(maxFitness, indiv.Fitness)
+		minFitness = math.Min(minFitness, indiv.Fitness)
+		if indiv.Fitness > maxFitness {
+			maxi = i
+		}
+		totalFitness += indiv.Fitness
+	}
+	avg = totalFitness / float64(len(population))
+	return
+}
+
+func printGAGraphs(multiplier, maxMultiplier, avg, maxFitness, minFitness float64) {
+	fmt.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f\n", maxFitness, minFitness, avg)
+	if int(multiplier*avg) <= 0 {
+		logger.Debug.Print("-")
+	} else {
+		logger.Debug.Print(strings.Repeat("*", int(multiplier*avg)))
+	}
+	if int(maxMultiplier*maxFitness) <= 0 {
+		logger.Debug.Print("-")
+	} else {
+		logger.Debug.Print(strings.Repeat("=", int(multiplier*maxFitness)))
+	}
+}
+
+func (population Individuals) getBestI() int {
+	maxi := 0
+	maxFitness := population[maxi].Fitness
+	for indivi, indiv := range population {
+		if indiv.Fitness > maxFitness {
+			maxi = indivi
+		}
+		maxFitness = math.Max(maxFitness, indiv.Fitness)
+	}
+	return maxi
+}
+
 // GA is a generic configurable genetic algorithm that produces multiple solutions to the domain problem
 func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, selection Selection, populationGenerator PopulationGenerator, solutionChannel chan Individual, forceStop *context.Context) {
 	// Seed
@@ -112,118 +154,72 @@ func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, sele
 
 	fitness(&domain, population)
 
-	// Get max and avg fitness
-	totalFitness := 0.0
-	maxFitness := math.Inf(-1)
-	minFitness := math.Inf(1)
-	for _, indiv := range population {
-		maxFitness = math.Max(maxFitness, indiv.Fitness)
-		minFitness = math.Min(minFitness, indiv.Fitness)
-		totalFitness += indiv.Fitness
-	}
+	// _, avg, maxFitness, minFitness := calculateGAStats(population)
+	// multiplier := 50.0 / avg
+	// maxMultiplier := 40.0 / maxFitness
+	// printGAGraphs(maxMultiplier, maxMultiplier, avg, maxFitness, minFitness)
 
-	fmt.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f\n", maxFitness, minFitness, totalFitness/float64(len(population)))
-	multiplier := 50.0 / (totalFitness / float64(len(population)))
-	maxMultiplier := 50.0 / maxFitness
-	if int(multiplier*totalFitness/float64(len(population))) <= 0 {
-		logger.Debug.Print("-")
-	} else {
-		logger.Debug.Print(strings.Repeat("*", int(multiplier*totalFitness/float64(len(population)))))
-	}
-	if int(maxMultiplier*maxFitness) <= 0 {
-		logger.Debug.Print("-")
-	} else {
-		logger.Debug.Print(strings.Repeat("=", int(multiplier*maxFitness)))
-	}
 	// return selection(&domain, population, 1)
-	logger.Debug.Println("\n", *selection(&domain, population, 1)[0])
+	// logger.Debug.Println("\n", *selection(&domain, population, 1)[0])
 	// Run ga
 	stoppingCondition := true
 	for i := 0; i < domain.Config.Generations && stoppingCondition; i++ {
-		if i%10 == 0 {
-			logger.Debug.Println(testutils.Scolourf(testutils.BLUE, "Generation %v", i))
-		}
+		// if i%10 == 0 {
+		// 	logger.Debug.Println(testutils.Scolourf(testutils.BLUE, "Generation %v", i))
+		// }
+
+		// Check if GA must be stopped after this run
 		stoppingCondition = (*forceStop).Err() == nil
 
+		// Calculate the amounts
 		crossOverAmount := int(float64(domain.Config.PopulationSize) * domain.Config.CrossOverRate)
 		mutateAmount := int(float64(domain.Config.PopulationSize) * domain.Config.MutationRate)
 		carryAmount := domain.Config.PopulationSize - crossOverAmount - mutateAmount // TODO: Find out Anna if is guicci
 
 		// evolve
 		individualsOffspring := crossover(&domain, population, selection, crossOverAmount)
+
+		// Validate crossover individuals
+		for i := 0; i < len(individualsOffspring); i++ {
+			ValidateIndividual(&domain, individualsOffspring[i]) // Maybe works, maybs not
+		}
+
+		// Get mutated individuals
 		individualsMutated := mutate(&domain, selection(&domain, population, mutateAmount))
 
+		// Get carried individuals
 		individualsCarry := selection(&domain, population, carryAmount)
 
+		// Create new population
 		population = append(individualsOffspring, individualsMutated...)
 		population = append(population, individualsCarry...)
 
+		// Calculate the fitness of the population
 		fitness(&domain, population)
 
-		if i%10 == 0 {
-			totalFitness = 0.0
-			maxFitness = math.Inf(-1)
-			minFitness = math.Inf(1)
-			for _, indiv := range population {
-				maxFitness = math.Max(maxFitness, indiv.Fitness)
-				minFitness = math.Min(minFitness, indiv.Fitness)
-				totalFitness += indiv.Fitness
-			}
+		// if i%10 == 0 {
+		// 	_, avg, maxFitness, minFitness = calculateGAStats(population)
+		// 	printGAGraphs(maxMultiplier, maxMultiplier, avg, maxFitness, minFitness)
+		// }
 
-			logger.Debug.Printf("METRICS: MAX=%f   MIN=%f  AVG=%f  ", maxFitness, minFitness, totalFitness/float64(len(population)))
-			// multiplier = 75.0 / (totalFitness / float64(len(population)))
-			if int(multiplier*totalFitness/float64(len(population))) <= 0 {
-				logger.Debug.Print("-")
-			} else {
-				logger.Debug.Print(strings.Repeat("*", int(multiplier*totalFitness/float64(len(population)))))
-			}
-			if int(maxMultiplier*maxFitness) <= 0 {
-				logger.Debug.Print("-")
-			} else {
-				logger.Debug.Print(strings.Repeat("=", int(multiplier*maxFitness)))
-			}
-			logger.Debug.Println()
-		}
-
-		maxi := -1
-		maxFitness = -1000.0
-		for indivi, indiv := range population {
-			if indiv.Fitness > maxFitness {
-				maxi = indivi
-			}
-			maxFitness = math.Max(maxFitness, indiv.Fitness)
-		}
-		if maxi == -1 {
-			maxi = 0
-		}
+		maxi := population.getBestI()
 		// send individual on channel
 		solutionChannel <- *population[maxi]
 	}
-	maxi := -1
-	maxFitness = -1000.0
-	for indivi, indiv := range population {
-		if indiv.Fitness > maxFitness {
-			maxi = indivi
-		}
-		maxFitness = math.Max(maxFitness, indiv.Fitness)
-	}
-	if maxi == -1 {
-		maxi = 0
-	}
-	logger.Debug.Println("\n", *population[maxi], "\n", maxFitness)
+	// _, avg, maxFitness, minFitness = calculateGAStats(population)
+	// printGAGraphs(maxMultiplier, maxMultiplier, avg, maxFitness, minFitness)
+
+	// Send final best individual
+	maxi := population.getBestI()
+	solutionChannel <- *population[maxi]
+
+	close(solutionChannel)
+	// logger.Debug.Println("\n", *population[maxi], "\n", maxFitness)
 }
 
 // String method for printing individuals
 func (individual Individual) String() string {
 	// Returns table representation of an individual
-	// 	userIds := make(map[string]int)
-	// 	for dayi := range individual.Gene {
-	// 		for _, userId := range individual.Gene[dayi] {
-	// 			if _, ok := userIds[userId]; !ok && !(userId == "") {
-	// 				userIds[userId] = len(userIds)
-	// 			}
-	// 		}
-	// 	}
 	if len(individual.Gene) == 0 {
 		return "no elements"
 	}
@@ -291,14 +287,6 @@ func (individual Individual) String() string {
 // String function for a string with a map
 func (individual *Individual) StringDomain(domain Domain) string {
 	// Returns table representation of an individual
-	// 	userIds := make(map[string]int)
-	// 	for dayi := range individual.Gene {
-	// 		for _, userId := range individual.Gene[dayi] {
-	// 			if _, ok := userIds[userId]; !ok && !(userId == "") {
-	// 				userIds[userId] = len(userIds)
-	// 			}
-	// 		}
-	// 	}
 	if len(individual.Gene) == 0 || len(individual.Gene[0]) == 0 {
 		return "no elements"
 	}

@@ -173,3 +173,17 @@ func Test_timeOfNextWeekDay(t *testing.T) {
 		assert.Equal(tt.want, TimeOfNextWeekDay(tt.args.now, tt.args.weekday), tt.name+" Case: "+fmt.Sprint(i))
 	}
 }
+
+// func Test_Something(t *testing.T) {
+// 	taskScheduler := chrono.NewDefaultTaskScheduler()
+// 	task, err := taskScheduler.ScheduleAtFixedRate(func(ctx context.Context) {
+// 		fmt.Println("Fixed Delay Task")
+// 		time.Sleep(2 * time.Second)
+// 		fmt.Println("One done")
+// 	}, 2200*time.Millisecond)
+// 	if err != nil {
+// 		fmt.Println("Oopsie doopsie")
+// 	}
+// 	time.Sleep(20 * time.Second)
+// 	task.Cancel()
+// }

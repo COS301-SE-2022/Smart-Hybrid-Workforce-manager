@@ -1,17 +1,16 @@
-import { useContext } from 'react';
-import { UserContext } from '../App';
-import ProfileBar from '../components/Navbar/ProfileBar.js';
 import Navbar from '../components/Navbar/Navbar.js';
-import NavbarAdmin from '../components/Navbar/NavbarAdmin';
-import Map from '../components/Map/Map';
+import NavbarAdmin from '../components/Navbar/NavbarAdmin.js';
+import { useContext } from 'react';
+import { UserContext } from '../App.js';
+import StatisticsComponent from '../components/StatisticsComponent/StatisticsComponent.js';
 
-const Home = () =>
+const Statistics = () =>
 {
     const {userData} = useContext(UserContext);
-    
+
     const showNavbar = () =>
     {
-        if(!userData.user_identifier.includes("admin"))
+        if(userData !== null && !userData.user_identifier.includes("admin"))
         {
             return <Navbar />;
         }
@@ -24,15 +23,14 @@ const Home = () =>
     return (
         <div className='page-container'>
             <div className='content'>
-                <ProfileBar />
-                {showNavbar()}
+                {showNavbar()} 
 
                 <div className='main-container'>
-                    <Map />
+                    <StatisticsComponent />
                 </div>
-            </div>  
+            </div>
         </div>
     )
 }
 
-export default Home
+export default Statistics
