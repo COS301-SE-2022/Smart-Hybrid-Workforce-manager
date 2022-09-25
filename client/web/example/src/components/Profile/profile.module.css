@@ -53,7 +53,6 @@
 
 .preferencesContainer
 {
-    grid-area: "topRight";
     position: relative;
 
     text-align: left;
@@ -65,6 +64,28 @@
 
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     color: #374146;
+}
+
+.profileRoles
+{
+    width: 100%;
+}
+
+.pill
+{
+    float: left;
+    margin-right: 0.5vw;
+    margin-bottom: 0.7vh;
+
+    padding-left: 0.5vw;
+    padding-right: 0.5vw;
+    padding-bottom: 2.3vh;
+
+    height: 2vh;
+
+    border-radius: 4vh;
+
+    color: white;
 }
 
 .profileTeamsContainer
@@ -152,4 +173,69 @@
 {
     cursor: pointer;
     color: #09a2fb;
+}
+
+.backgroundDimmer
+{
+    position: absolute;
+    display: none;
+
+    width: 85vw;
+    height: 80vh;
+
+    background-color: rgba(218, 223, 254, 0.7);
+
+    z-index: 2;
+}
+
+.formContainer
+{
+    position: absolute;
+    display: none;
+
+    width: 30vw;
+    height: 76vh;
+
+    margin-left: 27.5vw;
+    margin-top: 1vh;
+
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+
+    border-radius: 1vh;
+
+    z-index: 3;
+
+    animation: animate-pop-enter 0.5s cubic-bezier(0.26, 0.53, 0.74, 1.48);
+}
+
+@keyframes animate-pop-enter
+{
+    0%
+    {
+        opacity: 0;
+        transform: scale(0.5, 0.5);
+    }
+
+    100%
+    {
+        opacity: 1;
+        transform: scale(1, 1);
+    }
+}
+
+.formClose
+{
+    position: absolute;
+
+    left: 28vw;
+    top: 0.5vh;
+
+    font-size: 1.5vw;
+}
+
+.formClose:hover
+{
+    cursor: pointer;
 }

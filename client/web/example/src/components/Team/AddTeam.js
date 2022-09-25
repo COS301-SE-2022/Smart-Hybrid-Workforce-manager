@@ -38,7 +38,7 @@ const AddTeam = ({makeDefault}) =>
         {
             if(res.status === 200)
             {
-                alert("Team Successfully Updated!");
+                alert("Team Successfully Created!");
             }
         });
     }
