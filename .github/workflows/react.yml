@@ -22,7 +22,7 @@ jobs:
       - name: npm ci
         working-directory: ./client/web/example
         run: |
-          npm ci --legacy-peer-deps
+          npm ci
           npm install konva canvas
 
       - name: Build
