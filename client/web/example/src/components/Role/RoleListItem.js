@@ -1,11 +1,14 @@
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { MdEdit, MdDelete } from 'react-icons/md'
 import { MdPermIdentity } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
+import { UserContext } from '../../App'
 
 const RoleListItem = ({id, name, color, lead}) =>
 {
     const navigate=useNavigate();
+    const {userData} = useContext(UserContext);
+
     let EditRole = async (e) =>
     {
         e.preventDefault();
@@ -26,9 +29,14 @@ const RoleListItem = ({id, name, color, lead}) =>
                 let res = await fetch("http://localhost:8080/api/role/remove", 
                 {
                     method: "POST",
+                    mode: "cors",
                     body: JSON.stringify({
-                    id: id
-                    })
+                        id: id
+                    }),
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                    }
                 });
 
                 if(res.status === 200)

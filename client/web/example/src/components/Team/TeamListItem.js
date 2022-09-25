@@ -1,12 +1,13 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { MdEdit, MdDelete } from 'react-icons/md'
 import { MdSupervisedUserCircle } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../App';
 
 const TeamListItem = ({id, name, description, capacity, picture, lead, priority}) =>
 {
     const navigate = useNavigate();
-
+    const {userData} = useContext(UserContext);
     let EditTeam = async (e) =>
     {
         e.preventDefault();
@@ -30,9 +31,14 @@ const TeamListItem = ({id, name, description, capacity, picture, lead, priority}
                 let res = await fetch("http://localhost:8080/api/team/remove", 
                 {
                     method: "POST",
+                    mode: "cors",
                     body: JSON.stringify({
-                    id: id
-                    })
+                        id: id
+                    }),
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                    }
                 });
 
                 if(res.status === 200)

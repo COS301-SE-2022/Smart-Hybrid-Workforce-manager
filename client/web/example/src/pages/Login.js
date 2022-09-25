@@ -19,6 +19,7 @@ export default function Login()
     fetch("http://localhost:8080/api/user/login", 
     {
       method: "POST",
+      mode: "cors",
       body: JSON.stringify({
         identifier:identifier,
         secret:secret,

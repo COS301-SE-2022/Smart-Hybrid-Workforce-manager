@@ -58,6 +58,8 @@ services:
     restart: unless-stopped
     volumes:
       - ./go/api/config.json:/run/secrets/config.json
+      - ./go/api/google_api/credentials.json:/google_api/credentials.json
+      - ./go/api/google_api/token.json:/google_api/token.json
     ports:
       - 8100:8080
     networks:
