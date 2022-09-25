@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { MdDelete } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../App';
 
 const TeamUserList = ({teamId}) =>
 {
   const [teamName, SetTeamName] = useState("");
   const navigate = useNavigate();
-
+  const {userData} = useContext(UserContext);
     useEffect(() =>
     {
         fetch("http://localhost:8080/api/team/information", 
@@ -31,10 +32,15 @@ const TeamUserList = ({teamId}) =>
                 let res = await fetch("http://localhost:8080/api/team/user/remove", 
                 {
                     method: "POST",
+                    mode: "cors",
                     body: JSON.stringify({
                         team_id: teamId,
                         user_id: window.sessionStorage.getItem("UserID")
-                    })
+                    }),
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                    }
                 });
 
                 if(res.status === 200)

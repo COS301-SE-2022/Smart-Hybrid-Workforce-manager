@@ -1,15 +1,17 @@
 import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useContext } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
 import { useNavigate } from 'react-router-dom'
+import { UserContext } from '../App.js'
 
 function UserPermissions() {
   const [userName, setUserName] = useState(window.sessionStorage.getItem("UserName"));
   //const [userPermissions, SetUserPermissions] = useState([]);
   
+  const {userData} = useContext(UserContext);
   const navigate = useNavigate();
 
   // Bookings
@@ -262,6 +264,7 @@ function UserPermissions() {
       let res = await fetch("http://localhost:8080/api/permission/create",
         {
           method: "POST",
+          mode: "cors",
           body: JSON.stringify({
             permission_id: id,
             permission_id_type: idType,
@@ -269,7 +272,11 @@ function UserPermissions() {
             permission_category: category,
             permission_tenant: tenant,
             permission_tenant_id: tenant_id
-          })
+          }),
+          headers:{
+              'Content-Type': 'application/json',
+              'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+          }
         });
 
       if (res.status === 200) {
@@ -289,9 +296,14 @@ function UserPermissions() {
       let res = await fetch("http://localhost:8080/api/permission/remove",
         {
           method: "POST",
+          mode: "cors",
           body: JSON.stringify({
             id: id,
-          })
+          }),
+          headers:{
+              'Content-Type': 'application/json',
+              'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+          }
         });
 
       if (res.status === 200) {

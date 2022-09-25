@@ -41,13 +41,18 @@ function BookingsDeskEdit()
         let res = await fetch("http://localhost:8080/api/notification/send", 
         {
           method: "POST",
+          mode: "cors",
           body: JSON.stringify({
             to: "archedevelop@gmail.com",
             sDate: startDate,
             sTime: startTime,
             eDate: endDate,
             eTime: endTime
-          })
+          }),
+          headers:{
+              'Content-Type': 'application/json',
+              'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+          }
         });
 
         if(res.status === 200)

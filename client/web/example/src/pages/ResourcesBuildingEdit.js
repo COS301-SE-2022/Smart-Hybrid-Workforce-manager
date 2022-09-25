@@ -1,9 +1,10 @@
 import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../App.js'
 
 const BuildingEdit = () =>
 {
@@ -13,15 +14,22 @@ const BuildingEdit = () =>
 
   const navigate = useNavigate();
 
+  const {userData} = useContext(UserContext);
+
   //POST request
   const FetchBuilding = () =>
   {
     fetch("http://localhost:8080/api/resource/building/information", 
         {
           method: "POST",
+          mode: "cors",
           body: JSON.stringify({
             id: window.sessionStorage.getItem("BuildingID")
-          })
+          }),
+          headers:{
+              'Content-Type': 'application/json',
+              'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+          }
         }).then((res) => res.json()).then(data => 
           {
             setBuildingName(data[0].name);
