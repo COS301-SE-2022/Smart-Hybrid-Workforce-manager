@@ -4,7 +4,7 @@ import (
 	"api/data"
 	"api/db"
 	"api/security"
-	"api/google_calendar"
+	"api/google_api"
 	"fmt"
 	"lib/collectionutils"
 	"lib/logger"
@@ -165,7 +165,7 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 	}
 
 	// Create Google Calendar Event
-	results := google_calendar.TestingFunc()
+	results := google_api.TestingFunc()
 	logger.Access.Printf("%v created\n", results)
 
 	// Commit transaction
