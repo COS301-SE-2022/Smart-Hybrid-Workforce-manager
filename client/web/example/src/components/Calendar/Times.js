@@ -1,77 +1,78 @@
-import React from 'react'
+import React from 'react';
+import styles from './calendar.module.css';
 
 const Times = () =>
 {
     return (
-        <div className='time-column'>
-            <div className='time-label'>1 AM</div>
-            <div className='time-border'></div>
+        <div className={styles.timeColumn}>
+            <div className={styles.timeLabel}>1 AM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>2 AM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>2 AM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>3 AM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>3 AM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>4 AM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>4 AM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>5 AM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>5 AM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>6 AM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>6 AM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>7 AM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>7 AM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>8 AM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>8 AM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>9 AM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>9 AM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>10 AM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>10 AM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>11 AM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>11 AM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>12 PM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>12 PM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>1 PM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>1 PM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>2 PM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>2 PM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>3 PM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>3 PM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>4 PM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>4 PM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>5 PM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>5 PM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>6 PM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>6 PM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>7 PM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>7 PM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>8 PM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>8 PM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>9 PM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>9 PM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>10 PM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>10 PM</div>
+            <div className={styles.timeBorder}></div>
 
-            <div className='time-label'>11 PM</div>
-            <div className='time-border'></div>
+            <div className={styles.timeLabel}>11 PM</div>
+            <div className={styles.timeBorder}></div>
         </div>
 
         

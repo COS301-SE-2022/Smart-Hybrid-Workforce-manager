@@ -12,9 +12,6 @@ import Calendar from './pages/Calendar'
 
 import Admin from './pages/Admin'
 
-import Teams from './pages/Teams'
-import CreateTeam from './pages/TeamsCreate'
-import EditTeam from './pages/TeamsEdit'
 import PermissionsTeam from './pages/TeamsPermissions'
 
 import Layout from './pages/CreateLayout'
@@ -27,6 +24,7 @@ import CreateDesk from './pages/ResourcesDeskCreate'
 import EditDesk from './pages/ResourcesDeskEdit'
 import EditMeetingRoom from './pages/ResourcesMeetingRoomEdit'
 import CreateMeetingRoom from './pages/ResourcesMeetingRoomCreate'
+import Statistics from './pages/Statistics'
 
 import Profile from './pages/Profile'
 import ProfileConfiguration from './pages/ProfileConfiguration'
@@ -79,10 +77,7 @@ function App()
             <Route path="/user-edit" exact element={<EditUser />} />
             <Route path="/user-create" exact element={<CreateUser />} />
             <Route path="/user-permissions" exact element={<PermissionsUser />} />
-            
-            <Route path="/team" exact element={<Teams />} />
-            <Route path="/team-create" exact element={<CreateTeam />} />
-            <Route path="/team-edit" exact element={<EditTeam />} />
+
             <Route path="/team-permissions" exact element={<PermissionsTeam />} />
 
             <Route path="/layout" exact element={<Layout />} />
@@ -105,6 +100,7 @@ function App()
             <Route path="/role-permissions" exact element={<PermissionsRole />} /> 
 
             <Route path="/admin" exact element={<Admin />} />
+            <Route path="/statistics" exact element={<Statistics />} />
           </Route>          
           <Route path="/login" exact element={<Login />} />
           <Route path="/signup" exact element={<Signup/>} />

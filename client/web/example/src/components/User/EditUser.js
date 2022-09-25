@@ -89,7 +89,6 @@ const EditUser = ({userName, userPicture, userRoles, allRoles}) =>
             <div className={styles.rolesContainer}>
                 {roles.map((role) =>
                 {
-                    console.log(roles);
                     return (
                         <div key={role}>
                             <input type='checkbox' id={role} name={role} value={role} checked={activeRoles && activeRoles.includes(role) ? true : false} onChange={EditActiveRoles.bind(this, role)}></input>

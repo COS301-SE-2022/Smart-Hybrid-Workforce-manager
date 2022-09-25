@@ -1,10 +1,9 @@
 import useImage from 'use-image';
 import meetingroom_img from '../../img/meetingroom_img.svg';
-import { Image } from 'react-konva'
-import { useRef, useEffect, Fragment } from 'react'
-import { Transformer } from 'react-konva'
+import { Image, Transformer } from 'react-konva';
+import { useRef, useEffect, Fragment } from 'react';
 
-const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, draggable}) =>
+const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform}) =>
 {
     const shapeRef = useRef(null);
     const transformRef = useRef(null);
@@ -13,12 +12,12 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, draggable}) =
 
     useEffect(() =>
     {
-        if(isSelected)
+        if(isSelected && transform)
         {
             transformRef.current.nodes([shapeRef.current]);
             transformRef.current.getLayer().batchDraw();
         }
-    }, [isSelected]);
+    }, [isSelected, transform]);
 
     return (
         <Fragment> 

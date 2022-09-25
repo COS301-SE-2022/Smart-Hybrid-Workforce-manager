@@ -8,12 +8,14 @@ import (
 // OverallStatistics
 type OverallStatics struct {
 	ResourceUtilisation []ResourceUtilisation
+	AverageUtilisation	AverageUtilisation `json:"average"`
 }
 
 func mapOverallStatics(rows *sql.Rows) (interface{}, error) {
 	var identifier OverallStatics
 	err := rows.Scan(
 		&identifier.ResourceUtilisation,
+		&identifier.AverageUtilisation,
 	)
 	if err != nil {
 		return nil, err
@@ -38,6 +40,21 @@ func mapUtilisation(rows *sql.Rows) (interface{}, error) {
 	return identifier, nil
 }
 
+type AverageUtilisation struct {
+	Value *float64 `json:"average"`
+}
+
+func mapAverageUtilisation(rows *sql.Rows) (interface{}, error) {
+	var identifier AverageUtilisation
+	err := rows.Scan(
+		&identifier.Value,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return identifier, nil
+}
+
 // StatisticsDA
 type StatisticsDA struct {
 	access *db.Access
@@ -55,8 +72,7 @@ func (access *StatisticsDA) Commit() error {
 	return access.access.Commit()
 }
 
-//GetAllStatistics
-// Go look at the FindIdentifier function in data/team.go
+// GetAllStatistics
 func (access *StatisticsDA) GetAllStatistics() (*OverallStatics, error) {
 	results, err := access.access.Query(
 		`SELECT * FROM statistics.utilisation()`, mapUtilisation)
@@ -69,7 +85,13 @@ func (access *StatisticsDA) GetAllStatistics() (*OverallStatics, error) {
 			tmp = append(tmp, value)
 		}
 	}
-	tmpRes := OverallStatics{ResourceUtilisation: tmp}
-	// tmpRes.ResourceUtilisation := tmp
+
+	results2, err2 := access.access.Query(
+		`SELECT * FROM statistics.average_utilisation()`, mapAverageUtilisation)
+	if err2 != nil {
+		return nil, err2
+	}
+	tmpRes := OverallStatics{ResourceUtilisation: tmp, AverageUtilisation: results2[0].(AverageUtilisation)}
+
 	return &tmpRes, nil
 }

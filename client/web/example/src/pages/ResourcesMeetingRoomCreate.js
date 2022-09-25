@@ -28,7 +28,9 @@ const CreateMeetingRoom = () =>
           location: meetingRoomLocation,
           role_id: null,
           resource_type: 'MEETINGROOM',
-          decorations: '{}'
+          decorations: `{
+            capacity: ${meetingRoomCapacity}
+          }`
         })
       });
 
