@@ -10,6 +10,7 @@ type OverallStatics struct {
 	ResourceUtilisation []ResourceUtilisation
 	AverageUtilisation	AverageUtilisation 	`json:"average"`
 	AutomatedRatio		AutomatedRatio		`json:"automated"`
+	CurrentOccupancy	CurrentOccupancy	`json:"occupancy"`
 }
 
 func mapOverallStatics(rows *sql.Rows) (interface{}, error) {
@@ -73,6 +74,23 @@ func mapAutomatedRatio(rows *sql.Rows) (interface{}, error) {
 	return identifier, nil
 }
 
+type CurrentOccupancy struct {
+	Occupied	*int64 `json:"occupied"`
+	Total		*int64 `json:"total"`
+}
+
+func mapCurrentOccupancy(rows *sql.Rows) (interface{}, error) {
+	var identifier CurrentOccupancy
+	err := rows.Scan(
+		&identifier.Occupied,
+		&identifier.Total,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return identifier, nil
+}
+
 // StatisticsDA
 type StatisticsDA struct {
 	access *db.Access
@@ -119,7 +137,13 @@ func (access *StatisticsDA) GetAllStatistics() (*OverallStatics, error) {
 		return nil, err3
 	}
 
+	// Current Occupancy
+	results4, err4 := access.access.Query(
+		`SELECT * FROM statistics.current_occupancy()`, mapCurrentOccupancy)
+	if err4 != nil {
+		return nil, err3
+	}
 
-	tmpRes := OverallStatics{ResourceUtilisation: tmp, AverageUtilisation: results2[0].(AverageUtilisation), AutomatedRatio: results3[0].(AutomatedRatio)}
+	tmpRes := OverallStatics{ResourceUtilisation: tmp, AverageUtilisation: results2[0].(AverageUtilisation), AutomatedRatio: results3[0].(AutomatedRatio), CurrentOccupancy: results4[0].(CurrentOccupancy)}
 	return &tmpRes, nil
 }
