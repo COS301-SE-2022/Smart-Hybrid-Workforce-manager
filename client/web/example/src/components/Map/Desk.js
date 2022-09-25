@@ -1,13 +1,14 @@
 import useImage from 'use-image';
 import desk_grey from '../../img/desk_light.svg';
 import { Image, Path, Transformer } from 'react-konva';
-import { useRef, useEffect, Fragment } from 'react';
+import { useRef, useEffect, useState, Fragment } from 'react';
 import styles from './map.module.css';
 
 const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform}) =>
 {
     const shapeRef = useRef(null);
     const transformRef = useRef(null);
+    const [booked, setBooked] = useState(shapeProps.booked);
     const [image] = useImage(desk_grey);
 
     useEffect(() =>
@@ -18,11 +19,32 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
             transformRef.current.getLayer().batchDraw();
         }
 
-        if(!isSelected)
+        if(!isSelected && booked)
+        {
+            shapeRef.current.fill('#ffffff');
+        }
+        else if(!isSelected && !booked)
         {
             shapeRef.current.fill('#374146');
         }
-    }, [isSelected, transform]);
+    }, [isSelected, transform, booked]);
+
+    useEffect(() =>
+    {
+        if(booked)
+        {
+            shapeRef.current.fill('#ffffff');
+        }
+        else
+        {
+            shapeRef.current.fill('#374146');
+        }
+    },[booked])
+
+    useEffect(() =>
+    {
+        setBooked(shapeProps.booked);
+    },[shapeProps.booked]);
 
     return (
         <Fragment> 
@@ -85,7 +107,10 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
 
                 onClick={(e) =>
                 {
-                    onSelect();
+                    if(booked)
+                    {
+                        onSelect();
+                    }
                 }}
 
                 onTap={onSelect}
@@ -113,14 +138,28 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
 
                 onMouseEnter={(e) =>
                 {
-                    e.target.getStage().container().style.cursor = transform ? 'move' : 'pointer';
-                    e.target.fill('#09a2fb');
+                    if(booked)
+                    {
+                        e.target.getStage().container().style.cursor = transform ? 'move' : 'pointer';
+                        e.target.fill('#09a2fb');
+                    }
                 }}
 
                 onMouseLeave={(e) =>
                 {
                     e.target.getStage().container().style.cursor = 'default';
-                    isSelected ? e.target.fill('#09a2fb') : e.target.fill('#374146');
+                    if(isSelected)
+                    {
+                        e.target.fill('#09a2fb');
+                    }
+                    else if(!isSelected && booked)
+                    {
+                        e.target.fill('#ffffff');
+                    }
+                    else if(!isSelected && !booked)
+                    {
+                        e.target.fill('#374146');
+                    }
                 }}
             />
             

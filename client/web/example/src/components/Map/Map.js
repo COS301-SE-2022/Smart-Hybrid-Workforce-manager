@@ -41,7 +41,7 @@ const Map = () =>
     const [rooms, SetRooms] = useState([]);
     const [resources, SetResources] = useState([]);
     const [bookings, setBookings] = useState([]);
-    const [currBookings, setCurrBookings] = useState(null);
+    const [currBookings, setCurrBookings] = useState([]);
 
     const {userData} = useContext(UserContext);
 
@@ -100,7 +100,7 @@ const Map = () =>
     }
 
     //Load desks from the database
-    const LoadDesk = useCallback((id, name, x, y, width, height, rotation) =>
+    const LoadDesk = useCallback((id, name, x, y, width, height, rotation, booked) =>
     {
         //Uses a reference array to prevent state dependency and infinite loop
         if(stageRef.current !== null)
@@ -117,7 +117,8 @@ const Map = () =>
                     width : width,
                     height : height,
                     rotation : rotation,
-                    edited : false
+                    edited : false,
+                    booked : booked
                 }
             ];
 
@@ -333,9 +334,7 @@ const Map = () =>
     {
         //Reset reference array and counters
         deskPropsRef.current = [];
-        deskCount.current = 0;
         meetingRoomPropsRef.current = [];
-        meetingRoomCount.current = 0;
 
         SetDeskProps(deskPropsRef.current);
         SetMeetingRoomProps(meetingRoomPropsRef.current);
@@ -345,7 +344,7 @@ const Map = () =>
         {
             if(resources[i].resource_type === "DESK")
             {
-                LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation);
+                LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, false);
             }
             else if(resources[i].resource_type === "MEETINGROOM")
             {
@@ -451,22 +450,52 @@ const Map = () =>
     {
         if(bookings)
         {
+            var currBookings = [];
             bookings.forEach((booking) =>
             {
-                if(booking.start.includes(date))
+                if(booking.start.includes(date) && booking.booked)
                 {
-                    console.log(booking);
+                    currBookings.push(booking);
                 }
             });
+
+            setCurrBookings(currBookings);
         }
     },[date, bookings]);
+
+    useEffect(() =>
+    {
+        if(currBookings)
+        {
+            var bookedIDs = [];
+            currBookings.forEach((booking) =>
+            {
+                bookedIDs.push(booking.resource_id);
+            });
+
+            deskPropsRef.current = [];
+            SetDeskProps(deskPropsRef.current);
+
+            for(var i = 0; i < resources.length; i++)
+            {
+                if(bookedIDs.includes(resources[i].id))
+                {
+                    LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, true);
+                }
+                else
+                {
+                    LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, false);
+                }
+            }            
+        }
+    },[currBookings, allUsers, resources, LoadDesk]);
 
     useEffect(() =>
     {
         if(selectedId)
         {
             setSidePanel(0.65*window.innerWidth);
-            resources.map((resource) =>
+            resources.forEach((resource) =>
             {
                 if(resource.id === selectedId)
                 {
@@ -478,7 +507,32 @@ const Map = () =>
         {
             setSidePanel(0.85*window.innerWidth);
         }
-    },[selectedId])
+    },[selectedId, resources]);
+
+    useEffect(() =>
+    {
+        setCurrUsers({});
+
+        if(currResource)
+        {
+            currBookings.forEach((booking) =>
+            {
+                if(booking.resource_id === currResource.id)
+                {
+                    setCurrUsers((prev) =>
+                    ({
+                        ...prev, 
+                        [booking.user_id]: 
+                        {
+                            ...allUsers[booking.user_id],
+                            start: booking.start.substr(booking.start.indexOf("T", 0) + 1, 5),
+                            end: booking.end.substr(booking.end.indexOf("T", 0) + 1, 5)
+                        }
+                    }));
+                }
+            });
+        }
+    },[currResource, currBookings, allUsers]);
 
     return (
         <Fragment>
@@ -496,7 +550,7 @@ const Map = () =>
                 </div>
 
                 <div className={styles.userCardContainer}>
-                    {allUsers && Object.entries(allUsers).map(([id, user]) =>
+                    {currUsers && Object.entries(currUsers).map(([id, user]) =>
                     (
                         <div className={styles.userCard}>
                             <div className={styles.userPictureContainer}>
@@ -506,7 +560,7 @@ const Map = () =>
                             <div className={styles.userDetailsContainer}>
                                 <div className={styles.userName}>{user.name}</div>
 
-                                <div className={styles.userTime}>13:00 - 17:00</div>
+                                <div className={styles.userTime}>{user.start} - {user.end}</div>
 
                                 <div className={styles.userRolesContainer}>
                                     <div>Roles:</div>
