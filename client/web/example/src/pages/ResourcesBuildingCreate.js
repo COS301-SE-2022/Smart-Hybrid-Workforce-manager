@@ -1,10 +1,11 @@
 import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../App.js'
 
 const CreateBuilding = () =>
 {
@@ -14,6 +15,8 @@ const CreateBuilding = () =>
 
   const navigate = useNavigate();
 
+  const {userData} = useContext(UserContext);
+
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
@@ -22,12 +25,18 @@ const CreateBuilding = () =>
       let res = await fetch("http://localhost:8080/api/resource/building/create", 
       {
         method: "POST",
+        mode: "cors",
         body: JSON.stringify({
           id: null,
           name: buildingName,
           location: buildingLocation,
           dimension: buildingDimensions
-        })
+        }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}`
+        }
+
       });
 
       if(res.status === 200)

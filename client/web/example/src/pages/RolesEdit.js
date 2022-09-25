@@ -1,11 +1,12 @@
 import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import UserRoleList from '../components/Role/UserRoleList'
 import RoleLeadOption from '../components/Role/RoleLeadOption'
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../App.js'
 
 const EditRole = () =>
 {
@@ -16,6 +17,8 @@ const EditRole = () =>
   const [roleUsers, SetRoleUsers] = useState([]);
   const navigate = useNavigate();
 
+  const {userData} = useContext(UserContext);
+
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
@@ -24,11 +27,16 @@ const EditRole = () =>
       let res = await fetch("http://localhost:8080/api/role/create", 
       {
         method: "POST",
+        mode: "cors",
         body: JSON.stringify({
           id: window.sessionStorage.getItem("RoleID"),
           role_name: roleName,
           role_lead_id: roleLead === "null" ? null : roleLead
-        })
+        }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+        }
       });
 
       if(res.status === 200)
@@ -49,9 +57,14 @@ const EditRole = () =>
     fetch("http://localhost:8080/api/role/user/information", 
         {
           method: "POST",
+          mode: "cors",
           body: JSON.stringify({
             role_id:window.sessionStorage.getItem("RoleID")
-          })
+          }),
+          headers:{
+              'Content-Type': 'application/json',
+              'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+          }
         }).then((res) => res.json()).then(data => 
         {
           SetRoleUsers(data);

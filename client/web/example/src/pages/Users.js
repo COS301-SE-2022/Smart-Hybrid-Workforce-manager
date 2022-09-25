@@ -19,8 +19,13 @@ function Users()
     fetch("http://localhost:8080/api/user/information", 
         {
           method: "POST",
+          mode: "cors",
           body: JSON.stringify({
-          })
+          }),
+          headers:{
+              'Content-Type': 'application/json',
+              'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+          }
         }).then((res) => res.json()).then(data => 
           {
             setUsers(data);

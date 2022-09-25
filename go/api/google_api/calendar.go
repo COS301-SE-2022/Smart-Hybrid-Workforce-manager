@@ -8,68 +8,82 @@ https://developers.google.com/calendar/api/guides/create-events#go
 package google_api
 
 import (
-	// "context"
-	// "encoding/json"
-	// "fmt"
-	// "log"
-	// "net/http"
-	// "os"
-	// "time"
+	"context"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"path/filepath"
 
-	// "golang.org/x/oauth2"
+	// "time"
+	"lib/logger"
+
+	"golang.org/x/oauth2"
 	// "golang.org/x/oauth2/google"
 	"google.golang.org/api/calendar/v3"
 	// "google.golang.org/api/option"
 	// "google.golang.org/genproto/googleapis/apps/script/type/calendar"
 )
 
-// func getClient(config *oauth2.Config) *http.Client {
-// 	tokFile := "token.json"
-// 	tok, err := tokenFromFile(tokFile)
-// 	if err != nil {
-// 		tok = getTokenFromWeb(config)
-// 		saveToken(tokFile, tok)
-// 	}
-// 	return config.Client(context.Background(), tok)
-// }
+func getClient(config *oauth2.Config) *http.Client {
+	tokFile := "/google_api/token.json"
+	tok, err := tokenFromFile(tokFile)
+	if err != nil {
+		tok = getTokenFromWeb(config)
+		saveToken(tokFile, tok)
+	}
+	return config.Client(context.Background(), tok)
+}
 
-// func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
-// 	authURL := config.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
-// 	fmt.Printf("Go to the following link in your browser then type the "+
-// 		"authorization code: \n%v\n", authURL)
+func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
+	authURL := config.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
+	fmt.Printf("Go to the following link in your browser then type the "+
+		"authorization code: \n%v\n", authURL)
 
-// 	var authCode string
-// 	if _, err := fmt.Scan(&authCode); err != nil {
-// 		log.Fatalf("Unable to read authorization code: %v", err)
-// 	}
+	var authCode string
+	if _, err := fmt.Scan(&authCode); err != nil {
+		log.Fatalf("Unable to read authorization code: %v", err)
+	}
 
-// 	tok, err := config.Exchange(context.TODO(), authCode)
-// 	if err != nil {
-// 		log.Fatalf("Unable to retrieve token from web: %v", err)
-// 	}
-// 	return tok
-// }
+	tok, err := config.Exchange(context.TODO(), authCode)
+	if err != nil {
+		log.Fatalf("Unable to retrieve token from web: %v", err)
+	}
+	return tok
+}
 
-// func tokenFromFile(file string) (*oauth2.Token, error) {
-// 	f, err := os.Open(file)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	defer f.Close()
-// 	tok := &oauth2.Token{}
-// 	err = json.NewDecoder(f).Decode(tok)
-// 	return tok, err
-// }
+func tokenFromFile(file string) (*oauth2.Token, error) {
+	f, err := os.Open(filepath.Clean(file))
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+			err := f.Close()
+			if err != nil {
+				logger.Info.Printf("token error: %v\n",err);
+			}
+		}()
+	tok := &oauth2.Token{}
+	err = json.NewDecoder(f).Decode(tok)
+	return tok, err
+}
 
-// func saveToken(path string, token *oauth2.Token) {
-// 	fmt.Printf("Saving credential file to: %s\n", path)
-// 	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
-// 	if err != nil {
-// 		log.Fatalf("Unable to cache oauth token: %v", err)
-// 	}
-// 	defer f.Close()
-// 	json.NewEncoder(f).Encode(token)
-// }
+func saveToken(path string, token *oauth2.Token) {
+	fmt.Printf("Saving credential file to: %s\n", path)
+	f, err := os.OpenFile(filepath.Clean(path), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
+	if err != nil {
+		log.Fatalf("Unable to cache oauth token: %v", err)
+	}
+	defer func() {
+		err := f.Close()
+		if err != nil {
+			logger.Info.Printf("token error: %v\n",err);
+		}
+	}()
+	err = json.NewEncoder(f).Encode(token)
+	_ = err
+}
 
 func createEvent(summary string, location *string, desc *string, starttime string, endtime string, attendess []string) *calendar.Event {
 

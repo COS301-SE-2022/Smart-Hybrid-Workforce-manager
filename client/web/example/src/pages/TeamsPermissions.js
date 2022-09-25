@@ -1,14 +1,17 @@
 import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useContext } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
+import { UserContext } from '../App.js'
 
 const TeamPermissions = () =>
 {
   const [teamName, setTeamName] = useState(window.sessionStorage.getItem("TeamName"));
   //const [teamPermissions, SetTeamPermissions] = useState([]);
+
+  const {userData} = useContext(UserContext);
 
   const [createTeamIdentifier, SetCreateTeamIdentifier] = useState("") // allows a user to update the team
   const [createTeamIdentifierId, SetCreateTeamIdentifierId] = useState("")
@@ -91,13 +94,18 @@ const TeamPermissions = () =>
       let res = await fetch("http://localhost:8080/api/permission/create", 
       {
         method: "POST",
+        mode: "cors",
         body: JSON.stringify({
           permission_id: id,
           permission_id_type: "TEAM",
           permission_type: type,
           permission_category: category,
           permission_tenant: tenant
-        })
+        }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+        }
       });
 
       if (res.status === 200) { 
@@ -116,9 +124,14 @@ const TeamPermissions = () =>
       let res = await fetch("http://localhost:8080/api/permission/remove", 
       {
         method: "POST",
+        mode: "cors",
         body: JSON.stringify({
-          id: id,
-        })
+            id: id,
+        }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+        }
       });
 
       if (res.status === 200) { 
@@ -136,10 +149,15 @@ const TeamPermissions = () =>
     fetch("http://localhost:8080/api/permission/information", 
         {
           method: "POST",
+          mode: "cors",
           body: JSON.stringify({
             permission_id: window.sessionStorage.getItem("TeamID"),
             permission_id_type: "TEAM",
-          })
+          }),
+          headers:{
+              'Content-Type': 'application/json',
+              'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+          }
         }).then((res) => res.json()).then(data => 
         {
           //SetTeamPermissions(data);

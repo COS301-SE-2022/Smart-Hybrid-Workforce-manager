@@ -1,14 +1,17 @@
 import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../App.js'
 
 const CreateDesk = () =>
 {
   const [deskName, SetDeskName] = useState("");
   const [deskLocation, SetDeskLocation] = useState("");
+
+  const {userData} = useContext(UserContext);
 
   const navigate = useNavigate();
 
@@ -20,6 +23,7 @@ const CreateDesk = () =>
       let res = await fetch("http://localhost:8080/api/resource/create", 
       {
         method: "POST",
+        mode: "cors",
         body: JSON.stringify({
           id: null,
           room_id: window.sessionStorage.getItem("RoomID"),
@@ -28,7 +32,11 @@ const CreateDesk = () =>
           role_id: null,
           resource_type: 'DESK',
           decorations: '{"computer": true}',
-        })
+        }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+        }
       });
 
       if(res.status === 200)

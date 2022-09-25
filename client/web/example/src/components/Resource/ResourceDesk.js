@@ -29,8 +29,9 @@ const {userData} = useContext(UserContext);
                 let res = await fetch("http://localhost:8080/api/resource/remove", 
                 {
                     method: "POST",
+                    mode: "cors",
                     body: JSON.stringify({
-                    id: id
+                        id: id
                     }),
                     headers:{
                         'Content-Type': 'application/json',
