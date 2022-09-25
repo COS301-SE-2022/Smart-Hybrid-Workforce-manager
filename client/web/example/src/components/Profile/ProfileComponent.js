@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaWheelchair, FaHouseUser, FaUserEdit } from 'react-icons/fa';
 import styles from './profile.module.css';
 import { MdClose } from 'react-icons/md';
+import EditProfile from './EditProfile';
 
 const ProfileComponent = () =>
 {
@@ -117,7 +118,7 @@ const ProfileComponent = () =>
         }
     }, [userData, edited]);
 
-    const EditProfile = () =>
+    const OpenEditProfile = () =>
     {
         if(backgroundDimmerRef.current)
         {
@@ -128,6 +129,8 @@ const ProfileComponent = () =>
         {
             editFormRef.current.style.display = 'block';
         }
+
+        console.log("E");
     }
 
     const CloseEditProfile = () =>
@@ -141,6 +144,8 @@ const ProfileComponent = () =>
         {
             editFormRef.current.style.display = 'none';
         }
+
+        console.log("W");
     }
 
     const renderWheelchair = () =>
@@ -151,6 +156,8 @@ const ProfileComponent = () =>
         }
     }
 
+    
+
     const renderHome = () =>
     {
         if(user.work_from_home)
@@ -159,13 +166,18 @@ const ProfileComponent = () =>
         }
     }
 
+    useEffect(() =>
+    {
+        renderHome();
+    },[user.work_from_home])
+
     return (
         <div className={styles.profileContainer}>
 
             <div ref={backgroundDimmerRef} className={styles.backgroundDimmer}></div>
 
             <div ref={editFormRef} className={styles.formContainer}>
-                <div className={styles.formClose} onClick={CloseEditProfile}><MdClose /></div>
+                <div className={styles.formClose} onClick={() => CloseEditProfile()}><MdClose /></div>
                 <EditProfile user={user} edited={setEdited}/>
             </div>
 
@@ -205,7 +217,7 @@ const ProfileComponent = () =>
             <div className={styles.profileImageContainer}>
                 <img className={styles.image} src={user.picture} alt='user'></img>
             </div>
-            <div className={styles.profileEdit} onClick={EditProfile.bind(this)}>
+            <div className={styles.profileEdit} onClick={() => OpenEditProfile()}>
                 <FaUserEdit />
             </div>
         </div>

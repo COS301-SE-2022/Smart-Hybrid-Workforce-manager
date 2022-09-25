@@ -239,3 +239,49 @@
 {
     cursor: pointer;
 }
+
+.formGroup
+{
+    margin-bottom: 2vh;
+}
+
+.formLabel
+{
+    font-size: 1vw;
+    letter-spacing: 0.1vw;
+}
+
+.formInput
+{
+    margin-top: 1vh;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    width: 20vw;
+
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+    border-style: none;
+    border-radius: 1.5vh;
+    outline: none;
+
+    font-size: 0.8vw; 
+}
+
+.formInput:focus
+{
+    outline: none;
+}
+
+.radioButtonContainer
+{
+    width: 20vw
+}
+
+.radioLabel
+{
+    font-size: 0.8vw;
+    
+    margin-left: 0.5vw;
+    margin-right: 1vw;
+}

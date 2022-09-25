@@ -19,6 +19,11 @@ const EditProfile = ({user, edited}) =>
 
     const pictureInputRef = useRef(null);
 
+    const homeRef = useRef(null);
+    const parkingSRef = useRef(null);
+    const parkingDRef = useRef(null);
+    const parkingNRef = useRef(null);
+
     const {userData} = useContext(UserContext);
 
     const ClickPictureInput = () =>
@@ -63,18 +68,18 @@ const EditProfile = ({user, edited}) =>
                         {
                             if(url.includes(newName))
                             {
-                                fetch("http://localhost:8080/api/user/create", 
+                                fetch("http://localhost:8080/api/user/update", 
                                 {
                                     method: "POST",
                                     mode: "cors",
                                     body: JSON.stringify({
-                                        id: id,
-                                        name: name,
-                                        color: color,
-                                        capacity: parseInt(capacity),
+                                        ...user,
                                         picture: url,
-                                        priority: priority,
-                                        team_lead_id: lead
+                                        work_from_home: workFromHome,
+                                        parking: parking,
+                                        office_days: officeDays,
+                                        preferred_start_time: '0000-01-01T' + startTime + ':00Z',
+                                        preferred_end_time: '0000-01-01T' + endTime + ':00Z'
                                     }),
                                     headers:{
                                         'Content-Type': 'application/json',
@@ -84,7 +89,7 @@ const EditProfile = ({user, edited}) =>
                                 {
                                     if(res.status === 200)
                                     {
-                                        alert("Team Successfully Updated!");
+                                        alert("Profile Successfully Updated!");
                                         edited(true);
                                     }
                                 });
@@ -96,28 +101,28 @@ const EditProfile = ({user, edited}) =>
         }
         else
         {
-            fetch("http://localhost:8080/api/team/create", 
+            fetch("http://localhost:8080/api/user/update", 
             {
                 method: "POST",
                 mode: "cors",
                 body: JSON.stringify({
-                    id: id,
-                    name: name,
-                    color: color,
-                    capacity: parseInt(capacity),
+                    ...user,
                     picture: picture,
-                    priority: priority,
-                    team_lead_id: lead
+                    work_from_home: workFromHome,
+                    parking: parking,
+                    office_days: officeDays,
+                    preferred_start_time: '0000-01-01T' + startTime + ':00Z',
+                    preferred_end_time: '0000-01-01T' + endTime + ':00Z'
                 }),
                 headers:{
                     'Content-Type': 'application/json',
-                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                    'Authorization': `bearer ${userData.token}`
                 }
             }).then((res) =>
             {
                 if(res.status === 200)
                 {
-                    alert("Team Successfully Updated!");
+                    alert("Profile Successfully Updated!");
                     edited(true);
                 }
             });
@@ -126,7 +131,7 @@ const EditProfile = ({user, edited}) =>
 
     useEffect(() =>
     {
-        if(user)
+        if(user && Object.entries(user).length > 0)
         {
             setID(user.id);
             setParking(user.parking);
@@ -135,8 +140,37 @@ const EditProfile = ({user, edited}) =>
             setStartTime(user.preferred_start_time.substring(11,16));
             setEndTime(user.preferred_end_time.substring(11,16));
             setPicture(user.picture);
+
+            console.log(user);
         }
     }, [user]);
+
+    useEffect(() =>
+    {
+        if(parkingSRef && parkingDRef && parkingNRef)
+        {
+            if(parking === 'STANDARD')
+            {
+                parkingSRef.current.checked = true;
+            }
+            else if(parking === 'DISABLED')
+            {
+                parkingDRef.current.checked = true;
+            }
+            else if(parking === 'NONE')
+            {
+                parkingNRef.current.checked = true;
+            }
+        }
+    }, [parking]);
+
+    useEffect(() =>
+    {
+        if(homeRef.current)
+        {
+            homeRef.current.checked = workFromHome;
+        }
+    }, [workFromHome]);
 
     return (
         <div className={styles.form}>
@@ -150,35 +184,45 @@ const EditProfile = ({user, edited}) =>
             </div>
 
             <Form.Group className={styles.formGroup} controlId="formBasicName">
-                <div className={styles.formLabel}>Name</div>
-                <input className={styles.formInput} type='text' placeholder="Team name" value={id} onChange={(e) => setName(e.target.value)}></input>
+                <div className={styles.formLabel}>Work from home</div>
+                <input ref={homeRef} type='checkbox' onChange={(e) => setWorkFromHome(e.target.checked)}></input>
             </Form.Group>
 
             <Form.Group className={styles.formGroup} controlId="formBasicName">
-                <div className={styles.formLabel}>Color</div>
-                <Form.Control className={styles.colorPicker} type='color' value={officeDays} onChange={(e) => setColor(e.target.value)} />
-            </Form.Group>
-
-            <Form.Group className={styles.formGroup} controlId="formBasicName">
-                <div className={styles.formLabel}>Capacity</div>
-                <input className={styles.formInput} type='number' min='2' placeholder="Capacity" value={capacity} onChange={(e) => setCapacity(e.target.value)}></input>
-            </Form.Group>
-
-            <Form.Group className={styles.formGroup} controlId="formBasicName">
-                <div className={styles.formLabel}>Priority</div>
+                <div className={styles.formLabel}>Parking type</div>
 
                 <form>
-                    <input ref={priority0Ref} type='radio' name='priority' value={0} onChange={(e) => setPriority(e.target.value)}></input>
-                    <label className={styles.radioLabel}>0</label>
+                    <div className={styles.radioButtonContainer}>
+                        <input ref={parkingSRef} type='radio' name='parking' value={'STANDARD'} onChange={(e) => setParking(e.target.value)}></input>
+                        <label className={styles.radioLabel}>Standard</label>
+                    </div>
 
-                    <input ref={priority1Ref} type='radio' name='priority' value={1} onChange={(e) => setPriority(e.target.value)}></input>
-                    <label className={styles.radioLabel}>1</label>
+                    <div className={styles.radioButtonContainer}>
+                        <input ref={parkingDRef} type='radio' name='parking' value={'DISABLED'} onChange={(e) => setParking(e.target.value)}></input>
+                        <label className={styles.radioLabel}>Disabled</label>
+                    </div>
 
-                    <input ref={priority2Ref} type='radio' name='priority' value={2} onChange={(e) => setPriority(e.target.value)}></input>
-                    <label className={styles.radioLabel}>2</label>
+                    <div className={styles.radioButtonContainer}>
+                        <input ref={parkingNRef} type='radio' name='parking' value={'NONE'} onChange={(e) => setParking(e.target.value)}></input>
+                        <label className={styles.radioLabel}>None</label>
+                    </div>
                 </form>
             </Form.Group>
 
+            <Form.Group className={styles.formGroup} controlId="formBasicName">
+                <div className={styles.formLabel}>Office days per week</div>
+                <input className={styles.formInput} type='number' min='1' placeholder="Office days" value={officeDays} onChange={(e) => setOfficeDays(e.target.value)}></input>
+            </Form.Group>
+
+            <Form.Group className={styles.formGroup} controlId="formBasicName">
+                <div className={styles.formLabel}>Preferred start time</div>
+                <input className={styles.formInput} type='time' value={startTime} onChange={(e) => setStartTime(e.target.value)}></input>
+            </Form.Group>
+
+            <Form.Group className={styles.formGroup} controlId="formBasicName">
+                <div className={styles.formLabel}>Preferred end time</div>
+                <input className={styles.formInput} type='time' value={endTime} onChange={(e) => setEndTime(e.target.value)}></input>
+            </Form.Group>
 
             <Button className={styles.submit} onClick={EditProfileSubmit}>Save</Button>
         </div>
