@@ -82,7 +82,7 @@ func WeeklyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sche
 		case candidate, ok := <-c: // if ok is false close event happened
 			if !ok {
 				bookings = append(bookings, best.ConvertIndividualToWeeklyBookings(domain))
-				// logger.Debug.Println(best)
+				// logger.Debug.Println("\n", best)
 				// logger.Debug.Println(testutils.Scolourf(testutils.PURPLE, "SOLUTIONS RECIEVED: %v, %v", count, improvements))
 				return bookings
 			}

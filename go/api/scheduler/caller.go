@@ -11,6 +11,8 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/procyon-projects/chrono"
 )
 
 var (
@@ -138,7 +140,7 @@ func CallWeeklyScheduler() error {
 	return nil
 }
 
-func StartDailySchedulerCalling() error {
+func CallDailyScheduler() error {
 	dailyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/daily"
 
 	daysInAdvance := 1
@@ -169,8 +171,42 @@ func StartDailySchedulerCalling() error {
 	return nil
 }
 
-func StartWeeklyCalling() {
+func StartWeeklyCalling() (chrono.ScheduledTask, error) {
+	callRate := 4 * time.Hour
+	startDelay := 1 * time.Minute
+	taskScheduler := chrono.NewDefaultTaskScheduler()
 
+	task, err := taskScheduler.ScheduleAtFixedRate(func(ctx context.Context) {
+		_err := CallWeeklyScheduler()
+		if _err != nil {
+			logger.Error.Println(_err)
+		}
+	}, callRate, chrono.WithTime(time.Now().Add(startDelay)))
+
+	if err != nil {
+		logger.Error.Println("Could not start weekly scheduler calling task")
+		return task, err
+	}
+	return task, nil
+}
+
+func StartDailyCalling() (chrono.ScheduledTask, error) {
+	callRate := 12 * time.Hour
+	startDelay := 2 * time.Minute
+	taskScheduler := chrono.NewDefaultTaskScheduler()
+
+	task, err := taskScheduler.ScheduleAtFixedRate(func(ctx context.Context) {
+		_err := CallDailyScheduler()
+		if _err != nil {
+			logger.Error.Println(_err)
+		}
+	}, callRate, chrono.WithTime(time.Now().Add(startDelay)))
+
+	if err != nil {
+		logger.Error.Println("Could not start weekly scheduler calling task")
+		return task, err
+	}
+	return task, nil
 }
 
 // callOnDay will call checkAndCall() on each recurring certain day of the week,

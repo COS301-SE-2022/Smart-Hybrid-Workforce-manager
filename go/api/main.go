@@ -4,6 +4,7 @@ import (
 	"api/db"
 	"api/endpoints"
 	"api/redis"
+	"api/scheduler"
 	"lib/logger"
 	"net/http"
 	"os"
@@ -116,6 +117,17 @@ func main() {
 	origins := handlers.AllowedOrigins([]string{os.Getenv("ORIGIN_ALLOWED")})
 	methods := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
 
+	schedulerTask1, err := scheduler.StartWeeklyCalling()
+	if err != nil {
+		logger.Error.Println(err)
+	}
+	defer schedulerTask1.Cancel()
+
+	schedulerTask2, err := scheduler.StartDailyCalling()
+	if err != nil {
+		logger.Error.Println(err)
+	}
+	defer schedulerTask2.Cancel()
 	// Start API on port 8080 in its docker container
 	server := http.Server{
 		Addr:              ":8080",
