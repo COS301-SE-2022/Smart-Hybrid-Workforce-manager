@@ -58,7 +58,7 @@ func WeeklyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sche
 			return ga.WeeklyDayVResourceFitnessCaller(domain, individuals, ga.WeeklyDayVResourceFitnessValid)
 		},
 		ga.WeeklyDayVResourceMutateSwapValid,
-		ga.WeeklyTournamentSelection,
+		ga.WeeklyTournamentSelectionFitness,
 		ga.WeeklyDayVResourcePopulationGenerator,
 		c,
 		&s,
@@ -89,6 +89,7 @@ func WeeklyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sche
 			count++
 			if candidate.Fitness > best.Fitness {
 				// logger.Debug.Println(testutils.Scolourf(testutils.PURPLE, "IMPROVEMENT RECIEVED: %v, %v", count, improvements))
+				logger.Debug.Println(testutils.Scolourf(testutils.PURPLE, "IMPROVEMENT RECIEVED: %v, %v, %v", count, improvements, candidate.Fitness))
 				improvements++
 				best = candidate
 				// logger.Error.Printf("BEST INDIVIDUAL \n %v", best)
@@ -145,7 +146,7 @@ func DailyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sched
 		},
 		ga.DailyFitness,
 		ga.DailyMutateValid,
-		ga.WeeklyTournamentSelection,
+		ga.WeeklyTournamentSelectionFitness,
 		ga.DailyPopulationGeneratorValid,
 		c,
 		&s,
@@ -177,6 +178,7 @@ func DailyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sched
 			}
 			count++
 			if candidate.Fitness > best.Fitness {
+				logger.Debug.Println(testutils.Scolourf(testutils.PURPLE, "IMPROVEMENT RECIEVED: %v, %v, %v", count, improvements, candidate.Fitness))
 				improvements++
 				best = candidate
 				// logger.Error.Printf("BEST INDIVIDUAL \n %v", best)

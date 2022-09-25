@@ -159,7 +159,7 @@ func (individual *Individual) DifferentUsersCount(domain *Domain) int {
 func (individual *Individual) TeamsAttendingSameDays(domain *Domain, dailyMaps []map[string]int) float64 {
 	total := 0.0
 	for _, team := range domain.SchedulerData.Teams {
-		total += float64(*team.Priority) * percentageUsersOnSameDayInTeam(team, dailyMaps)
+		total += math.Max(float64(*team.Priority)+1.0, 1.0) * percentageUsersOnSameDayInTeam(team, dailyMaps)
 	}
 	return total
 }
@@ -293,7 +293,11 @@ func (individual *Individual) teamProximityScore(domain *Domain) float64 {
 	for i, teamRoomProx := range teamRoomProximities {
 		// Use reciprocal, since if the teams have a larger avg distance from the centroid
 		// the fitness should be smaller
-		scores[i] = math.Max(1.0, float64(getTeamPriority(domain, teamRoomProx.teamId))) / (individualTeamProximityScore(teamRoomProx) + 1.0)
+		scores[i] = math.Max(1.0, float64(getTeamPriority(domain, teamRoomProx.teamId))+1.0) / (individualTeamProximityScore(teamRoomProx) + 1.0)
+		// Apply penalty for being in the same room
+		numRooms := len(domain.SchedulerData.Rooms)
+		numRoomsSpreadIn := len(teamRoomProx.roomGroups)
+		scores[i] *= (float64(numRooms - numRoomsSpreadIn + 1)) / float64(numRooms)
 	}
 	// Sum all the reciprocals
 	return cu.Sum(scores)
