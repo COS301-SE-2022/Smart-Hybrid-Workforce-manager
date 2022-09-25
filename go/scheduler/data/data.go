@@ -2,6 +2,7 @@ package data
 
 import (
 	"lib/collectionutils"
+	"lib/utils"
 	"time"
 )
 
@@ -188,7 +189,7 @@ func ExtractResourceIds(schedulerData *SchedulerData) []string {
 	return resources
 }
 
-// ExtractResourceIds extracts all available desk ids from schedulerdata into a string array
+// ExtractAvailable deskids extracts all available desk ids from schedulerdata into a string array
 func ExtractAvailableDeskIds(schedulerData *SchedulerData) []string {
 	// Build map of all resources that have arleady been assigned to a booking
 	bookedResources := make(map[string]bool)
@@ -216,6 +217,27 @@ func ExtractUserIdMap(schedulerData *SchedulerData) map[int](string) {
 	result = make(map[int]string)
 	for i, booking := range *schedulerData.CurrentBookings {
 		result[i] = *booking.UserId
+	}
+	return result
+}
+
+// ExtractUserIdMap extracts all user ids from the schedulerdata into an indexed map
+// capped by the amount of resources that are available, this is incase resources are deleted
+// between weekly scheduler running and daily scheduler called
+func ExtractUserIdMapAsMuchAsAvailable(schedulerData *SchedulerData) map[int](string) {
+	result := make(map[int]string) // map[index]userId
+	bookingIndices := collectionutils.SequentialSequence(0, len(*schedulerData.CurrentBookings))
+	// shuffle the indices
+	for i := range bookingIndices {
+		j := utils.RandInt(0, i+1)
+		bookingIndices[i], bookingIndices[j] = bookingIndices[j], bookingIndices[i]
+	}
+	// For the number of available resources, extract user ids from the bookings according to the random indices
+	for i := range schedulerData.Resources {
+		if i >= len((*schedulerData.CurrentBookings)) {
+			break
+		}
+		result[i] = *(*schedulerData.CurrentBookings)[i].UserId
 	}
 	return result
 }

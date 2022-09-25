@@ -2,16 +2,16 @@
     "daily_config": {
         "seed" : 2,
         "populationSize": 150,
-        "generations": 10000,
+        "generations": 3000,
         "mutationRate": 0.45,
         "crossOverRate": 0.45,
         "tournamentSize": 10,
-        "time_limit_seconds": 3
+        "time_limit_seconds": 20
     },
     "weekly_config": {
         "seed" : 2,
         "populationSize": 100,
-        "generations": 10000,
+        "generations": 3000,
         "mutationRate": 1.0,
         "crossOverRate": 0.0,
         "tournamentSize": 15,

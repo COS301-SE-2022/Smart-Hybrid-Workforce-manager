@@ -5,6 +5,7 @@ import (
 	"lib/logger"
 	"lib/testutils"
 	"lib/utils"
+	"math/rand"
 	"scheduler/data"
 	"scheduler/ga"
 	"time"
@@ -16,7 +17,7 @@ func WeeklyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sche
 
 	// Set default configurations
 	var config data.Config
-	config.Seed = 2
+	config.Seed = -1
 	config.PopulationSize = 15
 	config.Generations = 1000
 	config.MutationRate = 1.0
@@ -37,6 +38,12 @@ func WeeklyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sche
 			config.TimeLimitSeconds = *utils.ReturnAltIfNil(&conf.TimeLimitSeconds, &config.TimeLimitSeconds)
 		}
 	}
+
+	// If seed is -1 choose a random seed
+	if config.Seed == -1 {
+		config.Seed = int(time.Now().UnixNano())
+	}
+	rand.Seed(int64(config.Seed))
 
 	// Create domain
 	var domain ga.Domain
@@ -104,7 +111,7 @@ func DailyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sched
 
 	// Set configurations
 	var config data.Config
-	config.Seed = 2
+	config.Seed = -1
 	config.PopulationSize = 150
 	config.Generations = 100
 	config.MutationRate = 0.45
@@ -126,12 +133,19 @@ func DailyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sched
 		}
 	}
 
+	// If seed is -1 choose a random seed
+	if config.Seed == -1 {
+		config.Seed = int(time.Now().UnixNano())
+	}
+	rand.Seed(int64(config.Seed))
+
 	// Create domain
 	var domain ga.Domain
 	domain.Terminals = data.ExtractResourceIds(&schedulerData)
 	domain.Config = &config
 	domain.SchedulerData = &schedulerData
-	domain.Map = data.ExtractUserIdMap(&schedulerData)
+	domain.Map = data.ExtractUserIdMapAsMuchAsAvailable(&schedulerData)
+	// domain.Map = data.ExtractUserIdMap(&schedulerData)
 	domain.InverseMap = data.ExtractInverseUserIdMap(domain.Map)
 
 	// Create channel
