@@ -4,6 +4,7 @@ import (
 	"api/data"
 	"api/db"
 	"api/security"
+	cu "lib/collectionutils"
 	"time"
 )
 
@@ -358,4 +359,174 @@ func GetSchedulerData(from time.Time, to time.Time) (*SchedulerData, error) {
 	}
 
 	return &schedulerData, nil
+}
+
+// Group by building will partition the schedulerData into data that is only relevant to certain buildings
+// this includes resources in a certain building, as well as users and bookings associated with a certain building
+// Users in teams will also be seperated***
+// Additionally, any data not associated with a specific building will be placed under the key ""
+func GroupByBuilding(schedulerData *SchedulerData) map[string]*SchedulerData { // map[building_id]SchedulerData
+	groupedData := make(map[string]*SchedulerData) // map[building_id]SchedulerData
+
+	///////////////////
+	// Create maps
+
+	// Resources map
+	resourcesMap := make(map[string]*data.Resource)
+	for _, resource := range schedulerData.Resources {
+		resourcesMap[*resource.Id] = resource
+	}
+
+	// Users map
+	usersMap := make(map[string]*data.User)
+	for _, user := range schedulerData.Users {
+		usersMap[*user.Id] = user
+	}
+
+	// Room map
+	roomsMap := make(map[string]*RoomInfo)
+	for _, room := range schedulerData.Rooms {
+		roomsMap[*room.Id] = room
+	}
+
+	////////////////////////
+	// Group base objects
+
+	// Group buildings by their id
+	_, groupedBuildings := cu.GroupBy(schedulerData.Buildings, func(building *BuildingInfo) string {
+		return *building.Id
+	})
+
+	groupUser := func(user *data.User) string {
+		if user.BuildingID == nil {
+			return ""
+		}
+		return *user.BuildingID
+	}
+
+	// Group users
+	_, groupedUsers := cu.GroupBy(schedulerData.Users, groupUser)
+
+	groupRoom := func(room *RoomInfo) string {
+		if room.BuildingId == nil {
+			return ""
+		}
+		return *room.BuildingId
+	}
+	// Group rooms
+	_, groupedRooms := cu.GroupBy(schedulerData.Rooms, groupRoom)
+
+	groupResource := func(resource *data.Resource) string {
+		if roomsMap[*resource.RoomId].BuildingId == nil {
+			return ""
+		}
+		return *roomsMap[*resource.RoomId].BuildingId
+	}
+
+	// Group resources
+	_, groupedResources := cu.GroupBy(schedulerData.Resources, groupResource)
+
+	// If bookings already had a resource assigned, group them by that resource,
+	// otherwise, group them by the assigned users group
+	groupBooking := func(booking *data.Booking) string {
+		if booking.ResourceId != nil {
+			return groupResource(resourcesMap[*booking.ResourceId])
+		}
+		return groupUser(usersMap[*booking.UserId])
+	}
+
+	// Group current bookings
+	_, groupedCurrentBookings := cu.GroupBy(*schedulerData.CurrentBookings, groupBooking)
+	// Group past bookings
+	_, groupedPastBookings := cu.GroupBy(*schedulerData.PastBookings, groupBooking)
+
+	////////////////////////////////////////
+	// Group sub arrays inside infos objects
+	groupedTeamUserIds := make(map[string](map[string][]string))
+	for _, team := range schedulerData.Teams {
+		_, groupedTeamUserIds[*team.Id] = cu.GroupBy(team.UserIds, func(userId string) string {
+			return groupUser(usersMap[userId])
+		})
+	}
+
+	groupedBuildingRoomIds := make(map[string](map[string][]string))
+	for _, building := range schedulerData.Buildings {
+		_, groupedBuildingRoomIds[*building.Id] = cu.GroupBy(building.RoomIds, func(roomId string) string {
+			return groupRoom(roomsMap[roomId])
+		})
+	}
+
+	groupedRoomResourceIds := make(map[string](map[string][]string))
+	for _, room := range schedulerData.Rooms {
+		_, groupedRoomResourceIds[*room.Id] = cu.GroupBy(room.ResourceIds, func(resourceId string) string {
+			return groupResource(resourcesMap[resourceId])
+		})
+	}
+
+	/////////////////////////////////////////////
+	// Create new grouped scheduler data objects
+
+	// Assign buildings
+	for buildingId, buildings := range groupedBuildings {
+		groupedData[buildingId] = &SchedulerData{
+			Buildings:       buildings,
+			Users:           data.Users{},
+			Teams:           []*TeamInfo{},
+			Rooms:           []*RoomInfo{},
+			Resources:       data.Resources{},
+			CurrentBookings: &data.Bookings{},
+			PastBookings:    &data.Bookings{},
+			StartDate:       schedulerData.StartDate,
+		}
+
+		// newBuildings := []*BuildingInfo{}
+		// for index, buildingInfo := range schedulerData.Buildings {
+		// 	newBuildings = append(newBuildings, &BuildingInfo{
+		// 		buildingInfo.Building,
+		// 		groupedBuildingRoomIds[buildingId][buildingId],
+		// 	})
+		// 	if groupedBuildingRoomIds[buildingId][buildingId] == nil {
+		// 		newBuildings[index].RoomIds = []string{}
+		// 	}
+		// }
+
+		// Add the teams
+		newTeams := []*TeamInfo{}
+		for index, teamInfo := range schedulerData.Teams {
+			newTeams = append(newTeams, &TeamInfo{
+				teamInfo.Team,
+				groupedTeamUserIds[*teamInfo.Id][buildingId],
+			})
+			if groupedTeamUserIds[*teamInfo.Id][buildingId] == nil {
+				newTeams[index].UserIds = []string{}
+			}
+		}
+		groupedData[buildingId].Teams = newTeams
+
+		groupedData[buildingId].Users = groupedUsers[buildingId]
+
+		newRooms := []*RoomInfo{}
+		for index, roomInfo := range groupedRooms[buildingId] {
+			newRooms = append(newRooms, &RoomInfo{
+				roomInfo.Room,
+				groupedRoomResourceIds[*roomInfo.Id][buildingId],
+			})
+			if groupedRoomResourceIds[*roomInfo.Id][buildingId] == nil {
+				newRooms[index].ResourceIds = []string{}
+			}
+		}
+		groupedData[buildingId].Rooms = groupedRooms[buildingId]
+		// Correct
+
+		currBookings := groupedCurrentBookings[buildingId]
+		groupedData[buildingId].CurrentBookings = (*data.Bookings)(&currBookings)
+
+		pastBookings := groupedPastBookings[buildingId]
+		groupedData[buildingId].PastBookings = (*data.Bookings)(&pastBookings)
+
+		resources := groupedResources[buildingId]
+		groupedData[buildingId].Resources = resources
+	}
+
+	return groupedData
 }
