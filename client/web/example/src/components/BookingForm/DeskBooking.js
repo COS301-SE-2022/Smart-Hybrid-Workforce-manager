@@ -27,13 +27,13 @@ const DeskBooking = (props, ref) =>
                     id: null,
                     user_id: userData.user_id,
                     resource_type: "DESK",
-                    resource_preference_id: '',
-                    resource_id: '',
+                    resource_preference_id: null,
+                    resource_id: null,
                     start: startDate + "T" + startTime + ":00.000Z",
                     end: startDate + "T" + endTime + ":00.000Z",
                     booked: false,
                     automated: false,
-                    dependent: ''
+                    dependent: null
                 }),
                 headers:{
                     'Content-Type': 'application/json',

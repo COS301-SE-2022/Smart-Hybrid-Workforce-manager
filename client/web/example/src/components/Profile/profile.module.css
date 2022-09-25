@@ -1,0 +1,308 @@
+.profileContainer
+{
+    display: grid;
+    grid-template-columns: 42.5vw 42.5vw;
+    grid-template-rows: 25vh 55vh;
+    grid-template-areas: "topLeft" "topRight" "teams";
+
+    width: 85vw;
+    height: 80vh;
+
+    margin-top: 10vh;
+
+    background: #ffffff;
+    color: #374146;
+}
+
+.personalInformationContainer
+{
+    grid-area: "topLeft";
+    position: relative;
+
+    text-align: right;
+
+    padding-top: 13vh;
+    padding-right: 4vw;
+
+    width: 42.5vw;
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    color: #374146;
+}
+
+.profileName
+{
+    position: relative;
+
+    font-size: 1.5vw;
+}
+
+.profileEmail
+{
+    position: relative;
+
+    font-size: 1vw;
+}
+
+.profileIcons
+{
+    position: relative;
+
+    font-size: 1.5vw;
+}
+
+.icon
+{
+    float: right;
+    margin-left: 1vw;
+}
+
+
+.preferencesContainer
+{
+    position: relative;
+
+    text-align: left;
+
+    padding-top: 13vh;
+    padding-left: 4vw;
+
+    width: 42.5vw;
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    color: #374146;
+}
+
+.profileRoles
+{
+    width: 100%;
+}
+
+.pill
+{
+    float: left;
+    margin-right: 0.5vw;
+    margin-bottom: 0.7vh;
+
+    padding-left: 0.5vw;
+    padding-right: 0.5vw;
+    padding-bottom: 2.3vh;
+
+    height: 2vh;
+
+    border-radius: 4vh;
+
+    color: white;
+}
+
+.profileTeamsContainer
+{
+    width: 85vw;
+
+    padding-top: 2vh;
+    padding-left: 1vw;
+}
+
+.profileTeamsTitle
+{
+    font-size: 2vw;
+}
+
+.profileTeamsCarousel
+{
+    overflow-y: scroll;
+
+    padding-left: 6.5vw;
+    padding-bottom: 4vh;
+
+    height: 47vh;
+}
+
+.teamCard
+{
+    display: inline-block;
+
+    width: 15vw;
+    height: 25vh;
+
+    margin-left: 2vw;
+    margin-top: 4vh;
+
+    padding-top: 2vh;
+  
+    background: #09a2fb66;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+
+    border-width: 0.5px;
+    border-radius: 3vh;
+
+    text-align: center;
+    color: #374146;
+}
+
+.teamPicture
+{
+    width: 5vw;
+    height: 5vw;
+    border-radius: 10vh;
+}
+
+.teamName
+{
+    margin-top: 2vh;
+    font-size: 1vw;
+    max-width: 100%;
+}
+
+.profileImageContainer
+{
+    position: absolute;
+
+    border-style: solid;
+    border-width: 0.4vw;
+    border-radius: 10vh;
+    border-color: #ffffff;
+
+    margin-left: 37.5vw;
+    
+    top: 1.5vh;
+
+    width: 10vw;
+    height: 10vw;
+}
+
+.image
+{
+    width: 100%;
+    height: 100%;
+    border-radius: 10vh;
+}
+
+.profileEdit
+{
+    position: absolute;
+
+    margin-left: 80vw;
+    
+    top: 10vh;
+
+    font-size: 2vw;
+}
+
+.profileEdit:hover
+{
+    cursor: pointer;
+    color: #09a2fb;
+}
+
+.backgroundDimmer
+{
+    position: absolute;
+    display: none;
+
+    width: 85vw;
+    height: 80vh;
+
+    background-color: rgba(218, 223, 254, 0.7);
+
+    z-index: 2;
+}
+
+.formContainer
+{
+    position: absolute;
+    display: none;
+
+    width: 30vw;
+    height: 76vh;
+
+    margin-left: 27.5vw;
+    margin-top: 1vh;
+
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+
+    border-radius: 1vh;
+
+    z-index: 3;
+
+    animation: animate-pop-enter 0.5s cubic-bezier(0.26, 0.53, 0.74, 1.48);
+}
+
+@keyframes animate-pop-enter
+{
+    0%
+    {
+        opacity: 0;
+        transform: scale(0.5, 0.5);
+    }
+
+    100%
+    {
+        opacity: 1;
+        transform: scale(1, 1);
+    }
+}
+
+.formClose
+{
+    position: absolute;
+
+    left: 28vw;
+    top: 0.5vh;
+
+    font-size: 1.5vw;
+}
+
+.formClose:hover
+{
+    cursor: pointer;
+}
+
+.formGroup
+{
+    margin-bottom: 2vh;
+}
+
+.formLabel
+{
+    font-size: 1vw;
+    letter-spacing: 0.1vw;
+}
+
+.formInput
+{
+    margin-top: 1vh;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    width: 20vw;
+
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+    border-style: none;
+    border-radius: 1.5vh;
+    outline: none;
+
+    font-size: 0.8vw; 
+}
+
+.formInput:focus
+{
+    outline: none;
+}
+
+.radioButtonContainer
+{
+    width: 20vw
+}
+
+.radioLabel
+{
+    font-size: 0.8vw;
+    
+    margin-left: 0.5vw;
+    margin-right: 1vw;
+}

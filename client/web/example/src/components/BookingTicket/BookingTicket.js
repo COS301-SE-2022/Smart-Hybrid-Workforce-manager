@@ -3,7 +3,7 @@ import { MdEdit, MdDelete } from 'react-icons/md';
 import { GiDesk, GiRoundTable } from 'react-icons/gi';
 import { UserContext } from '../../App';
 
-const BookingTicket = ({id, startDate, startTime, endTime, confirmed, type, days}) => 
+const BookingTicket = ({id, startDate, startTime, endTime, confirmed, type, days, ticketClick}) => 
 {
     const [year, setYear] = useState(""); 
     const [month, setMonth] = useState("");
@@ -104,7 +104,7 @@ const BookingTicket = ({id, startDate, startTime, endTime, confirmed, type, days
 
     return (
         <div>
-            <div ref={ticketRef} className="booking-ticket">
+            <div ref={ticketRef} className="booking-ticket" onClick={() => ticketClick()}>
                 <div className="booking-text">
                     {renderIcon()}       
                 </div>

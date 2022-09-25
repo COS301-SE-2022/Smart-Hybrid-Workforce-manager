@@ -35,15 +35,16 @@ const MeetingRoomBooking = (props, ref) =>
                 mode: "cors",
                 body: JSON.stringify(
                 {
-                    "booking": {
-                    id: null,
-                    user_id: userData.user_id,
-                    resource_type: "MEETINGROOM",
-                    resource_preference_id: null,
-                    resource_id: null,
-                    start: startDate + "T" + startTime + ":43.511Z",
-                    end: startDate + "T" + endTime + ":43.511Z",
-                    booked: false
+                    "booking":
+                    {
+                        id: null,
+                        user_id: userData.user_id,
+                        resource_type: "MEETINGROOM",
+                        resource_preference_id: null,
+                        resource_id: null,
+                        start: startDate + "T" + startTime + ":43.511Z",
+                        end: startDate + "T" + endTime + ":43.511Z",
+                        booked: false
                     },
                     team_id: (teamSelectedId === "null") ? null : teamSelectedId,
                     role_id: (roleSelectedId === "null") ? null : roleSelectedId,
