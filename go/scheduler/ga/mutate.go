@@ -3,6 +3,7 @@ package ga
 import (
 	cu "lib/collectionutils"
 	"lib/utils"
+	"math"
 )
 
 ///////////////////////////////////////////////////
@@ -202,7 +203,11 @@ func DailyMutate(domain *Domain, individuals Individuals) Individuals {
 func DailyMutateValid(domain *Domain, individuals Individuals) Individuals {
 	var results Individuals
 	for _, indiv := range individuals {
-		results = append(results, dailyMutateValid(domain, indiv, 0.5, len(indiv.Gene[0])/12, len(indiv.Gene[0])/12))
+		mutateAmount := len(indiv.Gene[0]) / 6
+		mutateAmount = int(math.Max(2, float64(mutateAmount)))
+		mutateAmount = utils.RandInt(1, mutateAmount)
+		results = append(results, dailyMutateValid(domain, indiv, 0.5, mutateAmount, mutateAmount))
+		// results = append(results, dailyMutateValid(domain, indiv, 0.5, len(indiv.Gene[0])/12, len(indiv.Gene[0])/12))
 	}
 	return results
 }

@@ -87,9 +87,13 @@ func (individual *Individual) ConvertIndividualToDailyBookings(domain Domain) da
 		return nil
 	}
 
-	for i, booking := range *domain.SchedulerData.CurrentBookings {
-		booking.ResourceId = &individual.Gene[0][i]
-		bookings = append(bookings, booking)
+	selectIndex := 0
+	for _, booking := range *domain.SchedulerData.CurrentBookings {
+		if domain.Reschedule || booking.ResourceId == nil {
+			booking.ResourceId = &individual.Gene[0][selectIndex]
+			bookings = append(bookings, booking)
+			selectIndex++
+		}
 	}
 
 	return bookings

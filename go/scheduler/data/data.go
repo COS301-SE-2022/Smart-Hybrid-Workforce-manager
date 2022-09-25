@@ -237,7 +237,33 @@ func ExtractUserIdMapAsMuchAsAvailable(schedulerData *SchedulerData) map[int](st
 		if i >= len((*schedulerData.CurrentBookings)) {
 			break
 		}
-		result[i] = *(*schedulerData.CurrentBookings)[i].UserId
+		result[i] = *(*schedulerData.CurrentBookings)[bookingIndices[i]].UserId
+	}
+	return result
+}
+
+// ExtractMecessaryUserMap extracts all user ids from the schedulerdata into an indexed map
+// capped by the amount of resources that are available, this is incase resources are deleted
+// between weekly scheduler running and daily scheduler called, and given that their booking
+// does not already have an assigned resource
+func ExtractNecessaryUserMap(schedulerData *SchedulerData) map[int](string) {
+	result := make(map[int]string) // map[index]userId
+	availableDesks := ExtractAvailableDeskIds(schedulerData)
+	// shuffle the current bookings
+	for i := range *schedulerData.CurrentBookings {
+		j := utils.RandInt(0, i+1)
+		(*schedulerData.CurrentBookings)[i], (*schedulerData.CurrentBookings)[j] = (*schedulerData.CurrentBookings)[j], (*schedulerData.CurrentBookings)[i]
+	}
+	// For the number of available resources, extract user ids from the bookings according to the random indices
+	assignIndex := 0
+	for i := 0; i < len(*schedulerData.CurrentBookings); i++ {
+		if assignIndex >= len(availableDesks) {
+			break
+		}
+		if (*schedulerData.CurrentBookings)[i].ResourceId == nil {
+			result[assignIndex] = *(*schedulerData.CurrentBookings)[i].UserId
+			assignIndex++
+		}
 	}
 	return result
 }

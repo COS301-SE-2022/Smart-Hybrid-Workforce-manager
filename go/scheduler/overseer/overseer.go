@@ -2,6 +2,7 @@ package overseer
 
 import (
 	"context"
+	"fmt"
 	"lib/logger"
 	"lib/testutils"
 	"lib/utils"
@@ -139,14 +140,32 @@ func DailyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sched
 	}
 	rand.Seed(int64(config.Seed))
 
+	// /////////////////////////////////////////////////////////////
+	// // Below configuration will reschedule everything
+	// // Create domain
+	// var domain ga.Domain
+	// domain.Terminals = data.ExtractResourceIds(&schedulerData)
+	// domain.Config = &config
+	// domain.SchedulerData = &schedulerData
+	// domain.Map = data.ExtractUserIdMapAsMuchAsAvailable(&schedulerData)
+	// // domain.Map = data.ExtractUserIdMap(&schedulerData)
+	// domain.InverseMap = data.ExtractInverseUserIdMap(domain.Map)
+	// ///////////////////////////////////////////////////////////////
+
+	//////////////////////////////////////////////////////////////////
+	// Below configuration will only schedule what hasn't been already
 	// Create domain
 	var domain ga.Domain
-	domain.Terminals = data.ExtractResourceIds(&schedulerData)
+	// domain.Terminals = data.ExtractResourceIds(&schedulerData)
+	domain.Terminals = data.ExtractAvailableDeskIds(&schedulerData)
 	domain.Config = &config
 	domain.SchedulerData = &schedulerData
-	domain.Map = data.ExtractUserIdMapAsMuchAsAvailable(&schedulerData)
+	domain.Map = data.ExtractNecessaryUserMap(&schedulerData)
+	fmt.Println(testutils.Scolourf(testutils.BLUE, "%v", domain.Map))
 	// domain.Map = data.ExtractUserIdMap(&schedulerData)
 	domain.InverseMap = data.ExtractInverseUserIdMap(domain.Map)
+	domain.Reschedule = false
+	///////////////////////////////////////////////////////////////
 
 	// Create channel
 	var c chan ga.Individual = make(chan ga.Individual)
@@ -177,6 +196,7 @@ func DailyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sched
 		select {
 		case <-timeoutChanel:
 			logger.Debug.Println(testutils.Scolour(testutils.RED, "DEADLINE EXCEDED"))
+			logger.Debug.Println(testutils.Scolourf(testutils.PURPLE, "SOLUTIONS RECIEVED: %v, %v", count, improvements))
 			// Stop the GA
 			stopGA()
 			bookings = append(bookings, best.ConvertIndividualToDailyBookings(domain))
