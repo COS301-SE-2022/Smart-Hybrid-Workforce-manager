@@ -521,7 +521,8 @@ func TestIndividual_teamProximityScore(t *testing.T) {
 					{"Shelf1", "Shelf2", "Shelf10", "Shelf100", "Shelf30", "Shelf4", "Shelf5", "Shelf3", "Shelf20"},
 				},
 			},
-			want: 1.0/(0.7071067+0.0+1.0) + 2.0/(0.7071067+14.1421356+1.0) + 1.0/(1.571348+1.0) + 1.0/(0.0+1.0),
+			// want: 1.0/(0.7071067+0.0+1.0) + 2.0/(0.7071067+14.1421356+1.0) + 1.0/(1.571348+1.0) + 1.0/(0.0+1.0),
+			want: 2.075657336,
 		},
 		{
 			name: "Test 2",
@@ -588,7 +589,7 @@ func TestIndividual_teamProximityScore(t *testing.T) {
 					{"Shelf1", "Shelf2", "Shelf10", "Shelf100", "Shelf30", "Shelf4", "Shelf5", "Shelf3", "Shelf20"},
 				},
 			},
-			want: 1.0218705,
+			want: 1.265213523,
 		},
 	}
 	for _, tt := range tests {
@@ -802,7 +803,7 @@ func Test_dailyFitness(t *testing.T) {
 					Fitness: -1.0,
 				},
 			},
-			want: 2.24101021,
+			want: 2.21579109,
 		},
 	}
 	for _, tt := range tests {
@@ -838,7 +839,7 @@ func TestDailyFitness(t *testing.T) {
 					{Gene: gene, Fitness: -1.0},
 				},
 			},
-			want: []float64{2.24101021, 2.24101021},
+			want: []float64{2.2157910999, 2.21579109991},
 		},
 	}
 	for _, tt := range tests {
