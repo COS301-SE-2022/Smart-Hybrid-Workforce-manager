@@ -15,7 +15,6 @@ import Admin from './pages/Admin'
 import PermissionsTeam from './pages/TeamsPermissions'
 
 import Layout from './pages/CreateLayout'
-import Resources from './pages/Resources'
 import CreateBuilding from './pages/ResourcesBuildingCreate'
 import EditBuilding from './pages/ResourcesBuildingEdit'
 import CreateRoom from './pages/ResourcesRoomCreate'
@@ -27,10 +26,7 @@ import CreateMeetingRoom from './pages/ResourcesMeetingRoomCreate'
 import Statistics from './pages/Statistics'
 
 import Profile from './pages/Profile'
-import ProfileConfiguration from './pages/ProfileConfiguration'
-import Users from './pages/Users'
 import EditUser from './pages/UsersEdit'
-import CreateUser from './pages/UsersCreate'
 import PermissionsUser from './pages/UsersPermissions'
 
 import Roles from './pages/Roles'
@@ -73,15 +69,12 @@ function App()
             <Route path="/bookings-meetingroom" exact element={<BookingsMeetingRoom/>} />
             <Route path="/calendar" exact element={<Calendar />} />
 
-            <Route path="/users" exact element={<Users />} />
             <Route path="/user-edit" exact element={<EditUser />} />
-            <Route path="/user-create" exact element={<CreateUser />} />
             <Route path="/user-permissions" exact element={<PermissionsUser />} />
 
             <Route path="/team-permissions" exact element={<PermissionsTeam />} />
 
             <Route path="/layout" exact element={<Layout />} />
-            <Route path="/resources" exact element={<Resources/>} />
             <Route path="/building" exact element={<CreateBuilding/>} />
             <Route path="/building-edit" exact element={<EditBuilding/>} />
             <Route path="/room" exact element={<CreateRoom/>} />
@@ -92,7 +85,6 @@ function App()
             <Route path="/meetingroom" exact element={<CreateMeetingRoom />} />
 
             <Route path="/profile" exact element={<Profile />} />
-            <Route path="/profile-configuration" exact element={<ProfileConfiguration />} />
 
             <Route path="/role" exact element={<Roles/>} />
             <Route path="/role-create" exact element={<CreateRole/>} />

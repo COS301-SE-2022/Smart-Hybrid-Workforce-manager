@@ -11,11 +11,13 @@ const ProfileComponent = () =>
 {
     const [user, setUser] = useState({});
     const [roles, setRoles] = useState([]);
-    const [teams, SetTeams] = useState([]);
+    const [teams, setTeams] = useState([]);
     const [edited, setEdited] = useState(true);
 
     const backgroundDimmerRef = useRef(null);
     const editFormRef = useRef(null);
+    const houseRef = useRef(null);
+    const wheelchairRef = useRef(null);
   
   const {userData, setUserData}=useContext(UserContext);
 
@@ -44,7 +46,6 @@ const ProfileComponent = () =>
                 }).then((res) => res.json()).then(data => 
                 {
                     console.log(data[0]);
-                    sessionStorage.setItem("UserID", data[0].id);
                     setUser(data[0]);
                 });
             };
@@ -56,7 +57,7 @@ const ProfileComponent = () =>
                     method: "POST",
                     mode: "cors",
                     body: JSON.stringify({
-                        //user_id: userData.user_id
+                        user_id: userData.user_id
                     }),
                     headers:{
                         'Content-Type': 'application/json',
@@ -65,6 +66,7 @@ const ProfileComponent = () =>
                 }).then((res) => res.json()).then(data => 
                 {
                     var userRoles = data;
+                    setRoles([]);
                     userRoles.forEach((association) =>
                     {
                         fetch("http://localhost:8080/api/role/information", 
@@ -107,14 +109,38 @@ const ProfileComponent = () =>
                     }
                 }).then((res) => res.json()).then(data => 
                 {
-                    SetTeams(data);
-                    console.log(data);
+                    setTeams([]);
+                    data.forEach((association) =>
+                    {
+                        fetch("http://localhost:8080/api/team/information", 
+                        {
+                            method: "POST",
+                            mode: "cors",
+                            body: JSON.stringify({
+                                id: association.team_id
+                            }),
+                            headers:{
+                                'Content-Type': 'application/json',
+                                'Authorization': `bearer ${userData.token}`
+                            }
+                        }).then((res) => res.json()).then(data => 
+                        {
+                            setTeams((prev) =>
+                            (
+                                [
+                                    ...prev,
+                                    data[0]
+                                ]
+                            ));
+                        });
+                    });
                 });
             }
 
             FetchUser();
             FetchUserRoles();
             FetchUserTeams();
+            setEdited(false);
         }
     }, [userData, edited]);
 
@@ -129,8 +155,6 @@ const ProfileComponent = () =>
         {
             editFormRef.current.style.display = 'block';
         }
-
-        console.log("E");
     }
 
     const CloseEditProfile = () =>
@@ -144,32 +168,34 @@ const ProfileComponent = () =>
         {
             editFormRef.current.style.display = 'none';
         }
-
-        console.log("W");
-    }
-
-    const renderWheelchair = () =>
-    {
-        if(user.parking === 'DISABLED')
-        {
-            return <FaWheelchair />
-        }
-    }
-
-    
-
-    const renderHome = () =>
-    {
-        if(user.work_from_home)
-        {
-            return <FaHouseUser />
-        }
     }
 
     useEffect(() =>
     {
-        renderHome();
-    },[user.work_from_home])
+        if(houseRef.current)
+        {
+            if(user.work_from_home)
+            {
+                houseRef.current.style.display = 'block';
+            }
+            else
+            {
+                houseRef.current.style.display = 'none';
+            }
+        }
+
+        if(wheelchairRef.current)
+        {
+            if(user.parking === 'DISABLED')
+            {
+                wheelchairRef.current.style.display = 'block';
+            }
+            else
+            {
+                wheelchairRef.current.style.display = 'none';
+            }
+        }
+    },[user, edited])
 
     return (
         <div className={styles.profileContainer}>
@@ -185,8 +211,13 @@ const ProfileComponent = () =>
                 <div className={styles.profileName}>{user.first_name + ' ' + user.last_name}</div>
                 <div className={styles.profileEmail}>{user.email}</div>
                 <div className={styles.profileIcons}>
-                    {renderWheelchair()}
-                    {renderHome()}
+                    <div ref={wheelchairRef} className={styles.icon}>
+                        <FaWheelchair />
+                    </div>
+                    
+                    <div ref={houseRef} className={styles.icon}>
+                        <FaHouseUser />
+                    </div>
                 </div>
             </div>
 
@@ -204,13 +235,15 @@ const ProfileComponent = () =>
 
             <div className={styles.profileTeamsContainer}>
                 <div className={styles.profileTeamsTitle}>Teams</div>
+
                 <div className={styles.profileTeamsCarousel}>
-                    {user.teams && (
-                        user.teams.map(team =>
-                        (
-                            <div className={styles.profileTeam}>{team.team_id}</div>
-                        ))
-                    )}
+                    {teams.map(team => (
+                        <div className={styles.teamCard} style={{background: "linear-gradient(180deg, " + team.color + "66  0%, rgba(255,255,255,0.4) 50%)"}}>
+                            <img className={styles.teamPicture} src={team.picture} alt='team'></img>
+                            <div className={styles.teamName}>{team.name}</div>
+                        </div>
+                        
+                    ))}
                 </div>
             </div>
 
