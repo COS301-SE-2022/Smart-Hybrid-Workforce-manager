@@ -3,7 +3,6 @@ import { useRef, useState, useEffect, useCallback, useContext, Fragment } from '
 import Desk from './Desk';
 import MeetingRoom from './MeetingRoom';
 import { UserContext } from '../../App';
-import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import styles from './map.module.css';
 
 const Map = () =>
