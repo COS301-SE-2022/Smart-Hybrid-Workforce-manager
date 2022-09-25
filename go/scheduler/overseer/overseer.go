@@ -74,7 +74,7 @@ func WeeklyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sche
 		select {
 		case <-timeoutChanel:
 			logger.Debug.Println(testutils.Scolour(testutils.RED, "DEADLINE EXCEDED"))
-			logger.Error.Println("\n", best)
+			// logger.Error.Println("\n", best)
 			// Stop the GA
 			stopGA()
 			bookings = append(bookings, best.ConvertIndividualToWeeklyBookings(domain))
@@ -82,13 +82,13 @@ func WeeklyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sche
 		case candidate, ok := <-c: // if ok is false close event happened
 			if !ok {
 				bookings = append(bookings, best.ConvertIndividualToWeeklyBookings(domain))
-				logger.Debug.Println(best)
-				logger.Debug.Println(testutils.Scolourf(testutils.PURPLE, "SOLUTIONS RECIEVED: %v, %v", count, improvements))
+				// logger.Debug.Println(best)
+				// logger.Debug.Println(testutils.Scolourf(testutils.PURPLE, "SOLUTIONS RECIEVED: %v, %v", count, improvements))
 				return bookings
 			}
 			count++
 			if candidate.Fitness > best.Fitness {
-				logger.Debug.Println(testutils.Scolourf(testutils.PURPLE, "IMPROVEMENT RECIEVED: %v, %v", count, improvements))
+				// logger.Debug.Println(testutils.Scolourf(testutils.PURPLE, "IMPROVEMENT RECIEVED: %v, %v", count, improvements))
 				improvements++
 				best = candidate
 				// logger.Error.Printf("BEST INDIVIDUAL \n %v", best)
@@ -165,12 +165,13 @@ func DailyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sched
 			// Stop the GA
 			stopGA()
 			bookings = append(bookings, best.ConvertIndividualToDailyBookings(domain))
-			logger.Debug.Println(len(bookings))
+			// logger.Debug.Println(len(bookings))
+			// logger.Debug.Println(best)
 			return bookings
 		case candidate, ok := <-c: // if ok is false close event happened
 			if !ok {
 				bookings = append(bookings, best.ConvertIndividualToDailyBookings(domain))
-				logger.Debug.Println(best)
+				// logger.Debug.Println(best)
 				logger.Debug.Println(testutils.Scolourf(testutils.PURPLE, "SOLUTIONS RECIEVED: %v, %v", count, improvements))
 				return bookings
 			}
