@@ -320,10 +320,15 @@ function UserPermissions() {
     fetch("http://localhost:8080/api/permission/information",
       {
         method: "POST",
+        mode: "cors",
         body: JSON.stringify({
           permission_id: window.sessionStorage.getItem("UserID"),
           permission_id_type: "USER",
-        })
+        }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+        }
       }).then((res) => res.json()).then(data => {
         //SetUserPermissions(data); [Uncomment when used]
         data.forEach(setPermissionStates);

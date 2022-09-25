@@ -24,6 +24,7 @@ function BookingsDeskEdit()
       let res = await fetch("http://localhost:8080/api/booking/create", 
       {
         method: "POST",
+        mode: "cors",
         body: JSON.stringify({
           id: window.sessionStorage.getItem("BookingID"),
           user_id: userData.user_id,
@@ -33,7 +34,11 @@ function BookingsDeskEdit()
           start: startDate + "T" + startTime + ":43.511Z",
           end: endDate + "T" + endTime + ":43.511Z",
           booked: false
-        })
+        }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+        }
       });
 
       if(res.status === 200)

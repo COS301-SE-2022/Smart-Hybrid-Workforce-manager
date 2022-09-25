@@ -46,13 +46,18 @@ const RoomEdit = () =>
       let res = await fetch("http://localhost:8080/api/resource/room/create", 
       {
         method: "POST",
+        mode: "cors",
         body: JSON.stringify({
           id: window.sessionStorage.getItem("RoomID"),
           building_id: window.sessionStorage.getItem("BuildingID"),
           name: roomName,
           location: roomLocation,
           dimension: roomDimensions
-        })
+        }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+        }
       });
 
       if(res.status === 200)

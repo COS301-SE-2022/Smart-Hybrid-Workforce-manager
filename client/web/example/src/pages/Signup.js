@@ -1,7 +1,8 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useContext } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { useNavigate } from 'react-router-dom'
+import { UserContext } from '../App';
 
 function Signup()
 {
@@ -21,6 +22,8 @@ function Signup()
     const caseRef = useRef();
 
     const navigate = useNavigate();
+
+    const {userData} = useContext(UserContext);
 
     useEffect(() => 
     {
@@ -179,13 +182,18 @@ function Signup()
         let res = await fetch("http://localhost:8080/api/user/register", 
         {
         method: "POST",
+        mode: "cors",
         body: JSON.stringify({
             id: "",
             first_name: firstName,
             last_name: lastName,
             email: email,
             password: password
-        })
+        }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+        }
         });
 
         if(res.status === 200)

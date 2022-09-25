@@ -46,12 +46,17 @@ const BuildingEdit = () =>
       let res = await fetch("http://localhost:8080/api/resource/building/create", 
       {
         method: "POST",
+        mode: "cors",
         body: JSON.stringify({
           id: window.sessionStorage.getItem("BuildingID"),
           name: buildingName,
           location: buildingLocation,
           dimension: buildingDimensions
-        })
+        }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+        }
       });
 
       if(res.status === 200)

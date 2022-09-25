@@ -94,13 +94,18 @@ const TeamPermissions = () =>
       let res = await fetch("http://localhost:8080/api/permission/create", 
       {
         method: "POST",
+        mode: "cors",
         body: JSON.stringify({
           permission_id: id,
           permission_id_type: "TEAM",
           permission_type: type,
           permission_category: category,
           permission_tenant: tenant
-        })
+        }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+        }
       });
 
       if (res.status === 200) { 
@@ -119,9 +124,14 @@ const TeamPermissions = () =>
       let res = await fetch("http://localhost:8080/api/permission/remove", 
       {
         method: "POST",
+        mode: "cors",
         body: JSON.stringify({
-          id: id,
-        })
+            id: id,
+        }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+        }
       });
 
       if (res.status === 200) { 

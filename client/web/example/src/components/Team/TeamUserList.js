@@ -13,9 +13,14 @@ const TeamUserList = ({teamId}) =>
         fetch("http://localhost:8080/api/team/information", 
         {
         method: "POST",
+        mode: "cors",
         body: JSON.stringify({
             id: teamId
-        })
+        }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+        }
         }).then((res) => res.json()).then(data => 
         {
             SetTeamName(data[0].name);

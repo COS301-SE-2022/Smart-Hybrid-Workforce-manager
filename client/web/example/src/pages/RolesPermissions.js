@@ -290,10 +290,15 @@ function RolePermissions() {
     fetch("http://localhost:8080/api/permission/information",
       {
         method: "POST",
+        mode: "cors",
         body: JSON.stringify({
           permission_id: window.sessionStorage.getItem("RoleID"),
           permission_id_type: "ROLE",
-        })
+        }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+        }
       }).then((res) => res.json()).then(data => {
         data.forEach(setPermissionStates);
       });
