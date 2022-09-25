@@ -94,6 +94,11 @@ func WeeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 	nextMonday := scheduler.TimeOfNextWeekDay(now, "Monday")            // Start of next week
 	nextSaturday := scheduler.TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
 	schedulerData, err := scheduler.GetSchedulerData(nextMonday, nextSaturday)
+	groups := scheduler.GroupByBuilding(schedulerData)
+	for _, data := range groups {
+		schedulerData = data
+		break
+	}
 	logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running weekly scheduler from %v -> %v", nextMonday, nextSaturday))
 	if err != nil {
 		utils.InternalServerError(writer, request, err)

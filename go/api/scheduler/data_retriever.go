@@ -364,7 +364,7 @@ func GetSchedulerData(from time.Time, to time.Time) (*SchedulerData, error) {
 // Group by building will partition the schedulerData into data that is only relevant to certain buildings
 // this includes resources in a certain building, as well as users and bookings associated with a certain building
 // Users in teams will also be seperated***
-// Additionally, any data not associated with a specific building will be placed under the key ""
+// (NOT ANYMORE) Additionally, any data not associated with a specific building will be placed under the key ""
 func GroupByBuilding(schedulerData *SchedulerData) map[string]*SchedulerData { // map[building_id]SchedulerData
 	groupedData := make(map[string]*SchedulerData) // map[building_id]SchedulerData
 
@@ -504,28 +504,40 @@ func GroupByBuilding(schedulerData *SchedulerData) map[string]*SchedulerData { /
 		groupedData[buildingId].Teams = newTeams
 
 		groupedData[buildingId].Users = groupedUsers[buildingId]
-
-		newRooms := []*RoomInfo{}
-		for index, roomInfo := range groupedRooms[buildingId] {
-			newRooms = append(newRooms, &RoomInfo{
-				roomInfo.Room,
-				groupedRoomResourceIds[*roomInfo.Id][buildingId],
-			})
-			if groupedRoomResourceIds[*roomInfo.Id][buildingId] == nil {
-				newRooms[index].ResourceIds = []string{}
-			}
+		if groupedUsers[buildingId] == nil {
+			groupedData[buildingId].Users = data.Users{}
 		}
+
+		// newRooms := []*RoomInfo{}
+		// for index, roomInfo := range groupedRooms[buildingId] {
+		// 	newRooms = append(newRooms, &RoomInfo{
+		// 		roomInfo.Room,
+		// 		groupedRoomResourceIds[*roomInfo.Id][buildingId],
+		// 	})
+		// 	if groupedRoomResourceIds[*roomInfo.Id][buildingId] == nil {
+		// 		newRooms[index].ResourceIds = []string{}
+		// 	}
+		// }
 		groupedData[buildingId].Rooms = groupedRooms[buildingId]
 		// Correct
 
 		currBookings := groupedCurrentBookings[buildingId]
 		groupedData[buildingId].CurrentBookings = (*data.Bookings)(&currBookings)
+		if currBookings == nil {
+			groupedData[buildingId].CurrentBookings = &data.Bookings{}
+		}
 
 		pastBookings := groupedPastBookings[buildingId]
 		groupedData[buildingId].PastBookings = (*data.Bookings)(&pastBookings)
+		if pastBookings == nil {
+			groupedData[buildingId].PastBookings = &data.Bookings{}
+		}
 
 		resources := groupedResources[buildingId]
 		groupedData[buildingId].Resources = resources
+		if resources == nil {
+			groupedData[buildingId].Resources = data.Resources{}
+		}
 	}
 
 	return groupedData
