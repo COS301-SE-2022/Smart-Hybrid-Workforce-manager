@@ -8,7 +8,8 @@ import (
 // OverallStatistics
 type OverallStatics struct {
 	ResourceUtilisation []ResourceUtilisation
-	AverageUtilisation	AverageUtilisation `json:"average"`
+	AverageUtilisation	AverageUtilisation 	`json:"average"`
+	AutomatedRatio		AutomatedRatio		`json:"automated"`
 }
 
 func mapOverallStatics(rows *sql.Rows) (interface{}, error) {
@@ -55,6 +56,23 @@ func mapAverageUtilisation(rows *sql.Rows) (interface{}, error) {
 	return identifier, nil
 }
 
+type AutomatedRatio struct {
+	Automated	*int64 `json:"automated"`
+	Manual		*int64 `json:"manual"`
+}
+
+func mapAutomatedRatio(rows *sql.Rows) (interface{}, error) {
+	var identifier AutomatedRatio
+	err := rows.Scan(
+		&identifier.Automated,
+		&identifier.Manual,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return identifier, nil
+}
+
 // StatisticsDA
 type StatisticsDA struct {
 	access *db.Access
@@ -74,6 +92,7 @@ func (access *StatisticsDA) Commit() error {
 
 // GetAllStatistics
 func (access *StatisticsDA) GetAllStatistics() (*OverallStatics, error) {
+	// Utilisation
 	results, err := access.access.Query(
 		`SELECT * FROM statistics.utilisation()`, mapUtilisation)
 	if err != nil {
@@ -86,12 +105,21 @@ func (access *StatisticsDA) GetAllStatistics() (*OverallStatics, error) {
 		}
 	}
 
+	// Average Utilisation
 	results2, err2 := access.access.Query(
 		`SELECT * FROM statistics.average_utilisation()`, mapAverageUtilisation)
 	if err2 != nil {
 		return nil, err2
 	}
-	tmpRes := OverallStatics{ResourceUtilisation: tmp, AverageUtilisation: results2[0].(AverageUtilisation)}
 
+	// Automated Ratio
+	results3, err3 := access.access.Query(
+		`SELECT * FROM statistics.automated_ratio()`, mapAutomatedRatio)
+	if err3 != nil {
+		return nil, err3
+	}
+
+
+	tmpRes := OverallStatics{ResourceUtilisation: tmp, AverageUtilisation: results2[0].(AverageUtilisation), AutomatedRatio: results3[0].(AutomatedRatio)}
 	return &tmpRes, nil
 }
