@@ -17,7 +17,7 @@ func WeeklyDayVResourceMutateSwapValid(domain *Domain, individuals Individuals) 
 	var results Individuals
 	for _, individual := range individuals {
 		copiedIndiv := individual.Clone()
-		validWeeklySwap(copiedIndiv, len(domain.Terminals)/7) // semi-random
+		validWeeklySwap(copiedIndiv, len(domain.Terminals)/8) // semi-random
 		results = append(results, copiedIndiv)
 	}
 	return results
@@ -25,39 +25,88 @@ func WeeklyDayVResourceMutateSwapValid(domain *Domain, individuals Individuals) 
 
 // Swap random users to differnt days, but keep the individual valid
 func validWeeklySwap(indiv *Individual, mutationDegree int) *Individual {
-	// An array of maps, where each map contains the counts that users come in on a certain day
+	// An array of maps, where each map contains the index that users come in on a certain day
 	// the index of the day corresponds to the day
-	// map[user id]# of times a users id appears on that day
-	usersComingInOnDay := make([]map[string]bool, len(indiv.Gene))
-	// initialise map
+	// map[user id]index that a user comes in
+	usersComingInOnDay := make([]map[string]int, len(indiv.Gene))
+	// Keeps track of which indices on specific days have assigned user ids
+	indicesWithUsers := make([][]int, len(indiv.Gene))
+	for i := 0; i < len(indicesWithUsers); i++ {
+		indicesWithUsers[i] = []int{}
+	}
+	// initialise map and indicesWithUsersArray
 	for i := 0; i < len(usersComingInOnDay); i++ {
-		usersComingInOnDay[i] = make(map[string]bool)
-		for _, userid := range indiv.Gene[i] {
+		usersComingInOnDay[i] = make(map[string]int)
+		for j, userid := range indiv.Gene[i] {
 			if userid != "" {
-				usersComingInOnDay[i][userid] = false
+				indicesWithUsers[i] = append(indicesWithUsers[i], j)
+				usersComingInOnDay[i][userid] = j
 			}
 		}
 	}
+
 	// Perform mutations
 	for i := 0; i < mutationDegree; i++ {
-		dayi1, sloti1 := randSlot(indiv)
+		// dayi1, sloti1 := randSlot(indiv)
+		// Get a random user to swap around
+		// Search to see which days have assigned users
+		daysWithUsers := indicesOfNonEmptyArrs(indicesWithUsers) // Get days that actually have users
+		dayi1, sloti1 := -1, -1
+		if len(daysWithUsers) > 0 {
+			dayi1 = daysWithUsers[utils.RandInt(0, len(daysWithUsers))]                      // Select a random day
+			sloti1 = indicesWithUsers[dayi1][utils.RandInt(0, len(indicesWithUsers[dayi1]))] // Get a slot with a user in it
+		}
+
+		if dayi1 == -1 || sloti1 == -1 {
+			continue
+		}
+
 		// select a day that is not the same day as dayi1
 		dayi2, sloti2 := randSlot(indiv)
-		for dayi2 == dayi1 && dayi2 != -1 { // if dayi2 == -1 it means that there might no be enough slots
+		for dayi2 == dayi1 && dayi2 != -1 && sloti2 != -1 { // if dayi2 == -1 it means that there might no be enough slots
 			dayi2, sloti2 = randSlot(indiv)
 		}
 
-		if dayi1 == -1 || dayi2 == -1 { // Mutation can not be performed
-			break
+		if sloti2 == -1 || dayi2 == -1 { // Mutation can not be performed
+			continue
 		}
 
-		_, contains1 := usersComingInOnDay[dayi1][indiv.Gene[dayi2][sloti2]]
-		_, contains2 := usersComingInOnDay[dayi2][indiv.Gene[dayi1][sloti1]]
-		if !contains1 && !contains2 {
+		// Swap if allowed
+		if !cu.MapHasKey(usersComingInOnDay[dayi2], indiv.Gene[dayi1][sloti1]) && !cu.MapHasKey(usersComingInOnDay[dayi1], indiv.Gene[dayi2][sloti2]) { // Only swap if user is not already in that day
+			oldDayi1Id := indiv.Gene[dayi1][sloti1]
+			oldDayi2Id := indiv.Gene[dayi2][sloti2]
 			performSwap(indiv, dayi1, dayi2, sloti1, sloti2)
+			// Update maps and arrays
+			usersComingInOnDay[dayi2][oldDayi1Id] = sloti2
+			delete(usersComingInOnDay[dayi1], oldDayi1Id)
+
+			// If user was swapped with another, update for dayi1
+			if indiv.Gene[dayi1][sloti1] != "" {
+				usersComingInOnDay[dayi1][oldDayi2Id] = sloti1
+				delete(usersComingInOnDay[dayi2], oldDayi2Id)
+			} else {
+				cu.RemElemenAtI(indicesWithUsers[dayi1], sloti1)
+				indicesWithUsers[dayi2] = append(indicesWithUsers[dayi2], sloti2)
+			}
 		}
+
+		// _, contains1 := usersComingInOnDay[dayi1][indiv.Gene[dayi2][sloti2]]
+		// _, contains2 := usersComingInOnDay[dayi2][indiv.Gene[dayi1][sloti1]]
+		// if !contains1 && !contains2 {
+		// 	performSwap(indiv, dayi1, dayi2, sloti1, sloti2)
+		// }
 	}
 	return indiv
+}
+
+func indicesOfNonEmptyArrs[T any](arr2D [][]T) []int {
+	indices := []int{}
+	for i, inner := range arr2D {
+		if len(inner) > 0 {
+			indices = append(indices, i)
+		}
+	}
+	return indices
 }
 
 func performSwap(indiv *Individual, day1, day2, sloti1, sloti2 int) {
@@ -153,7 +202,7 @@ func DailyMutate(domain *Domain, individuals Individuals) Individuals {
 func DailyMutateValid(domain *Domain, individuals Individuals) Individuals {
 	var results Individuals
 	for _, indiv := range individuals {
-		results = append(results, dailyMutateValid(domain, indiv, 0.5, 1, 1))
+		results = append(results, dailyMutateValid(domain, indiv, 0.5, len(indiv.Gene[0])/12, len(indiv.Gene[0])/12))
 	}
 	return results
 }

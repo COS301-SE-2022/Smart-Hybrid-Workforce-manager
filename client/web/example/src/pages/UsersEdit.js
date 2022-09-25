@@ -31,9 +31,14 @@ function EditUser()
     fetch("http://localhost:8080/api/role/user/information", 
         {
           method: "POST",
+          mode: "cors",
           body: JSON.stringify({
             user_id: window.sessionStorage.getItem("UserID")
-          })
+          }),
+          headers:{
+              'Content-Type': 'application/json',
+              'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+          }
         }).then((res) => res.json()).then(data => 
           {
             SetUserRoles(data);
@@ -46,9 +51,14 @@ function EditUser()
     fetch("http://localhost:8080/api/team/user/information", 
         {
           method: "POST",
+          mode: "cors",
           body: JSON.stringify({
             user_id: window.sessionStorage.getItem("UserID")
-          })
+          }),
+          headers:{
+              'Content-Type': 'application/json',
+              'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+          }
         }).then((res) => res.json()).then(data => 
           {
             SetUserTeams(data);
@@ -61,8 +71,13 @@ function EditUser()
         fetch("http://localhost:8080/api/role/information", 
             {
             method: "POST",
+            mode: "cors",
             body: JSON.stringify({
-            })
+            }),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+            }
             }).then((res) => res.json()).then(data => 
             {
                 SetRoles(data);
@@ -82,10 +97,15 @@ function EditUser()
             let res = await fetch("http://localhost:8080/api/role/user/create", 
             {
                 method: "POST",
+                mode: "cors",
                 body: JSON.stringify({
                     role_id: currRole,
                     user_id: window.sessionStorage.getItem("UserID")
-                })
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
             });
 
             if(res.status === 200)
@@ -106,8 +126,13 @@ function EditUser()
         fetch("http://localhost:8080/api/team/information", 
             {
             method: "POST",
+            mode: "cors",
             body: JSON.stringify({
-            })
+            }),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+            }
             }).then((res) => res.json()).then(data => 
             {
                 SetTeams(data);
@@ -127,10 +152,15 @@ function EditUser()
             let res = await fetch("http://localhost:8080/api/team/user/create", 
             {
                 method: "POST",
+                mode: "cors",
                 body: JSON.stringify({
                     team_id: currTeam,
                     user_id: window.sessionStorage.getItem("UserID")
-                })
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
             });
 
             if(res.status === 200)

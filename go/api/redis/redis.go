@@ -2,46 +2,49 @@ package redis
 
 ////////////
 //TODO
-//Check if token has expired
 //
-
+//
 
 import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"lib/logger"
 	"math"
 	"net/http"
 	"time"
-	"errors"
+
 	"github.com/go-redis/redis/v8"
 	_ "github.com/gorilla/mux"
-	"lib/logger"
 )
 
 ////////////////////////////////////////////////
 //Databases
 // 0 : testing
-// 1 : user session token
-// 2 : open
+// 1 : User Session Token
+// 2 : Google Calendar Integration
 // 3 : open
 // 4 : open
 
 ////////////////////////////////////////////////
 //Structures and Variables
 type RedisData struct{
-	User_id 			string		`json:"user_id"`
-	User_Identifier		string		`json:"user_identifier"`
-	User_Name			string		`json:"user_name"`
-	User_Surname		string		`json:"user_surname"`
-	Token 				string 		`json:"token"`
-	CreationTime 		time.Time 	`json:"CreationTime"`
-	ExpirationTime 		time.Time	`json:"ExpirationTime"`
+	User_id 				string		`json:"user_id"`
+	User_Identifier			string		`json:"user_identifier"`
+	User_Name				string		`json:"user_name"`
+	User_Surname			string		`json:"user_surname"`
+	Token 					string 		`json:"token"`
+	CreationTime 			time.Time 	`json:"CreationTime"`
+	ExpirationTime 			time.Time	`json:"ExpirationTime"`
 }
 
-
+type CalendarBookings struct{
+	Calendar_id				string 		`json:"calendar_id"`
+	Time_end				time.Time	`json:"time_end"`
+}
 
 //Redis clients
 var redisClients[5] *redis.Client
@@ -114,134 +117,9 @@ func getAuthClient() redis.Client{
 	return getRedisClient(1);
 }
 
-// func ValidateUserToken(token string) bool{
-// 	redisClient := GetAuthClient();
-// 	val, err := redisClient.Get(ctx, token).Result();
-// 	if err != nil {
-// 		return false;
-// 	}
-// 	_ = val
-
-// 	return true;
-// }
-
-// func AddAuthUser(user data.User) AuthUserData{
-// 	//if user exists/has id
-// 	Id := user.Id
-// 	if(Id == nil){
-// 		//logger.Error.Fatal(Identifier)
-
-// 	}
-
-// 	//get redis connection
-// 	redisClient := GetAuthClient()
-
-// 	utoken := ""
-// 	//check if user already has token
-// 	val, err := redisClient.Get(ctx, *Id).Result()
-// 	if(err != nil){
-// 		//logger.Error.Println(err)
-// 		utoken = GenerateUserToken()
-// 		id_err := redisClient.Set(ctx, *Id, utoken, 0).Err()
-// 		if(id_err != nil){
-// 			fmt.Println(id_err)
-// 		}
-// 		err := redisClient.Set(ctx, utoken, true, 0).Err()
-// 		if err != nil {
-// 			fmt.Println(err)
-// 			//logger.Error.Fatal(err)
-// 		}
-		
-// 	}else{
-// 		//user with token exists
-// 		utoken = val
-// 	}
-// 	fmt.Printf("val: %s", val)	
-
-// 	udata := RedisData{*Id,time.Now(), time.Now().Add(time.Hour)}
-// 	rdata,err := json.Marshal(udata)
-// 	aUserData := AuthUserData{}
-// 	if err != nil{
-// 		//logger.Error.Fatal(err)
-// 		return aUserData
-// 	}
-	
-	
-
-// 	serr := redisClient.Set(ctx, utoken, rdata, time.Until(time.Now().Add(time.Hour))).Err();
-// 	fmt.Println(time.Until(time.Now().Add(time.Hour)))
-// 	if serr != nil{
-// 		//logger.Error.Fatal(serr)
-// 		fmt.Println(serr)
-// 		return aUserData
-// 	}
-// 	val, gerr := redisClient.Get(ctx, utoken).Result();
-// 	if gerr != nil {
-// 		//logger.Error.Fatal(gerr)
-// 		return aUserData
-// 	}
-// 	_ = val
-// 	aUserData.FirstName = user.FirstName
-// 	aUserData.LastName = user.LastName
-// 	aUserData.Email = user.Email
-// 	aUserData.Picture = user.Picture
-// 	aUserData.Token = utoken
-// 	aUserData.ExpirationTime = udata.ExpirationTime
-// 	return aUserData
-// }
-
-// func GetAuthData(token string) (*RedisData,error){
-// 	redisClient := GetAuthClient()
-// 	val, err := redisClient.Get(ctx, token).Result();
-// 	if(err != nil){
-// 		//logger.Error.Println(err)
-// 		return nil,errors.New("user does not exist")
-// 	}
-// 	var rd *RedisData
-// 	fmt.Println(string(val))
-// 	gerr := json.Unmarshal([]byte(val), &rd)
-// 	_ = val
-// 	fmt.Println(gerr)
-// 	if(gerr != nil){
-// 		//logger.Error.Println(err)
-// 		return nil,errors.New("user does not exist")
-// 	}
-// 	return rd,nil
-// }
-
-// func GenerateUserToken() string{
-//     buff:= make([]byte, int(math.Ceil(float64(128)/2)))
-//     n,err := rand.Read(buff)
-// 	if err != nil{
-// 		//logger.Warn.Println(err)
-// 	}
-// 	_ = n
-//     str := hex.EncodeToString(buff)
-//     return str[:128]
-// }
-
-// func GetUserInfo(request *http.Request) (*RedisData,error) {
-// 	token := string(request.Header.Get("Authorization"))
-// 	//check "bearer "
-// 	if(len(token) < 130){
-// 		return nil,errors.New("bad auth token");
-// 	}
-// 	if(token[0:7] != "bearer "){
-// 		return nil,errors.New("bad auth token");
-// 	}
-// 	token = token[7:]
-// 	return GetAuthData(token);
-// }
-
-// func GetUserInfo1(token string) *RedisData{
-// 	// token := string(request.Header.Get("Authorization"))
-// 	//check "bearer "
-// 	if(token[0:7] != "bearer "){
-// 		return nil
-// 	}
-// 	token = token[7:]
-// 	return GetAuthData(token)
-// }
+func getCalendarClient() redis.Client{
+	return getRedisClient(2);
+}
 
 func generateToken()string{
 	buff := make([]byte, int(math.Ceil(float64(128)/2)))
@@ -354,3 +232,32 @@ func UserLogin(user_id string, user_identifier string, user_name string, user_su
 
 	return redisData,nil;
 }
+
+func CreateBooking(booking_id string, calendar_id string,end_time time.Time) bool{
+	client := getCalendarClient()
+	data := CalendarBookings{
+		Calendar_id: calendar_id,
+		Time_end: end_time,
+	}
+
+	rdata,err := json.Marshal(data)
+	if err != nil{
+		logger.Error.Fatal(err)
+		return false
+	}
+	end_time.Add(time.Hour * 24)
+	err = client.Set(ctx, booking_id, rdata, time.Until(end_time)).Err();
+	if err != nil{
+		logger.Error.Fatal(err)
+		return false
+	}
+	val, err := client.Get(ctx, booking_id).Result();
+	if err != nil {
+		logger.Error.Fatal(err)
+		return false;
+	}
+	_ = val;
+	return true
+}
+
+

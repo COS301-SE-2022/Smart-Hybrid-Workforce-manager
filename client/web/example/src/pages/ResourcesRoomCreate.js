@@ -1,9 +1,10 @@
 import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../App.js'
 
 const CreateRoom = () =>
 {
@@ -12,6 +13,7 @@ const CreateRoom = () =>
   const [roomDimensions, SetRoomDimensions] = useState("");
 
   const navigate = useNavigate();
+  const {userData} = useContext(UserContext);
 
   let handleSubmit = async (e) =>
   {
@@ -21,13 +23,18 @@ const CreateRoom = () =>
       let res = await fetch("http://localhost:8080/api/resource/room/create", 
       {
         method: "POST",
+        mode: "cors",
         body: JSON.stringify({
           id: null,
           building_id: window.sessionStorage.getItem("BuildingID"),
           name: roomName,
           location: roomLocation,
           dimension: roomDimensions
-        })
+        }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+        }
       });
 
       if(res.status === 200)

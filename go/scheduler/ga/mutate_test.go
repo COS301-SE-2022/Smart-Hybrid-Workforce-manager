@@ -1,6 +1,7 @@
 package ga
 
 import (
+	"math/rand"
 	"reflect"
 	"testing"
 
@@ -104,6 +105,134 @@ func Test_dailyPullMutateValid(t *testing.T) {
 			}
 			assert.True(t, reflect.DeepEqual(parentGene, tt.originalGene), "Parent gene has been changed")
 			assert.True(t, reflect.DeepEqual(tt.args.domain.Terminals, tt.originalTerminals), "Parent individual terminals have been changed")
+		})
+	}
+}
+
+func Test_validWeeklySwap(t *testing.T) {
+	rand.Seed(1)
+	type args struct {
+		indiv          *Individual
+		mutationDegree int
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "Test 1",
+			args: args{
+				indiv: &Individual{
+					Fitness: 0.0,
+					Gene: [][]string{
+						{"Apple", "", "Orange", "", "Pear", "Banana"},
+						{"Apple", "Orange", "Pear", "Banana"},
+						{"Apple", "", "Orange", "", "", "Banana"},
+						{},
+						{"Cucumber", "Brusselsprout"},
+						{"", "", ""},
+						{"", "Orange", "", "", "", "", "Banana"},
+					},
+				},
+				mutationDegree: 0,
+			},
+		},
+		{
+			name: "Test 2",
+			args: args{
+				indiv: &Individual{
+					Fitness: 0.0,
+					Gene: [][]string{
+						{"Apple", "", "Orange", "", "Pear", "Banana"},
+						{"Apple", "Orange", "Pear", "Banana"},
+						{"Apple", "", "Orange", "", "", "Banana"},
+						{},
+						{"Cucumber", "Brusselsprout"},
+						{"", "", ""},
+						{"", "Orange", "", "", "", "", "Banana"},
+					},
+				},
+				mutationDegree: 1,
+			},
+		},
+		{
+			name: "Test 3",
+			args: args{
+				indiv: &Individual{
+					Fitness: 0.0,
+					Gene: [][]string{
+						{"Apple", "", "Orange", "", "Pear", "Banana"},
+						{"Apple", "Orange", "Pear", "Banana"},
+						{"Apple", "", "Orange", "", "", "Banana"},
+						{},
+						{"Cucumber", "Brusselsprout"},
+						{"", "", ""},
+						{"", "Orange", "", "", "", "", "Banana"},
+					},
+				},
+				mutationDegree: 400,
+			},
+		},
+		{
+			name: "Test 4",
+			args: args{
+				indiv: &Individual{
+					Fitness: 0.0,
+					Gene: [][]string{
+						{"", "", "", "", "", ""},
+						{"", "", "", ""},
+						{"", "", "", "", "", ""},
+						{},
+						{"", ""},
+						{"", "", ""},
+						{"", "", "", "", "", "", ""},
+					},
+				},
+				mutationDegree: 100,
+			},
+		},
+		{
+			name: "Test 4",
+			args: args{
+				indiv: &Individual{
+					Fitness: 0.0,
+					Gene: [][]string{
+						{},
+						{},
+						{},
+						{},
+						{},
+						{},
+						{},
+					},
+				},
+				mutationDegree: 100,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			expectedIdCounts := make(map[string]int)
+			for _, day := range tt.args.indiv.Gene {
+				for _, id := range day {
+					expectedIdCounts[id]++
+				}
+			}
+			// Ensure that individuals are still valid
+			got := validWeeklySwap(tt.args.indiv.Clone(), tt.args.mutationDegree)
+			idCounts := make(map[string]int)
+			for _, day := range got.Gene {
+				dailyCounts := make(map[string]int)
+				for _, id := range day {
+					idCounts[id]++
+					if id != "" {
+						dailyCounts[id]++
+						assert.Equalf(t, 1, dailyCounts[id], "Expected that id's appear at most once per day, %v appeared %v times", id, dailyCounts[id])
+					}
+				}
+			}
+			assert.Equalf(t, expectedIdCounts, idCounts, "Expected IDs and blanks to appear same amount of time in mutated individuals as original, expected counts %v, recieved %v", expectedIdCounts, idCounts)
 		})
 	}
 }

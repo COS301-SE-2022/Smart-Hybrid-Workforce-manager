@@ -1,9 +1,10 @@
 import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
 import Button from 'react-bootstrap/Button'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import RoleListItem from '../components/Role/RoleListItem';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../App.js';
 
 function Roles()
 {
@@ -11,14 +12,21 @@ function Roles()
 
   const navigate = useNavigate();
 
+  const {userData} = useContext(UserContext);
+
   //POST request
   const FetchRoles = () =>
   {
     fetch("http://localhost:8080/api/role/information", 
         {
           method: "POST",
+          mode: "cors",
           body: JSON.stringify({
-          })
+          }),
+          headers:{
+              'Content-Type': 'application/json',
+              'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+          }
         }).then((res) => res.json()).then(data => 
           {
             SetRoles(data);

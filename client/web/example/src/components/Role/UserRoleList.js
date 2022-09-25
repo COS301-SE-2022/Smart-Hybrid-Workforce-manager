@@ -1,11 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useContext } from 'react';
 import { MdDelete } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
+import { UserContext } from '../../App';
 
 const UserRoleList = ({id}) =>
 {  
     const [name, setName] = useState("error");
     const navigate=useNavigate();
+    const {userData} = useContext(UserContext);
   let DeleteUser = async (e) =>
     {
         e.preventDefault();
@@ -16,10 +18,16 @@ const UserRoleList = ({id}) =>
                 let res = await fetch("http://localhost:8080/api/role/user/remove", 
                 {
                     method: "POST",
+                    mode: "cors",
                     body: JSON.stringify({
                         user_id: id,
                         role_id: window.sessionStorage.getItem("RoleID")
-                    })
+                    }),
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                    }
+        
                 });
 
                 if(res.status === 200)
@@ -41,9 +49,14 @@ const UserRoleList = ({id}) =>
     fetch("http://localhost:8080/api/user/information", 
         {
           method: "POST",
+          mode: "cors",
             body: JSON.stringify({
               id: id
-          })
+          }),
+          headers:{
+              'Content-Type': 'application/json',
+              'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+          }
         }).then((res) => res.json()).then(data => 
         {
           setName(data[0].first_name + " " + data[0].last_name);

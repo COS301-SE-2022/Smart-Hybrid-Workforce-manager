@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Navbar from '../components/Navbar/Navbar.js'
 import Footer from '../components/Footer'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
 import { useNavigate } from 'react-router-dom'
+import { UserContext } from '../App.js'
 
 function CreateUser()
 {
@@ -12,6 +13,7 @@ function CreateUser()
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const navigate=useNavigate();
+  const {userData} = useContext(UserContext);
 
   let handleSubmit = async (e) =>
   {
@@ -21,12 +23,17 @@ function CreateUser()
       let res = await fetch("http://localhost:8080/api/user/register", 
       {
         method: "POST",
+        mode: "cors",
         body: JSON.stringify({
           first_name: firstName,
           last_name: lastName,
           email: email,
           password: ""
-        })
+        }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+        }
       });
 
       if(res.status === 200)

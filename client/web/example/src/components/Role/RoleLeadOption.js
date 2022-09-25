@@ -1,18 +1,24 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useContext } from 'react';
+import { UserContext } from '../../App';
 
 const RoleLeadOption = ({id, roleLeadId}) =>
 {  
     const [name, setName] = useState("error");
-    
+    const {userData} = useContext(UserContext);
   //POST request
   const getName = useCallback(() =>
   {
     fetch("http://localhost:8080/api/user/information", 
         {
           method: "POST",
-            body: JSON.stringify({
-              id: id
-          })
+          mode: "cors",
+          body: JSON.stringify({
+            id: id
+          }),
+          headers:{
+              'Content-Type': 'application/json',
+              'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+          }
         }).then((res) => res.json()).then(data => 
         {
           setName(data[0].first_name + " " + data[0].last_name);
