@@ -5,10 +5,14 @@ import (
 	"context"
 	"encoding/json"
 	"lib/clock"
+	"lib/logger"
 	"lib/restclient"
+	"lib/testutils"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/procyon-projects/chrono"
 )
 
 var (
@@ -109,6 +113,100 @@ func Call(data *SchedulerData, endpoint string) error { // TODO: @JonathanEnslin
 		return err
 	}
 	return nil
+}
+
+func CallWeeklyScheduler() error {
+	weeklyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/weekly"
+
+	now := time.Now()
+
+	nextMonday := TimeOfNextWeekDay(now, "Monday")            // Start of next week
+	nextSaturday := TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
+	schedulerData, err := GetSchedulerData(nextMonday, nextSaturday)
+	buildingGroups := GroupByBuilding(schedulerData)
+	for _, data := range buildingGroups {
+		schedulerData = data
+		logger.Info.Println(testutils.Scolourf(testutils.GREEN, "Running weekly scheduler from %v -> %v for building: %v", nextMonday, nextSaturday, *schedulerData.Buildings[0].Id))
+		if err != nil {
+			logger.Error.Println(err)
+			return err
+		}
+		err = Call(schedulerData, weeklyEndpointURL)
+		if err != nil {
+			logger.Error.Println(err)
+			return err
+		}
+	}
+	return nil
+}
+
+func CallDailyScheduler() error {
+	dailyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/daily"
+
+	daysInAdvance := 1
+
+	now := time.Now()
+	yyyy, mm, dd := now.Date()
+	startDate := time.Date(yyyy, mm, dd+daysInAdvance, 0, 0, 0, 0, now.Location())
+	endDate := startDate.AddDate(0, 0, 1) // Add one day
+
+	// Get data between start and end of date
+	schedulerData, err := GetSchedulerData(startDate, endDate)
+
+	buildingGroups := GroupByBuilding(schedulerData)
+	for _, data := range buildingGroups {
+		schedulerData = data
+		logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running daily scheduler fro %v -> %v for building: %v", startDate, endDate, *schedulerData.Buildings[0].Id))
+		if err != nil {
+			logger.Error.Println(err)
+			return err
+		}
+		// Call scheduler
+		err = Call(schedulerData, dailyEndpointURL)
+		if err != nil {
+			logger.Error.Println(err)
+			return err
+		}
+	}
+	return nil
+}
+
+func StartWeeklyCalling() (chrono.ScheduledTask, error) {
+	callRate := 4 * time.Hour
+	startDelay := 1 * time.Minute
+	taskScheduler := chrono.NewDefaultTaskScheduler()
+
+	task, err := taskScheduler.ScheduleAtFixedRate(func(ctx context.Context) {
+		_err := CallWeeklyScheduler()
+		if _err != nil {
+			logger.Error.Println(_err)
+		}
+	}, callRate, chrono.WithTime(time.Now().Add(startDelay)))
+
+	if err != nil {
+		logger.Error.Println("Could not start weekly scheduler calling task")
+		return task, err
+	}
+	return task, nil
+}
+
+func StartDailyCalling() (chrono.ScheduledTask, error) {
+	callRate := 12 * time.Hour
+	startDelay := 2 * time.Minute
+	taskScheduler := chrono.NewDefaultTaskScheduler()
+
+	task, err := taskScheduler.ScheduleAtFixedRate(func(ctx context.Context) {
+		_err := CallDailyScheduler()
+		if _err != nil {
+			logger.Error.Println(_err)
+		}
+	}, callRate, chrono.WithTime(time.Now().Add(startDelay)))
+
+	if err != nil {
+		logger.Error.Println("Could not start weekly scheduler calling task")
+		return task, err
+	}
+	return task, nil
 }
 
 // callOnDay will call checkAndCall() on each recurring certain day of the week,
