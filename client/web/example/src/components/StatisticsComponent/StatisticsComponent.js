@@ -130,7 +130,51 @@ const StatisticsComponent = () => {
                         </Card>
                     </div>
 
-                    
+                    <div class="col-auto mr-2 mt-4">
+                        <Card style={{textAlign: 'center'}} >
+                            <Card.Body>
+                                <Card.Title style={{fontSize: '1.5rem', fontWeight: 'bold'}}>
+                                    Average Resource Utilisation
+                                </Card.Title>
+                                <Chart 
+                                    series={[averageUtil]}
+                                    options= {{
+                                        chart: {
+                                            type: 'radialBar',
+                                            offsetY: -20,
+                                        },
+                                        labels: ['Occupied', 'Empty'],
+                                        dataLabels: {
+                                            enabled: false
+                                        },
+                                        plotOptions: {
+                                            radialBar: {
+                                                startAngle: -135,
+                                                endAngle: 135,
+                                                dataLabels: {
+                                                    name: {
+                                                        show: false,
+                                                    },
+                                                    value: {
+                                                        fontSize: '1.2rem',
+                                                        offsetY: -5,
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        colors: [getColour(averageUtil)],
+                                        grid: {
+                                            padding: {
+                                                top: -10,
+                                                bottom: -100,
+                                            }
+                                        },
+                                    }}     
+                                    type='radialBar'      
+                                />
+                            </Card.Body>
+                        </Card>
+                    </div>
                 </div>
             </div>
         </div>
