@@ -1068,36 +1068,6 @@
     grid-template-areas: "building" "room";
 }
 
-.canvas-container2
-{
-    position: absolute;
-    /*background-color: #EDF3F8;*/
-    background: #ced8fb;
-
-    width: 100vw;
-    height: 100vh;
-    left: 0;
-}
-
-.properties-pane
-{
-    position: fixed;
-
-    display: grid;
-    grid-template-columns: 1.5vw 13.5vw;
-    grid-template-rows: 40vh 40vh;
-    grid-template-areas: 'collapse-label data-building' 'collapse-label data-room';
-
-    background-color: #444444;
-    width: 15vw;
-    height: 100vh;
-    top: 0vh;
-    left: 85vw;
-
-    z-index: 1;
-
-    transition: all 0.5s ease;    
-}
 
 .actions-pane
 {

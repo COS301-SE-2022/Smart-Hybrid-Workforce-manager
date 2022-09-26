@@ -22,7 +22,6 @@ const Creator = () =>
     const deskCount = useRef(0);
     const meetingRoomCount = useRef(0);
     const deletedResources = useRef([]);
-    const propertiesPaneRef = useRef(true);
     const helpRef = useRef(null);
     const helpToolRef = useRef(null);
 
@@ -30,8 +29,8 @@ const Creator = () =>
     const buildingMenuRef = useRef(null);
     const roomMenuRef = useRef(null);
 
-    //Pane states
-    const [propertiesPaneLeft, SetPropertiesPaneLeft] = useState(0.85*window.innerWidth);
+    //Panel states
+    const [propertiesPanel, setPropertiesPanel] = useState(0.985*window.innerWidth);
 
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
@@ -119,21 +118,6 @@ const Creator = () =>
             {
                 roomMenuRef.current.style.display = 'none';
             }
-        }
-    }
-
-    //Collapse Properties pane
-    const PropertiesCollapse = () =>
-    {
-        if(propertiesPaneRef.current)
-        {
-            SetPropertiesPaneLeft(0.985*window.innerWidth);
-            propertiesPaneRef.current = false;
-        }
-        else
-        {
-            SetPropertiesPaneLeft(0.85*window.innerWidth);
-            propertiesPaneRef.current = true;
         }
     }
 
@@ -405,6 +389,15 @@ const Creator = () =>
     const HandleResize = () =>
     {
         SetStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
+
+        if(selectedId)
+        {
+            setPropertiesPanel(0.65*window.innerWidth);
+        }
+        else
+        {
+            setPropertiesPanel(0.85*window.innerWidth);
+        }
     }
 
     window.addEventListener('resize', HandleResize);
@@ -621,6 +614,18 @@ const Creator = () =>
         meetingRoomCount.current = meetingRoomProps.length;
     }, [meetingRoomProps.length]);
 
+    //Check if properties are open or closed
+    useEffect(() =>
+    {
+        if(selectedId)
+        {
+            setPropertiesPanel(0.65*window.innerWidth);
+        }
+        else
+        {
+            setPropertiesPanel(0.85*window.innerWidth);
+        }
+    },[selectedId])
 
     return (
             <Fragment>
@@ -644,39 +649,9 @@ const Creator = () =>
                     <div className={styles.mapHeading}>Office creator</div>
                 </div>
 
-                <div className='properties-pane' style={{left: propertiesPaneLeft}}>
-                    <div className='properties-pane-label-container' onClick={PropertiesCollapse} >
+                <div className={styles.propertiesPanel} style={{left: propertiesPanel}}>
+                    <div className={styles.propertiesPanelLabel} >
                         <p>Properties</p>
-                    </div>
-
-                    <div className='building-pane'>
-                        <p className='building-label'>Buildings</p>
-                        <MdAdd className='add-building-img' size={35} onClick={AddBuilding} />
-                        <MdEdit className='edit-building-img' size={25} onClick={EditBuilding} />
-
-                            <select className='list-box-building' name='building' size='10' defaultValue={''} onChange={UpdateRooms.bind(this)}>
-                                <option value='' disabled id='BuildingDefault'>--Select the building--</option>
-                                {buildings.length > 0 && (
-                                    buildings.map(building => (
-                                        <option key={building.id} value={building.id}>{building.name + ' (' + building.location + ')'}</option>
-                                    ))
-                                )}
-                            </select>
-                    </div>
-
-                    <div className='room-pane'>
-                        <p className='room-label'>Rooms</p>
-                        <MdAdd className='add-room-img' size={35} onClick={AddRoom} />
-                        <MdEdit className='edit-room-img' size={25} onClick={EditRoom} />
-
-                            <select className='list-box-room' name='room' size='10' defaultValue={''} onChange={UpdateResources.bind(this)}>
-                                <option value='' disabled id='RoomDefault'>--Select the room--</option>
-                                {rooms.length > 0 && (
-                                    rooms.map(room => (
-                                        <option key={room.id} value={room.id}>{room.name + ' (' + room.location + ')'}</option>
-                                    ))
-                                )}
-                            </select>
                     </div>
                 </div>
 
@@ -718,6 +693,8 @@ const Creator = () =>
                                         }}
 
                                         draggable = {true}
+
+                                        transform = {true}
                                     />
                                 ))
                             )}
