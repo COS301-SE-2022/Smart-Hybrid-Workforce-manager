@@ -143,7 +143,7 @@ func CallWeeklyScheduler() error {
 func CallDailyScheduler() error {
 	dailyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/daily"
 
-	daysInAdvance := 1
+	daysInAdvance := 2
 
 	now := time.Now()
 	yyyy, mm, dd := now.Date()
@@ -191,8 +191,13 @@ func StartWeeklyCalling() (chrono.ScheduledTask, error) {
 }
 
 func StartDailyCalling() (chrono.ScheduledTask, error) {
-	callRate := 12 * time.Hour
-	startDelay := 2 * time.Minute
+	callRate := 24 * time.Hour // Once every 24 hours
+	// startDelay := 2 * time.Minute
+	// Start running at end of day
+	now := time.Now()
+	endOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+	endOfDay = endOfDay.Add(24 * time.Hour).Add(1 * time.Second) // Start 1 second after midnight
+	// startDelay := time.Until(endOfDay)
 	taskScheduler := chrono.NewDefaultTaskScheduler()
 
 	task, err := taskScheduler.ScheduleAtFixedRate(func(ctx context.Context) {
@@ -200,7 +205,7 @@ func StartDailyCalling() (chrono.ScheduledTask, error) {
 		if _err != nil {
 			logger.Error.Println(_err)
 		}
-	}, callRate, chrono.WithTime(time.Now().Add(startDelay)))
+	}, callRate, chrono.WithTime(endOfDay))
 
 	if err != nil {
 		logger.Error.Println("Could not start weekly scheduler calling task")

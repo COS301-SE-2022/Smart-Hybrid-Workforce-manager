@@ -15,6 +15,8 @@ type Domain struct {
 	SchedulerData *data.SchedulerData
 	Map           map[int](string)
 	InverseMap    map[string]([]int) // Array due to the assumption Map may have a many-to-one relationship
+	// If true, existing bookings may be rescheduled
+	Reschedule bool
 }
 
 func (domain *Domain) GetRandomTerminal() string {

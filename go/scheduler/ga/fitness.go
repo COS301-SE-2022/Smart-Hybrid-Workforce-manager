@@ -293,11 +293,11 @@ func (individual *Individual) teamProximityScore(domain *Domain) float64 {
 	for i, teamRoomProx := range teamRoomProximities {
 		// Use reciprocal, since if the teams have a larger avg distance from the centroid
 		// the fitness should be smaller
-		scores[i] = math.Max(1.0, float64(getTeamPriority(domain, teamRoomProx.teamId))+1.0) / (individualTeamProximityScore(teamRoomProx) + 1.0)
+		scores[i] = math.Pow(math.Max(1.0, float64(getTeamPriority(domain, teamRoomProx.teamId))+1.0), 1.5) / (individualTeamProximityScore(teamRoomProx) + 1.0)
 		// Apply penalty for being in the same room
 		numRooms := len(domain.SchedulerData.Rooms)
 		numRoomsSpreadIn := len(teamRoomProx.roomGroups)
-		scores[i] *= (float64(numRooms - numRoomsSpreadIn + 1)) / float64(numRooms)
+		scores[i] *= math.Pow(float64(numRooms-numRoomsSpreadIn+1), 1.8) / float64(numRooms)
 	}
 	// Sum all the reciprocals
 	return cu.Sum(scores)
