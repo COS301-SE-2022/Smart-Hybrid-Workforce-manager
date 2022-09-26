@@ -156,7 +156,7 @@ func CallDailyScheduler() error {
 	buildingGroups := GroupByBuilding(schedulerData)
 	for _, data := range buildingGroups {
 		schedulerData = data
-		logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running daily scheduler fro %v -> %v for building: %v", startDate, endDate, *schedulerData.Buildings[0].Id))
+		logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running daily scheduler from %v -> %v for building: %v", startDate, endDate, *schedulerData.Buildings[0].Id))
 		if err != nil {
 			logger.Error.Println(err)
 			return err
