@@ -1,15 +1,17 @@
-import { Stage, Layer } from 'react-konva'
-import { useRef, useState, useEffect, useCallback, useContext } from 'react'
-import Desk from '../components/Map/Desk'
-import MeetingRoom from '../components/Map/MeetingRoom'
-import { FaSave, FaQuestion } from 'react-icons/fa'
-import { MdEdit, MdAdd } from 'react-icons/md'
-import desk_white from '../img/desk_white.svg';
-import meetingroom_white from '../img/meetingroom_white.svg';
-import { UserContext } from '../App'
-import { useNavigate } from 'react-router-dom'
+import { Stage, Layer } from 'react-konva';
+import { useRef, useState, useEffect, useCallback, useContext, Fragment } from 'react';
+import Desk from './Desk';
+import MeetingRoom from './MeetingRoom';
+import { FaSave, FaQuestion } from 'react-icons/fa';
+import { MdEdit, MdAdd } from 'react-icons/md';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import desk_white from '../../img/desk_white.svg';
+import meetingroom_white from '../../img/meetingroom_white.svg';
+import { UserContext } from '../../App';
+import { useNavigate } from 'react-router-dom';
+import styles from './map.module.css';
 
-const Layout = () =>
+const Creator = () =>
 {
     //Canvas references
     const canvasRef = useRef(null);
@@ -23,6 +25,10 @@ const Layout = () =>
     const propertiesPaneRef = useRef(true);
     const helpRef = useRef(null);
     const helpToolRef = useRef(null);
+
+    //Building and rooms
+    const buildingMenuRef = useRef(null);
+    const roomMenuRef = useRef(null);
 
     //Pane states
     const [propertiesPaneLeft, SetPropertiesPaneLeft] = useState(0.85*window.innerWidth);
@@ -44,23 +50,6 @@ const Layout = () =>
     const navigate = useNavigate();
 
     //POST requests
-    const FetchBuildings = () =>
-    {
-        fetch("http://localhost:8080/api/resource/building/information", 
-            {
-            method: "POST",
-            mode: 'cors',
-            body: JSON.stringify({
-            }),
-            headers:{
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
-            }
-            }).then((res) => res.json()).then(data => 
-            {
-                SetBuildings(data);
-            });
-    }
 
     /*useEffect(() =>
     {
@@ -120,6 +109,16 @@ const Layout = () =>
         if(clickedEmpty)
         {
             SelectShape(null);
+
+            if(buildingMenuRef.current && buildingMenuRef.current.style.display === 'block')
+            {
+                buildingMenuRef.current.style.display = 'none';
+            }
+
+            if(roomMenuRef.current && roomMenuRef.current.style.display === 'block')
+            {
+                roomMenuRef.current.style.display = 'none';
+            }
         }
     }
 
@@ -135,6 +134,14 @@ const Layout = () =>
         {
             SetPropertiesPaneLeft(0.85*window.innerWidth);
             propertiesPaneRef.current = true;
+        }
+    }
+
+    const ShowBuildingMenu = () =>
+    {
+        if(buildingMenuRef.current)
+        {
+            buildingMenuRef.current.style.display = 'block';
         }
     }
 
@@ -156,6 +163,14 @@ const Layout = () =>
         else
         {
             window.alert("Please select a building to edit");
+        }
+    }
+
+    const ShowRoomMenu = () =>
+    {
+        if(roomMenuRef.current)
+        {
+            roomMenuRef.current.style.display = 'block';
         }
     }
 
@@ -539,8 +554,22 @@ const Layout = () =>
     useEffect(() =>
     {
         SetStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
-        FetchBuildings();
-    },[]);
+
+        fetch("http://localhost:8080/api/resource/building/information", 
+        {
+            method: "POST",
+            mode: 'cors',
+            body: JSON.stringify({
+            }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+        }
+        }).then((res) => res.json()).then(data => 
+        {
+            SetBuildings(data);
+        });
+    },[userData.token]);
 
     //Effect to monitor if delete key is pressed
     
@@ -594,8 +623,7 @@ const Layout = () =>
 
 
     return (
-        <div className='page-container'>
-            <div className='canvas-content'>
+            <Fragment>
                 <FaQuestion className='help' size={20} onClick={ViewHelp} />
                 <div ref={helpRef} className='help-container'>
                     <span ref={helpToolRef} className='help-tooltip' onClick={CloseHelp}>
@@ -612,6 +640,10 @@ const Layout = () =>
                     </span>
                 </div>
 
+                <div className={styles.mapHeadingContainer}>
+                    <div className={styles.mapHeading}>Office creator</div>
+                </div>
+
                 <div className='properties-pane' style={{left: propertiesPaneLeft}}>
                     <div className='properties-pane-label-container' onClick={PropertiesCollapse} >
                         <p>Properties</p>
@@ -622,8 +654,8 @@ const Layout = () =>
                         <MdAdd className='add-building-img' size={35} onClick={AddBuilding} />
                         <MdEdit className='edit-building-img' size={25} onClick={EditBuilding} />
 
-                            <select className='list-box-building' name='building' size='10' onChange={UpdateRooms.bind(this)}>
-                                <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
+                            <select className='list-box-building' name='building' size='10' defaultValue={''} onChange={UpdateRooms.bind(this)}>
+                                <option value='' disabled id='BuildingDefault'>--Select the building--</option>
                                 {buildings.length > 0 && (
                                     buildings.map(building => (
                                         <option key={building.id} value={building.id}>{building.name + ' (' + building.location + ')'}</option>
@@ -637,8 +669,8 @@ const Layout = () =>
                         <MdAdd className='add-room-img' size={35} onClick={AddRoom} />
                         <MdEdit className='edit-room-img' size={25} onClick={EditRoom} />
 
-                            <select className='list-box-room' name='room' size="10" onChange={UpdateResources.bind(this)}>
-                                <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
+                            <select className='list-box-room' name='room' size='10' defaultValue={''} onChange={UpdateResources.bind(this)}>
+                                <option value='' disabled id='RoomDefault'>--Select the room--</option>
                                 {rooms.length > 0 && (
                                     rooms.map(room => (
                                         <option key={room.id} value={room.id}>{room.name + ' (' + room.location + ')'}</option>
@@ -660,11 +692,9 @@ const Layout = () =>
                     <div className='add-meetingroom-container' onClick={AddMeetingRoom}>
                         <img src={meetingroom_white} alt='Add Meeting Room' className='add-meetingroom-img'></img>
                     </div>
-                                       
-
                 </div>                                       
 
-                <div ref={canvasRef} className='canvas-container2'>
+                <div ref={canvasRef} className={styles.canvasContainer}>
                     <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onTouchStart={CheckDeselect} draggable onWheel={ZoomInOut} ref={stageRef}>
                         <Layer>
                             {deskProps.length > 0 && (
@@ -719,9 +749,47 @@ const Layout = () =>
                         </Layer>
                     </Stage>
                 </div>
-            </div>  
-        </div>
+
+                <div className={styles.buildingSelectorContainer}>
+                    <select className={styles.resourceSelector} name='building' defaultValue={''} onChange={UpdateRooms.bind(this)}>
+                        <option value='' disabled id='BuildingDefault'>--Select the building--</option>
+                            {buildings.map(building => (
+                                <option key={building.id} value={building.id}>{building.name + ' (' + building.location + ')'}</option>
+                            ))}
+                    </select>
+
+                    <div className={styles.threeDotsContainer}>
+                        <BsThreeDotsVertical className={styles.threeDots} onClick={() => ShowBuildingMenu()} />
+                    </div>
+
+                    <div ref={buildingMenuRef} className={styles.menu}>
+                        <div className={styles.editResource} onMouseDown={EditBuilding.bind(this, currBuilding)}>Edit building</div>
+                        <div className={styles.deleteResource}>Remove building</div>
+                    </div>
+                    
+                </div>
+
+                <div className={styles.roomSelectorContainer}>
+                    <select className={styles.resourceSelector} name='room' defaultValue={''} onChange={UpdateResources.bind(this)}>
+                        <option value='' disabled id='RoomDefault'>--Select the room--</option>
+                            {rooms.length > 0 && (
+                                rooms.map(room => (
+                                    <option key={room.id} value={room.id}>{room.name + ' (' + room.location + ')'}</option>
+                                ))
+                            )}
+                    </select>
+
+                    <div className={styles.threeDotsContainer}>
+                        <BsThreeDotsVertical className={styles.threeDots} onClick={() => ShowRoomMenu()} />
+                    </div>
+
+                    <div ref={roomMenuRef} className={styles.menu}>
+                        <div className={styles.editResource} onMouseDown={EditRoom.bind(this, currRoom)}>Edit room</div>
+                        <div className={styles.deleteResource}>Remove room</div>
+                    </div>
+                </div>
+            </Fragment>
     )
 }
 
-export default Layout
+export default Creator

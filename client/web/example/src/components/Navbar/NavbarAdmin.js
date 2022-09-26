@@ -83,7 +83,7 @@ const NavbarAdmin = (props, ref) =>
 
     const NavigateResources = () =>
     {
-        navigate("/layout");
+        navigate("/office-creator");
     }
 
     useEffect(() =>
@@ -133,7 +133,7 @@ const NavbarAdmin = (props, ref) =>
             teamRef.current.style.color = "#09a2fb";
         }
 
-        if(currLocation === "/layout")
+        if(currLocation === "/office-creator")
         {
             dropdownRef.current.style.display = "none";
             dropdownAdminRef.current.style.display = "block";
