@@ -31,6 +31,9 @@ const Creator = () =>
 
     //Panel states
     const [propertiesPanel, setPropertiesPanel] = useState(0.985*window.innerWidth);
+    const [resourceName, setResourceName] = useState('');
+    const [resourceXCoord, setResourceXCoord] = useState('');
+    const [resourceYCoord, setResourceYCoord] = useState('');
 
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
@@ -472,7 +475,6 @@ const Creator = () =>
                     width: currDesk.width,
                     height: currDesk.height,
                     rotation: currDesk.rotation,
-                    role_id: null,
                     resource_type: 'DESK',
                     decorations: '{"computer": true}',
                 })
@@ -495,9 +497,8 @@ const Creator = () =>
                     width: currMeetingRoom.width,
                     height: currMeetingRoom.height,
                     rotation: currMeetingRoom.rotation,
-                    role_id: null,
                     resource_type: 'MEETINGROOM',
-                    decorations: '{}',
+                    decorations: `{"capacity": ${currMeetingRoom.capacity}}`,
                 })
             }
         }
@@ -511,7 +512,7 @@ const Creator = () =>
                 body: JSON.stringify(resources),
                 headers:{
                     'Content-Type': 'application/json',
-                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                    'Authorization': `bearer ${userData.token}`
                 }
             });
 
@@ -625,7 +626,52 @@ const Creator = () =>
         {
             setPropertiesPanel(0.85*window.innerWidth);
         }
-    },[selectedId])
+    },[selectedId, deskProps])
+
+    const ChangeName = (name) =>
+    {
+        for(var i = 0; i < deskProps.length; i++)
+        {
+            if(deskProps[i].key === selectedId)
+            {
+                const newProps = deskProps.slice();
+                newProps[i].name = name;
+                SetDeskProps(newProps);
+                setResourceName(name);
+                break;
+            }
+        }
+    }
+
+    const ChangeXCoord = (x) =>
+    {
+        for(var i = 0; i < deskProps.length; i++)
+        {
+            if(deskProps[i].key === selectedId)
+            {
+                const newProps = deskProps.slice();
+                newProps[i].x = parseInt(x);
+                SetDeskProps(newProps);
+                setResourceXCoord(x);
+                break;
+            }
+        }
+    }
+
+    const ChangeYCoord = (y) =>
+    {
+        for(var i = 0; i < deskProps.length; i++)
+        {
+            if(deskProps[i].key === selectedId)
+            {
+                const newProps = deskProps.slice();
+                newProps[i].y = parseInt(y);
+                SetDeskProps(newProps);
+                setResourceYCoord(y);
+                break;
+            }
+        }
+    }
 
     return (
             <Fragment>
@@ -650,9 +696,14 @@ const Creator = () =>
                 </div>
 
                 <div className={styles.propertiesPanel} style={{left: propertiesPanel}}>
-                    <div className={styles.propertiesPanelLabel} >
-                        <p>Properties</p>
-                    </div>
+                    <p>Name</p>
+                    <input type='text' placeholder='Name' value={resourceName} onChange={(e) => ChangeName(e.target.value)}></input>
+
+                    <p>X Coordinate</p>
+                    <input type='number' placeholder='X Coordinate' value={resourceXCoord} onChange={(e) => ChangeXCoord(e.target.value)}></input>
+
+                    <p>Y Coordinate</p>
+                    <input type='number' placeholder='Y Coordinate' value={resourceYCoord} onChange={(e) => ChangeYCoord(e.target.value)}></input>
                 </div>
 
                 <div className='actions-pane'>
@@ -672,32 +723,36 @@ const Creator = () =>
                 <div ref={canvasRef} className={styles.canvasContainer}>
                     <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onTouchStart={CheckDeselect} draggable onWheel={ZoomInOut} ref={stageRef}>
                         <Layer>
-                            {deskProps.length > 0 && (
-                                deskProps.map((desk, i) => (
-                                    <Desk
-                                        key = {desk.key}
-                                        shapeProps = {desk}
+                            {deskProps.map((desk, i) => (
+                                <Desk
+                                    key = {desk.key}
+                                    shapeProps = {desk}
 
-                                        isSelected = {desk.key === selectedId}
-                                        
-                                        onSelect = {() => 
-                                        {
-                                            SelectShape(desk.key);
-                                        }}
-                                        
-                                        onChange = {(newProps) => 
-                                        {
-                                            const newDeskProps = deskProps.slice();
-                                            newDeskProps[i] = newProps;
-                                            SetDeskProps(newDeskProps)
-                                        }}
+                                    isSelected = {desk.key === selectedId}
+                                    
+                                    onSelect = {() => 
+                                    {
+                                        SelectShape(desk.key);
+                                        setResourceName(deskProps[i].name);
+                                        setResourceXCoord(deskProps[i].x);
+                                        setResourceYCoord(deskProps[i].y);
+                                    }}
+                                    
+                                    onChange = {(newProps) => 
+                                    {
+                                        const newDeskProps = deskProps.slice();
+                                        newDeskProps[i] = newProps;
+                                        setResourceName(newDeskProps[i].name);
+                                        setResourceXCoord(newDeskProps[i].x);
+                                        setResourceYCoord(newDeskProps[i].y);
+                                        SetDeskProps(newDeskProps);
+                                    }}
 
-                                        draggable = {true}
+                                    draggable = {true}
 
-                                        transform = {true}
-                                    />
-                                ))
-                            )}
+                                    transform = {true}
+                                />
+                            ))}
 
                             {meetingRoomProps.length > 0 && (
                                 meetingRoomProps.map((meetingRoom, i) => (
