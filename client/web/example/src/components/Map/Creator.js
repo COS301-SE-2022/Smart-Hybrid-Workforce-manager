@@ -3,13 +3,14 @@ import { useRef, useState, useEffect, useCallback, useContext, Fragment } from '
 import Desk from './Desk';
 import MeetingRoom from './MeetingRoom';
 import { FaSave, FaQuestion } from 'react-icons/fa';
-import { MdEdit, MdAdd } from 'react-icons/md';
+import { MdEdit, MdAdd, MdClose } from 'react-icons/md';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import desk_white from '../../img/desk_white.svg';
 import meetingroom_white from '../../img/meetingroom_white.svg';
 import { UserContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
 import styles from './map.module.css';
+import { AddBuildingForm } from '../Resources/AddBuilding';
 
 const Creator = () =>
 {
@@ -26,7 +27,10 @@ const Creator = () =>
     const helpToolRef = useRef(null);
 
     //Building and rooms
+    const backgroundDimmerRef = useRef(null);
     const buildingMenuRef = useRef(null);
+    const addBuildingRef = useRef(null);
+    const [addBuilding, setAddBuilding] = useState(false);
     const roomMenuRef = useRef(null);
 
     //Panel states
@@ -34,6 +38,7 @@ const Creator = () =>
     const [resourceName, setResourceName] = useState('');
     const [resourceXCoord, setResourceXCoord] = useState('');
     const [resourceYCoord, setResourceYCoord] = useState('');
+    const [resourceRotation, setResourceRotation] = useState('');
 
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
@@ -133,10 +138,26 @@ const Creator = () =>
     }
 
     //Add building
-    const AddBuilding = () =>
+    const OpenAddBuilding = () =>
     {
-        navigate("/building");
+        if(backgroundDimmerRef.current && addBuildingRef.current && buildingMenuRef.current)
+        {
+            backgroundDimmerRef.current.style.display = 'block';
+            addBuildingRef.current.style.display = 'block'
+            buildingMenuRef.current.style.display = 'none';
+            setAddBuilding(!addBuilding);
+        }
     }
+
+    const CloseAddBuilding = () =>
+    {
+        if(backgroundDimmerRef.current && addBuildingRef)
+        {
+            backgroundDimmerRef.current.style.display = 'none';
+            addBuildingRef.current.style.display = 'none'
+        }
+    }
+    
 
     //Edit selected building
     let EditBuilding = async (e) =>
@@ -673,50 +694,61 @@ const Creator = () =>
         }
     }
 
+    const ChangeRotation = (rotation) =>
+    {
+        for(var i = 0; i < deskProps.length; i++)
+        {
+            if(deskProps[i].key === selectedId)
+            {
+                const newProps = deskProps.slice();
+                newProps[i].rotation = parseInt(rotation);
+                SetDeskProps(newProps);
+                setResourceRotation(rotation);
+                break;
+            }
+        }
+    }
+
     return (
             <Fragment>
-                <FaQuestion className='help' size={20} onClick={ViewHelp} />
-                <div ref={helpRef} className='help-container'>
-                    <span ref={helpToolRef} className='help-tooltip' onClick={CloseHelp}>
-                        -Welcome to the office layout creation page.<br></br>
-                        -Use the toolbar on the left to add desks and meeting rooms to the floor plan.<br></br>
-                        -The properties pane on the right is used to choose the building and room that you are working in.<br></br>
-                        -New buildings and rooms can be added using the plus icon by each label respectively. The pencil icon allows for editing the currently selected building/room.<br></br><br></br>
-                        -Desks/Meeting Rooms can be moved around by clicking and dragging them.<br></br>
-                        -Left click a desk/meeting room once to bring up the transformation gizmo which allows rotation and scaling.<br></br>
-                        -Click and drag on the canvas to pan the entire view.<br></br>
-                        -The scroll wheel can be used to zoom in and out.<br></br><br></br>
-                        Click this help box to close it. It can be reopened by clicking the question mark at the top.
-
-                    </span>
-                </div>
-
                 <div className={styles.mapHeadingContainer}>
                     <div className={styles.mapHeading}>Office creator</div>
                 </div>
 
-                <div className={styles.propertiesPanel} style={{left: propertiesPanel}}>
-                    <p>Name</p>
-                    <input type='text' placeholder='Name' value={resourceName} onChange={(e) => ChangeName(e.target.value)}></input>
+                <div ref={backgroundDimmerRef} className={styles.backgroundDimmer}></div>
 
-                    <p>X Coordinate</p>
-                    <input type='number' placeholder='X Coordinate' value={resourceXCoord} onChange={(e) => ChangeXCoord(e.target.value)}></input>
-
-                    <p>Y Coordinate</p>
-                    <input type='number' placeholder='Y Coordinate' value={resourceYCoord} onChange={(e) => ChangeYCoord(e.target.value)}></input>
+                <div ref={addBuildingRef} className={styles.formContainer}>
+                    <div className={styles.formClose} onClick={() => CloseAddBuilding()}><MdClose /></div>
+                    <AddBuildingForm makeDefault={addBuilding} />
                 </div>
 
-                <div className='actions-pane'>
-                    <div className='save-container' onClick={SaveLayout}>
-                        <FaSave className='save-icon' size={30}/>
+                <div className={styles.propertiesPanel} style={{left: propertiesPanel}}>
+                    <div className={styles.propertiesHeading}>Properties</div>
+
+                    <div className={styles.formLabel}>Name</div>
+                    <input className={styles.formInput} type='text' placeholder='Name' value={resourceName} onChange={(e) => ChangeName(e.target.value)}></input>
+
+                    <div className={styles.formLabel}>X Coordinate</div>
+                    <input className={styles.formInput} type='number' placeholder='X Coordinate' value={Math.trunc(resourceXCoord)} onChange={(e) => ChangeXCoord(e.target.value)}></input>
+
+                    <div className={styles.formLabel}>Y Coordinate</div>
+                    <input className={styles.formInput} type='number' placeholder='Y Coordinate' value={Math.trunc(resourceYCoord)} onChange={(e) => ChangeYCoord(e.target.value)}></input>
+
+                    <div className={styles.formLabel}>Rotation</div>
+                    <input className={styles.formInput} type='number' placeholder='Rotation' value={Math.trunc(resourceRotation)} onChange={(e) => ChangeRotation(e.target.value)}></input>
+                </div>
+
+                <div className={styles.actions}>
+                    <div className={styles.addResource} onClick={SaveLayout}>
+                        <FaSave />{' Save'}
                     </div>
 
-                    <div className='add-desk-container' onClick={AddDesk}>
-                        <img src={desk_white} alt='Add Desk' className='add-desk-img'></img>
+                    <div className={styles.editResource}  onClick={AddDesk}>
+                        <MdAdd />{' Add desk'}
                     </div>
 
-                    <div className='add-meetingroom-container' onClick={AddMeetingRoom}>
-                        <img src={meetingroom_white} alt='Add Meeting Room' className='add-meetingroom-img'></img>
+                    <div className={styles.deleteResource}  onClick={AddMeetingRoom}>
+                        <MdAdd />{' Add meeting room'}
                     </div>
                 </div>                                       
 
@@ -736,6 +768,7 @@ const Creator = () =>
                                         setResourceName(deskProps[i].name);
                                         setResourceXCoord(deskProps[i].x);
                                         setResourceYCoord(deskProps[i].y);
+                                        setResourceRotation(deskProps[i].rotation);
                                     }}
                                     
                                     onChange = {(newProps) => 
@@ -745,6 +778,7 @@ const Creator = () =>
                                         setResourceName(newDeskProps[i].name);
                                         setResourceXCoord(newDeskProps[i].x);
                                         setResourceYCoord(newDeskProps[i].y);
+                                        setResourceRotation(newDeskProps[i].rotation);
                                         SetDeskProps(newDeskProps);
                                     }}
 
@@ -795,7 +829,8 @@ const Creator = () =>
                     </div>
 
                     <div ref={buildingMenuRef} className={styles.menu}>
-                        <div className={styles.editResource} onMouseDown={EditBuilding.bind(this, currBuilding)}>Edit building</div>
+                        <div className={styles.addResource} onClick={() => OpenAddBuilding()}>Add building</div>
+                        <div className={styles.editResource} onClick={EditBuilding.bind(this, currBuilding)}>Edit building</div>
                         <div className={styles.deleteResource}>Remove building</div>
                     </div>
                     
@@ -816,6 +851,7 @@ const Creator = () =>
                     </div>
 
                     <div ref={roomMenuRef} className={styles.menu}>
+                        <div className={styles.addResource}>Add room</div>
                         <div className={styles.editResource} onMouseDown={EditRoom.bind(this, currRoom)}>Edit room</div>
                         <div className={styles.deleteResource}>Remove room</div>
                     </div>

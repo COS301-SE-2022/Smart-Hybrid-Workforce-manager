@@ -248,6 +248,25 @@
     z-index: 2;
 }
 
+.addResource
+{
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+
+    text-align: center;
+
+    border-top-left-radius: 1vh;
+    border-top-right-radius: 1vh;
+}
+
+.addResource:hover
+{
+    background-color: #e8e8e8;
+    cursor: pointer;
+}
+
 .editResource
 {
     padding-left: 1vw;
@@ -255,8 +274,7 @@
     padding-top: 0.5vh;
     padding-bottom: 0.5vh;
 
-    border-top-left-radius: 1vh;
-    border-top-right-radius: 1vh;
+    text-align: center;
 }
 
 .editResource:hover
@@ -271,6 +289,8 @@
     padding-right: 1vw;
     padding-top: 0.5vh;
     padding-bottom: 0.5vh;
+
+    text-align: center;
 
     border-bottom-left-radius: 1vh;
     border-bottom-right-radius: 1vh;
@@ -308,4 +328,125 @@
     transition: all 0.5s ease; 
 
     z-index: 2;
+
+    text-align: center;
+
+    font-size: 1vw;
+    letter-spacing: 0.1vw;
+}
+
+.propertiesHeading
+{
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+
+    font-size: 2vw;
+}
+
+.formLabel
+{
+    margin-top: 2vh;
+}
+
+.formInput
+{
+    margin-top: 1vh;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    width: 15vw;
+
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+    border-style: none;
+    border-radius: 1.5vh;
+    outline: none;
+
+    font-size: 0.8vw; 
+}
+
+.actions
+{
+    position: fixed;
+
+    width: 10vw;
+
+    margin-top: 10vh;
+    margin-left: 2vw;
+
+    border-radius: 1vh;
+
+    z-index: 1;
+
+    background-color: white;
+    box-shadow: 0.2vw 0.2vh 1vh #1b1b1b;
+
+    font-size: 1vw;
+}
+
+.resourceAction
+{
+    width: 10vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+
+    border-radius: 1vh;
+
+    text-align: center;
+}
+
+.resourceAction:hover
+{
+    cursor: pointer;
+    background-color: #e8e8e8;
+}
+
+.backgroundDimmer
+{
+    position: absolute;
+    display: none;
+
+    width: 85vw;
+    height: 80vh;
+
+    background-color: rgba(218, 223, 254, 0.7);
+
+    z-index: 3;
+}
+
+.formContainer
+{
+    position: absolute;
+    display: none;
+
+    width: 30vw;
+    height: 76vh;
+
+    margin-left: 27.5vw;
+    margin-top: 1vh;
+
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+
+    border-radius: 1vh;
+
+    z-index: 4;
+
+    animation: animate-pop-enter 0.5s cubic-bezier(0.26, 0.53, 0.74, 1.48);
+}
+
+.formClose
+{
+    position: absolute;
+
+    left: 28vw;
+    top: 0.5vh;
+
+    font-size: 1.5vw;
+}
+
+.formClose:hover
+{
+    cursor: pointer;
 }
