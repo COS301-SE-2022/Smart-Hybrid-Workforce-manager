@@ -14,7 +14,7 @@ import GaugeChart from 'react-gauge-chart';
 import DonutChart from 'react-donut-chart';
 import Chart from "react-apexcharts";
 import Gauge from 'react-svg-gauge';
-// import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap.css';
 import Card from 'react-bootstrap/Card';
 
 const StatisticsComponent = () => {
