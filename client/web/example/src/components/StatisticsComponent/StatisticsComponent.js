@@ -175,6 +175,48 @@ const StatisticsComponent = () => {
                             </Card.Body>
                         </Card>
                     </div>
+
+                    <div class="col-auto mr-2 mt-4">
+                        {/* <Card style={{width: '18rem'}} > */}
+                        <Card style={{width: '500px', height: '400px'}} >
+                        {/* <Card> */}
+                            <Card.Body>
+                                <Card.Title style={{fontSize: '1.5rem', fontWeight: 'bold', textAlign: 'center'}}>
+                                    Current Office Occupancy
+                                </Card.Title>
+                                <Chart 
+                                    series={[occupancy.occupied, (occupancy.total-occupancy.occupied)]}
+                                    options= {{
+                                        chart: {
+                                            type: 'donut',
+                                        },
+                                        labels: ['Occupied', 'Empty'],
+                                        dataLabels: {
+                                            enabled: false
+                                        },
+                                        plotOptions: {
+                                            pie: {
+                                                donut: {
+                                                    labels: {
+                                                        show: true,
+                                                        total: {
+                                                            showAlways: false,
+                                                            show: true,
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        theme: {
+                                            mode: 'light', 
+                                            palette: 'palette3', 
+                                        }
+                                    }}     
+                                    type='donut'      
+                                />
+                            </Card.Body>
+                        </Card>
+                    </div>
                 </div>
             </div>
         </div>
