@@ -6,7 +6,7 @@ import requests
 
 def retrieve_rooms_in_building(start: datetime.datetime) -> int:
     body: Dict[str] = {
-        "start": start.replace(tzinfo=None).isoformat() + "Z"
+        "start_date": start.replace(tzinfo=None).isoformat() + "Z"
     }
     resp = requests.post("http://localhost:8100/api/scheduler/execute", json=body)
     return resp.status_code

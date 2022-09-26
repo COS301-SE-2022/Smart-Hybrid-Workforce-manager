@@ -55,14 +55,24 @@ func SchedulerInvoker(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 	buildingGroups := scheduler.GroupByBuilding(schedulerData)
+	weeklyBuildingWg := sync.WaitGroup{}
 	for _, data := range buildingGroups {
-		schedulerData = data
-		err = scheduler.Call(schedulerData, weeklyEndpointURL) // TODO: @JonathanEnslin handle the return data
+		weeklyBuildingWg.Add(1)
+		go func(schedulerData *scheduler.SchedulerData) {
+			defer weeklyBuildingWg.Done()
+			logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running weekly scheduler from %v -> %v for building: %v", nextMonday, nextSaturday, *schedulerData.Buildings[0].Id))
+			if err != nil {
+				utils.InternalServerError(writer, request, err)
+				return
+			}
+			err = scheduler.Call(schedulerData, weeklyEndpointURL)
+			if err != nil {
+				utils.InternalServerError(writer, request, err)
+				return
+			}
+		}(data)
 	}
-	if err != nil {
-		utils.InternalServerError(writer, request, err)
-		return
-	}
+	weeklyBuildingWg.Wait()
 	// Call daily scheduler 5 times
 	now = nextMonday
 	yyyy, mm, dd := now.Date()
@@ -75,18 +85,24 @@ func SchedulerInvoker(writer http.ResponseWriter, request *http.Request) {
 			endDate := startDate.AddDate(0, 0, 1) // Add one day
 			schedulerData, err := scheduler.GetSchedulerData(startDate, endDate)
 			buildingGroups := scheduler.GroupByBuilding(schedulerData)
+			dailyBuildingWg := sync.WaitGroup{}
 			for _, data := range buildingGroups {
-				schedulerData = data
-				if err != nil {
-					utils.InternalServerError(writer, request, err)
-					return
-				}
-				err = scheduler.Call(schedulerData, dailyEndpointURL)
-				if err != nil {
-					utils.InternalServerError(writer, request, err)
-					return
-				}
+				dailyBuildingWg.Add(1)
+				go func(schedulerData *scheduler.SchedulerData) {
+					defer dailyBuildingWg.Done()
+					logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running daily scheduler from %v -> %v for building: %v", startDate, endDate, *schedulerData.Buildings[0].Id))
+					if err != nil {
+						utils.InternalServerError(writer, request, err)
+						return
+					}
+					err = scheduler.Call(schedulerData, dailyEndpointURL)
+					if err != nil {
+						utils.InternalServerError(writer, request, err)
+						return
+					}
+				}(data)
 			}
+			dailyBuildingWg.Wait()
 		}(now, i)
 	}
 	wg.Wait()
@@ -114,19 +130,24 @@ func WeeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 	nextSaturday := scheduler.TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
 	schedulerData, err := scheduler.GetSchedulerData(nextMonday, nextSaturday)
 	buildingGroups := scheduler.GroupByBuilding(schedulerData)
+	weeklyBuildingWg := sync.WaitGroup{}
 	for _, data := range buildingGroups {
-		schedulerData = data
-		logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running weekly scheduler from %v -> %v for building: %v", nextMonday, nextSaturday, *schedulerData.Buildings[0].Id))
-		if err != nil {
-			utils.InternalServerError(writer, request, err)
-			return
-		}
-		err = scheduler.Call(schedulerData, weeklyEndpointURL)
-		if err != nil {
-			utils.InternalServerError(writer, request, err)
-			return
-		}
+		weeklyBuildingWg.Add(1)
+		go func(schedulerData *scheduler.SchedulerData) {
+			defer weeklyBuildingWg.Done()
+			logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running weekly scheduler from %v -> %v for building: %v", nextMonday, nextSaturday, *schedulerData.Buildings[0].Id))
+			if err != nil {
+				utils.InternalServerError(writer, request, err)
+				return
+			}
+			err = scheduler.Call(schedulerData, weeklyEndpointURL)
+			if err != nil {
+				utils.InternalServerError(writer, request, err)
+				return
+			}
+		}(data)
 	}
+	weeklyBuildingWg.Wait()
 	utils.Ok(writer, request)
 }
 
@@ -155,19 +176,24 @@ func DailyScheduler(writer http.ResponseWriter, request *http.Request) {
 	// Get data between start and end of date
 	schedulerData, err := scheduler.GetSchedulerData(startDate, endDate)
 	buildingGroups := scheduler.GroupByBuilding(schedulerData)
+	dailyBuildingWg := sync.WaitGroup{}
 	for _, data := range buildingGroups {
-		schedulerData = data
-		logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running daily scheduler from %v -> %v for building: %v", startDate, endDate, *schedulerData.Buildings[0].Id))
-		if err != nil {
-			utils.InternalServerError(writer, request, err)
-			return
-		}
-		err = scheduler.Call(schedulerData, dailyEndpointURL)
-		if err != nil {
-			utils.InternalServerError(writer, request, err)
-			return
-		}
+		dailyBuildingWg.Add(1)
+		go func(schedulerData *scheduler.SchedulerData) {
+			defer dailyBuildingWg.Done()
+			logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running daily scheduler from %v -> %v for building: %v", startDate, endDate, *schedulerData.Buildings[0].Id))
+			if err != nil {
+				utils.InternalServerError(writer, request, err)
+				return
+			}
+			err = scheduler.Call(schedulerData, dailyEndpointURL)
+			if err != nil {
+				utils.InternalServerError(writer, request, err)
+				return
+			}
+		}(data)
 	}
+	dailyBuildingWg.Wait()
 	utils.Ok(writer, request)
 }
 
