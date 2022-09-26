@@ -4,7 +4,7 @@ import styles from './resources.module.css';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../App';
 
-const AddBuilding = ({makeDefault}) =>
+const AddBuilding = ({makeDefault, edited}) =>
 {
     const [name, setName] = useState('');
     const [location, setLocation] = useState('');
@@ -20,7 +20,8 @@ const AddBuilding = ({makeDefault}) =>
             body: JSON.stringify({
                 id: null,
                 name: name,
-                location: location
+                location: location,
+                dimension: ''
             }),
             headers:{
                 'Content-Type': 'application/json',
@@ -31,6 +32,7 @@ const AddBuilding = ({makeDefault}) =>
             if(res.status === 200)
             {
                 alert("Building Successfully Created!");
+                edited(true);
             }
         });
     }
