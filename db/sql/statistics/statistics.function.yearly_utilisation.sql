@@ -13,7 +13,9 @@ $$
 		RETURN QUERY
 			SELECT DATE_TRUNC('month', b.start::date)::date, statistics.average_utilisation(DATE_TRUNC('month', b.start::date)::date, (DATE_TRUNC('month', b.start::date) + interval '1 month')::date)
 			FROM booking.identifier b
-			GROUP BY DATE_TRUNC('month', b.start::date);
+			GROUP BY DATE_TRUNC('month', b.start::date)
+			HAVING DATE_TRUNC('month', b.start::date)::date BETWEEN (current_date-interval '1 year') AND current_date
+			ORDER BY DATE_TRUNC('month', b.start::date) ASC;
 		RETURN;
 	END
 $$ LANGUAGE plpgsql;
