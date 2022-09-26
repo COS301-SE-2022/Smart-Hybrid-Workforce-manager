@@ -1,20 +1,20 @@
 {
     "daily_config": {
-        "seed" : 1,
-        "populationSize": 200,
-        "generations": 3000,
+        "seed" : 112,
+        "populationSize": 100,
+        "generations": 1000,
         "mutationRate": 0.40,
         "crossOverRate": 0.55,
-        "tournamentSize": 40,
-        "time_limit_seconds": 15
+        "tournamentSize": 20,
+        "time_limit_seconds": 7
     },
     "weekly_config": {
-        "seed" : -1,
+        "seed" : 112,
         "populationSize": 150,
         "generations": 3000,
         "mutationRate": 1.0,
         "crossOverRate": 0.0,
         "tournamentSize": 20,
-        "time_limit_seconds": 7
+        "time_limit_seconds": 5
     }
 }

@@ -35,7 +35,18 @@ func SchedulerHandlers(router *mux.Router) error {
 func SchedulerInvoker(writer http.ResponseWriter, request *http.Request) {
 	weeklyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/weekly"
 	dailyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/daily"
+	var requestedDate SchedulerRequest
+	err := utils.UnmarshalJSON(writer, request, &requestedDate)
+	if err != nil {
+		utils.BadRequest(writer, request, fmt.Sprintf("invalid_request: %v", err))
+		return
+	}
 	now := time.Now()
+	if requestedDate.StartDate != nil { // Use passed in date if a date was supplied
+		now = *requestedDate.StartDate
+		now = now.AddDate(0, 0, -7)
+		// Set start to previous day, so that scheduler is called for the requested day
+	}
 	nextMonday := scheduler.TimeOfNextWeekDay(now, "Monday")            // Start of next week
 	nextSaturday := scheduler.TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
 	schedulerData, err := scheduler.GetSchedulerData(nextMonday, nextSaturday)
