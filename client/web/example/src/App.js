@@ -14,7 +14,7 @@ import Admin from './pages/Admin'
 
 import PermissionsTeam from './pages/TeamsPermissions'
 
-import Layout from './pages/CreateLayout'
+import OfficeCreator from './pages/OfficeCreator'
 import CreateBuilding from './pages/ResourcesBuildingCreate'
 import EditBuilding from './pages/ResourcesBuildingEdit'
 import CreateRoom from './pages/ResourcesRoomCreate'
@@ -74,7 +74,7 @@ function App()
 
             <Route path="/team-permissions" exact element={<PermissionsTeam />} />
 
-            <Route path="/layout" exact element={<Layout />} />
+            <Route path="/office-creator" exact element={<OfficeCreator />} />
             <Route path="/building" exact element={<CreateBuilding/>} />
             <Route path="/building-edit" exact element={<EditBuilding/>} />
             <Route path="/room" exact element={<CreateRoom/>} />

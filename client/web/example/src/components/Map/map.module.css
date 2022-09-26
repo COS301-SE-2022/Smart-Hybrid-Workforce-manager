@@ -31,6 +31,70 @@
     left: 1vw;
 }
 
+.menu
+{
+    position: absolute;
+    display: none;
+    font-size: 0.8vw;
+
+    width: 10vw;
+
+    left: 11vw;
+    top: 0;
+
+    background-color: white;
+
+    border-radius: 1vh;
+
+    z-index: 2;
+}
+
+.editResource
+{
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+
+    border-top-left-radius: 1vh;
+    border-top-right-radius: 1vh;
+}
+
+.editResource:hover
+{
+    background-color: #e8e8e8;
+    cursor: pointer;
+}
+
+.deleteResource
+{
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+
+    border-bottom-left-radius: 1vh;
+    border-bottom-right-radius: 1vh;
+}
+
+.deleteResource:hover
+{
+    background-color: #e8e8e8;
+    cursor: pointer;
+}
+
+.threeDotsContainer
+{
+    display: inline-block;
+    margin-left: 1vw;
+    font-size: 1.5vw;
+}
+
+.threeDots:hover
+{
+    cursor: pointer;
+}
+
 .roomSelectorContainer
 {
     position: absolute;
