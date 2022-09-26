@@ -473,20 +473,20 @@ const CalendarComponent = () =>
         {
 
             fetch("http://localhost:8080/api/booking/information", 
-                {
-                method: "POST",
-                mode: "cors",
-                body: JSON.stringify({
-                    user_id: userData.user_id
-                }),
-                headers:{
-                    'Content-Type': 'application/json',
-                    'Authorization': `bearer ${userData.token}`
-                }
-                }).then((res) => res.json()).then(data => 
-                {
-                    setBookings(data);
-                });
+            {
+            method: "POST",
+            mode: "cors",
+            body: JSON.stringify({
+                user_id: userData.user_id
+            }),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}`
+            }
+            }).then((res) => res.json()).then(data => 
+            {
+                setBookings(data);
+            });
         }
 
         fetchData();
@@ -504,6 +504,50 @@ const CalendarComponent = () =>
     }
 
     setInterval(refreshTime, 60000*5);
+
+    const ShowBookingPopup = (id, booked) =>
+    {
+        if(!booked)
+        {
+            if(window.confirm('Would you like to delete this booking?'))
+            {
+                fetch("http://localhost:8080/api/booking/remove", 
+                {
+                    method: "POST",
+                    mode: "cors",
+                    body: JSON.stringify({
+                        id: id
+                    }),
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                    }
+                }).then((res) =>
+                {
+                    if(res.status === 200)
+                    {
+                        alert('Booking deleted');
+
+                        fetch("http://localhost:8080/api/booking/information", 
+                        {
+                        method: "POST",
+                        mode: "cors",
+                        body: JSON.stringify({
+                            user_id: userData.user_id
+                        }),
+                        headers:{
+                            'Content-Type': 'application/json',
+                            'Authorization': `bearer ${userData.token}`
+                        }
+                        }).then((res) => res.json()).then(data => 
+                        {
+                            setBookings(data);
+                        });
+                    }
+                });
+            }
+        }
+    }
 
     useEffect(() =>
     {
@@ -641,13 +685,16 @@ const CalendarComponent = () =>
 
                     <div className={styles.bookingsContainer}>
                         {bookings.length > 0 && (
-                            bookings.map((booking, i) => (
-                                <BookingTicket id={booking.id} startDate={booking.start.substring(0,10)} startTime={booking.start.substring(11,16)} endTime={booking.end.substring(11,16)} confirmed={booking.booked} type={booking.resource_type} days={days} />
+                            bookings.map((booking, i) =>
+                            (
+                                <BookingTicket key={booking.id} id={booking.id} startDate={booking.start.substring(0,10)} startTime={booking.start.substring(11,16)} endTime={booking.end.substring(11,16)} confirmed={booking.booked} type={booking.resource_type} days={days} ticketClick={ShowBookingPopup.bind(this, booking.id, booking.booked)} />
                             ))
                         )}
                     </div>
                 </div>
             </div>
+
+
         </div>
     );
 }

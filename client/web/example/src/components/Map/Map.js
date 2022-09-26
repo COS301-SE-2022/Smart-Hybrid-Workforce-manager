@@ -3,7 +3,6 @@ import { useRef, useState, useEffect, useCallback, useContext, Fragment } from '
 import Desk from './Desk';
 import MeetingRoom from './MeetingRoom';
 import { UserContext } from '../../App';
-import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import styles from './map.module.css';
 
 const Map = () =>
@@ -21,6 +20,8 @@ const Map = () =>
     const buildingRef = useRef(null);
     const roomRef = useRef(null);
 
+    const preferenceRef = useRef(null);
+
     //Date
     const [date, setDate] = useState('');
 
@@ -29,6 +30,7 @@ const Map = () =>
     const [currResource, setCurrResource] = useState(null);
     const [allUsers, setAllUsers] = useState({});
     const [currUsers, setCurrUsers] = useState({});
+    const [user, setUser] = useState({});
 
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
@@ -161,6 +163,48 @@ const Map = () =>
     }
 
     window.addEventListener('resize', HandleResize);
+
+    const setPreference = () =>
+    {
+        if(preferenceRef.current)
+        {
+            fetch("http://localhost:8080/api/user/update", 
+            {
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify({
+                    ...user,
+                    preferred_desk: preferenceRef.current.checked ? currResource.id : null,
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
+            }).then((res) =>
+            {
+                if(res.status === 200)
+                {
+                    alert("Preferred Desk Set");
+                }
+
+                fetch("http://localhost:8080/api/user/information", 
+                {
+                    method: "POST",
+                    mode: "cors",
+                    body: JSON.stringify({
+                        identifier : userData.user_identifier
+                    }),
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                    }
+                }).then((res) => res.json()).then(data =>
+                {
+                    setUser(data[0]);
+                });
+            });  
+        }    
+    }
 
     //Effect on the loading of the web page
     useEffect(() =>
@@ -327,7 +371,23 @@ const Map = () =>
             });
         });
 
-    }, [userData.token]);
+        fetch("http://localhost:8080/api/user/information", 
+        {
+            method: "POST",
+            mode: "cors",
+            body: JSON.stringify({
+                identifier : userData.user_identifier
+            }),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+            }
+        }).then((res) => res.json()).then(data =>
+        {
+            setUser(data[0]);
+        });
+
+    }, [userData.token, userData.user_identifier]);
 
     //Loads desks and meeting rooms from database after room is selected
     useEffect(() =>
@@ -495,11 +555,18 @@ const Map = () =>
         if(selectedId)
         {
             setSidePanel(0.65*window.innerWidth);
+            preferenceRef.current.checked = false;
             resources.forEach((resource) =>
             {
                 if(resource.id === selectedId)
                 {
                     setCurrResource(resource);
+
+                    if(resource.id === user.preferred_desk && preferenceRef.current)
+                    {
+                        preferenceRef.current.checked = true;
+                        console.log(user.preferred_desk + ' ' + resource.id);
+                    }
                 }
             })
         }
@@ -507,7 +574,7 @@ const Map = () =>
         {
             setSidePanel(0.85*window.innerWidth);
         }
-    },[selectedId, resources]);
+    },[selectedId, resources, user.preferred_desk]);
 
     useEffect(() =>
     {
@@ -547,6 +614,11 @@ const Map = () =>
 
                 <div className={styles.resourceType}>
                     Type: {currResource ? currResource.resource_type : 'Default type'}
+                </div>
+
+                <div className={styles.resourcePreference}>
+                    <input ref={preferenceRef} type='checkbox' onChange={() => setPreference()}></input>
+                    <label>Set as preferred desk</label>
                 </div>
 
                 <div className={styles.userCardContainer}>

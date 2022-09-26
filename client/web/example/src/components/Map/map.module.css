@@ -85,7 +85,7 @@
 {
     position: absolute;
     display: grid;
-    grid-template-rows: 8vh 5vh 67vh;
+    grid-template-rows: 6vh 4vh 3vh 67vh;
 
     width: 20vw;
     height: 80vh;
@@ -113,6 +113,11 @@
     text-align: center;
 
     font-size: 1vw;
+}
+
+.resourcePreference
+{
+    text-align: center;
 }
 
 .userCardContainer

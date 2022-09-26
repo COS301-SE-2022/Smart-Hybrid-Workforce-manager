@@ -107,10 +107,7 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
 
                 onClick={(e) =>
                 {
-                    if(booked)
-                    {
-                        onSelect();
-                    }
+                    onSelect();
                 }}
 
                 onTap={onSelect}
@@ -138,11 +135,8 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
 
                 onMouseEnter={(e) =>
                 {
-                    if(booked)
-                    {
-                        e.target.getStage().container().style.cursor = transform ? 'move' : 'pointer';
-                        e.target.fill('#09a2fb');
-                    }
+                    e.target.getStage().container().style.cursor = transform ? 'move' : 'pointer';
+                    e.target.fill('#09a2fb');
                 }}
 
                 onMouseLeave={(e) =>
