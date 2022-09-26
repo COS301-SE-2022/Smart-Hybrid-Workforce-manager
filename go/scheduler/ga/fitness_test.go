@@ -803,7 +803,7 @@ func Test_dailyFitness(t *testing.T) {
 					Fitness: -1.0,
 				},
 			},
-			want: 2.21579109,
+			want: 6.715865257431512,
 		},
 	}
 	for _, tt := range tests {
