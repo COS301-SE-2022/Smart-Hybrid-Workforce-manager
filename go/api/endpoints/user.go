@@ -53,7 +53,7 @@ func UserHandlers(router *mux.Router) error {
 		&data.Permissions{data.CreateGenericPermission("DELETE", "USER", "IDENTIFIER")})).Methods("POST")
 
 	router.HandleFunc("/update", security.Validate(UpdateUserHandler,
-		&data.Permissions{data.CreateGenericPermission("EDIT", "USER", "IDENTIFIER")})).Methods("POST")
+		&data.Permissions{data.CreateGenericPermission("CREATE", "USER", "IDENTIFIER")})).Methods("POST")
 
 	router.HandleFunc("/information", security.Validate(InformationUserHandler,
 		&data.Permissions{data.CreateGenericPermission("VIEW", "USER", "IDENTIFIER")})).Methods("POST")
@@ -193,7 +193,7 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 
 func addDefaultPermissions(user string, access *db.Access) error {
 	dp := data.NewPermissionDA(access)
-	err := dp.StorePermission(data.CreatePermission(user, "USER", "EDIT", "USER", "IDENTIFIER", user))
+	err := dp.StorePermission(data.CreatePermission(user, "USER", "CREATE", "USER", "IDENTIFIER", user))
 	if err != nil {
 		return err
 	}
