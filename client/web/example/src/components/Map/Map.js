@@ -94,6 +94,7 @@ const Map = () =>
     //Check if canvas is clicked and deselect the selected resource
     const CheckDeselect = (e) =>
     {
+        e.target.getStage().container().style.cursor = 'grabbing';
         const clickedEmpty = e.target === e.target.getStage();
         if(clickedEmpty)
         {
@@ -666,7 +667,7 @@ const Map = () =>
             </div>
 
             <div ref={canvasRef} className={styles.canvasContainer}>
-                <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onTouchStart={CheckDeselect} draggable ref={stageRef}>
+                <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onMouseUp={(e) => e.target.getStage().container().style.cursor = 'grab'} onTouchStart={CheckDeselect} draggable ref={stageRef}>
                     <Layer>
                         {deskProps.length > 0 && (
                             deskProps.map((desk, i) => (

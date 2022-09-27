@@ -2,13 +2,10 @@ import { Stage, Layer } from 'react-konva';
 import { useRef, useState, useEffect, useCallback, useContext, Fragment } from 'react';
 import Desk from './Desk';
 import MeetingRoom from './MeetingRoom';
-import { FaSave, FaQuestion } from 'react-icons/fa';
-import { MdEdit, MdAdd, MdClose } from 'react-icons/md';
+import { FaSave } from 'react-icons/fa';
+import { MdAdd, MdClose } from 'react-icons/md';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import desk_white from '../../img/desk_white.svg';
-import meetingroom_white from '../../img/meetingroom_white.svg';
 import { UserContext } from '../../App';
-import { useNavigate } from 'react-router-dom';
 import styles from './map.module.css';
 import { AddBuildingForm } from '../Resources/AddBuilding';
 import { EditBuildingForm } from '../Resources/EditBuilding';
@@ -48,6 +45,7 @@ const Creator = () =>
     const [resourceXCoord, setResourceXCoord] = useState('');
     const [resourceYCoord, setResourceYCoord] = useState('');
     const [resourceRotation, setResourceRotation] = useState('');
+    const [resourceCapacity, setResourceCapacity] = useState('');
 
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
@@ -62,8 +60,7 @@ const Creator = () =>
     const [currRoom, SetCurrRoom] = useState("");
     const [resources, SetResources] = useState([]);
 
-    const {userData} = useContext(UserContext)
-    const navigate = useNavigate();
+    const {userData} = useContext(UserContext);
 
     //POST requests
     const UpdateRooms = (id) =>
@@ -89,14 +86,14 @@ const Creator = () =>
         });
     }
 
-    const UpdateResources = (e) =>
+    const UpdateResources = (id) =>
     {
         fetch("http://localhost:8080/api/resource/information", 
             {
             method: "POST",
             mode: 'cors',
             body: JSON.stringify({
-                room_id: e.target.value
+                room_id: id
             }),
             headers:{
                 'Content-Type': 'application/json',
@@ -105,7 +102,7 @@ const Creator = () =>
             }).then((res) => res.json()).then(data => 
             {
                 SetResources(data);
-                SetCurrRoom(e.target.value);
+                SetCurrRoom(id);
             });
     }
 
@@ -113,6 +110,7 @@ const Creator = () =>
     //Check if canvas is clicked and deselect the selected resource
     const CheckDeselect = (e) =>
     {
+        e.target.getStage().container().style.cursor = 'grabbing';
         const clickedEmpty = e.target === e.target.getStage();
         if(clickedEmpty)
         {
@@ -254,7 +252,7 @@ const Creator = () =>
 
     const DeleteRoom = () =>
     {
-        if(currRoom !== '' && roomMenuRef.current)
+        if(currRoom !== '' && currBuilding !== '' && roomMenuRef.current)
         {
             console.log(currRoom);
             roomMenuRef.current.style.display = 'none';
@@ -264,7 +262,13 @@ const Creator = () =>
                 method: "POST",
                 mode: "cors",
                 body: JSON.stringify({
-                    id: currRoom
+                    id: currRoom,
+                    building_id: currBuilding,
+                    name: null,
+                    xcoord: null,
+                    ycoord: null,
+                    zcoord: null,
+                    dimension: null
                 }),
                 headers:{
                     'Content-Type': 'application/json',
@@ -380,9 +384,10 @@ const Creator = () =>
                     name : "Meeting Room " + meetingRoomCount.current,
                     x : (-stageRef.current.x() + stageRef.current.width() / 2.0) / stageRef.current.scaleX(),
                     y : (-stageRef.current.y() + stageRef.current.height() / 2.0) / stageRef.current.scaleY(),
-                    width : 200,
-                    height : 200,
+                    width : 0.3,
+                    height : 0.3,
                     rotation : 0,
+                    capacity: 2,
                     edited : true
                 }
             ]);
@@ -437,7 +442,7 @@ const Creator = () =>
         {
             if(selectedId.includes("desk"))
             {
-                for(var i = 0; i < deskProps.length; i++)
+                for(let i = 0; i < deskProps.length; i++)
                 {
                     if(deskProps[i].key === selectedId)
                     {
@@ -456,7 +461,7 @@ const Creator = () =>
             }
             else
             {
-                for(i = 0; i < meetingRoomProps.length; i++)
+                for(let i = 0; i < meetingRoomProps.length; i++)
                 {
                     if(meetingRoomProps[i].key === selectedId)
                     {
@@ -607,6 +612,7 @@ const Creator = () =>
             if(res.status === 200)
             {
                 alert("Saved!");
+                UpdateResources(currRoom);
             }
         }
         catch(err)
@@ -733,60 +739,155 @@ const Creator = () =>
 
     const ChangeName = (name) =>
     {
-        for(var i = 0; i < deskProps.length; i++)
+        if(selectedId.includes('desk'))
         {
-            if(deskProps[i].key === selectedId)
+            for(let i = 0; i < deskProps.length; i++)
             {
-                const newProps = deskProps.slice();
-                newProps[i].name = name;
-                SetDeskProps(newProps);
-                setResourceName(name);
-                break;
+                if(deskProps[i].key === selectedId)
+                {
+                    const newProps = deskProps.slice();
+                    newProps[i].name = name;
+                    newProps[i].edited = true;
+                    SetDeskProps(newProps);
+                    setResourceName(name);
+                    break;
+                }
+            }
+        }
+        else if(selectedId.includes('meetingroom'))
+        {
+            for(let i = 0; i < meetingRoomProps.length; i++)
+            {
+                if(meetingRoomProps[i].key === selectedId)
+                {
+                    const newProps = meetingRoomProps.slice();
+                    newProps[i].name = name;
+                    newProps[i].edited = true;
+                    SetMeetingRoomProps(newProps);
+                    setResourceName(name);
+                    break;
+                }
             }
         }
     }
 
     const ChangeXCoord = (x) =>
     {
-        for(var i = 0; i < deskProps.length; i++)
+        if(selectedId.includes('desk'))
         {
-            if(deskProps[i].key === selectedId)
+            for(let i = 0; i < deskProps.length; i++)
             {
-                const newProps = deskProps.slice();
-                newProps[i].x = parseInt(x);
-                SetDeskProps(newProps);
-                setResourceXCoord(x);
-                break;
+                if(deskProps[i].key === selectedId)
+                {
+                    const newProps = deskProps.slice();
+                    newProps[i].x = parseInt(x);
+                    newProps[i].edited = true;
+                    SetDeskProps(newProps);
+                    setResourceXCoord(x);
+                    break;
+                }
+            }
+        }
+        else if(selectedId.includes('meetingroom'))
+        {
+            for(let i = 0; i < meetingRoomProps.length; i++)
+            {
+                if(meetingRoomProps[i].key === selectedId)
+                {
+                    const newProps = meetingRoomProps.slice();
+                    newProps[i].x = parseInt(x);
+                    newProps[i].edited = true;
+                    SetMeetingRoomProps(newProps);
+                    setResourceXCoord(x);
+                    break;
+                }
             }
         }
     }
 
     const ChangeYCoord = (y) =>
     {
-        for(var i = 0; i < deskProps.length; i++)
+        if(selectedId.includes('desk'))
         {
-            if(deskProps[i].key === selectedId)
+            for(let i = 0; i < deskProps.length; i++)
             {
-                const newProps = deskProps.slice();
-                newProps[i].y = parseInt(y);
-                SetDeskProps(newProps);
-                setResourceYCoord(y);
-                break;
+                if(deskProps[i].key === selectedId)
+                {
+                    const newProps = deskProps.slice();
+                    newProps[i].y = parseInt(y);
+                    newProps[i].edited = true;
+                    SetDeskProps(newProps);
+                    setResourceYCoord(y);
+                    break;
+                }
+            }
+        }
+        else if(selectedId.includes('meetingroom'))
+        {
+            for(let i = 0; i < meetingRoomProps.length; i++)
+            {
+                if(meetingRoomProps[i].key === selectedId)
+                {
+                    const newProps = meetingRoomProps.slice();
+                    newProps[i].y = parseInt(y);
+                    newProps[i].edited = true;
+                    SetMeetingRoomProps(newProps);
+                    setResourceYCoord(y);
+                    break;
+                }
             }
         }
     }
 
     const ChangeRotation = (rotation) =>
     {
-        for(var i = 0; i < deskProps.length; i++)
+        if(selectedId.includes('desk'))
         {
-            if(deskProps[i].key === selectedId)
+            for(let i = 0; i < deskProps.length; i++)
             {
-                const newProps = deskProps.slice();
-                newProps[i].rotation = parseInt(rotation);
-                SetDeskProps(newProps);
-                setResourceRotation(rotation);
-                break;
+                if(deskProps[i].key === selectedId)
+                {
+                    const newProps = deskProps.slice();
+                    newProps[i].rotation = parseInt(rotation);
+                    newProps[i].edited = true;
+                    SetDeskProps(newProps);
+                    setResourceRotation(rotation);
+                    break;
+                }
+            }
+        }
+        else if(selectedId.includes('meetingroom'))
+        {
+            for(let i = 0; i < meetingRoomProps.length; i++)
+            {
+                if(meetingRoomProps[i].key === selectedId)
+                {
+                    const newProps = meetingRoomProps.slice();
+                    newProps[i].rotation = parseInt(rotation);
+                    newProps[i].edited = true;
+                    SetMeetingRoomProps(newProps);
+                    setResourceRotation(rotation);
+                    break;
+                }
+            }
+        }
+    }
+
+    const ChangeCapacity = (capacity) =>
+    {
+        if(selectedId.includes('meetingroom'))
+        {
+            for(let i = 0; i < meetingRoomProps.length; i++)
+            {
+                if(meetingRoomProps[i].key === selectedId)
+                {
+                    const newProps = meetingRoomProps.slice();
+                    newProps[i].rotation = parseInt(capacity);
+                    newProps[i].edited = true;
+                    SetMeetingRoomProps(newProps);
+                    setResourceCapacity(capacity);
+                    break;
+                }
             }
         }
     }
@@ -833,6 +934,9 @@ const Creator = () =>
 
                     <div className={styles.formLabel}>Rotation</div>
                     <input className={styles.formInput} type='number' placeholder='Rotation' value={Math.trunc(resourceRotation)} onChange={(e) => ChangeRotation(e.target.value)}></input>
+
+                    <div className={styles.formLabel}>Capacity</div>
+                    <input className={styles.formInput} type='number' placeholder='Capacity' disabled={selectedId ? selectedId.includes('desk') : true} value={Math.trunc(resourceCapacity)} onChange={(e) => ChangeCapacity(e.target.value)}></input>
                 </div>
 
                 <div className={styles.actions}>
@@ -850,7 +954,7 @@ const Creator = () =>
                 </div>                                       
 
                 <div ref={canvasRef} className={styles.canvasContainer}>
-                    <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onTouchStart={CheckDeselect} draggable onWheel={ZoomInOut} ref={stageRef}>
+                    <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onMouseUp={(e) => e.target.getStage().container().style.cursor = 'grab'} onTouchStart={CheckDeselect} draggable onWheel={ZoomInOut} ref={stageRef}>
                         <Layer>
                             {deskProps.map((desk, i) => (
                                 <Desk
@@ -866,6 +970,7 @@ const Creator = () =>
                                         setResourceXCoord(deskProps[i].x);
                                         setResourceYCoord(deskProps[i].y);
                                         setResourceRotation(deskProps[i].rotation);
+                                        setResourceCapacity('');
                                     }}
                                     
                                     onChange = {(newProps) => 
@@ -876,6 +981,7 @@ const Creator = () =>
                                         setResourceXCoord(newDeskProps[i].x);
                                         setResourceYCoord(newDeskProps[i].y);
                                         setResourceRotation(newDeskProps[i].rotation);
+                                        setResourceCapacity('');
                                         SetDeskProps(newDeskProps);
                                     }}
 
@@ -896,16 +1002,28 @@ const Creator = () =>
                                         onSelect = {() => 
                                         {
                                             SelectShape(meetingRoom.key);
+                                            setResourceName(meetingRoomProps[i].name);
+                                            setResourceXCoord(meetingRoomProps[i].x);
+                                            setResourceYCoord(meetingRoomProps[i].y);
+                                            setResourceRotation(meetingRoomProps[i].rotation);
+                                            setResourceCapacity(meetingRoomProps[i].capacity);
                                         }}
                                         
                                         onChange = {(newProps) => 
                                         {
                                             const newMeetingRoomProps = meetingRoomProps.slice();
                                             newMeetingRoomProps[i] = newProps;
-                                            SetMeetingRoomProps(newMeetingRoomProps)
+                                            setResourceName(newMeetingRoomProps[i].name);
+                                            setResourceXCoord(newMeetingRoomProps[i].x);
+                                            setResourceYCoord(newMeetingRoomProps[i].y);
+                                            setResourceRotation(newMeetingRoomProps[i].rotation);
+                                            setResourceCapacity(meetingRoomProps[i].capacity);
+                                            SetMeetingRoomProps(newMeetingRoomProps);
                                         }}
 
                                         draggable = {true}
+
+                                        transform = {true}
                                     />
                                 ))
                             )}                             
@@ -934,11 +1052,11 @@ const Creator = () =>
                 </div>
 
                 <div className={styles.roomSelectorContainer}>
-                    <select className={styles.resourceSelector} name='room' defaultValue={''} onChange={UpdateResources.bind(this)}>
+                    <select className={styles.resourceSelector} name='room' defaultValue={''} onChange={(e) => UpdateResources(e.target.value)}>
                         <option value='' id='RoomDefault'>--Select the room--</option>
                             {rooms.map(room =>
                             (
-                                <option key={room.id} value={room.id}>{room.name + ' (Floor' + room.zcoord + ')'}</option>
+                                <option key={room.id} value={room.id}>{room.name + ' (Floor ' + room.zcoord + ')'}</option>
                             ))}
                     </select>
 

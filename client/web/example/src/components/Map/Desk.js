@@ -1,15 +1,11 @@
-import useImage from 'use-image';
-import desk_grey from '../../img/desk_light.svg';
-import { Image, Path, Transformer } from 'react-konva';
+import { Path, Transformer } from 'react-konva';
 import { useRef, useEffect, useState, Fragment } from 'react';
-import styles from './map.module.css';
 
 const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform}) =>
 {
     const shapeRef = useRef(null);
     const transformRef = useRef(null);
     const [booked, setBooked] = useState(shapeProps.booked);
-    const [image] = useImage(desk_grey);
 
     useEffect(() =>
     {
@@ -48,50 +44,6 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
 
     return (
         <Fragment> 
-            {/*<Image
-                image = {image}
-                offsetX = {30}
-                offsetY = {27.5}
-                {...shapeProps}
-                ref={shapeRef}
-
-                draggable = {draggable}
-
-                onClick={onSelect}
-                onTap={onSelect}
-
-                onDragEnd={(e) =>
-                {
-                    onChange({
-                        ...shapeProps,
-                        x : e.target.x(),
-                        y : e.target.y(),
-                        edited : true
-                    })
-                }}
-
-                onTransformEnd={(e) =>
-                {
-                    onChange({
-                        ...shapeProps,
-                        x : e.target.x(),
-                        y : e.target.y(),
-                        rotation : e.target.rotation(),
-                        edited : true
-                    });
-                }}
-
-                onMouseEnter={(e) =>
-                {
-                    e.target.getStage().container().style.cursor = 'move';
-                }}
-
-                onMouseLeave={(e) =>
-                {
-                    e.target.getStage().container().style.cursor = 'default';
-                }}
-            />*/}
-
             <Path 
                 {...shapeProps}
                 ref={shapeRef}
@@ -141,7 +93,7 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
 
                 onMouseLeave={(e) =>
                 {
-                    e.target.getStage().container().style.cursor = 'default';
+                    e.target.getStage().container().style.cursor = 'grab';
                     if(isSelected)
                     {
                         e.target.fill('#09a2fb');
