@@ -47,14 +47,14 @@ func Validate(function HandlerFunc, permissionRequired *data.Permissions) Handle
 		var filteredPermissions data.Permissions
 		for _, permission := range permissions {
 
-			//logger.Access.Printf("%v %v %v %v\n", *permission.PermissionIdType, *permission.PermissionType, *permission.PermissionCategory, *permission.PermissionTenant)
+			// logger.Access.Printf("%v %v %v %v\n", *permission.PermissionIdType, *permission.PermissionType, *permission.PermissionCategory, *permission.PermissionTenant)
 
 			if permissionRequired.CompareTo(permission) {
 				filteredPermissions = append(filteredPermissions, permission)
 			}
 		}
 		if len(filteredPermissions) == 0 {
-			utils.AccessDenied(writer, request, fmt.Errorf("the user ission to execute query")) // TODO [KP]: Be more descriptive
+			utils.AccessDenied(writer, request, fmt.Errorf("the user does not have permission to execute query")) // TODO [KP]: Be more descriptive
 			return
 		}
 		function(writer, request, &filteredPermissions)
