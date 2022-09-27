@@ -105,12 +105,12 @@ const Navbar = (props, ref) =>
             </div>
             <div className={styles.navlinkContainer}>
                 <div ref={homeRef} className={styles.navlink} onClick={NavigateHome}>
-                    <FaMap />
+                    <FaMap style={{verticalAlign: 'baseline'}}/>
                     &nbsp;
                     Home
                 </div>
                 <div ref={bookingsRef} className={styles.navlink} onClick={ShowBookings}>
-                    <FaTicketAlt />
+                    <FaTicketAlt style={{verticalAlign: 'baseline'}}/>
                     &nbsp;
                     Bookings
                 </div>
@@ -123,12 +123,12 @@ const Navbar = (props, ref) =>
                     </div>
                 </div>
                 <div ref={calendarRef} className={styles.navlink} onClick={NavigateCalendar}>
-                    <FaCalendar />
+                    <FaCalendar style={{verticalAlign: 'baseline'}}/>
                     &nbsp;
                     Calendar
                 </div>
                 <div ref={statisticsRef} className={styles.navlink} onClick={NavigateStatistics}>
-                    <FaChartPie />
+                    <FaChartPie style={{verticalAlign: 'baseline'}}/>
                     &nbsp;
                     Statistics
                 </div>

@@ -14,13 +14,11 @@ import Admin from './pages/Admin'
 
 import PermissionsTeam from './pages/TeamsPermissions'
 
-import Layout from './pages/CreateLayout'
+import OfficeCreator from './pages/OfficeCreator'
 import CreateBuilding from './pages/ResourcesBuildingCreate'
 import EditBuilding from './pages/ResourcesBuildingEdit'
 import CreateRoom from './pages/ResourcesRoomCreate'
 import EditRoom from './pages/ResourcesRoomEdit'
-import CreateDesk from './pages/ResourcesDeskCreate'
-import EditDesk from './pages/ResourcesDeskEdit'
 import EditMeetingRoom from './pages/ResourcesMeetingRoomEdit'
 import CreateMeetingRoom from './pages/ResourcesMeetingRoomCreate'
 import Statistics from './pages/Statistics'
@@ -75,13 +73,11 @@ function App()
 
             <Route path="/team-permissions" exact element={<PermissionsTeam />} />
 
-            <Route path="/layout" exact element={<Layout />} />
+            <Route path="/office-creator" exact element={<OfficeCreator />} />
             <Route path="/building" exact element={<CreateBuilding/>} />
             <Route path="/building-edit" exact element={<EditBuilding/>} />
             <Route path="/room" exact element={<CreateRoom/>} />
             <Route path="/room-edit" exact element={<EditRoom/>} />
-            <Route path="/desk" exact element={<CreateDesk/>} />
-            <Route path="/resources-desk-edit" exact element={<EditDesk/>} />
             <Route path="/resources-meeting-room-edit" exact element={<EditMeetingRoom/>} />
             <Route path="/meetingroom" exact element={<CreateMeetingRoom />} />
 
