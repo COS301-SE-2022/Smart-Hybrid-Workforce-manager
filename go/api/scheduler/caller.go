@@ -208,6 +208,25 @@ func CallMeetingRoomScheduler(daysInAdvance int, now time.Time) error {
 	return nil
 }
 
+func StartMeetingRoomCalling() (chrono.ScheduledTask, error) {
+	callRate := 45 * time.Minute
+	startDelay := 30 * time.Minute
+	taskScheduler := chrono.NewDefaultTaskScheduler()
+
+	task, err := taskScheduler.ScheduleAtFixedRate(func(ctx context.Context) {
+		_err := CallMeetingRoomScheduler(0, time.Now())
+		if _err != nil {
+			logger.Error.Println(_err)
+		}
+	}, callRate, chrono.WithTime(time.Now().Add(startDelay)))
+
+	if err != nil {
+		logger.Error.Println("Could not start meeting room scheduler calling task")
+		return task, err
+	}
+	return task, nil
+}
+
 func StartWeeklyCalling() (chrono.ScheduledTask, error) {
 	callRate := 2 * time.Hour
 	startDelay := 30 * time.Minute

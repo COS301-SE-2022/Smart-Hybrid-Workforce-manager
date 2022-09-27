@@ -117,6 +117,7 @@ func main() {
 	origins := handlers.AllowedOrigins([]string{os.Getenv("ORIGIN_ALLOWED")})
 	methods := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
 
+	// Start schedulers
 	schedulerTask1, err := scheduler.StartWeeklyCalling()
 	if err != nil {
 		logger.Error.Println(err)
@@ -128,6 +129,13 @@ func main() {
 		logger.Error.Println(err)
 	}
 	defer schedulerTask2.Cancel()
+
+	schedulerTask3, err := scheduler.StartMeetingRoomCalling()
+	if err != nil {
+		logger.Error.Println(err)
+	}
+	defer schedulerTask3.Cancel()
+
 	// Start API on port 8080 in its docker container
 	server := http.Server{
 		Addr:              ":8080",
