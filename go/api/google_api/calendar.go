@@ -17,6 +17,7 @@ import (
 	"path/filepath"
 
 	// "time"
+	"api/data"
 	"lib/logger"
 
 	"golang.org/x/oauth2"
@@ -112,6 +113,11 @@ func createEvent(summary string, location *string, desc *string, starttime strin
     //Add Attendees
 
 	return event
+}
+
+func CreateBooking(user *data.User ,booking *data.Booking) string{
+	logger.Access.Printf("user: %v\nbooking: %v",user,booking)
+	return "Booking"
 }
 
 func TestingFunc() bool{

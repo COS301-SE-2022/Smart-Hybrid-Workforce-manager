@@ -165,7 +165,15 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 	}
 
 	// Create Google Calendar Event
-	results := google_api.TestingFunc()
+	du := data.NewUserDA(access)
+	users, err := du.FindIdentifier(&data.User{Id: booking.UserId})
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	user := users.FindHead()
+
+	results := google_api.CreateBooking(user,&booking)
 	logger.Access.Printf("%v created\n", results)
 
 	// Commit transaction
