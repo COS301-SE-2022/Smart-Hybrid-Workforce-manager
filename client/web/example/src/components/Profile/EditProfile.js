@@ -206,13 +206,13 @@ const EditProfile = ({user, edited}) =>
             </div>
 
             <Form.Group className={styles.formGroup} controlId="formBasicName">
-                <div className={styles.buildingSelectorContainer}>
+            <div className={styles.buildingSelectorContainer}>
                 <div className={styles.formLabel}>Building</div>
                 <select ref={buildingRef} className={styles.resourceSelector} name='building' onChange={(e) => setBuilding(e.target.value)}>
-                    <option value='' disabled selected id='BuildingDefault'>--Select the building--</option>
+                    <option value='' disabled id='BuildingDefault'>--Select the building--</option>
                         {buildings.length > 0 && (
-                            buildings.map(building => (
-                                <option key={building.id} value={building.id}>{building.name + ' (' + building.location + ')'}</option>
+                            buildings.map(abuilding => (
+                                <option key={abuilding.id} value={abuilding.id} selected={abuilding.id==building}>{abuilding.name + ' (' + abuilding.location + ')'}</option>
                             ))
                         )}
                 </select>
