@@ -47,10 +47,16 @@ type ResetPasswordRequest struct {
 //UserHandlers registers the user
 func UserHandlers(router *mux.Router) error {
 	router.HandleFunc("/register", RegisterUserHandler).Methods("POST")
-	router.HandleFunc("/information", InformationUserHandler).Methods("POST")
-	router.HandleFunc("/update", UpdateUserHandler).Methods("POST")
-	router.HandleFunc("/remove", RemoveUserHandler).Methods("POST")
 	router.HandleFunc("/login", LoginUserHandler).Methods("POST")
+
+	router.HandleFunc("/remove", security.Validate(RemoveUserHandler,
+		&data.Permissions{data.CreateGenericPermission("DELETE", "USER", "IDENTIFIER")})).Methods("POST")
+
+	router.HandleFunc("/update", security.Validate(UpdateUserHandler,
+		&data.Permissions{data.CreateGenericPermission("EDIT", "USER", "IDENTIFIER")})).Methods("POST")
+
+	router.HandleFunc("/information", security.Validate(InformationUserHandler,
+		&data.Permissions{data.CreateGenericPermission("VIEW", "USER", "IDENTIFIER")})).Methods("POST")
 
 	router.HandleFunc("/resetpassword", security.Validate(ResetPasswordHandler,
 		&data.Permissions{data.CreateGenericPermission("EDIT", "USER", "IDENTIFIER")})).Methods("POST")
@@ -191,6 +197,10 @@ func addDefaultPermissions(user string, access *db.Access) error {
 	if err != nil {
 		return err
 	}
+	err = dp.StorePermission(data.CreatePermission(user, "USER", "VIEW", "USER", "IDENTIFIER", user))
+	if err != nil {
+		return err
+	}
 	err = dp.StorePermission(data.CreatePermission(user, "USER", "VIEW", "BUILDING", "IDENTIFIER", user))
 	if err != nil {
 		return err
@@ -238,7 +248,7 @@ func addDefaultPermissions(user string, access *db.Access) error {
 	return nil
 }
 
-func InformationUserHandler(writer http.ResponseWriter, request *http.Request) {
+func InformationUserHandler(writer http.ResponseWriter, request *http.Request, permissions *data.Permissions) {
 	var user data.User
 
 	err := utils.UnmarshalJSON(writer, request, &user)
@@ -326,7 +336,7 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) { // TO
 	utils.JSONResponse(writer, request, authData)
 }
 
-func UpdateUserHandler(writer http.ResponseWriter, request *http.Request) {
+func UpdateUserHandler(writer http.ResponseWriter, request *http.Request, permissions *data.Permissions) {
 	// Unmarshall user
 	var identifier data.User
 	err := utils.UnmarshalJSON(writer, request, &identifier)
@@ -361,7 +371,7 @@ func UpdateUserHandler(writer http.ResponseWriter, request *http.Request) {
 	utils.JSONResponse(writer, request, identifierUpdated)
 }
 
-func RemoveUserHandler(writer http.ResponseWriter, request *http.Request) {
+func RemoveUserHandler(writer http.ResponseWriter, request *http.Request, permissions *data.Permissions) {
 	// Unmarshal resource
 	var identifier data.User
 	err := utils.UnmarshalJSON(writer, request, &identifier)
