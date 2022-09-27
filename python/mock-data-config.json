@@ -1,17 +1,18 @@
 {
     "building_id": "98989898-dc08-4a06-9983-8b374586e459",
     "create_user": {
-        "num_users": 20,
+        "num_users": 6,
         "password_override": "P@ssword123",
         "email_domains": ["@gmail.com"],
-        "lowest_preferred_start_time": "2022-08-24T07:00:00.000Z",
-        "highest_preferred_end_time": "2022-08-24T19:00:00.000Z",
+        "lowest_preferred_start_time": "2022-08-24T09:00:00.000Z",
+        "highest_preferred_end_time": "2022-08-24T17:00:00.000Z",
         "preferred_time_step_minutes": 180,
         "work_from_home_probability": 0.8,
-        "team_probabilities": [0.00, 0.5, 0.5],
+        "teams_override": ["7e7af99a-372b-4d3b-80c4-19464dd244eb"],
+        "team_probabilities": [0.00, 0.3, 0.4, 0.2],
         "role_probabilities": [0.1, 0.2, 0.3, 0.3, 0.1],
         "office_days_options": [1, 2, 3, 4, 5],
-        "office_days_probabilities": [0.05, 0.35, 0.4, 0.15, 0.05],
+        "office_days_probabilities": [0.0, 0.00, 0.0, 0.0, 1.0],
         "no_preferred_desk_probability": 0.15
     }
 }
