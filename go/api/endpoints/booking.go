@@ -164,6 +164,15 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 		return
 	}
 
+	// Getting User for Calendar Event
+	du := data.NewUserDA(access)
+	users, err := du.FindIdentifier(&data.User{Id: booking.UserId})
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	user := users.FindHead()
+
 	// Commit transaction
 	err = access.Commit()
 	if err != nil {
@@ -172,13 +181,14 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 	}
 
 	// Create Google Calendar Event
-	du := data.NewUserDA(access)
-	users, err := du.FindIdentifier(&data.User{Id: booking.UserId})
+	access.Close()
+	access, err = db.Open()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
-	user := users.FindHead()
+	da = data.NewBookingDA(access)
+	booking, err = da.FindIdentifier(&booking, &data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "USER")})
 	logger.Access.Println("\nHERE1\n")
 	logger.Access.Printf("\nData5: %v",booking)
 	logger.Access.Printf("\nData5: %v",booking.Id)
