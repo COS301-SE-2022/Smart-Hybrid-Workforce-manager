@@ -40,7 +40,7 @@ export default function Login()
       }
       else{
         console.log(res)
-        alert("Failed login");
+        alert("Failed login, please try again in 3 seconds");
       }
     }).then((data) => {
       data['expr_time'] = Date.parse(data.ExpirationTime)
@@ -54,7 +54,6 @@ export default function Login()
     }).catch((err) => {
       console.error(err);
     })
-    alert("Email or password is incorrect, please try again in 3 seconds.")
   };
 
   // https://stackoverflow.com/questions/58726772/how-to-disable-enable-a-button-efficiently-based-on-countdown-timer-in-react-nat
