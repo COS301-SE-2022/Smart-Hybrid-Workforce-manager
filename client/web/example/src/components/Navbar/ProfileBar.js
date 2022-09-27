@@ -41,11 +41,11 @@ const ProfileBar = (props, ref) =>
     return (
         <div className='profilebar-container'>
             <div ref={profileRef} className='profilepic-container' onClick={NavigateProfile} data-testid='profilepic-container'>
-                <CgProfile />
+                <CgProfile style={{verticalAlign: 'baseline'}}/>
             </div>
 
             <div className='logout' onClick={Logout}>
-                <FaDoorOpen />
+                <FaDoorOpen style={{verticalAlign: 'baseline'}}/>
                 &nbsp;
                 Logout
             </div>

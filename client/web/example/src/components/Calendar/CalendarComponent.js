@@ -600,14 +600,14 @@ const CalendarComponent = () =>
 
                 <div className={styles.navContainer}>
                     <div ref={prevRef} className={styles.prev} onMouseEnter={MouseOverPrev} onMouseLeave={MouseLeavePrev} onClick={PrevClick}>
-                        <IoIosArrowBack />
+                        <IoIosArrowBack style={{verticalAlign: 'baseline'}}/>
                         <div ref={prevWeekRef} className={styles.tooltipPrev}>
                             Previous Week
                         </div>
                     </div>
 
                     <div ref={nextRef} className={styles.next} onMouseEnter={MouseOverNext} onMouseLeave={MouseLeaveNext} onClick={NextClick}>
-                        <IoIosArrowForward />
+                        <IoIosArrowForward style={{verticalAlign: 'baseline'}}/>
                         <div ref={nextWeekRef} className={styles.tooltipNext}>
                             Next Week
                         </div>
@@ -622,37 +622,37 @@ const CalendarComponent = () =>
                     </div>
 
                     <div className={styles.dayDate}>
-                        <p className={styles.day}>Sun</p>
+                        <p className={styles.day} style={{marginBottom: 0}}>Sun</p>
                         <div ref={sunRef} className={styles.date}>{days[0].date}</div>
                     </div>
 
                     <div className={styles.dayDate}>
-                        <p className={styles.day}>Mon</p>
+                        <p className={styles.day} style={{marginBottom: 0}}>Mon</p>
                         <div ref={monRef} className={styles.date}>{days[1].date}</div>
                     </div>
 
                     <div className={styles.dayDate}>
-                        <p className={styles.day}>Tue</p>
+                        <p className={styles.day} style={{marginBottom: 0}}>Tue</p>
                         <div ref={tueRef} className={styles.date}>{days[2].date}</div>
                     </div>
 
                     <div className={styles.dayDate}>
-                        <p className={styles.day}>Wed</p>
+                        <p className={styles.day} style={{marginBottom: 0}}>Wed</p>
                         <div ref={wedRef} className={styles.date}>{days[3].date}</div>
                     </div>
 
                     <div className={styles.dayDate}>
-                        <p className={styles.day}>Thu</p>
+                        <p className={styles.day} style={{marginBottom: 0}}>Thu</p>
                         <div ref={thuRef} className={styles.date}>{days[4].date}</div>
                     </div>
 
                     <div className={styles.dayDate}>
-                        <p className={styles.day}>Fri</p>
+                        <p className={styles.day} style={{marginBottom: 0}}>Fri</p>
                         <div ref={friRef} className={styles.date}>{days[5].date}</div>
                     </div>
 
                     <div className={styles.dayDate}>
-                        <p className={styles.day}>Sat</p>
+                        <p className={styles.day} style={{marginBottom: 0}}>Sat</p>
                         <div ref={satRef} className={styles.date}>{days[6].date}</div>
                     </div>
                 </div>

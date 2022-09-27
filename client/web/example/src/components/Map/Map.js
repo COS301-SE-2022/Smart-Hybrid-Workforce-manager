@@ -160,6 +160,15 @@ const Map = () =>
     const HandleResize = () =>
     {
         SetStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
+        if(selectedId)
+        {
+            setSidePanel(0.65*window.innerWidth);
+        }
+        else
+        {
+            setSidePanel(0.85*window.innerWidth);
+        }
+        
     }
 
     window.addEventListener('resize', HandleResize);
