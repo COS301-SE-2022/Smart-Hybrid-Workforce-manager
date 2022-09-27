@@ -44,7 +44,6 @@ type RedisData struct{
 type CalendarBookings struct{
 	Calendar_id				string 		`json:"calendar_id"`
 	User_id					string 		`json:"user_id"`
-	Time_end				time.Time	`json:"time_end"`
 }
 
 //Redis clients
@@ -235,11 +234,11 @@ func UserLogin(user_id string, user_identifier string, user_name string, user_su
 }
 
 func CreateBooking(booking_id string, calendar_id string, user_id string,end_time time.Time) bool{
+	logger.Access.Println("\nHERE10\n")
 	client := getCalendarClient()
 	data := CalendarBookings{
 		Calendar_id: calendar_id,
 		User_id: user_id,
-		Time_end: end_time,
 	}
 	logger.Access.Println("\nHERE6\n")
 	rdata,err := json.Marshal(data)
