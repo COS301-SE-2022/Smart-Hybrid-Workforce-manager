@@ -403,6 +403,20 @@ func (access *ResourceDA) DeleteIdentifier(identifier *Resource) (*Resource, err
 	return tmp.FindHead(), nil
 }
 
+// BatchDeleteIdentifier deletes many Resource Identifiers
+func (access *ResourceDA) BatchDeleteIdentifier(identifiers []*Resource) error {
+	for i := 0; i < len(identifiers); i++ {
+		identifier := identifiers[i]
+		_, err := access.access.Query(
+			`SELECT * FROM resource.identifier_remove($1)`, mapResource,
+			identifier.Id)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 //FindHead returns the first Resource Identifier
 func (Resources Resources) FindHead() *Resource {
 	if len(Resources) == 0 {

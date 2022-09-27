@@ -611,18 +611,47 @@ const Creator = () =>
 
             if(res.status === 200)
             {
-                alert("Saved!");
-                UpdateResources(currRoom);
+                if(deletedResources.current.length > 0)
+                {
+                    var deletedArray = [];
+                    for(let i = 0; i < deletedResources.current.length; i++)
+                    {
+                        var deleted = deletedResources.current[i];
+
+                        deletedArray.push(
+                        {
+                            id : deleted.id
+                        });
+                    }
+
+                    let res = await fetch("http://localhost:8080/api/resource/batch-remove", 
+                    {
+                        method: "POST",
+                        mode: 'cors',
+                        body: JSON.stringify(deletedArray),
+                        headers:{
+                            'Content-Type': 'application/json',
+                            'Authorization': `bearer ${userData.token}`
+                        }
+                    });
+
+                    if(res.status === 200)
+                    {
+                        deletedResources.current = [];
+                        alert("Saved!");
+                        UpdateResources(currRoom);
+                    }
+                }
+                else
+                {
+                    alert("Saved!");
+                    UpdateResources(currRoom);
+                }
             }
         }
         catch(err)
         {
             console.log(err);
-        }
-
-        if(deletedResources.current.length > 0)
-        {
-            console.log(deletedResources.current + currBuilding);
         }
     }
 
@@ -689,6 +718,7 @@ const Creator = () =>
     useEffect(() =>
     {
         //Reset reference array and counters
+        deletedResources.current = [];
         deskPropsRef.current = [];
         deskCount.current = 0;
         meetingRoomPropsRef.current = [];
