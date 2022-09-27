@@ -126,7 +126,7 @@ func CallWeeklyScheduler() error {
 	buildingGroups := GroupByBuilding(schedulerData)
 	for _, data := range buildingGroups {
 		schedulerData = data
-		logger.Info.Println(testutils.Scolourf(testutils.GREEN, "Running weekly scheduler from %v -> %v for building: %v", nextMonday, nextSaturday, *schedulerData.Buildings[0].Id))
+		logger.Info.Println(testutils.Scolourf(testutils.GREEN, "Running weekly scheduler [periodic] from %v -> %v for building: %v", nextMonday, nextSaturday, *schedulerData.Buildings[0].Id))
 		if err != nil {
 			logger.Error.Println(err)
 			return err
@@ -156,7 +156,7 @@ func CallDailyScheduler() error {
 	buildingGroups := GroupByBuilding(schedulerData)
 	for _, data := range buildingGroups {
 		schedulerData = data
-		logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running daily scheduler from %v -> %v for building: %v", startDate, endDate, *schedulerData.Buildings[0].Id))
+		logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running daily scheduler [periodic] from %v -> %v for building: %v", startDate, endDate, *schedulerData.Buildings[0].Id))
 		if err != nil {
 			logger.Error.Println(err)
 			return err
@@ -209,8 +209,8 @@ func CallMeetingRoomScheduler(daysInAdvance int, now time.Time) error {
 }
 
 func StartWeeklyCalling() (chrono.ScheduledTask, error) {
-	callRate := 4 * time.Hour
-	startDelay := 1 * time.Minute
+	callRate := 2 * time.Hour
+	startDelay := 30 * time.Minute
 	taskScheduler := chrono.NewDefaultTaskScheduler()
 
 	task, err := taskScheduler.ScheduleAtFixedRate(func(ctx context.Context) {
@@ -228,7 +228,7 @@ func StartWeeklyCalling() (chrono.ScheduledTask, error) {
 }
 
 func StartDailyCalling() (chrono.ScheduledTask, error) {
-	callRate := 24 * time.Hour // Once every 24 hours
+	callRate := 4 * time.Hour // Once every 4 hours
 	// startDelay := 2 * time.Minute
 	// Start running at end of day
 	now := time.Now()

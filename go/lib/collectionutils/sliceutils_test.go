@@ -590,3 +590,63 @@ func TestSum(t *testing.T) {
 	s2 := Sum([]rune{5, 7, 13})
 	assert.Equalf(t, rune(25), s2, "Sum()=%v want=%v", s2, 25)
 }
+
+func TestRemElementAtIPreseveOrder(t *testing.T) {
+	type args struct {
+		slice []int
+		index int
+	}
+	tests := []struct {
+		name string
+		args args
+		want []int
+	}{
+		{
+			name: "Test 1",
+			args: args{
+				slice: []int{1, 2, 3, 4, 5},
+				index: 0,
+			},
+			want: []int{2, 3, 4, 5},
+		},
+		{
+			name: "Test 2",
+			args: args{
+				slice: []int{1, 2, 3, 4, 5},
+				index: 4,
+			},
+			want: []int{1, 2, 3, 4},
+		},
+		{
+			name: "Test 3",
+			args: args{
+				slice: []int{1, 2, 3, 4, 5},
+				index: 2,
+			},
+			want: []int{1, 2, 4, 5},
+		},
+		{
+			name: "Test 4",
+			args: args{
+				slice: []int{1, 2, 3, 4, 5},
+				index: -1,
+			},
+			want: []int{1, 2, 3, 4, 5},
+		},
+		{
+			name: "Test 5",
+			args: args{
+				slice: []int{1, 2, 3, 4, 5},
+				index: 10,
+			},
+			want: []int{1, 2, 3, 4, 5},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := RemElementAtIPreseveOrder(tt.args.slice, tt.args.index); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("RemElementAtIPreseveOrder() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
