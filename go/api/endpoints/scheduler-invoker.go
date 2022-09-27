@@ -26,6 +26,7 @@ func SchedulerHandlers(router *mux.Router) error {
 	router.HandleFunc("/execute", SchedulerInvoker).Methods("POST")
 	router.HandleFunc("/execute/weekly", WeeklyScheduler).Methods("POST")
 	router.HandleFunc("/execute/daily", DailyScheduler).Methods("POST")
+	router.HandleFunc("/execute/meeting_room", MeetingroomScheduler).Methods("POST")
 	router.HandleFunc("/delete", RemoveAutomatedBookings).Methods("POST")
 
 	return nil
@@ -107,6 +108,24 @@ func SchedulerInvoker(writer http.ResponseWriter, request *http.Request) {
 	}
 	wg.Wait()
 	utils.Ok(writer, request)
+}
+
+func MeetingroomScheduler(writer http.ResponseWriter, request *http.Request) {
+	var requestedDate SchedulerRequest
+	err := utils.UnmarshalJSON(writer, request, &requestedDate)
+	if err != nil {
+		utils.BadRequest(writer, request, fmt.Sprintf("invalid_request: %v", err))
+		return
+	}
+	now := time.Now()
+	if requestedDate.StartDate != nil { // Use passed in date if a date was supplied
+		now = *requestedDate.StartDate
+	}
+	err = scheduler.CallMeetingRoomScheduler(0, now)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
 }
 
 // WeeklyScheduler will call and execute the weekly scheduers

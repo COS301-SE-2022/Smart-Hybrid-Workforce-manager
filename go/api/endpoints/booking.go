@@ -307,7 +307,6 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 	}
 
 	// Check if the user has permission to create or update a booking for the incoming meeting room
-	// TODO: @JonathanEnslin fix these permissions, add perms for creating bookings for certain teams, roles etc... Or leave it up to the scheduler
 	authorized := false
 	if meetingRoomBooking.Booking.UserId != nil {
 		for _, permission := range *permissions {

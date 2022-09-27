@@ -91,6 +91,9 @@ class UserGenerator:
         if desks is not None and len(desks) > 0 and random.uniform(0, 1) < self.preferred_desk_prob:
             user["preferred_desk"] = random.choice(desks)
 
+        if self.config["teams_override"] is not None:
+            teams = self.config["teams_override"]
+
         if teams is not None:
             num_teams = random.choices(self.team_num_bins, self.team_num_probs, k=1)[0]
             num_teams = min(num_teams, len(teams))
