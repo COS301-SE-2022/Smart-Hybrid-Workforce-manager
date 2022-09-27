@@ -1096,3 +1096,10 @@ hr {
     height: 200px;
     border: 3px solid green;
 }
+
+button:disabled,
+button[disabled] {
+    border: 1px solid #999999;
+    background-color: #cccccc;
+    color: #666666;
+}

@@ -1507,7 +1507,7 @@ CREATE FUNCTION "user".credential_store(_id character varying, _secret character
     AS $$
 BEGIN
     IF EXISTS(SELECT 1 FROM "user"."credential" WHERE id = _id) THEN
-        UPDATE "security".credential
+        UPDATE "user".credential
         SET secret = CRYPT(_secret, GEN_SALT('bf', 13))::VARCHAR(256),
             identifier = _identifier,
             active = TRUE,

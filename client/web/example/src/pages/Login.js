@@ -11,11 +11,17 @@ export default function Login()
   const auth = sessionStorage.getItem("auth_data");
   const {setUserData}=useContext(UserContext)
   const navigate=useNavigate();
-  const location=useLocation();
-
+  const location = useLocation();
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  
   let handleSubmit = async (e) =>
   {
     e.preventDefault();
+    setIsButtonDisabled(true)
+
+    // **** here's the timeout ****
+    setTimeout(() => setIsButtonDisabled(false), 5000);
+
     fetch("http://localhost:8080/api/user/login", 
     {
       method: "POST",
@@ -34,8 +40,8 @@ export default function Login()
       }
       else{
         console.log(res)
-        alert("Failed login");
-      }        
+        alert("Failed login, please try again in 3 seconds");
+      }
     }).then((data) => {
       data['expr_time'] = Date.parse(data.ExpirationTime)
       setUserData(data)
@@ -48,9 +54,9 @@ export default function Login()
     }).catch((err) => {
       console.error(err);
     })
-    
-  };  
+  };
 
+  // https://stackoverflow.com/questions/58726772/how-to-disable-enable-a-button-efficiently-based-on-countdown-timer-in-react-nat
   return (
     <div className='page-container'>
       <div className='content-login'>
@@ -69,7 +75,7 @@ export default function Login()
                 <Form.Control className='form-input' type="password" placeholder="Enter your password" value={secret} onChange={(e) => setSecret(e.target.value)} />
               </Form.Group>
 
-              <Button className='button-submit' variant='primary' type='submit'>Sign In</Button>
+              <Button className='button-submit' variant='primary' type='submit' disabled={isButtonDisabled}>Sign In</Button>
             </Form>
             <p className='signup-prompt'>Don't have an account? <a className='signup-link' href='/signup'>Sign up for free!</a></p>
           </div>

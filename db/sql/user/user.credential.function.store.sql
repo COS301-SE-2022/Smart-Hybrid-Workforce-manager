@@ -7,7 +7,7 @@ RETURNS BOOLEAN AS
 $$
 BEGIN
     IF EXISTS(SELECT 1 FROM "user"."credential" WHERE id = _id) THEN
-        UPDATE "security".credential
+        UPDATE "user".credential
         SET secret = CRYPT(_secret, GEN_SALT('bf'))::VARCHAR(256),
             identifier = _identifier,
             active = TRUE,
