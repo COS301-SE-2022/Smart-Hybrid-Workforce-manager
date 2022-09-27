@@ -179,8 +179,7 @@ func CreateBooking(user *data.User ,booking *data.Booking) error{
 		return err
 	}
 	logger.Access.Println("\nHERE4\n")
-	logger.Access.Printf("Event created: %s\n", event.HtmlLink)
-	redis.CreateBooking(*booking.Id, event.Id, *user.Id, *booking.End)
+	redis.CreateBooking(*booking.Id, event.Id, *booking.UserId, *booking.End)
 	logger.Access.Println("\nHERE5\n")
 	return nil
 }
