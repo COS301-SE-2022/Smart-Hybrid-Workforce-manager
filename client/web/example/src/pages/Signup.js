@@ -233,7 +233,7 @@ function Signup()
 
                     <Form.Group className='form-group' controlId="formBasicPassword">
                         <Form.Label className='form-label'>Password<br></br></Form.Label>
-                        <Form.Control ref={passwordRef} className='form-input' type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                        <Form.Control ref={passwordRef} className='password-input' type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} />
                         <div className='password-requirements'>
                             <ul>
                                 <li ref={lengthRef}>8 or more characters</li>

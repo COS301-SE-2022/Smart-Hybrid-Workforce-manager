@@ -15,7 +15,6 @@ function ResetPassword()
     
     const passwordRef = useRef();
     const confirmPasswordRef = useRef();
-    const confirmRef = useRef();
     const lengthRef = useRef();
     const charactersRef = useRef();
     const specialRef = useRef();
@@ -185,7 +184,7 @@ function ResetPassword()
                       
             <Form.Group className='form-group' controlId="formBasicPassword">
                 <Form.Label className='form-label'>Password<br></br></Form.Label>
-                <Form.Control ref={passwordRef} className='form-input' type="password" placeholder="Enter your password" value={password} onChange={(e) => SetPassword(e.target.value)} />
+                <Form.Control ref={passwordRef} className='password-input' type="password" placeholder="Enter your password" value={password} onChange={(e) => SetPassword(e.target.value)} />
                 <div className='password-requirements'>
                     <ul>
                         <li ref={lengthRef}>8 or more characters</li>
@@ -198,12 +197,7 @@ function ResetPassword()
                   
             <Form.Group className='form-group' controlId="formBasicConfirmPassword">
                 <Form.Label className='form-label'>Password<br></br></Form.Label>
-                <Form.Control ref={confirmPasswordRef} className='form-input' type="password" placeholder="Confirm your password" value={confirm} onChange={(e) => SetConfirmPassword(e.target.value)}/>
-                <div className='password-requirements'>
-                    <ul>
-                        <li ref={confirmRef}>Passwords do not match</li>
-                    </ul>
-                </div>
+                <Form.Control ref={confirmPasswordRef} className='password-input' type="password" placeholder="Confirm your password" value={confirm} onChange={(e) => SetConfirmPassword(e.target.value)}/>
             </Form.Group>
 
             <Button className='button-submit' variant='primary' type='submit'>Update Password</Button>
