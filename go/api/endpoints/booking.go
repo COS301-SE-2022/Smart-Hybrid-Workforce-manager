@@ -164,6 +164,13 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 		return
 	}
 
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
 	// Create Google Calendar Event
 	du := data.NewUserDA(access)
 	users, err := du.FindIdentifier(&data.User{Id: booking.UserId})
@@ -173,18 +180,15 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 	}
 	user := users.FindHead()
 	logger.Access.Println("\nHERE1\n")
+	logger.Access.Printf("\nData5: %v",booking)
+	logger.Access.Printf("\nData5: %v",booking.Id)
 	err = google_api.CreateBooking(user,&booking)
 	if err != nil{
 		logger.Error.Printf("Error occured while creating google calendar event: %v",err)
 	}
 	logger.Access.Println("\nWE GOT TILL HERE BEFORE IT FUCKED UP\n")
 
-	// Commit transaction
-	err = access.Commit()
-	if err != nil {
-		utils.InternalServerError(writer, request, err)
-		return
-	}
+
 	logger.Access.Println("\nHERE2\n")
 	logger.Access.Printf("%v created\n", booking.Id) // TODO [KP]: Be more descriptive
 	logger.Access.Println("\nHERE3\n")
