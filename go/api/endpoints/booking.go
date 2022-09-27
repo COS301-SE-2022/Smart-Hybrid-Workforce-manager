@@ -175,6 +175,8 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 
 	results := google_api.CreateBooking(user,&booking)
 	logger.Access.Printf("%v created\n", results)
+	resultss := google_api.TestingFunc()
+	logger.Access.Printf("\nTestingFunc: %v\n", resultss)
 
 	// Commit transaction
 	err = access.Commit()

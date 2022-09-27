@@ -15,15 +15,17 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
+	"strings"
 
 	// "time"
 	"api/data"
 	"lib/logger"
 
 	"golang.org/x/oauth2"
-	// "golang.org/x/oauth2/google"
+	"golang.org/x/oauth2/google"
 	"google.golang.org/api/calendar/v3"
-	// "google.golang.org/api/option"
+	"google.golang.org/api/option"
 	// "google.golang.org/genproto/googleapis/apps/script/type/calendar"
 )
 
@@ -86,22 +88,21 @@ func saveToken(path string, token *oauth2.Token) {
 	_ = err
 }
 
-func createEvent(summary string, location *string, desc *string, starttime string, endtime string, attendess []string) *calendar.Event {
+func createEvent(summary string, location *string, desc *string, starttime time.Time, endtime time.Time, attendee string) *calendar.Event {
 
 	event := &calendar.Event{
 		Summary: summary,
 		Start: &calendar.EventDateTime{
-			DateTime: starttime,
+			DateTime: starttime.Format(time.RFC3339),
 			TimeZone: "Africa/Harare",
 		},
 		End: &calendar.EventDateTime{
-			DateTime: endtime,
+			DateTime: endtime.Format(time.RFC3339),
 			TimeZone: "Africa/Harare",
 		},
 		// Recurrence: []string{"RRULE:FREQ=DAILY;COUNT=2"},
 		Attendees: []*calendar.EventAttendee{
-		        &calendar.EventAttendee{Email:"email@example.com"},
-		        // &calendar.EventAttendee{Email:"sbrin@example.com"},
+		        &calendar.EventAttendee{Email:attendee},
 		},
 	}
 	if location != nil {
@@ -116,36 +117,46 @@ func createEvent(summary string, location *string, desc *string, starttime strin
 }
 
 func CreateBooking(user *data.User ,booking *data.Booking) string{
-	logger.Access.Printf("user: %v\nbooking: %v",user,booking)
-	return "Booking"
+	logger.Access.Printf("user: %v\nbooking: %v\n",*user,*booking)
+	event := createEvent(*booking.ResourceType,nil,nil,*booking.Start,*booking.End,*user.Email)
+	logger.Access.Printf("\nevent: %v\n",event)
+	return "Calender Booking"
 }
 
 func TestingFunc() bool{
-	// ctx := context.Background()
-	// b, err := os.ReadFile("credentials.json")
-	// if err != nil {
-	//         log.Fatalf("Unable to read client secret file: %v", err)
-	// }
+	ctx := context.Background()
+	b, err := os.ReadFile("/google_api/credentials.json")
+	if err != nil {
+	    logger.Error.Printf("Unable to read client secret file: %v\n", err)
+		return false
+	}
 
-	// // If modifying these scopes, delete your previously saved token.json.
-	// config, err := google.ConfigFromJSON(b, calendar.CalendarScope)
-	// if err != nil {
-	//         log.Fatalf("Unable to parse client secret file to config: %v", err)
-	// }
-	// client := getClient(config)
+	// If modifying these scopes, delete your previously saved token.json.
+	config, err := google.ConfigFromJSON(b, calendar.CalendarScope)
+	if err != nil {
+		logger.Error.Printf("Unable to parse client secret file to config: %v\n", err)
+		return false
+	}
+	client := getClient(config)
 
-	// srv, err := calendar.NewService(ctx, option.WithHTTPClient(client))
-	// if err != nil {
-	//         log.Fatalf("Unable to retrieve Calendar client: %v", err)
-	// }
-    // var arr []string
-	// event := createEvent("Testing",nil,nil,time.Now().Format(time.RFC3339),time.Now().Add(time.Hour * 5).Format(time.RFC3339),arr)
-	// calendarId := "primary"
-	// event, err = srv.Events.Insert(calendarId, event).Do()
-	// if err != nil {
-	// log.Fatalf("Unable to create event. %v\n", err)
-	// }
-	// fmt.Printf("Event created: %s\n", event.HtmlLink)
+	srv, err := calendar.NewService(ctx, option.WithHTTPClient(client))
+	if err != nil {
+		logger.Error.Printf("Unable to retrieve Calendar client: %v\n", err)
+		return false
+	}
+	event := createEvent("Testing",nil,nil,time.Now(),time.Now().Add(time.Hour * 5),"email@example.com")
+	calendarId := "primary"
+	event, err = srv.Events.Insert(calendarId, event).Do()
+	if err != nil {
+		logger.Error.Printf("Unable to create event. %v\n", err)
+	}
+	fmt.Printf("Event created: %s\n", event.HtmlLink)
+	line := event.HtmlLink
+	fmt.Println(line[strings.Index(line, "eid=")+4:])
+
+	// fmt.Printf("\nEvent: %s\n", event)
+	// fmt.Printf("\nEvent: %T\n", event)
+	// // fmt.Printf("\nEvent: %s\n", event.id)
 	return true
 }
 
