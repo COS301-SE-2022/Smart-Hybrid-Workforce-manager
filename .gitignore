@@ -6,3 +6,7 @@ smart_scheduler/.idea
 *.rdb
 .env
 go/api/google_api/*.json
+go/api/google_api/credentials.json
+go/api/google_api/token.json
+google_api/credentials.json
+google_api/token.json
