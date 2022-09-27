@@ -3,8 +3,8 @@ package endpoints
 import (
 	"api/data"
 	"api/db"
-	"api/security"
 	"api/google_api"
+	"api/security"
 	"fmt"
 	"lib/collectionutils"
 	"lib/logger"
@@ -100,7 +100,7 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 	}
 	if len(bookings) > 0 {
 		for _, existingBooking := range bookings {
-			if (booking.Start.Before(*existingBooking.End) && booking.Start.After(*existingBooking.Start)) || (booking.End.After(*existingBooking.Start) && booking.End.Before(*existingBooking.End)) {
+			if (booking.Start.Before(*existingBooking.End) && booking.Start.After(*existingBooking.Start)) || (booking.End.After(*existingBooking.Start) && booking.End.Before(*existingBooking.End)) || (booking.Start.Equal(*existingBooking.Start) && booking.End.Equal(*existingBooking.End)) {
 				utils.BadRequest(writer, request, "booking_exists")
 				return
 			}
