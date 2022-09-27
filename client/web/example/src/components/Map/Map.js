@@ -2,6 +2,7 @@ import { Stage, Layer } from 'react-konva';
 import { useRef, useState, useEffect, useCallback, useContext, Fragment } from 'react';
 import Desk from './Desk';
 import MeetingRoom from './MeetingRoom';
+import Wall from './Wall';
 import { UserContext } from '../../App';
 import styles from './map.module.css';
 
@@ -12,8 +13,7 @@ const Map = () =>
     const stageRef = useRef(null);
     const deskPropsRef = useRef([]);
     const meetingRoomPropsRef = useRef([]);
-    const deskCount = useRef(0);
-    const meetingRoomCount = useRef(0);
+    const wallPropsRef = useRef([]);
     const dateRef = useRef(null);
 
     //Selector refs
@@ -35,6 +35,7 @@ const Map = () =>
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
     const [meetingRoomProps, SetMeetingRoomProps] = useState([]);
+    const [wallProps, SetWallProps] = useState([]);
     const [stage, SetStage] = useState({width : 100, height : 100});
     const [selectedId, SelectShape] = useState(null);
 
@@ -131,7 +132,7 @@ const Map = () =>
     },[]);
 
     //Load desks from the database
-    const LoadMeetingRoom = useCallback((id, name, x, y, width, height, rotation) =>
+    const LoadMeetingRoom = useCallback((id, name, x, y, width, height, rotation, capacity) =>
     {
         //Uses a reference array to prevent state dependency and infinite loop
         if(stageRef.current !== null)
@@ -148,12 +149,40 @@ const Map = () =>
                     width : width,
                     height : height,
                     rotation : rotation,
-                    edited : true
+                    capacity: capacity,
+                    edited : true,
+                    booked: false
                 }
             ];
 
             //Set the state using the reference array
             SetMeetingRoomProps(meetingRoomPropsRef.current);
+        }
+    },[]);
+
+    const LoadWall = useCallback((id, name, x, y, width, height, rotation) =>
+    {
+        //Uses a reference array to prevent state dependency and infinite loop
+        if(stageRef.current !== null)
+        {
+            wallPropsRef.current =
+            [
+                ...wallPropsRef.current,
+                {
+                    key : "wall" + id,
+                    id : id,
+                    name : name,
+                    x : x,
+                    y : y,
+                    width : width,
+                    height : height,
+                    rotation : rotation,
+                    edited : false
+                }
+            ];
+
+            //Set the state using the reference array
+            SetWallProps(wallPropsRef.current);
         }
     },[]);
 
@@ -375,7 +404,6 @@ const Map = () =>
                         });
 
                         setAllUsers(users);
-                        console.log(users);
                     });
                 });
             });
@@ -405,9 +433,11 @@ const Map = () =>
         //Reset reference array and counters
         deskPropsRef.current = [];
         meetingRoomPropsRef.current = [];
+        wallPropsRef.current = [];
 
         SetDeskProps(deskPropsRef.current);
         SetMeetingRoomProps(meetingRoomPropsRef.current);
+        SetWallProps(wallPropsRef.current);
 
         //Loop through resources and load desks and meeting rooms respectively
         for(var i = 0; i < resources.length; i++)
@@ -418,23 +448,16 @@ const Map = () =>
             }
             else if(resources[i].resource_type === "MEETINGROOM")
             {
-                LoadMeetingRoom(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation);
+                LoadMeetingRoom(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, JSON.parse(resources[i].decorations).capacity, false);
+            }
+            else if(resources[i].resource_type === "WALL")
+            {
+                LoadWall(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation);
             }
         }
 
-    }, [resources, LoadDesk, LoadMeetingRoom]);
+    }, [resources, LoadDesk, LoadMeetingRoom, LoadWall]);
 
-    //Update the desk counter when a new desk is added or removed
-    useEffect(() =>
-    {
-        deskCount.current = deskProps.length;
-    }, [deskProps.length]);
-
-    //Update the meeting room counter when a new meeting room is added or removed
-    useEffect(() =>
-    {
-        meetingRoomCount.current = meetingRoomProps.length;
-    }, [meetingRoomProps.length]);
 
     useEffect(() =>
     {
@@ -550,15 +573,29 @@ const Map = () =>
             {
                 if(bookedIDs.includes(resources[i].id))
                 {
-                    LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, true);
+                    if(resources[i].type === 'DESK')
+                    {
+                        LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, true);
+                    }
+                    else if(resources[i].type === 'MEETINGROOM')
+                    {
+                        LoadMeetingRoom(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, JSON.parse(resources[i].decorations).capacity, true);
+                    }
                 }
                 else
                 {
-                    LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, false);
+                    if(resources[i].type === 'DESK')
+                    {
+                        LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, false);
+                    }
+                    else if(resources[i].type === 'MEETINGROOM')
+                    {
+                        LoadMeetingRoom(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, JSON.parse(resources[i].decorations).capacity, false);
+                    }
                 }
             }            
         }
-    },[currBookings, allUsers, resources, LoadDesk]);
+    },[currBookings, allUsers, resources, LoadDesk, LoadMeetingRoom, LoadWall]);
 
     useEffect(() =>
     {
@@ -575,7 +612,6 @@ const Map = () =>
                     if(resource.id === user.preferred_desk && preferenceRef.current)
                     {
                         preferenceRef.current.checked = true;
-                        console.log(user.preferred_desk + ' ' + resource.id);
                     }
                 }
             })
@@ -669,59 +705,74 @@ const Map = () =>
             <div ref={canvasRef} className={styles.canvasContainer}>
                 <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onMouseUp={(e) => e.target.getStage().container().style.cursor = 'grab'} onTouchStart={CheckDeselect} draggable ref={stageRef}>
                     <Layer>
-                        {deskProps.length > 0 && (
-                            deskProps.map((desk, i) => (
-                                <Desk
-                                    key = {desk.key}
-                                    shapeProps = {desk}
+                        {deskProps.map((desk, i) => (
+                            <Desk
+                                key = {desk.key}
+                                shapeProps = {desk}
 
-                                    isSelected = {desk.key === selectedId}
+                                isSelected = {desk.key === selectedId}
+                                
+                                onSelect = {() => 
+                                {
+                                    SelectShape(desk.key);
+                                }}
+                                
+                                onChange = {(newProps) => 
+                                {
                                     
-                                    onSelect = {() => 
-                                    {
-                                        SelectShape(desk.key);
-                                    }}
+                                }}
+
+                                draggable = {false}
+
+                                transform = {false}
+                            />
+                        ))}
+
+                        {meetingRoomProps.map((meetingRoom, i) => (
+                            <MeetingRoom
+                                key = {meetingRoom.key}
+                                shapeProps = {meetingRoom}
+
+                                isSelected = {meetingRoom.key === selectedId}
+                                
+                                onSelect = {() => 
+                                {
+                                    SelectShape(meetingRoom.key);
+                                }}
+                                
+                                onChange = {(newProps) => 
+                                {
                                     
-                                    onChange = {(newProps) => 
-                                    {
-                                        const newDeskProps = deskProps.slice();
-                                        newDeskProps[i] = newProps;
-                                        SetDeskProps(newDeskProps)
-                                    }}
+                                }}
 
-                                    draggable = {false}
+                                draggable = {false}
 
-                                    transform = {false}
-                                />
-                            ))
-                        )}
+                                transform = {false}
+                            />
+                        ))} 
 
-                        {meetingRoomProps.length > 0 && (
-                            meetingRoomProps.map((meetingRoom, i) => (
-                                <MeetingRoom
-                                    key = {meetingRoom.key}
-                                    shapeProps = {meetingRoom}
+                        {wallProps.map((wall, i) => (
+                            <Wall
+                                key = {wall.key}
+                                shapeProps = {wall}
 
-                                    isSelected = {meetingRoom.key === selectedId}
+                                isSelected = {wall.key === selectedId}
+                                
+                                onSelect = {() => 
+                                {
                                     
-                                    onSelect = {() => 
-                                    {
-                                        SelectShape(meetingRoom.key);
-                                    }}
+                                }}
+                                
+                                onChange = {(newProps) => 
+                                {
                                     
-                                    onChange = {(newProps) => 
-                                    {
-                                        const newMeetingRoomProps = meetingRoomProps.slice();
-                                        newMeetingRoomProps[i] = newProps;
-                                        SetMeetingRoomProps(newMeetingRoomProps)
-                                    }}
+                                }}
 
-                                    draggable = {false}
+                                draggable = {false}
 
-                                    transform = {false}
-                                />
-                            ))
-                        )}                             
+                                transform = {false}
+                            />
+                        ))}                              
                     </Layer>
                 </Stage>
 
