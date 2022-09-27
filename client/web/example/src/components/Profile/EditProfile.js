@@ -16,7 +16,10 @@ const EditProfile = ({user, edited}) =>
     const [endTime, setEndTime] = useState('');
     const [picture, setPicture] = useState('');
     const [pictureUpload, setPictureUpload] = useState(null);
+    const [building, setBuilding] = useState('');
+    const [buildings, SetBuildings] = useState([]);
 
+    const buildingRef = useRef(null);
     const pictureInputRef = useRef(null);
 
     const homeRef = useRef(null);
@@ -73,13 +76,14 @@ const EditProfile = ({user, edited}) =>
                                     method: "POST",
                                     mode: "cors",
                                     body: JSON.stringify({
-                                        ...user,
+                                        id: id,
                                         picture: url,
                                         work_from_home: workFromHome,
                                         parking: parking,
                                         office_days: officeDays,
-                                        preferred_start_time: '0000-01-01T' + startTime + ':00Z',
-                                        preferred_end_time: '0000-01-01T' + endTime + ':00Z'
+                                        preferred_start_time: '0000-01-01T' + startTime + ':00.000Z',
+                                        preferred_end_time: '0000-01-01T' + endTime + ':00.000Z',
+                                        building_id: building
                                     }),
                                     headers:{
                                         'Content-Type': 'application/json',
@@ -106,13 +110,14 @@ const EditProfile = ({user, edited}) =>
                 method: "POST",
                 mode: "cors",
                 body: JSON.stringify({
-                    ...user,
+                    id: id,
                     picture: picture,
                     work_from_home: workFromHome,
                     parking: parking,
                     office_days: officeDays,
-                    preferred_start_time: '0000-01-01T' + startTime + ':00Z',
-                    preferred_end_time: '0000-01-01T' + endTime + ':00Z'
+                    preferred_start_time: '0000-01-01T' + startTime + ':00.000Z',
+                    preferred_end_time: '0000-01-01T' + endTime + ':00.000Z',
+                    building_id: building
                 }),
                 headers:{
                     'Content-Type': 'application/json',
@@ -140,6 +145,7 @@ const EditProfile = ({user, edited}) =>
             setStartTime(user.preferred_start_time.substring(11,16));
             setEndTime(user.preferred_end_time.substring(11,16));
             setPicture(user.picture);
+            setBuilding(user.building_id)
 
             console.log(user);
         }
@@ -172,6 +178,22 @@ const EditProfile = ({user, edited}) =>
         }
     }, [workFromHome]);
 
+    useEffect(() => {
+        fetch("http://localhost:8080/api/resource/building/information",
+            {
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify({
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
+            }).then((res) => res.json()).then(data => {
+                SetBuildings(data);
+            });
+    }, [userData.token, userData.user_identifier]);
+
     return (
         <div className={styles.form}>
             <div className={styles.pictureEditContainer}>
@@ -182,6 +204,20 @@ const EditProfile = ({user, edited}) =>
                 <Form.Control ref={pictureInputRef} style={{display: 'none'}} type='file' accept='image/png, image/jpeg, image/jpg' onChange={ChangePicture.bind(this)} />
                 <div className={styles.fileUpload} onClick={ClickPictureInput}>Change picture</div>
             </div>
+
+            <Form.Group className={styles.formGroup} controlId="formBasicName">
+            <div className={styles.buildingSelectorContainer}>
+                <div className={styles.formLabel}>Building</div>
+                <select ref={buildingRef} className={styles.resourceSelector} name='building' onChange={(e) => setBuilding(e.target.value)}>
+                    <option value='' disabled id='BuildingDefault'>--Select the building--</option>
+                        {buildings.length > 0 && (
+                            buildings.map(abuilding => (
+                                <option key={abuilding.id} value={abuilding.id} selected={abuilding.id==building}>{abuilding.name + ' (' + abuilding.location + ')'}</option>
+                            ))
+                        )}
+                </select>
+            </div>
+            </Form.Group>
 
             <Form.Group className={styles.formGroup} controlId="formBasicName">
                 <div className={styles.formLabel}>Work from home</div>
