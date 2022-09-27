@@ -53,13 +53,13 @@ func UserHandlers(router *mux.Router) error {
 		&data.Permissions{data.CreateGenericPermission("DELETE", "USER", "IDENTIFIER")})).Methods("POST")
 
 	router.HandleFunc("/update", security.Validate(UpdateUserHandler,
-		&data.Permissions{data.CreateGenericPermission("EDIT", "USER", "IDENTIFIER")})).Methods("POST")
+		&data.Permissions{data.CreateGenericPermission("CREATE", "USER", "IDENTIFIER")})).Methods("POST")
 
 	router.HandleFunc("/information", security.Validate(InformationUserHandler,
 		&data.Permissions{data.CreateGenericPermission("VIEW", "USER", "IDENTIFIER")})).Methods("POST")
 
 	router.HandleFunc("/resetpassword", security.Validate(ResetPasswordHandler,
-		&data.Permissions{data.CreateGenericPermission("EDIT", "USER", "IDENTIFIER")})).Methods("POST")
+		&data.Permissions{data.CreateGenericPermission("CREATE", "USER", "IDENTIFIER")})).Methods("POST")
 	return nil
 }
 
@@ -193,7 +193,7 @@ func RegisterUserHandler(writer http.ResponseWriter, request *http.Request) {
 
 func addDefaultPermissions(user string, access *db.Access) error {
 	dp := data.NewPermissionDA(access)
-	err := dp.StorePermission(data.CreatePermission(user, "USER", "EDIT", "USER", "IDENTIFIER", user))
+	err := dp.StorePermission(data.CreatePermission(user, "USER", "CREATE", "USER", "IDENTIFIER", user))
 	if err != nil {
 		return err
 	}
@@ -340,7 +340,7 @@ func UpdateUserHandler(writer http.ResponseWriter, request *http.Request, permis
 	// Unmarshall user
 	var identifier data.User
 	err := utils.UnmarshalJSON(writer, request, &identifier)
-	if err != nil {
+	if err != nil || identifier.Id == nil {
 		fmt.Println(err)
 		utils.BadRequest(writer, request, "invalid_request")
 		return
@@ -354,8 +354,55 @@ func UpdateUserHandler(writer http.ResponseWriter, request *http.Request, permis
 	}
 	defer access.Close()
 
+	// Find identifier
 	da := data.NewUserDA(access)
-	identifierUpdated, err := da.StoreIdentifier(&identifier)
+	var searchIdentifier data.User
+	searchIdentifier.Id = identifier.Id
+	temp, err := da.FindIdentifier(&searchIdentifier)
+	if temp.FindHead() == nil {
+		fmt.Println("HERE")
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	oldIdentifier := *temp.FindHead()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	// Replace all values with new ones
+	if identifier.FirstName != nil {
+		oldIdentifier.FirstName = identifier.FirstName
+	}
+	if identifier.LastName != nil {
+		oldIdentifier.LastName = identifier.LastName
+	}
+	if identifier.Picture != nil {
+		oldIdentifier.Picture = identifier.Picture
+	}
+	if identifier.WorkFromHome != nil {
+		oldIdentifier.WorkFromHome = identifier.WorkFromHome
+	}
+	if identifier.Parking != nil {
+		oldIdentifier.Parking = identifier.Parking
+	}
+	if identifier.OfficeDays != nil {
+		oldIdentifier.OfficeDays = identifier.OfficeDays
+	}
+	if identifier.PreferredStartTime != nil {
+		oldIdentifier.PreferredStartTime = identifier.PreferredStartTime
+	}
+	if identifier.PreferredEndTime != nil {
+		oldIdentifier.PreferredEndTime = identifier.PreferredEndTime
+	}
+	if identifier.PreferredDesk != nil {
+		oldIdentifier.PreferredDesk = identifier.PreferredDesk
+	}
+	if identifier.BuildingID != nil {
+		oldIdentifier.BuildingID = identifier.BuildingID
+	}
+
+	identifierUpdated, err := da.StoreIdentifier(&oldIdentifier)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
