@@ -9,14 +9,15 @@ import (
 )
 
 type SchedulerData struct {
-	Users           data.Users      `json:"users"`
-	Teams           []*TeamInfo     `json:"teams"`
-	Buildings       []*BuildingInfo `json:"buildings"`
-	Rooms           []*RoomInfo     `json:"rooms"`
-	Resources       data.Resources  `json:"resources"`
-	CurrentBookings *data.Bookings  `json:"current_bookings"`
-	PastBookings    *data.Bookings  `json:"past_bookings"`
-	StartDate       *time.Time      `json:"start_date"`
+	Users               data.Users               `json:"users"`
+	Teams               []*TeamInfo              `json:"teams"`
+	Buildings           []*BuildingInfo          `json:"buildings"`
+	Rooms               []*RoomInfo              `json:"rooms"`
+	Resources           data.Resources           `json:"resources"`
+	CurrentBookings     *data.Bookings           `json:"current_bookings"`
+	PastBookings        *data.Bookings           `json:"past_bookings"`
+	StartDate           *time.Time               `json:"start_date"`
+	MeetingRoomBookings data.MeetingRoomBookings `json:"meeting_room_bookings"`
 }
 
 type BookingInfo struct {
@@ -38,6 +39,59 @@ type BuildingInfo struct {
 type RoomInfo struct {
 	*data.Room
 	ResourceIds []string `json:"resource_ids"`
+}
+
+func AddMeetingRoomBookings(buildingGroups map[string]*SchedulerData) error {
+	for _, group := range buildingGroups {
+		bookings, err := GetMeetingRoomBookings(*group.CurrentBookings)
+		if err != nil {
+			return err
+		}
+		group.MeetingRoomBookings = bookings
+	}
+	return nil
+}
+
+func GetMeetingRoomBookings(bookings data.Bookings) (data.MeetingRoomBookings, error) {
+	// Craete map of the existing bookings
+	bookingMap := map[string]struct{}{}
+	for _, booking := range bookings {
+		bookingMap[*booking.Id] = struct{}{}
+	}
+
+	permissions := &data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "USER")}
+	// Unmarshal MeetingRoomBooking
+	var meetingRoomBooking data.MeetingRoomBooking
+
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		return data.MeetingRoomBookings{}, err
+	}
+	defer access.Close()
+
+	// TODO: null checks etc.
+
+	da := data.NewBookingDA(access)
+	meetingRoomBookings, err := da.FindMeeetingRoomBooking(&meetingRoomBooking, security.RemoveRolePermissions(permissions))
+	if err != nil {
+		return data.MeetingRoomBookings{}, err
+	}
+
+	// Filter meeting room bookings to only select relevant ones
+	filtered := data.MeetingRoomBookings{}
+	for _, mBooking := range meetingRoomBookings {
+		if cu.MapHasKey(bookingMap, *mBooking.BookingId) {
+			filtered = append(filtered, mBooking)
+		}
+	}
+
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		return data.MeetingRoomBookings{}, err
+	}
+	return filtered, nil
 }
 
 // GetUsers Retrieves all the users from the database

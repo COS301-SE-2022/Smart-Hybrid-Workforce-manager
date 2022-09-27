@@ -171,6 +171,43 @@ func CallDailyScheduler() error {
 	return nil
 }
 
+func CallMeetingRoomScheduler(daysInAdvance int, now time.Time) error {
+	dailyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/meeting_room"
+	// dailyEndpointURL := "https://d9e52598-1b55-4872-8fdd-1bef288323ac.mock.pstmn.io/localhost:81012/"
+
+	yyyy, mm, dd := now.Date()
+	startDate := time.Date(yyyy, mm, dd+daysInAdvance, 0, 0, 0, 0, now.Location())
+	endDate := startDate.AddDate(0, 0, 1) // Add one day
+
+	// Get data between start and end of date
+	schedulerData, err := GetSchedulerData(startDate, endDate)
+	if err != nil {
+		logger.Error.Println(err)
+		return err
+	}
+	buildingGroups := GroupByBuilding(schedulerData)
+	err = AddMeetingRoomBookings(buildingGroups)
+	if err != nil {
+		logger.Error.Println(err)
+		return err
+	}
+	for _, data := range buildingGroups {
+		schedulerData = data
+		logger.Debug.Println(testutils.Scolourf(testutils.GREEN, "Running meeting room scheduler from %v -> %v for building: %v", startDate, endDate, *schedulerData.Buildings[0].Id))
+		if err != nil {
+			logger.Error.Println(err)
+			return err
+		}
+		// Call scheduler
+		err = Call(schedulerData, dailyEndpointURL)
+		if err != nil {
+			logger.Error.Println(err)
+			return err
+		}
+	}
+	return nil
+}
+
 func StartWeeklyCalling() (chrono.ScheduledTask, error) {
 	callRate := 4 * time.Hour
 	startDelay := 1 * time.Minute
