@@ -2,6 +2,7 @@ import { Stage, Layer } from 'react-konva';
 import { useRef, useState, useEffect, useCallback, useContext, Fragment } from 'react';
 import Desk from './Desk';
 import MeetingRoom from './MeetingRoom';
+import Wall from './Wall';
 import { FaSave } from 'react-icons/fa';
 import { MdAdd, MdClose } from 'react-icons/md';
 import { BsThreeDotsVertical } from 'react-icons/bs';
@@ -20,8 +21,10 @@ const Creator = () =>
     const scaleFactor = 1.3;
     const deskPropsRef = useRef([]);
     const meetingRoomPropsRef = useRef([]);
+    const wallPropsRef = useRef([]);
     const deskCount = useRef(0);
     const meetingRoomCount = useRef(0);
+    const wallCount = useRef(0);
     const deletedResources = useRef([]);
 
     //Building and rooms
@@ -45,11 +48,17 @@ const Creator = () =>
     const [resourceXCoord, setResourceXCoord] = useState('');
     const [resourceYCoord, setResourceYCoord] = useState('');
     const [resourceRotation, setResourceRotation] = useState('');
+    const capacityLabelRef = useRef(null);
+    const capacityInputRef = useRef(null);
     const [resourceCapacity, setResourceCapacity] = useState('');
+    const lengthLabelRef = useRef(null);
+    const lengthInputRef = useRef(null);
+    const [wallLength, setWallLength] = useState('');
 
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
     const [meetingRoomProps, SetMeetingRoomProps] = useState([]);
+    const [wallProps, SetWallProps] = useState([]);
     const [stage, SetStage] = useState({width : 100, height : 100});
     const [selectedId, SelectShape] = useState(null);
 
@@ -338,7 +347,7 @@ const Creator = () =>
     };
 
     //Load desks from the database
-    const LoadMeetingRoom = useCallback((id, name, x, y, width, height, rotation) =>
+    const LoadMeetingRoom = useCallback((id, name, x, y, width, height, rotation, capacity) =>
     {
         //Uses a reference array to prevent state dependency and infinite loop
         if(stageRef.current !== null)
@@ -355,6 +364,7 @@ const Creator = () =>
                     width : width,
                     height : height,
                     rotation : rotation,
+                    capacity: capacity,
                     edited : true
                 }
             ];
@@ -389,6 +399,62 @@ const Creator = () =>
                     rotation : 0,
                     capacity: 2,
                     edited : true
+                }
+            ]);
+        }
+    };
+
+    //Load walls from the database
+    const LoadWall = useCallback((id, name, x, y, width, height, rotation) =>
+    {
+        //Uses a reference array to prevent state dependency and infinite loop
+        if(stageRef.current !== null)
+        {
+            wallPropsRef.current =
+            [
+                ...wallPropsRef.current,
+                {
+                    key : "wall" + id,
+                    id : id,
+                    name : name,
+                    x : x,
+                    y : y,
+                    width : width,
+                    height : height,
+                    rotation : rotation,
+                    edited : false
+                }
+            ];
+
+            //Set the state using the reference array
+            SetWallProps(wallPropsRef.current);
+        }
+    },[]);
+
+    //Add a new wall to the state
+    const AddWall = () =>
+    {
+        if(currBuilding === "" || currRoom === "")
+        {
+            window.alert("Please select a building and room");
+            return;
+        }
+
+        if(stageRef.current !== null)
+        {
+            SetWallProps(
+            [
+                ...wallProps,
+                {
+                    key : "wall" + wallCount.current,
+                    id : null,
+                    name : "Wall " + wallCount.current,
+                    x : (-stageRef.current.x() + stageRef.current.width() / 2.0) / stageRef.current.scaleX(),
+                    y : (-stageRef.current.y() + stageRef.current.height() / 2.0) / stageRef.current.scaleY(),
+                    width : 200,
+                    height : 40,
+                    rotation : 0,
+                    edited : false
                 }
             ]);
         }
@@ -459,7 +525,7 @@ const Creator = () =>
                     }
                 }
             }
-            else
+            else if(selectedId.includes('meetingroom'))
             {
                 for(let i = 0; i < meetingRoomProps.length; i++)
                 {
@@ -478,8 +544,27 @@ const Creator = () =>
                     }
                 }
             }
+            else if(selectedId.includes("wall"))
+            {
+                for(let i = 0; i < wallProps.length; i++)
+                {
+                    if(wallProps[i].key === selectedId)
+                    {
+                        if(wallProps[i].id !== null)
+                        {
+                            deletedResources.current.push(wallProps[i]);
+                        }
+
+                        var newWall = [...wallProps];
+                        newWall.splice(i, 1);
+                        SetWallProps(newWall);
+                        SelectShape(null);
+                        break;
+                    }
+                }
+            }
         }
-    }, [deskProps, meetingRoomProps, selectedId])
+    }, [deskProps, meetingRoomProps, wallProps, selectedId])
 
     //Adjusts the canvas size for difference screen sizes
     const HandleResize = () =>
@@ -552,7 +637,7 @@ const Creator = () =>
 
         var resources = [];
 
-        for(var i = 0; i < deskProps.length; i++)
+        for(let i = 0; i < deskProps.length; i++)
         {
             var currDesk = deskProps[i];
             
@@ -574,7 +659,7 @@ const Creator = () =>
             }
         }
 
-        for(i = 0; i < meetingRoomProps.length; i++)
+        for(let i = 0; i < meetingRoomProps.length; i++)
         {
             var currMeetingRoom = meetingRoomProps[i];
             
@@ -592,6 +677,28 @@ const Creator = () =>
                     rotation: currMeetingRoom.rotation,
                     resource_type: 'MEETINGROOM',
                     decorations: `{"capacity": ${currMeetingRoom.capacity}}`,
+                })
+            }
+        }
+
+        for(let i = 0; i < wallProps.length; i++)
+        {
+            var currWall = wallProps[i];
+            
+            if(currWall.edited)
+            {
+                resources.push(
+                {
+                    id : currWall.id,
+                    room_id: currRoom,
+                    name: currWall.name,
+                    xcoord: currWall.x,
+                    ycoord: currWall.y,
+                    width: currWall.width,
+                    height: currWall.height,
+                    rotation: currWall.rotation,
+                    resource_type: 'WALL',
+                    decorations: '',
                 })
             }
         }
@@ -723,9 +830,12 @@ const Creator = () =>
         deskCount.current = 0;
         meetingRoomPropsRef.current = [];
         meetingRoomCount.current = 0;
+        wallPropsRef.current = [];
+        wallCount.current = 0;
 
         SetDeskProps(deskPropsRef.current);
         SetMeetingRoomProps(meetingRoomPropsRef.current);
+        SetWallProps(wallPropsRef.current);
 
         //Loop through resources and load desks and meeting rooms respectively
         for(var i = 0; i < resources.length; i++)
@@ -736,11 +846,15 @@ const Creator = () =>
             }
             else if(resources[i].resource_type === "MEETINGROOM")
             {
-                LoadMeetingRoom(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation);
+                LoadMeetingRoom(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, JSON.parse(resources[i].decorations).capacity);
+            }
+            else if(resources[i].resource_type === "WALL")
+            {
+                LoadWall(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation);
             }
         }
 
-    }, [resources, LoadDesk, LoadMeetingRoom]);
+    }, [resources, LoadDesk, LoadMeetingRoom, LoadWall]);
 
     //Update the desk counter when a new desk is added or removed
     useEffect(() =>
@@ -754,18 +868,48 @@ const Creator = () =>
         meetingRoomCount.current = meetingRoomProps.length;
     }, [meetingRoomProps.length]);
 
+    //Update the wall counter when a new wall is added or removed
+    useEffect(() =>
+    {
+        wallCount.current = wallProps.length;
+    }, [wallProps.length]);
+
     //Check if properties are open or closed
     useEffect(() =>
     {
         if(selectedId)
         {
             setPropertiesPanel(0.65*window.innerWidth);
+            if(lengthLabelRef.current && lengthInputRef.current)
+            {
+                if(selectedId.includes('wall'))
+                {
+                    lengthLabelRef.current.style.display = 'block';
+                    lengthInputRef.current.style.display = 'inline-block';
+                }
+                else
+                {
+                    lengthLabelRef.current.style.display = 'none';
+                    lengthInputRef.current.style.display = 'none';
+                }
+
+                if(selectedId.includes('meetingroom'))
+                {
+                    capacityLabelRef.current.style.display = 'block';
+                    capacityInputRef.current.style.display = 'inline-block';
+                }
+                else
+                {
+                    capacityLabelRef.current.style.display = 'none';
+                    capacityInputRef.current.style.display = 'none';
+                }
+            }
         }
         else
         {
             setPropertiesPanel(0.85*window.innerWidth);
         }
-    },[selectedId, deskProps])
+    },[selectedId, wallLength])
 
     const ChangeName = (name) =>
     {
@@ -794,6 +938,21 @@ const Creator = () =>
                     newProps[i].name = name;
                     newProps[i].edited = true;
                     SetMeetingRoomProps(newProps);
+                    setResourceName(name);
+                    break;
+                }
+            }
+        }
+        else if(selectedId.includes('wall'))
+        {
+            for(let i = 0; i < wallProps.length; i++)
+            {
+                if(wallProps[i].key === selectedId)
+                {
+                    const newProps = wallProps.slice();
+                    newProps[i].name = name;
+                    newProps[i].edited = true;
+                    SetWallProps(newProps);
                     setResourceName(name);
                     break;
                 }
@@ -833,6 +992,21 @@ const Creator = () =>
                 }
             }
         }
+        else if(selectedId.includes('wall'))
+        {
+            for(let i = 0; i < wallProps.length; i++)
+            {
+                if(wallProps[i].key === selectedId)
+                {
+                    const newProps = wallProps.slice();
+                    newProps[i].x = parseInt(x);
+                    newProps[i].edited = true;
+                    SetWallProps(newProps);
+                    setResourceXCoord(x);
+                    break;
+                }
+            }
+        }
     }
 
     const ChangeYCoord = (y) =>
@@ -862,6 +1036,21 @@ const Creator = () =>
                     newProps[i].y = parseInt(y);
                     newProps[i].edited = true;
                     SetMeetingRoomProps(newProps);
+                    setResourceYCoord(y);
+                    break;
+                }
+            }
+        }
+        else if(selectedId.includes('wall'))
+        {
+            for(let i = 0; i < wallProps.length; i++)
+            {
+                if(wallProps[i].key === selectedId)
+                {
+                    const newProps = wallProps.slice();
+                    newProps[i].y = parseInt(y);
+                    newProps[i].edited = true;
+                    SetWallProps(newProps);
                     setResourceYCoord(y);
                     break;
                 }
@@ -901,6 +1090,21 @@ const Creator = () =>
                 }
             }
         }
+        else if(selectedId.includes('wall'))
+        {
+            for(let i = 0; i < wallProps.length; i++)
+            {
+                if(wallProps[i].key === selectedId)
+                {
+                    const newProps = wallProps.slice();
+                    newProps[i].rotation = parseInt(rotation);
+                    newProps[i].edited = true;
+                    SetWallProps(newProps);
+                    setResourceRotation(rotation);
+                    break;
+                }
+            }
+        }
     }
 
     const ChangeCapacity = (capacity) =>
@@ -912,10 +1116,29 @@ const Creator = () =>
                 if(meetingRoomProps[i].key === selectedId)
                 {
                     const newProps = meetingRoomProps.slice();
-                    newProps[i].rotation = parseInt(capacity);
+                    newProps[i].capacity = parseInt(capacity);
                     newProps[i].edited = true;
                     SetMeetingRoomProps(newProps);
                     setResourceCapacity(capacity);
+                    break;
+                }
+            }
+        }
+    }
+
+    const ChangeLength = (width) =>
+    {
+        if(selectedId.includes('wall'))
+        {
+            for(let i = 0; i < wallProps.length; i++)
+            {
+                if(wallProps[i].key === selectedId)
+                {
+                    const newProps = wallProps.slice();
+                    newProps[i].width = parseInt(width);
+                    newProps[i].edited = true;
+                    SetWallProps(newProps);
+                    setWallLength(width);
                     break;
                 }
             }
@@ -962,11 +1185,14 @@ const Creator = () =>
                     <div className={styles.formLabel}>Y Coordinate</div>
                     <input className={styles.formInput} type='number' placeholder='Y Coordinate' value={Math.trunc(resourceYCoord)} onChange={(e) => ChangeYCoord(e.target.value)}></input>
 
+                    <div ref={lengthLabelRef} className={styles.formLabel}>Length</div>
+                    <input ref={lengthInputRef} className={styles.formInput} type='number' placeholder='Length' disabled={selectedId ? !selectedId.includes('wall') : true} value={Math.trunc(wallLength)} onChange={(e) => ChangeLength(e.target.value)}></input>
+
                     <div className={styles.formLabel}>Rotation</div>
                     <input className={styles.formInput} type='number' placeholder='Rotation' value={Math.trunc(resourceRotation)} onChange={(e) => ChangeRotation(e.target.value)}></input>
 
-                    <div className={styles.formLabel}>Capacity</div>
-                    <input className={styles.formInput} type='number' placeholder='Capacity' disabled={selectedId ? selectedId.includes('desk') : true} value={Math.trunc(resourceCapacity)} onChange={(e) => ChangeCapacity(e.target.value)}></input>
+                    <div ref={capacityLabelRef} className={styles.formLabel}>Capacity</div>
+                    <input ref={capacityInputRef} className={styles.formInput} type='number' placeholder='Capacity' disabled={selectedId ? !selectedId.includes('meetingroom') : true} value={Math.trunc(resourceCapacity)} onChange={(e) => ChangeCapacity(e.target.value)}></input>
                 </div>
 
                 <div className={styles.actions}>
@@ -978,8 +1204,12 @@ const Creator = () =>
                         <MdAdd />{' Add desk'}
                     </div>
 
-                    <div className={styles.deleteResource}  onClick={AddMeetingRoom}>
+                    <div className={styles.editResource}  onClick={AddMeetingRoom}>
                         <MdAdd />{' Add meeting room'}
+                    </div>
+
+                    <div className={styles.deleteResource}  onClick={AddWall}>
+                        <MdAdd />{' Add wall'}
                     </div>
                 </div>                                       
 
@@ -1021,42 +1251,77 @@ const Creator = () =>
                                 />
                             ))}
 
-                            {meetingRoomProps.length > 0 && (
-                                meetingRoomProps.map((meetingRoom, i) => (
-                                    <MeetingRoom
-                                        key = {meetingRoom.key}
-                                        shapeProps = {meetingRoom}
+                            {meetingRoomProps.map((meetingRoom, i) => (
+                                <MeetingRoom
+                                    key = {meetingRoom.key}
+                                    shapeProps = {meetingRoom}
 
-                                        isSelected = {meetingRoom.key === selectedId}
-                                        
-                                        onSelect = {() => 
-                                        {
-                                            SelectShape(meetingRoom.key);
-                                            setResourceName(meetingRoomProps[i].name);
-                                            setResourceXCoord(meetingRoomProps[i].x);
-                                            setResourceYCoord(meetingRoomProps[i].y);
-                                            setResourceRotation(meetingRoomProps[i].rotation);
-                                            setResourceCapacity(meetingRoomProps[i].capacity);
-                                        }}
-                                        
-                                        onChange = {(newProps) => 
-                                        {
-                                            const newMeetingRoomProps = meetingRoomProps.slice();
-                                            newMeetingRoomProps[i] = newProps;
-                                            setResourceName(newMeetingRoomProps[i].name);
-                                            setResourceXCoord(newMeetingRoomProps[i].x);
-                                            setResourceYCoord(newMeetingRoomProps[i].y);
-                                            setResourceRotation(newMeetingRoomProps[i].rotation);
-                                            setResourceCapacity(meetingRoomProps[i].capacity);
-                                            SetMeetingRoomProps(newMeetingRoomProps);
-                                        }}
+                                    isSelected = {meetingRoom.key === selectedId}
+                                    
+                                    onSelect = {() => 
+                                    {
+                                        SelectShape(meetingRoom.key);
+                                        setResourceName(meetingRoomProps[i].name);
+                                        setResourceXCoord(meetingRoomProps[i].x);
+                                        setResourceYCoord(meetingRoomProps[i].y);
+                                        setResourceRotation(meetingRoomProps[i].rotation);
+                                        setResourceCapacity(meetingRoomProps[i].capacity);
+                                    }}
+                                    
+                                    onChange = {(newProps) => 
+                                    {
+                                        const newMeetingRoomProps = meetingRoomProps.slice();
+                                        newMeetingRoomProps[i] = newProps;
+                                        setResourceName(newMeetingRoomProps[i].name);
+                                        setResourceXCoord(newMeetingRoomProps[i].x);
+                                        setResourceYCoord(newMeetingRoomProps[i].y);
+                                        setResourceRotation(newMeetingRoomProps[i].rotation);
+                                        setResourceCapacity(meetingRoomProps[i].capacity);
+                                        SetMeetingRoomProps(newMeetingRoomProps);
+                                    }}
 
-                                        draggable = {true}
+                                    draggable = {true}
 
-                                        transform = {true}
-                                    />
-                                ))
-                            )}                             
+                                    transform = {true}
+                                />
+                            ))}    
+
+                            {wallProps.map((wall, i) => (
+                                <Wall
+                                    key = {wall.key}
+                                    shapeProps = {wall}
+
+                                    isSelected = {wall.key === selectedId}
+                                    
+                                    onSelect = {() => 
+                                    {
+                                        SelectShape(wall.key);
+                                        setResourceName(wallProps[i].name);
+                                        setResourceXCoord(wallProps[i].x);
+                                        setResourceYCoord(wallProps[i].y);
+                                        setResourceRotation(wallProps[i].rotation);
+                                        setResourceCapacity('');
+                                        setWallLength(wallProps[i].width);
+                                    }}
+                                    
+                                    onChange = {(newProps) => 
+                                    {
+                                        const newWallProps = wallProps.slice();
+                                        newWallProps[i] = newProps;
+                                        setResourceName(newWallProps[i].name);
+                                        setResourceXCoord(newWallProps[i].x);
+                                        setResourceYCoord(newWallProps[i].y);
+                                        setResourceRotation(newWallProps[i].rotation);
+                                        setResourceCapacity('');
+                                        setWallLength(newWallProps[i].width);
+                                        SetWallProps(newWallProps);
+                                    }}
+
+                                    draggable = {true}
+
+                                    transform = {true}
+                                />
+                            ))}                        
                         </Layer>
                     </Stage>
                 </div>

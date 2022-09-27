@@ -1,13 +1,10 @@
-import { Path, Transformer } from 'react-konva';
-import { useRef, useEffect, Fragment, useState } from 'react';
+import { Path, Rect, Transformer } from 'react-konva';
+import { useRef, useEffect, useState, Fragment } from 'react';
 
-const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform}) =>
+const Wall = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform}) =>
 {
     const shapeRef = useRef(null);
     const transformRef = useRef(null);
-    const [booked, setBooked] = useState(shapeProps.booked);
-    const [width, setWidth] = useState(shapeProps.width);
-    const [height, setHeight] = useState(shapeProps.height);
 
     useEffect(() =>
     {
@@ -16,48 +13,24 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, draggable, tr
             transformRef.current.nodes([shapeRef.current]);
             transformRef.current.getLayer().batchDraw();
         }
-
-        if(!isSelected && booked)
-        {
-            shapeRef.current.fill('#e8e8e8');
-        }
-        else if(!isSelected && !booked)
+        else if(!isSelected)
         {
             shapeRef.current.fill('#374146');
         }
-    }, [isSelected, transform, booked]);
+    }, [isSelected, transform]);
 
-    useEffect(() =>
-    {
-        if(booked)
-        {
-            shapeRef.current.fill('#e8e8e8');
-        }
-        else
-        {
-            shapeRef.current.fill('#374146');
-        }
-    },[booked])
-
-    useEffect(() =>
-    {
-        setBooked(shapeProps.booked);
-    },[shapeProps.booked]);
 
     return (
         <Fragment> 
-            <Path
+            <Rect 
                 {...shapeProps}
                 ref={shapeRef}
 
-                data = 'M 0 0 h 600 a 20 20 0 0 1 20 20 v 80 a 20 20 0 0 1 -20 20 h -600 a 20 20 0 0 1 -20 -20 v -80 a 20 20 0 0 1 20 -20 Z M 50 -10 h 10 v -10 h 80 v 10 h 10 v -20 a 10 10 0 0 0 -100 0 Z m 133 0 h 10 v -10 h 80 v 10 h 10 v -20 a 10 10 0 0 0 -100 0 Z m 133 0 h 10 v -10 h 80 v 10 h 10 v -20 a 10 10 0 0 0 -100 0 Z m 133 0 h 10 v -10 h 80 v 10 h 10 v -20 a 10 10 0 0 0 -100 0 Z M 50 130 h 10 v 10 h 80 v -10 h 10 v 20 a 10 10 0 0 1 -100 0 Z m 133 0 h 10 v 10 h 80 v -10 h 10 v 20 a 10 10 0 0 1 -100 0 Z m 133 0 h 10 v 10 h 80 v -10 h 10 v 20 a 10 10 0 0 1 -100 0 Z m 133 0 h 10 v 10 h 80 v -10 h 10 v 20 a 10 10 0 0 1 -100 0 Z M -30 10 v 10 h -10 v 80 h 10 v 10 h -20 a 10 10 0 0 1 0 -100 Z M 630 10 v 10 h 10 v 80 h -10 v 10 h 20 a 10 10 0 0 0 0 -100 Z'
+                //data='h 200 a 20 20 0 0 1 20 20 v 80 a 20 20 0 0 1 -20 20 h -200 a 20 20 0 0 1 -20 -20 v -80 a 20 20 0 0 1 20 -20 Z M 50 -10 h 10 v -10 h 80 v 10 h 10 v -20 a 10 10 0 0 0 -100 0 Z'
 
                 fill='#374146'
 
-                scaleX={0.3}
-                scaleY={0.3}
-
-                draggable = {draggable}
+                draggable={draggable}
 
                 onMouseDown={(e) =>
                 {
@@ -78,10 +51,17 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, draggable, tr
 
                 onTransformEnd={(e) =>
                 {
+                    const scaleX = e.target.scaleX();
+                    const scaleY = e.target.scaleY();
+
+                    e.target.scaleX(1);
+                    e.target.scaleY(1);
+
                     onChange({
                         ...shapeProps,
                         x : e.target.x(),
                         y : e.target.y(),
+                        width: e.target.width() * scaleX,
                         rotation : e.target.rotation(),
                         edited : true
                     });
@@ -100,11 +80,7 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, draggable, tr
                     {
                         e.target.fill('#09a2fb');
                     }
-                    else if(!isSelected && booked)
-                    {
-                        e.target.fill('#e8e8e8');
-                    }
-                    else if(!isSelected && !booked)
+                    else
                     {
                         e.target.fill('#374146');
                     }
@@ -115,12 +91,12 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, draggable, tr
                 <Transformer 
                     ref = {transformRef}
                     rotationSnaps = {[0, 90, 180, 270]}
-                    resizeEnabled = {false}
-                    centeredScaling = {true}
+                    resizeEnabled = {true}
+                    centeredScaling = {false}
                 />
             )}
         </Fragment>
     );
 }
 
-export default MeetingRoom
+export default Wall
