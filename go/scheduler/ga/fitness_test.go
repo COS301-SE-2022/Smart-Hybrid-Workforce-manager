@@ -521,7 +521,8 @@ func TestIndividual_teamProximityScore(t *testing.T) {
 					{"Shelf1", "Shelf2", "Shelf10", "Shelf100", "Shelf30", "Shelf4", "Shelf5", "Shelf3", "Shelf20"},
 				},
 			},
-			want: 1.0/(0.7071067+0.0+1.0) + 2.0/(0.7071067+14.1421356+1.0) + 1.0/(1.571348+1.0) + 1.0/(0.0+1.0),
+			// want: 1.0/(0.7071067+0.0+1.0) + 2.0/(0.7071067+14.1421356+1.0) + 1.0/(1.571348+1.0) + 1.0/(0.0+1.0),
+			want: 6.575731493546652,
 		},
 		{
 			name: "Test 2",
@@ -588,7 +589,7 @@ func TestIndividual_teamProximityScore(t *testing.T) {
 					{"Shelf1", "Shelf2", "Shelf10", "Shelf100", "Shelf30", "Shelf4", "Shelf5", "Shelf3", "Shelf20"},
 				},
 			},
-			want: 1.0218705,
+			want: 4.5649235352205375,
 		},
 	}
 	for _, tt := range tests {
@@ -802,7 +803,7 @@ func Test_dailyFitness(t *testing.T) {
 					Fitness: -1.0,
 				},
 			},
-			want: 2.24101021,
+			want: 6.715865257431512,
 		},
 	}
 	for _, tt := range tests {
@@ -838,7 +839,7 @@ func TestDailyFitness(t *testing.T) {
 					{Gene: gene, Fitness: -1.0},
 				},
 			},
-			want: []float64{2.24101021, 2.24101021},
+			want: []float64{6.71586525743, 6.71586525743},
 		},
 	}
 	for _, tt := range tests {
@@ -847,6 +848,114 @@ func TestDailyFitness(t *testing.T) {
 			assert.InDeltaSlice(t, tt.want, got, 0.0001, "DailyFitness() = %v, want %v", got, tt.want)
 			for i, fitness := range tt.want {
 				assert.InDeltaf(t, fitness, tt.args.individuals[i].Fitness, 0.0001, "Expected to individual fitness to be %v, got %v", fitness, tt.args.individuals[i].Fitness)
+			}
+		})
+	}
+}
+
+func Test_teamUsersCountByDay(t *testing.T) {
+	// gene := [][]string{
+	// 	{"Lime", "", "Lemon", "Strawberry", "Grapefruit", "Blueberry"},
+	// 	{"", "Blueberry", "", "Lemon", "", },
+	// 	{"Banana", "", "", "", "Gooseberry", },
+	// }
+	type args struct {
+		domain    *Domain
+		dailyMaps []map[string]int
+	}
+	tests := []struct {
+		name string
+		args args
+		want []map[string]int
+	}{
+		{
+			name: "Test 1",
+			args: args{
+				domain: __test_domain,
+				dailyMaps: []map[string]int{
+					{
+						"Lime":       1,
+						"Lemon":      1,
+						"Strawberry": 1,
+						"Grapefruit": 1,
+						"Blueberry":  1,
+					},
+					{
+						"Blueberry": 1,
+						"Lemon":     1,
+					},
+					{
+						"Banana":     1,
+						"Gooseberry": 1,
+					},
+				},
+			},
+			want: []map[string]int{
+				{
+					"Cabbage":  3,
+					"Broccoli": 2,
+					"Lettuce":  2,
+				},
+				{
+					"Cabbage":  1,
+					"Broccoli": 2,
+					"Lettuce":  1,
+				},
+				{
+					"Cabbage":  1,
+					"Broccoli": 1,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := teamUsersCountByDay(tt.args.domain, tt.args.dailyMaps); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("teamUsersCountByDay() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestIndividual_getUserCountMapsPerDay(t *testing.T) {
+	gene := [][]string{
+		{"Lime", "", "Lemon", "Strawberry", "Grapefruit", "Blueberry"},
+		{"", "Blueberry", "", "Lemon", ""},
+		{"Banana", "", "", "", "Gooseberry"},
+	}
+	tests := []struct {
+		name       string
+		individual *Individual
+		want       []map[string]int
+	}{
+		{
+			name: "Test 1",
+			individual: &Individual{
+				Gene: gene,
+			},
+			want: []map[string]int{
+				{
+					"Lime":       1,
+					"Lemon":      1,
+					"Strawberry": 1,
+					"Grapefruit": 1,
+					"Blueberry":  1,
+				},
+				{
+					"Blueberry": 1,
+					"Lemon":     1,
+				},
+				{
+					"Banana":     1,
+					"Gooseberry": 1,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.individual.getUserCountMapsPerDay(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Individual.getUserCountMapsPerDay() = %v, want %v", got, tt.want)
 			}
 		})
 	}

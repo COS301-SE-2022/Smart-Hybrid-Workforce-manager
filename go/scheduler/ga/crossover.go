@@ -1,9 +1,9 @@
 package ga
 
 import (
+	"fmt"
 	cu "lib/collectionutils"
 	"lib/utils"
-	"fmt"
 	"strconv"
 )
 
@@ -36,17 +36,7 @@ func WeeklyStubCrossOver(domain *Domain, individuals Individuals, selectionFunc 
 	return result
 }
 
-func WeeklyDayVResourceCrossover(domain *Domain, individuals Individuals, selectionFunc Selection, offspring int) Individuals {
-	var results Individuals
-	for i := 0; i <= offspring; i++ {
-		// select parents
-		parents := selectionFunc(domain, individuals, 2)
-		results = append(results, weeklyDayVResourceCrossover(domain, parents, 2)...)
-	}
-	return results
-}
-
-func weeklyDayVResourceCrossover(domain *Domain, individuals Individuals, offspring int) Individuals {
+func WeeklyDayVResourceCrossover(domain *Domain, individuals Individuals, offspring int) Individuals {
 	if len(individuals) != 2 {
 		return nil
 	}
@@ -56,7 +46,9 @@ func weeklyDayVResourceCrossover(domain *Domain, individuals Individuals, offspr
 	// pick random gene to crossover
 	crossoverParent1 := parent1.Gene[utils.RandInt(0, len(parent1.Gene))]
 	crossoverParent2 := parent2.Gene[utils.RandInt(0, len(parent2.Gene))]
-
+	if len(crossoverParent1) == 0 || len(crossoverParent2) == 0 {
+		return Individuals{parent1, parent2}
+	}
 	// pick random slot to crossover
 	crossoverParent1Slot := utils.RandInt(0, len(crossoverParent1))
 	crossoverParent2Slot := utils.RandInt(0, len(crossoverParent2))
@@ -90,6 +82,11 @@ func weeklyDayVResourceCrossover(domain *Domain, individuals Individuals, offspr
 func PartiallyMappedFlattenCrossoverValid(domain *Domain, individuals Individuals, numOffspring int) Individuals {
 	// Flatten the parents
 	flatParent1, flatParent2 := cu.Flatten2DArr(individuals[0].Gene), cu.Flatten2DArr(individuals[1].Gene)
+
+	if len(flatParent1) == 0 || len(flatParent2) == 0 {
+		// Can't crossover empty individuals
+		return []*Individual{individuals[0].Clone(), individuals[1].Clone()}
+	}
 
 	// Get the crossover points
 	xPoint1, xPoint2 := utils.RandInt(0, len(flatParent1)), utils.RandInt(0, len(flatParent1))
@@ -199,7 +196,7 @@ func OnePointCrossover(domain *Domain, individuals Individuals, numOffspring int
 }
 
 func onePointCrossover[T comparable](p1, p2 []T, xP int) ([]T, []T) {
-	if xP < 0  {
+	if xP < 0 {
 		xP = 0
 	}
 	// Make offspring arrays
@@ -253,10 +250,10 @@ func TwoPointCrossover(domain *Domain, individuals Individuals, numOffspring int
 }
 
 func twoPointCrossover[T comparable](p1, p2 []T, xP1, xP2 int) ([]T, []T) {
-	if xP1 < 0  {
+	if xP1 < 0 {
 		xP1 = 0
 	}
-	if xP2 < 0  {
+	if xP2 < 0 {
 		xP2 = 0
 	}
 
@@ -330,8 +327,8 @@ func CycleCrossover(domain *Domain, individuals Individuals, numOffspring int) I
 
 	// Crossover
 	offspring1, offspring2 := cycleCrossover(intParent1, intParent2)
-	offspring1 = offspring1[:len(flatParent1) - 1]
-	offspring2 = offspring2[:len(flatParent2) - 1]
+	offspring1 = offspring1[:len(flatParent1)-1]
+	offspring2 = offspring2[:len(flatParent2)-1]
 
 	// Convert int array to string array
 	var result1 []string
@@ -365,15 +362,15 @@ func cycleCrossover(p1, p2 []int) ([]int, []int) {
 			var cycle []int
 			cycle = append(cycle, i)
 			visited[i] = true
-			
+
 			current := p2[i]
 			odd := false
 			for current != i {
 				if odd {
-					temp:= p2[current]
+					temp := p2[current]
 					current = temp
 				} else {
-					temp:= p1[current]
+					temp := p1[current]
 					cycle = append(cycle, temp)
 					current = temp
 					visited[temp] = true

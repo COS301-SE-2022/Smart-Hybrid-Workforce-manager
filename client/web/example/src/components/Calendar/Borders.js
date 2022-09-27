@@ -1,33 +1,34 @@
-import React from 'react'
+import React from 'react';
+import styles from './calendar.module.css';
 
 const Borders = () =>
 {
     return (
-        <div className='day-time-border-container'>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
-            <div className='day-time-border'></div>
+        <div className={styles.dayTimeBorderContainer}>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
+            <div className={styles.dayTimeBorder}></div>
         </div>
     )
 }

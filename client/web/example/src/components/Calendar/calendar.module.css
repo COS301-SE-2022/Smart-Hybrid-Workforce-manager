@@ -1,0 +1,316 @@
+.topBar
+{
+    position: relative;
+
+    display: grid;
+    grid-template-columns: 60vw 10vw 15vw;
+    grid-template-rows: 10vh;
+
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    color: #374146;
+}
+
+.title
+{
+    display: inline-flex;
+
+    margin-left: 3vw;
+
+    font-size: 3vw;
+    letter-spacing: 0.3vw;
+}
+
+.year
+{
+    margin-top: 2.4vh;
+    margin-left: 1.5vw;
+    font-size: 2vw;
+}
+
+.todayContainer
+{
+    padding-top: 2vh;
+    margin-left: 3vw;
+}
+
+.todaySelector
+{
+    top: 0;
+
+    padding-top: 1.2vh;
+
+    height: 6vh;
+    width: 5vw;
+
+    border-radius: 1vh 1vh 1vh 1vh;
+    border-style: solid;
+
+    background-color: #09a2fb;
+    color: #ffffff;
+    text-align: center;
+}
+
+.todaySelector:hover
+{
+    cursor: pointer;
+}
+
+.navContainer
+{
+    display: grid;
+    grid-template-columns: 3vw 3vw;
+    grid-template-rows: 10vh;
+    grid-template-areas: "prev" "next";
+
+    font-size: 2vw;
+    text-align: center;
+
+    margin-left: 5vw;
+    margin-top: 2vh;
+}
+
+.prev
+{
+    border-radius: 10vh;
+    height: 3vw;
+    width: 3vw;
+    text-align: center;
+    padding-top: 0.5vh;
+    padding-right: 0.2vw;
+}
+
+.prev:hover
+{
+    cursor: pointer;
+    background-color: #e8e8e8;
+}
+
+.tooltipPrev
+{
+    position: absolute;
+    display: none;
+    visibility: visible;
+    background-color: #374146;
+    color: white;
+    border-radius: 1vh;
+
+    padding: 1vh;
+    left: 73.2vw;
+    top: 9vh;
+
+    font-size: 0.8vw;
+
+    z-index: 2;
+}
+
+.next
+{
+    border-radius: 10vh;
+    height: 3vw;
+    width: 3vw;
+    text-align: center;
+    padding-top: 0.5vh;
+    padding-left: 0.2vw;
+}
+
+.next:hover
+{
+    cursor: pointer;
+    background-color: #e8e8e8;
+}
+
+.tooltipNext
+{
+    position: absolute;
+    display: none;
+    visibility: visible;
+    background-color: #374146;
+    color: white;
+    border-radius: 1vh;
+
+    padding: 1vh;
+    left: 77vw;
+    top: 9vh;
+
+    font-size: 0.8vw;
+
+    z-index: 2;
+}
+
+.contentWeek
+{
+    background-color: #ffffff;
+    color: #374146;
+}
+
+.daysOfWeek
+{
+    display: grid;
+    grid-template-columns: 5vw 11.3vw 11.3vw 11.3vw 11.3vw 11.3vw 11.3vw 11.3vw;
+    grid-template-rows: 11vh;
+    grid-template-areas: "time" "sunday" "monday" "tuesday" "wednesday" "thursday" "friday" "saturday";
+    background-color: #ffffff;
+
+    text-align: center;
+
+    box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+.timezone
+{
+    margin-top: 7vh;
+    font-size: 0.8vw;
+}
+
+.dayDate
+{
+    margin-top: 1vh;
+}
+
+.day
+{
+    font-size: 1vw;
+}
+
+.date
+{
+    border-radius: 10vh;
+    background-color: transparent;
+    color: #374146;
+
+    width: 3vw;
+    height: 3vw;
+
+    padding-top: 0.5vh;
+
+    margin-left: 4.2vw;
+
+    text-align: center;
+    font-size: 1.8vw;
+}
+
+.daysOfWeekBorders
+{
+    position: absolute;
+
+    width: 79.1vw;
+    height: 5vh;
+
+    top: 16vh;
+    margin-left: 5vw;
+}
+
+.dayDateBorder
+{
+    position: relative;
+    display: inline-block;
+
+    color: #e8e8e8;
+
+    border-style: solid;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    border-width: 0.15vw;
+
+    width: 11.3vw;
+    height: 5vh;
+}
+
+.columnContainer
+{
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: grid;
+    grid-template-columns: 5vw 11.3vw 11.3vw 11.3vw 11.3vw 11.3vw 11.3vw 11.3vw;
+    grid-template-rows: 8vh;
+    grid-template-areas: "time" "sunday" "monday" "tuesday" "wednesday" "thursday" "friday" "saturday";
+    
+
+    height: 69vh;
+}
+
+.timeColumn
+{
+    text-align: right;
+    display: grid;
+    grid-template-columns: 4vw 1vw;
+    grid-template-rows: 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh 8vh;
+}
+
+.timeLabel
+{
+    padding-top: 6.8vh;
+    padding-right: 0.4vw;
+    font-size: 0.8vw;
+}
+
+.timeBorder
+{
+    color: #e8e8e8;
+
+    border-style: solid;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-width: 0.15vw;
+
+    width: 1vw;
+    height: 8vh;
+}
+
+.dayTimeBorder
+{
+    color: #e8e8e8;
+
+    border-style: solid;
+    border-top: none;
+    border-right: none;
+    border-width: 0.15vw;
+
+    width: 11.4vw;
+    height: 8vh;
+}
+
+.timeIndicatorContainer
+{
+    position: absolute;
+
+    width: 11.3vw;
+    height: 1vw;
+
+    margin-left: 4.5vw;
+}
+
+.timeIndicatorLine
+{
+    display: inline-block;
+    position: absolute;
+    background-color: #fc4058;
+
+    width: 11vw;
+    height: 0.5vh;
+    top: 0.7vh;
+    left: 0.8vw;
+}
+
+.timeIndicatorCircle
+{
+    display: inline-block;
+    position: absolute;
+    background-color: #fc4058;
+
+    width: 2vh;
+    height: 2vh;
+    top: 0;
+
+    border-radius: 10vh;
+}
+
+.bookingsContainer
+{
+    position: absolute;
+    background: transparent;
+}

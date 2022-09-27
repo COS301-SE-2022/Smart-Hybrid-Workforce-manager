@@ -1,0 +1,229 @@
+.mapHeadingContainer
+{
+    height: 10vh;
+
+    background-color: white;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    color: #374146;
+}
+
+.mapHeading
+{
+    font-size: 3vw;
+    letter-spacing: 0.3vw;
+
+    margin-left: 3vw;
+}
+
+.canvasContainer
+{
+    background: #ced8fb;
+
+    width: 85vw;
+    height: 80vh;
+    left: 0;
+}
+
+.buildingSelectorContainer
+{
+    position: absolute;
+    top: 12vh;
+    left: 1vw;
+}
+
+.roomSelectorContainer
+{
+    position: absolute;
+    top: 12vh;
+    left: 25vw;
+}
+
+.resourceSelector
+{
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+
+    color: #374146;
+
+    border-style: none;
+    border-radius: 1.5vh;
+    outline: none;
+
+    margin-top: 1vh;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+
+    width: 20vw;
+
+    font-size: 1vw;
+}
+
+.dateContainer
+{
+    position: absolute;
+    top: 12vh;
+    left: 50vw;
+}
+
+.date
+{
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+    border-style: none;
+    border-radius: 1.5vh;
+    outline: none;
+}
+
+.date:focus
+{
+    outline: none;
+}
+
+.sidePanel
+{
+    position: absolute;
+    display: grid;
+    grid-template-rows: 6vh 4vh 3vh 67vh;
+
+    width: 20vw;
+    height: 80vh;
+
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 5px 10px -4px rgba(0, 0, 0, 0.1) inset;
+
+    transition: all 0.5s ease; 
+
+    z-index: 2;
+}
+
+.resourceHeading
+{
+    padding-top: 1vh;
+
+    text-align: center;
+
+    font-size: 1.5vw;
+}
+
+.resourceType
+{
+    text-align: center;
+
+    font-size: 1vw;
+}
+
+.resourcePreference
+{
+    text-align: center;
+}
+
+.userCardContainer
+{
+    overflow-y: scroll;
+    margin-left: 1vw;
+}
+
+.userCard
+{
+    display: grid;
+    grid-template-columns: 6vw 12vw;
+    user-select: 'none';
+
+    margin-bottom: 3vh;
+
+    padding-bottom: 2vh;
+
+    min-height: 15vh;
+    width: 18vw;
+
+    border-radius: 1vh;
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    background-color: white;
+}
+
+.userPictureContainer
+{
+    background-color: #374146;
+
+    margin-top: 3.5vh;
+    margin-left: 0.5vw;
+
+    width: 4vw;
+    height: 4vw;
+
+    border-radius: 10vh;
+}
+
+.image
+{
+    width: 100%;
+    height: 100%;
+    border-radius: 10vh;
+}
+
+.userDetailsContainer
+{
+    padding-top: 1vh;
+}
+
+.userName
+{
+    font-size: 0.7vw;
+}
+
+.userTime
+{
+    font-size: 0.7vw;
+}
+
+.userRolesContainer
+{
+    font-size: 0.7vw;
+
+    padding-top: 1vh;
+
+    margin-bottom: 2vh;
+}
+
+.userTeamsContainer
+{
+    font-size: 0.7vw;
+
+    padding-top: 1vh;
+}
+
+.pill
+{
+    float: left;
+    margin-right: 0.5vw;
+    margin-bottom: 0.7vh;
+
+    padding-left: 0.5vw;
+    padding-right: 0.5vw;
+    padding-bottom: 2.3vh;
+
+    height: 2vh;
+
+    border-radius: 4vh;
+
+    color: white;
+}
+
+@keyframes animate-pop-enter
+{
+    0%
+    {
+        opacity: 0;
+        transform: scale(0.5, 0.5);
+    }
+
+    100%
+    {
+        opacity: 1;
+        transform: scale(1, 1);
+    }
+}

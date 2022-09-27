@@ -6,6 +6,8 @@ import (
 	"scheduler/data"
 )
 
+type FitnessFunc func(domain *Domain, individual *Individual) float64
+
 ///////////////////////////////////////////////////
 // WEEKLY
 
@@ -14,6 +16,16 @@ func WeeklyStubFitness(domain *Domain, individuals Individuals) []float64 {
 	for i := 0; i < len(individuals); i++ {
 		result = append(result, 0.0)
 		individuals[i].Fitness = 0.0
+	}
+	return result
+}
+
+func WeeklyDayVResourceFitnessCaller(domain *Domain, individuals Individuals, fitnessFunc FitnessFunc) []float64 {
+	var result []float64
+	for _, individual := range individuals {
+		fitness := fitnessFunc(domain, individual)
+		result = append(result, fitness)
+		individual.Fitness = fitness
 	}
 	return result
 }
@@ -34,25 +46,68 @@ func weeklyDayVResourceFitness(domain *Domain, individual *Individual) float64 {
 	// fmt.Printf("daily maps: %v\n", dailyMaps)
 	differentUsersCount := individual.DifferentUsersCount(domain)
 	// fmt.Printf("diff user counts: %v\n", differentUsersCount)
-	doubleBookings := individual.DoubleBookingsCount(domain, dailyMaps)
+	// doubleBookings := individual.DoubleBookingsCount(domain, dailyMaps)
 	// fmt.Printf("double bookings: %v\n", doubleBookings)
-	usersNotCommingInTheirSpecifiedAmountCount := individual.UsersNotCommingInTheirSpecifiedAmountCount(domain, dailyMaps)
+	// usersNotCommingInTheirSpecifiedAmountCount := individual.UsersNotCommingInTheirSpecifiedAmountCount(domain, dailyMaps)
 	// fmt.Printf("usersNotCommingInTheirSpecifiedAmountCountmaps: %v\n", usersNotCommingInTheirSpecifiedAmountCount)
-	teamsAttendingSameDays := individual.TeamsAttendingSameDays(domain, dailyMaps)
+	teamsAttendingSameDays := individual.TeamsAttendingSameDays(domain, dailyMaps) + 1.0
 	// fmt.Printf("teamsAttendingSameDays: %v\n", teamsAttendingSameDays)
-	if doubleBookings == 0 {
-		doubleBookings = 1
-	}
-	if usersNotCommingInTheirSpecifiedAmountCount == 0 {
-		usersNotCommingInTheirSpecifiedAmountCount = 1
-	}
+	// if doubleBookings == 0 {
+	// 	doubleBookings = 1
+	// }
+	// if usersNotCommingInTheirSpecifiedAmountCount == 0 {
+	// 	usersNotCommingInTheirSpecifiedAmountCount = 1
+	// }
 	if differentUsersCount == 0 {
 		differentUsersCount = 1
 	}
 	if teamsAttendingSameDays == 0 {
 		teamsAttendingSameDays = 1
 	}
-	return float64(differentUsersCount) * teamsAttendingSameDays / (float64(doubleBookings) * float64(usersNotCommingInTheirSpecifiedAmountCount))
+	return float64(differentUsersCount) * teamsAttendingSameDays
+	// return float64(differentUsersCount) * teamsAttendingSameDays / (float64(doubleBookings) * float64(usersNotCommingInTheirSpecifiedAmountCount))
+}
+
+func WeeklyDayVResourceFitnessValid(domain *Domain, individual *Individual) float64 {
+	dailyMaps := individual.getUserCountMapsPerDay()
+	differentUsersCount := individual.DifferentUsersCount(domain)
+	teamUsersCountByDayArr := teamUsersCountByDay(domain, dailyMaps)
+	overAllTeamBonus := 0
+	for _, teamUserCount := range teamUsersCountByDayArr {
+		for teamId, count := range teamUserCount {
+			teamPriority := getTeamPriority(domain, teamId)
+			if teamPriority < 0 {
+				teamPriority = 0
+			}
+			overAllTeamBonus += teamPriority * count * (count + 1) / 2 // Strong bonus for teams coming in together
+		}
+	}
+	if differentUsersCount == 0 {
+		differentUsersCount = 1
+	}
+	return float64(differentUsersCount) + float64(overAllTeamBonus)
+	// return float64(differentUsersCount) * teamsAttendingSameDays / (float64(doubleBookings) * float64(usersNotCommingInTheirSpecifiedAmountCount))
+}
+
+// For each day, it returns a count of the number of users in a team that come in together on that day
+// returns {array containing a map[teamid]#users for each day}
+func teamUsersCountByDay(domain *Domain, dailyMaps []map[string]int) []map[string]int {
+	teamUserCountsByDay := make([]map[string]int, len(dailyMaps))
+	for i := 0; i < len(teamUserCountsByDay); i++ {
+		teamUserCountsByDay[i] = make(map[string]int)
+	}
+
+	for _, team := range domain.SchedulerData.Teams {
+		for _, userid := range team.UserIds {
+			for i := 0; i < len(teamUserCountsByDay); i++ {
+				if cu.MapHasKey(dailyMaps[i], userid) {
+					teamUserCountsByDay[i][*team.Id]++
+				}
+			}
+		}
+	}
+
+	return teamUserCountsByDay
 }
 
 // DifferentUsersCount takes the sum of the amount of times users come in on a different day as the week before
@@ -104,7 +159,7 @@ func (individual *Individual) DifferentUsersCount(domain *Domain) int {
 func (individual *Individual) TeamsAttendingSameDays(domain *Domain, dailyMaps []map[string]int) float64 {
 	total := 0.0
 	for _, team := range domain.SchedulerData.Teams {
-		total += float64(*team.Priority) * percentageUsersOnSameDayInTeam(team, dailyMaps)
+		total += math.Max(float64(*team.Priority)+1.0, 1.0) * percentageUsersOnSameDayInTeam(team, dailyMaps)
 	}
 	return total
 }
@@ -174,7 +229,31 @@ func (individual *Individual) getUserCountMapsPerDay() []map[string]int {
 }
 
 ///////////////////////////////////////////////////
-// DAILY
+// WEEKLY Valid
+
+// WeeklyCountTeamMembersTogether calculate the bonus for teams coming in on the same
+// day as eachother
+// func (individual *Individual) WeeklyCountTeamMembersTogether(team *data.TeamInfo, dailyMaps []map[string]int) int {
+// 	if len(team.UserIds) == 0 {
+// 		return 0.0
+// 	}
+// 	usersNotTogether := 0
+// 	for _, day := range dailyMaps {
+// 		usersTogether := 0
+// 		for _, teamMember := range team.UserIds {
+// 			if day[teamMember] > 0 {
+// 				usersTogether++
+// 			}
+// 		}
+// 		if usersTogether == 0 {
+// 			usersNotTogether++
+// 		}
+// 	}
+// 	return (float64(len(team.UserIds)) - float64(usersNotTogether)) / float64(len(team.UserIds))
+// }
+
+///////////////////////////////////////////////////
+// DAILY Valid
 
 func DailyFitness(domain *Domain, individuals Individuals) []float64 {
 	var result []float64
@@ -214,7 +293,11 @@ func (individual *Individual) teamProximityScore(domain *Domain) float64 {
 	for i, teamRoomProx := range teamRoomProximities {
 		// Use reciprocal, since if the teams have a larger avg distance from the centroid
 		// the fitness should be smaller
-		scores[i] = math.Max(1.0, float64(getTeamPriority(domain, teamRoomProx.teamId))) / (individualTeamProximityScore(teamRoomProx) + 1.0)
+		scores[i] = math.Pow(math.Max(1.0, float64(getTeamPriority(domain, teamRoomProx.teamId))+1.0), 1.5) / (individualTeamProximityScore(teamRoomProx) + 1.0)
+		// Apply penalty for being in the same room
+		numRooms := len(domain.SchedulerData.Rooms)
+		numRoomsSpreadIn := len(teamRoomProx.roomGroups)
+		scores[i] *= math.Pow(float64(numRooms-numRoomsSpreadIn+1), 1.8) / float64(numRooms)
 	}
 	// Sum all the reciprocals
 	return cu.Sum(scores)

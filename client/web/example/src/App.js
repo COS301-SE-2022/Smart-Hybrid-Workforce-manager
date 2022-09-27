@@ -12,13 +12,9 @@ import Calendar from './pages/Calendar'
 
 import Admin from './pages/Admin'
 
-import Teams from './pages/Teams'
-import CreateTeam from './pages/TeamsCreate'
-import EditTeam from './pages/TeamsEdit'
 import PermissionsTeam from './pages/TeamsPermissions'
 
 import Layout from './pages/CreateLayout'
-import Resources from './pages/Resources'
 import CreateBuilding from './pages/ResourcesBuildingCreate'
 import EditBuilding from './pages/ResourcesBuildingEdit'
 import CreateRoom from './pages/ResourcesRoomCreate'
@@ -27,13 +23,13 @@ import CreateDesk from './pages/ResourcesDeskCreate'
 import EditDesk from './pages/ResourcesDeskEdit'
 import EditMeetingRoom from './pages/ResourcesMeetingRoomEdit'
 import CreateMeetingRoom from './pages/ResourcesMeetingRoomCreate'
+import Statistics from './pages/Statistics'
 
 import Profile from './pages/Profile'
 import ProfileConfiguration from './pages/ProfileConfiguration'
 import ResetPassword from './pages/ResetPassword'
 import Users from './pages/Users'
 import EditUser from './pages/UsersEdit'
-import CreateUser from './pages/UsersCreate'
 import PermissionsUser from './pages/UsersPermissions'
 
 import Roles from './pages/Roles'
@@ -76,18 +72,12 @@ function App()
             <Route path="/bookings-meetingroom" exact element={<BookingsMeetingRoom/>} />
             <Route path="/calendar" exact element={<Calendar />} />
 
-            <Route path="/users" exact element={<Users />} />
             <Route path="/user-edit" exact element={<EditUser />} />
-            <Route path="/user-create" exact element={<CreateUser />} />
             <Route path="/user-permissions" exact element={<PermissionsUser />} />
-            
-            <Route path="/team" exact element={<Teams />} />
-            <Route path="/team-create" exact element={<CreateTeam />} />
-            <Route path="/team-edit" exact element={<EditTeam />} />
+
             <Route path="/team-permissions" exact element={<PermissionsTeam />} />
 
             <Route path="/layout" exact element={<Layout />} />
-            <Route path="/resources" exact element={<Resources/>} />
             <Route path="/building" exact element={<CreateBuilding/>} />
             <Route path="/building-edit" exact element={<EditBuilding/>} />
             <Route path="/room" exact element={<CreateRoom/>} />
@@ -107,6 +97,7 @@ function App()
             <Route path="/role-permissions" exact element={<PermissionsRole />} /> 
 
             <Route path="/admin" exact element={<Admin />} />
+            <Route path="/statistics" exact element={<Statistics />} />
           </Route>          
           <Route path="/login" exact element={<Login />} />
           <Route path="/signup" exact element={<Signup/>} />

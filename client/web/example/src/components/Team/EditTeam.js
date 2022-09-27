@@ -6,23 +6,26 @@ import { UserContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
 import { storage } from '../../firebase';
 import { ref, uploadBytes, listAll, getDownloadURL } from 'firebase/storage';
-import { v4 } from 'uuid';
 
-const EditTeam = ({team}) =>
+const EditTeam = ({team, edited}) =>
 {
     const [id, setID] = useState('');
-    const [color, setColor] = useState('');
+    const [color, setColor] = useState('#000000');
     const [name, setName] = useState('');
     const [priority, setPriority] = useState(0);
+    const [capacity, setCapacity] = useState('2');
     const [picture, setPicture] = useState('');
     const [pictureUpload, setPictureUpload] = useState(null);
     const [members, setMembers] = useState([{name: '', id: ''}]);
-    const [lead, setLead] = useState('');
+    const [lead, setLead] = useState(null);
+
+    const priority0Ref = useRef(null);
+    const priority1Ref = useRef(null);
+    const priority2Ref = useRef(null);
 
     const pictureInputRef = useRef(null);
 
     const {userData} = useContext(UserContext);
-    const navigate = useNavigate();
 
     const ClickPictureInput = () =>
     {
@@ -74,6 +77,7 @@ const EditTeam = ({team}) =>
                                         id: id,
                                         name: name,
                                         color: color,
+                                        capacity: parseInt(capacity),
                                         picture: url,
                                         priority: priority,
                                         team_lead_id: lead
@@ -87,7 +91,7 @@ const EditTeam = ({team}) =>
                                     if(res.status === 200)
                                     {
                                         alert("Team Successfully Updated!");
-                                        navigate("/admin");
+                                        edited(true);
                                     }
                                 });
                             }
@@ -106,6 +110,8 @@ const EditTeam = ({team}) =>
                     id: id,
                     name: name,
                     color: color,
+                    capacity: parseInt(capacity),
+                    picture: picture,
                     priority: priority,
                     team_lead_id: lead
                 }),
@@ -118,6 +124,7 @@ const EditTeam = ({team}) =>
                 if(res.status === 200)
                 {
                     alert("Team Successfully Updated!");
+                    edited(true);
                 }
             });
         }
@@ -134,8 +141,36 @@ const EditTeam = ({team}) =>
             setPicture(team.picture);
             setMembers(team.users);
             setLead(team.lead);
+
+            if(team.capacity)
+            {
+                setCapacity(team.capacity.toString());
+            }
+            else
+            {
+                setCapacity('2');
+            }
         }
     }, [team]);
+
+    useEffect(() =>
+    {
+        if(priority0Ref && priority1Ref && priority2Ref)
+        {
+            if(priority === 0)
+            {
+                priority0Ref.current.checked = true;
+            }
+            else if(priority === 1)
+            {
+                priority1Ref.current.checked = true;
+            }
+            else if(priority === 2)
+            {
+                priority2Ref.current.checked = true;
+            }
+        }
+    }, [priority]);
 
     return (
         <div className={styles.form}>
@@ -150,7 +185,7 @@ const EditTeam = ({team}) =>
 
             <Form.Group className={styles.formGroup} controlId="formBasicName">
                 <div className={styles.formLabel}>Name</div>
-                <Form.Control className={styles.formInput} type='text' placeholder="Team name" value={name} onChange={(e) => setName(e.target.value)} />
+                <input className={styles.formInput} type='text' placeholder="Team name" value={name} onChange={(e) => setName(e.target.value)}></input>
             </Form.Group>
 
             <Form.Group className={styles.formGroup} controlId="formBasicName">
@@ -159,18 +194,23 @@ const EditTeam = ({team}) =>
             </Form.Group>
 
             <Form.Group className={styles.formGroup} controlId="formBasicName">
+                <div className={styles.formLabel}>Capacity</div>
+                <input className={styles.formInput} type='number' min='2' placeholder="Capacity" value={capacity} onChange={(e) => setCapacity(e.target.value)}></input>
+            </Form.Group>
+
+            <Form.Group className={styles.formGroup} controlId="formBasicName">
                 <div className={styles.formLabel}>Priority</div>
 
-                <div>
-                    <input type='radio' name='priority' value={0} checked={priority === 0} onChange={(e) => setPriority(e.target.value)}></input>
+                <form>
+                    <input ref={priority0Ref} type='radio' name='priority' value={0} onChange={(e) => setPriority(e.target.value)}></input>
                     <label className={styles.radioLabel}>0</label>
 
-                    <input type='radio' name='priority' value={1} checked={priority === 1} onChange={(e) => setPriority(e.target.value)}></input>
+                    <input ref={priority1Ref} type='radio' name='priority' value={1} onChange={(e) => setPriority(e.target.value)}></input>
                     <label className={styles.radioLabel}>1</label>
 
-                    <input type='radio' name='priority' value={2} checked={priority === 2} onChange={(e) => setPriority(e.target.value)}></input>
+                    <input ref={priority2Ref} type='radio' name='priority' value={2} onChange={(e) => setPriority(e.target.value)}></input>
                     <label className={styles.radioLabel}>2</label>
-                </div>
+                </form>
             </Form.Group>
 
             <Form.Group className={styles.formGroup} controlId="formBasicName">

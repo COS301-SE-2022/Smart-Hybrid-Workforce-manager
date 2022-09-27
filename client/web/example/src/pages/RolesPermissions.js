@@ -1,13 +1,16 @@
 import Navbar from '../components/Navbar/Navbar.js'
 import Footer from "../components/Footer"
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useContext } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import '../App.css'
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../App.js'
 
 function RolePermissions() {
   const [roleName, setRoleName] = useState(window.sessionStorage.getItem("RoleName").substring(5, window.sessionStorage.getItem("RoleName").length));
+
+  const {userData} = useContext(UserContext);
 
   // Bookings
   const [createBookingIdentifier, SetCreateBookingIdentifier] = useState("") // allows users of a role to update the Booking for everyone
@@ -232,6 +235,7 @@ function RolePermissions() {
       let res = await fetch("http://localhost:8080/api/permission/create",
         {
           method: "POST",
+          mode: "cors",
           body: JSON.stringify({
             permission_id: id,
             permission_id_type: idType,
@@ -239,7 +243,11 @@ function RolePermissions() {
             permission_category: category,
             permission_tenant: tenant,
             permission_tenant_id: tenant_id
-          })
+          }),
+          headers:{
+              'Content-Type': 'application/json',
+              'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+          }
         });
 
       if (res.status === 200) {
@@ -259,9 +267,14 @@ function RolePermissions() {
       let res = await fetch("http://localhost:8080/api/permission/remove",
         {
           method: "POST",
+          mode: "cors",
           body: JSON.stringify({
             id: id,
-          })
+          }),
+          headers:{
+              'Content-Type': 'application/json',
+              'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+          }
         });
 
       if (res.status === 200) {
@@ -277,10 +290,15 @@ function RolePermissions() {
     fetch("http://localhost:8080/api/permission/information",
       {
         method: "POST",
+        mode: "cors",
         body: JSON.stringify({
           permission_id: window.sessionStorage.getItem("RoleID"),
           permission_id_type: "ROLE",
-        })
+        }),
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+        }
       }).then((res) => res.json()).then(data => {
         data.forEach(setPermissionStates);
       });

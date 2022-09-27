@@ -31,7 +31,9 @@ const DeskBooking = (props, ref) =>
                     resource_id: null,
                     start: startDate + "T" + startTime + ":00.000Z",
                     end: startDate + "T" + endTime + ":00.000Z",
-                    booked: false
+                    booked: false,
+                    automated: false,
+                    dependent: null
                 }),
                 headers:{
                     'Content-Type': 'application/json',
