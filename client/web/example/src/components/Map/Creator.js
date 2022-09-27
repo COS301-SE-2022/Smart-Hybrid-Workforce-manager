@@ -12,6 +12,8 @@ import { useNavigate } from 'react-router-dom';
 import styles from './map.module.css';
 import { AddBuildingForm } from '../Resources/AddBuilding';
 import { EditBuildingForm } from '../Resources/EditBuilding';
+import { AddRoomForm } from '../Resources/AddRoom';
+import { EditRoomForm } from '../Resources/EditRoom';
 
 const Creator = () =>
 {
@@ -31,11 +33,14 @@ const Creator = () =>
     const buildingMenuRef = useRef(null);
     const addBuildingRef = useRef(null);
     const editBuildingRef = useRef(null);
-    const buildingSelectorRef = useRef(null);
     const [addBuilding, setAddBuilding] = useState(false);
     const [buildingEdited, setBuildingEdited] = useState(true);
 
     const roomMenuRef = useRef(null);
+    const addRoomRef = useRef(null);
+    const editRoomRef = useRef(null);
+    const [addRoom, setAddRoom] = useState(false);
+    const [roomEdited, setRoomEdited] = useState(false);
 
     //Panel states
     const [propertiesPanel, setPropertiesPanel] = useState(0.985*window.innerWidth);
@@ -61,36 +66,27 @@ const Creator = () =>
     const navigate = useNavigate();
 
     //POST requests
-
-    /*useEffect(() =>
-    {
-        console.log("Resources: " + resources)
-        console.log(deskProps);
-        console.log(deskPropsRef.current);
-    },[resources, deskProps])*/
-
     const UpdateRooms = (id) =>
     {
-        console.log(id);
         fetch("http://localhost:8080/api/resource/room/information", 
-            {
+        {
             method: "POST",
             mode: 'cors',
             body: JSON.stringify({
                 building_id: id
             }),
-            headers:{
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
-            }
-            }).then((res) => res.json()).then(data => 
-            {
-                SetRooms(data);
-                document.getElementById("RoomDefault").selected = true;
-                SetCurrRoom("");
-                SetCurrBuilding(id);
-                SetResources([]);
-            });
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}`
+        }
+        }).then((res) => res.json()).then(data => 
+        {
+            SetRooms(data);
+            document.getElementById("RoomDefault").selected = true;
+            SetCurrRoom("");
+            SetCurrBuilding(id);
+            SetResources([]);
+        });
     }
 
     const UpdateResources = (e) =>
@@ -104,7 +100,7 @@ const Creator = () =>
             }),
             headers:{
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                'Authorization': `bearer ${userData.token}`
             }
             }).then((res) => res.json()).then(data => 
             {
@@ -215,31 +211,69 @@ const Creator = () =>
         }
     }
 
-    const AddRoom = () =>
+    //Add room
+    const OpenAddRoom = () =>
     {
-        if(currBuilding !== "")
+        if(backgroundDimmerRef.current && addRoomRef.current && roomMenuRef.current && currBuilding !== '')
         {
-            window.sessionStorage.setItem("BuildingID", currBuilding);
-            navigate("/room");
-        }
-        else
-        {
-            alert("Please select a building");
+            backgroundDimmerRef.current.style.display = 'block';
+            addRoomRef.current.style.display = 'block'
+            roomMenuRef.current.style.display = 'none';
+            setAddRoom(!addRoom);
         }
     }
 
-    let EditRoom = async (e) =>
+    const CloseAddRoom = () =>
     {
-        if(currRoom !== "")
+        if(backgroundDimmerRef.current && addRoomRef)
         {
-            e.preventDefault();
-            window.sessionStorage.setItem("RoomID", currRoom);
-            window.sessionStorage.setItem("BuildingID", currBuilding);
-            navigate("/room-edit");
+            backgroundDimmerRef.current.style.display = 'none';
+            addRoomRef.current.style.display = 'none'
         }
-        else
+    }
+    
+    //Edit selected room
+    const OpenEditRoom = () =>
+    {
+        if(backgroundDimmerRef.current && editRoomRef.current && roomMenuRef.current && currRoom !== '')
         {
-            window.alert("Please select a room to edit");
+            backgroundDimmerRef.current.style.display = 'block';
+            editRoomRef.current.style.display = 'block'
+            roomMenuRef.current.style.display = 'none';
+        }
+    }
+
+    const CloseEditRoom = () =>
+    {
+        if(backgroundDimmerRef.current && editRoomRef)
+        {
+            backgroundDimmerRef.current.style.display = 'none';
+            editRoomRef.current.style.display = 'none'
+        }
+    }
+
+    const DeleteRoom = () =>
+    {
+        if(currRoom !== '' && roomMenuRef.current)
+        {
+            console.log(currRoom);
+            roomMenuRef.current.style.display = 'none';
+
+            fetch("http://localhost:8080/api/resource/room/remove", 
+            {
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify({
+                    id: currRoom
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}`
+                }
+            }).then((res) =>
+            {
+                setRoomEdited(true);
+            });   
         }
     }
 
@@ -273,11 +307,11 @@ const Creator = () =>
     //Add a new desk to the state
     const AddDesk = () =>
     {
-        /*if(currBuilding === "" || currRoom === "")
+        if(currBuilding === "" || currRoom === "")
         {
             window.alert("Please select a building and room");
             return;
-        }*/
+        }
 
         if(stageRef.current !== null)
         {
@@ -329,11 +363,11 @@ const Creator = () =>
     //Add a new desk to the state
     const AddMeetingRoom = () =>
     {
-        /*if(currBuilding === "" || currRoom === "")
+        if(currBuilding === "" || currRoom === "")
         {
             window.alert("Please select a building and room");
             return;
-        }*/
+        }
 
         if(stageRef.current !== null)
         {
@@ -612,13 +646,35 @@ const Creator = () =>
         }
     },[userData.token, buildingEdited]);
 
+    useEffect(() =>
+    {
+        if(roomEdited && currBuilding !== '')
+        {
+            fetch("http://localhost:8080/api/resource/room/information", 
+            {
+                method: "POST",
+                mode: 'cors',
+                body: JSON.stringify({
+                    building_id: currBuilding
+                }),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}`
+            }
+            }).then((res) => res.json()).then(data => 
+            {
+                SetRooms(data);
+            });
+
+            setRoomEdited(false);
+        }
+    },[userData.token, currBuilding, roomEdited]);
+
     //Effect to monitor if delete key is pressed
-    
     useEffect(() =>
     {
         if(deletePressed)
         {
-            console.log("D")
             HandleDelete();
         }
     }, [deletePressed, HandleDelete]);
@@ -753,6 +809,16 @@ const Creator = () =>
                     <EditBuildingForm id={currBuilding} edited={setBuildingEdited} />
                 </div>
 
+                <div ref={addRoomRef} className={styles.formContainer}>
+                    <div className={styles.formClose} onClick={() => CloseAddRoom()}><MdClose /></div>
+                    <AddRoomForm makeDefault={addRoom} edited={setRoomEdited} buildingID={currBuilding} />
+                </div>
+
+                <div ref={editRoomRef} className={styles.formContainer}>
+                    <div className={styles.formClose} onClick={() => CloseEditRoom()}><MdClose /></div>
+                    <EditRoomForm id={currRoom} edited={setRoomEdited} />
+                </div>
+
                 <div className={styles.propertiesPanel} style={{left: propertiesPanel}}>
                     <div className={styles.propertiesHeading}>Properties</div>
 
@@ -848,7 +914,7 @@ const Creator = () =>
                 </div>
 
                 <div className={styles.buildingSelectorContainer}>
-                    <select ref={buildingSelectorRef} className={styles.resourceSelector} name='building' defaultValue={''} onChange={(e) => UpdateRooms(e.target.value)}>
+                    <select className={styles.resourceSelector} name='building' defaultValue={''} onChange={(e) => UpdateRooms(e.target.value)}>
                         <option value='' id='BuildingDefault'>--Select the building--</option>
                             {buildings.map(building => (
                                 <option key={building.id} value={building.id}>{building.name + ' (' + building.location + ')'}</option>
@@ -870,11 +936,10 @@ const Creator = () =>
                 <div className={styles.roomSelectorContainer}>
                     <select className={styles.resourceSelector} name='room' defaultValue={''} onChange={UpdateResources.bind(this)}>
                         <option value='' id='RoomDefault'>--Select the room--</option>
-                            {rooms.length > 0 && (
-                                rooms.map(room => (
-                                    <option key={room.id} value={room.id}>{room.name + ' (' + room.location + ')'}</option>
-                                ))
-                            )}
+                            {rooms.map(room =>
+                            (
+                                <option key={room.id} value={room.id}>{room.name + ' (Floor' + room.zcoord + ')'}</option>
+                            ))}
                     </select>
 
                     <div className={styles.threeDotsContainer}>
@@ -882,9 +947,9 @@ const Creator = () =>
                     </div>
 
                     <div ref={roomMenuRef} className={styles.menu}>
-                        <div className={styles.addResource}>Add room</div>
-                        <div className={styles.editResource} onMouseDown={EditRoom.bind(this, currRoom)}>Edit room</div>
-                        <div className={styles.deleteResource}>Remove room</div>
+                    <div className={styles.addResource} onClick={() => OpenAddRoom()}>Add room</div>
+                        <div className={styles.editResource} onClick={() => OpenEditRoom()}>Edit room</div>
+                        <div className={styles.deleteResource} onClick={() => DeleteRoom()}>Remove room</div>
                     </div>
                 </div>
             </Fragment>

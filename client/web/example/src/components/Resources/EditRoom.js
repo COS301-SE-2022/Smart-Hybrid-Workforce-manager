@@ -4,23 +4,29 @@ import styles from './resources.module.css';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../App';
 
-const EditBuilding = ({id, edited}) =>
+const EditRoom = ({id, edited}) =>
 {
+    const [buildingID, setBuildingID] = useState('');
     const [name, setName] = useState('');
-    const [location, setLocation] = useState('');
-
+    const [floor, setFloor] = useState('');
+    const [x, setX] = useState(0);
+    const [y, setY] = useState(0);
+    
     const {userData} = useContext(UserContext);
 
-    const EditBuildingSubmit = async () =>
+    const EditRoomSubmit = async () =>
     {
-        fetch("http://localhost:8080/api/resource/building/create", 
+        fetch("http://localhost:8080/api/resource/room/create", 
         {
             method: "POST",
             mode: "cors",
             body: JSON.stringify({
                 id: id,
+                building_id: buildingID,
                 name: name,
-                location: location,
+                xcoord: x,
+                ycoord: y,
+                zcoord: parseInt(floor),
                 dimension: ''
             }),
             headers:{
@@ -29,7 +35,7 @@ const EditBuilding = ({id, edited}) =>
             }
         }).then((res) =>
         {
-            alert("Building Successfully Updated!");
+            alert("Room Successfully Updated!");
             edited(true);
         });
     }
@@ -38,7 +44,7 @@ const EditBuilding = ({id, edited}) =>
     {
         if(id)
         {
-            fetch("http://localhost:8080/api/resource/building/information", 
+            fetch("http://localhost:8080/api/resource/room/information", 
             {
                 method: "POST",
                 mode: "cors",
@@ -51,8 +57,11 @@ const EditBuilding = ({id, edited}) =>
                 }
             }).then((res) => res.json()).then(data =>
             {
+                setBuildingID(data[0].building_id);
                 setName(data[0].name);
-                setLocation(data[0].location);
+                setFloor(data[0].zcoord);
+                setX(parseFloat(data[0].xcoord));
+                setY(parseFloat(data[0].ycoord));
             });
         }
 
@@ -67,14 +76,14 @@ const EditBuilding = ({id, edited}) =>
             </Form.Group>
 
             <Form.Group className={styles.formGroup} controlId="formBasicName">
-                <div className={styles.formLabel}>Location</div>
-                <input className={styles.formInput} type='text' placeholder='Location' value={location} onChange={(e) => setLocation(e.target.value)}></input>
+                <div className={styles.formLabel}>Floor</div>
+                <input className={styles.formInput} type='text' placeholder='Floor' value={floor} onChange={(e) => setFloor(e.target.value)}></input>
             </Form.Group>
 
-            <Button className={styles.submit} onClick={EditBuildingSubmit}>Update</Button>
+            <Button className={styles.submit} onClick={EditRoomSubmit}>Update</Button>
         </div>
     );
 
 }
 
-export {EditBuilding as EditBuildingForm}
+export {EditRoom as EditRoomForm}
