@@ -171,16 +171,17 @@ func CreateBooking(user *data.User ,booking *data.Booking) error{
 		logger.Error.Printf("Unable to retrieve Calendar client: %v\n", err)
 		return err
 	}
-	event := createEvent(*booking.ResourceType,nil,nil,*booking.Start,*booking.End,*user.Email)
+	event := createEventByBooking(user,booking)
 	calendarId := "primary"
 	event, err = srv.Events.Insert(calendarId, event).Do()
 	if err != nil {
 		logger.Error.Printf("Unable to create event. %v\n", err)
 		return err
 	}
+	logger.Access.Println("\nHERE4\n")
 	logger.Access.Printf("Event created: %s\n", event.HtmlLink)
 	redis.CreateBooking(*booking.Id, event.Id, *user.Id, *booking.End)
-
+	logger.Access.Println("\nHERE5\n")
 	return nil
 }
 
