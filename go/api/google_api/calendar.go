@@ -5,6 +5,10 @@ Base code from https://developers.google.com/calendar/api/quickstart/go
 https://developers.google.com/calendar/api/guides/create-events#go
 */
 
+////TO DO////
+//Add room and building names to event desc
+
+
 package google_api
 
 import (
@@ -16,7 +20,6 @@ import (
 	"os"
 	"path/filepath"
 	"time"
-	"strings"
 
 	// "time"
 	"api/data"
@@ -117,39 +120,115 @@ func createEvent(summary string, location *string, desc *string, starttime time.
 	return event
 }
 
-func CreateBooking(user *data.User ,booking *data.Booking) bool{
+func createEventByBooking(user *data.User ,booking *data.Booking) *calendar.Event {
+
+	event := &calendar.Event{
+		Summary: *booking.ResourceType+" Booking",
+		Start: &calendar.EventDateTime{
+			DateTime: booking.Start.Format(time.RFC3339),
+			TimeZone: "Africa/Harare",
+		},
+		End: &calendar.EventDateTime{
+			DateTime: booking.End.Format(time.RFC3339),
+			TimeZone: "Africa/Harare",
+		},
+		Attendees: []*calendar.EventAttendee{
+		        &calendar.EventAttendee{Email:*user.Email},
+		},
+	}
+
+	// if booking. != nil {
+	// 	event.Location = *location;
+	// }
+	// if desc != nil {
+	// 	event.Description = *desc;
+	// }
+	
+    //Add Attendees
+
+	return event
+}
+
+func CreateBooking(user *data.User ,booking *data.Booking) error{
 
 	ctx := context.Background()
 	b, err := os.ReadFile("/google_api/credentials.json")
 	if err != nil {
 	    logger.Error.Printf("Unable to read client secret file: %v\n", err)
-		return false
+		return err
 	}
 
 	// If modifying these scopes, delete your previously saved token.json.
 	config, err := google.ConfigFromJSON(b, calendar.CalendarScope)
 	if err != nil {
 		logger.Error.Printf("Unable to parse client secret file to config: %v\n", err)
-		return false
+		return err
 	}
 	client := getClient(config)
 
 	srv, err := calendar.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
 		logger.Error.Printf("Unable to retrieve Calendar client: %v\n", err)
-		return false
+		return err
 	}
 	event := createEvent(*booking.ResourceType,nil,nil,*booking.Start,*booking.End,*user.Email)
 	calendarId := "primary"
 	event, err = srv.Events.Insert(calendarId, event).Do()
 	if err != nil {
 		logger.Error.Printf("Unable to create event. %v\n", err)
-		return false
+		return err
 	}
 	logger.Access.Printf("Event created: %s\n", event.HtmlLink)
 	redis.CreateBooking(*booking.Id, event.Id, *user.Id, *booking.End)
 
-	return true
+	return nil
+}
+
+func CreateUpdateBooking(user *data.User ,booking *data.Booking) error{
+	if(redis.DoesBookingExist(*booking.Id)){
+		return UpdateBooking(user,booking)
+	}else{
+		return CreateBooking(user,booking)
+	}
+}
+
+func UpdateBooking(user *data.User ,booking *data.Booking) error{
+	eventid, err := redis.GetEventId(*booking.Id)
+	if err != nil || eventid == nil {
+	    logger.Error.Printf("Redis error: %v\n", err)
+		return err
+	}
+	ctx := context.Background()
+	b, err := os.ReadFile("/google_api/credentials.json")
+	if err != nil {
+	    logger.Error.Printf("Unable to read client secret file: %v\n", err)
+		return err
+	}
+
+	// If modifying these scopes, delete your previously saved token.json.
+	config, err := google.ConfigFromJSON(b, calendar.CalendarScope)
+	if err != nil {
+		logger.Error.Printf("Unable to parse client secret file to config: %v\n", err)
+		return err
+	}
+	client := getClient(config)
+
+	srv, err := calendar.NewService(ctx, option.WithHTTPClient(client))
+	if err != nil {
+		logger.Error.Printf("Unable to retrieve Calendar client: %v\n", err)
+		return err
+	}
+	event := createEventByBooking(user,booking)
+	calendarId := "primary"
+
+	event, err = srv.Events.Update(calendarId,*eventid,event).Do()
+	if err != nil {
+		logger.Error.Printf("Unable to create event. %v\n", err)
+		return err
+	}
+	logger.Access.Printf("Event created: %s\n", event.HtmlLink)
+	redis.CreateBooking(*booking.Id, event.Id, *user.Id, *booking.End)
+	return nil
 }
 
 func TestingFunc() bool{

@@ -2,7 +2,8 @@ package scheduler
 
 import (
 	"api/data"
-
+	"lib/logger"
+	"api/google_api"
 	"api/db"
 )
 
@@ -23,6 +24,24 @@ func makeBookings(candidates CandidateBookings, schedulerData *SchedulerData) er
 	bookings := data.BatchBooking{
 		UserId:   nil,
 		Bookings: candidates[choose],
+	}
+
+	for  _, booking := range candidates[choose]{
+		if(booking.ResourceId != nil){
+			du := data.NewUserDA(access)
+			users, err := du.FindIdentifier(&data.User{Id: booking.UserId})
+			if err != nil {
+				logger.Error.Printf("User not found when creating calendar booking. User ID: %v\n",booking.UserId)
+				continue
+			}
+			user := users.FindHead()
+			err = google_api.CreateUpdateBooking(user,booking)
+			if err != nil{
+				logger.Error.Println("User not found when creating calendar booking")
+				continue
+			}
+
+		}
 	}
 
 	da := data.NewBatchBookingDA(access)

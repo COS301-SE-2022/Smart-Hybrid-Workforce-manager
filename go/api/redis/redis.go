@@ -186,7 +186,7 @@ func getTokenRedisData(token string) (*RedisData,error){
 	var redisData *RedisData
 	err = json.Unmarshal([]byte(val), &redisData)
 	if err != nil{
-		return nil,errors.New("Redis data parse error")
+		return nil,errors.New("redis data parse error")
 	}
 	if(redisData != nil){
 		return redisData,nil;
@@ -260,6 +260,33 @@ func CreateBooking(booking_id string, calendar_id string, user_id string,end_tim
 	}
 	_ = val;
 	return true
+}
+
+func DoesBookingExist(booking_id string) bool{
+	client := getCalendarClient()
+	val, err := client.Get(ctx, booking_id).Result();
+	if err != nil {
+		return false;
+	}
+	_ = val;
+	return true
+}
+
+func GetEventId(booking_id string) (*string,error){
+	client := getCalendarClient()
+	val, err := client.Get(ctx, booking_id).Result();
+	if err != nil {
+		return nil,errors.New("redis does not contain id");
+	}
+	var calbooking *CalendarBookings
+	err = json.Unmarshal([]byte(val), &calbooking)
+	if err != nil{
+		return nil,errors.New("redis calendar data parse error")
+	}
+	if(calbooking != nil){
+		return &calbooking.Calendar_id,nil;
+	}
+	return nil,errors.New("no redis data found");
 }
 
 
