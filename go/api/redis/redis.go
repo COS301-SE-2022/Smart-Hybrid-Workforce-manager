@@ -43,6 +43,7 @@ type RedisData struct{
 
 type CalendarBookings struct{
 	Calendar_id				string 		`json:"calendar_id"`
+	User_id					string 		`json:"user_id"`
 	Time_end				time.Time	`json:"time_end"`
 }
 
@@ -233,27 +234,28 @@ func UserLogin(user_id string, user_identifier string, user_name string, user_su
 	return redisData,nil;
 }
 
-func CreateBooking(booking_id string, calendar_id string,end_time time.Time) bool{
+func CreateBooking(booking_id string, calendar_id string, user_id string,end_time time.Time) bool{
 	client := getCalendarClient()
 	data := CalendarBookings{
 		Calendar_id: calendar_id,
+		User_id: user_id,
 		Time_end: end_time,
 	}
 
 	rdata,err := json.Marshal(data)
 	if err != nil{
-		logger.Error.Fatal(err)
+		logger.Error.Println(err)
 		return false
 	}
 	end_time.Add(time.Hour * 24)
 	err = client.Set(ctx, booking_id, rdata, time.Until(end_time)).Err();
 	if err != nil{
-		logger.Error.Fatal(err)
+		logger.Error.Println(err)
 		return false
 	}
 	val, err := client.Get(ctx, booking_id).Result();
 	if err != nil {
-		logger.Error.Fatal(err)
+		logger.Error.Println(err)
 		return false;
 	}
 	_ = val;

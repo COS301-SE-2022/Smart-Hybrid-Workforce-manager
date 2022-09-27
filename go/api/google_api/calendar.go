@@ -20,6 +20,7 @@ import (
 
 	// "time"
 	"api/data"
+	"api/redis"
 	"lib/logger"
 
 	"golang.org/x/oauth2"
@@ -116,14 +117,8 @@ func createEvent(summary string, location *string, desc *string, starttime time.
 	return event
 }
 
-func CreateBooking(user *data.User ,booking *data.Booking) string{
-	logger.Access.Printf("user: %v\nbooking: %v\n",*user,*booking)
-	event := createEvent(*booking.ResourceType,nil,nil,*booking.Start,*booking.End,*user.Email)
-	logger.Access.Printf("\nevent: %v\n",event)
-	return "Calender Booking"
-}
+func CreateBooking(user *data.User ,booking *data.Booking) bool{
 
-func TestingFunc() bool{
 	ctx := context.Background()
 	b, err := os.ReadFile("/google_api/credentials.json")
 	if err != nil {
@@ -144,7 +139,9 @@ func TestingFunc() bool{
 		logger.Error.Printf("Unable to retrieve Calendar client: %v\n", err)
 		return false
 	}
-	event := createEvent("Testing",nil,nil,time.Now(),time.Now().Add(time.Hour * 5),"email@example.com")
+	logger.Access.Printf("user: %v\nbooking: %v\n",*user,*booking)
+	event := createEvent(*booking.ResourceType,nil,nil,*booking.Start,*booking.End,*user.Email)
+	logger.Access.Printf("\nevent: %v\n",event)
 	calendarId := "primary"
 	event, err = srv.Events.Insert(calendarId, event).Do()
 	if err != nil {
@@ -152,7 +149,42 @@ func TestingFunc() bool{
 	}
 	fmt.Printf("Event created: %s\n", event.HtmlLink)
 	line := event.HtmlLink
-	fmt.Println(line[strings.Index(line, "eid=")+4:])
+	cal_id := line[strings.Index(line, "eid=")+4:]
+	redis.CreateBooking(*booking.Id, cal_id, *user.Id, *booking.End)
+
+	return true
+}
+
+func TestingFunc() bool{
+	// ctx := context.Background()
+	// b, err := os.ReadFile("/google_api/credentials.json")
+	// if err != nil {
+	//     logger.Error.Printf("Unable to read client secret file: %v\n", err)
+	// 	return false
+	// }
+
+	// // If modifying these scopes, delete your previously saved token.json.
+	// config, err := google.ConfigFromJSON(b, calendar.CalendarScope)
+	// if err != nil {
+	// 	logger.Error.Printf("Unable to parse client secret file to config: %v\n", err)
+	// 	return false
+	// }
+	// client := getClient(config)
+
+	// srv, err := calendar.NewService(ctx, option.WithHTTPClient(client))
+	// if err != nil {
+	// 	logger.Error.Printf("Unable to retrieve Calendar client: %v\n", err)
+	// 	return false
+	// }
+	// event := createEvent("Testing",nil,nil,time.Now(),time.Now().Add(time.Hour * 5),"email@example.com")
+	// calendarId := "primary"
+	// event, err = srv.Events.Insert(calendarId, event).Do()
+	// if err != nil {
+	// 	logger.Error.Printf("Unable to create event. %v\n", err)
+	// }
+	// fmt.Printf("Event created: %s\n", event.HtmlLink)
+	// line := event.HtmlLink
+	// fmt.Println(line[strings.Index(line, "eid=")+4:])
 
 	// fmt.Printf("\nEvent: %s\n", event)
 	// fmt.Printf("\nEvent: %T\n", event)
