@@ -43,7 +43,7 @@ type RedisData struct{
 
 type CalendarBookings struct{
 	Calendar_id				string 		`json:"calendar_id"`
-	Time_end				time.Time	`json:"time_end"`
+	User_id					string 		`json:"user_id"`
 }
 
 //Redis clients
@@ -185,7 +185,7 @@ func getTokenRedisData(token string) (*RedisData,error){
 	var redisData *RedisData
 	err = json.Unmarshal([]byte(val), &redisData)
 	if err != nil{
-		return nil,errors.New("Redis data parse error")
+		return nil,errors.New("redis data parse error")
 	}
 	if(redisData != nil){
 		return redisData,nil;
@@ -233,31 +233,62 @@ func UserLogin(user_id string, user_identifier string, user_name string, user_su
 	return redisData,nil;
 }
 
-func CreateBooking(booking_id string, calendar_id string,end_time time.Time) bool{
+func CreateBooking(booking_id string, calendar_id string, user_id string,end_time time.Time) bool{
+	logger.Access.Println("\nHERE10\n")
 	client := getCalendarClient()
 	data := CalendarBookings{
 		Calendar_id: calendar_id,
-		Time_end: end_time,
+		User_id: user_id,
 	}
-
+	logger.Access.Println("\nHERE6\n")
 	rdata,err := json.Marshal(data)
 	if err != nil{
-		logger.Error.Fatal(err)
+		logger.Error.Println(err)
 		return false
 	}
+	logger.Access.Println("\nHERE7\n")
 	end_time.Add(time.Hour * 24)
 	err = client.Set(ctx, booking_id, rdata, time.Until(end_time)).Err();
 	if err != nil{
-		logger.Error.Fatal(err)
+		logger.Error.Println(err)
 		return false
 	}
+	logger.Access.Println("\nHERE8\n")
 	val, err := client.Get(ctx, booking_id).Result();
 	if err != nil {
-		logger.Error.Fatal(err)
+		logger.Error.Println(err)
+		return false;
+	}
+	logger.Access.Println("\nHERE9\n")
+	_ = val;
+	return true
+}
+
+func DoesBookingExist(booking_id string) bool{
+	client := getCalendarClient()
+	val, err := client.Get(ctx, booking_id).Result();
+	if err != nil {
 		return false;
 	}
 	_ = val;
 	return true
+}
+
+func GetEventId(booking_id string) (*string,error){
+	client := getCalendarClient()
+	val, err := client.Get(ctx, booking_id).Result();
+	if err != nil {
+		return nil,errors.New("redis does not contain id");
+	}
+	var calbooking *CalendarBookings
+	err = json.Unmarshal([]byte(val), &calbooking)
+	if err != nil{
+		return nil,errors.New("redis calendar data parse error")
+	}
+	if(calbooking != nil){
+		return &calbooking.Calendar_id,nil;
+	}
+	return nil,errors.New("no redis data found");
 }
 
 
