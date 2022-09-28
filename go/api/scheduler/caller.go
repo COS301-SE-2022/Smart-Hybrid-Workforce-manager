@@ -17,7 +17,7 @@ import (
 
 var (
 	HTTPClient  restclient.HTTPClient
-	Clock       clock.Clock   = &clock.RealClock{} // TODO: @JonathanEnslin make sure this is not a bad way of doing it
+	Clock       clock.Clock   = &clock.RealClock{}
 	timeout     time.Duration = 1800 * time.Second
 	endpointURL string
 )
@@ -69,16 +69,15 @@ func TimeOfNextWeekDay(now time.Time, weekday string) time.Time {
 // entry permits it
 // func checkAndCall(now time.Time, scheduledDay string) error {
 // 	deskType :=
-// 	// scheduledDay := "Friday" // TODO: @JonathanEnslin Make env var
+// 	// scheduledDay := "Friday"
 // 	if mayCall(scheduledDay, now) {
-// 		// TODO: @JonathanEnslin move this into a seperate function that uses exponential backoff
 // 		nextMonday := TimeOfNextWeekDay(now, "Monday")            // Start of next week
 // 		nextSaturday := TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
 // 		schedulerData, err := GetSchedulerData(nextMonday, nextSaturday)
 // 		if err != nil {
 // 			return err
 // 		}
-// 		err = Call(schedulerData, endpointURL) // TODO: @JonathanEnslin handle the return data
+// 		err = Call(schedulerData, endpointURL)
 // 		if err != nil {
 // 			return err
 // 		}
@@ -87,7 +86,7 @@ func TimeOfNextWeekDay(now time.Time, weekday string) time.Time {
 // }
 
 // Call Calls a scheduler endpoint and passes it the data
-func Call(data *SchedulerData, endpoint string) error { // TODO: @JonathanEnslin improve this function
+func Call(data *SchedulerData, endpoint string) error {
 	body, _ := json.Marshal(data)
 	bodyBytesBuff := bytes.NewBuffer(body)
 
@@ -99,7 +98,7 @@ func Call(data *SchedulerData, endpoint string) error { // TODO: @JonathanEnslin
 	if err != nil {
 		return err
 	}
-	response, err := HTTPClient.Do(request) // TODO: @JonathanEnslin URL env param
+	response, err := HTTPClient.Do(request)
 	if err != nil {
 		return err
 	}
@@ -282,7 +281,7 @@ func StartDailyCalling() (chrono.ScheduledTask, error) {
 // 	// periodic calls
 // 	stopLoop := false
 // 	for !stopLoop {
-// 		nextDay := TimeOfNextWeekDay(time.Now(), scheduledDay) // TODO: @JonathanEnslin, allow scheduled day to be changed
+// 		nextDay := TimeOfNextWeekDay(time.Now(), scheduledDay)
 // 		timer := time.NewTimer(time.Until(nextDay))
 // 		defer timer.Stop()
 // 		select {
