@@ -43,7 +43,7 @@ func jsonResponse(writer http.ResponseWriter, request *http.Request, status int,
 	encoder := json.NewEncoder(writer)
 	err := encoder.Encode(payload)
 	if err != nil {
-		logger.HTTP.Printf("INFO %v %v [500] Unable to Marshal value\n", request.RemoteAddr, request.RequestURI)
+		logger.HTTP.Printf("INFO %v %v [500] Unable to Marshal value %v \n", request.RemoteAddr, request.RequestURI, err)
 		return
 	}
 }

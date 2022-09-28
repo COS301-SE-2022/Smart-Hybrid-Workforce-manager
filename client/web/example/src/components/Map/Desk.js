@@ -1,12 +1,12 @@
 import { Path, Transformer } from 'react-konva';
 import { useRef, useEffect, useState, Fragment } from 'react';
 
-const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform, user}) =>
+const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform}) =>
 {
     const shapeRef = useRef(null);
     const transformRef = useRef(null);
     const [booked, setBooked] = useState(shapeProps.booked);
-    const [userBooked, setUser] = useState(user);
+    const [userBooked, setUser] = useState(shapeProps.user);
 
     useEffect(() =>
     {
@@ -20,16 +20,16 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
         {
             if(userBooked)
             {
-                shapeRef.current.fill('#000000');
+                shapeRef.current.fill('#e57dba');
             }
             else
             {
-                shapeRef.current.fill('#e8e8e8');
+                shapeRef.current.fill('#374146');
             }
         }
         else if(!isSelected && !booked)
         {
-            shapeRef.current.fill('#374146');
+            shapeRef.current.fill('#e8e8e8');
         }
     }, [isSelected, transform, booked, userBooked]);
 
@@ -39,16 +39,16 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
         {
             if(userBooked)
             {
-                shapeRef.current.fill('#000000');
+                shapeRef.current.fill('#e57dba');
             }
             else
             {
-                shapeRef.current.fill('#e8e8e8');
+                shapeRef.current.fill('#374146');
             }
         }
         else
         {
-            shapeRef.current.fill('#374146');
+            shapeRef.current.fill('#e8e8e8');
         }
     },[booked, userBooked])
 
@@ -59,8 +59,8 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
 
     useEffect(() =>
     {
-        setUser(user);
-    },[user]);
+        setUser(shapeProps.user);
+    },[shapeProps.user]);
 
     return (
         <Fragment> 
@@ -70,7 +70,7 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
 
                 data='h 200 a 20 20 0 0 1 20 20 v 80 a 20 20 0 0 1 -20 20 h -200 a 20 20 0 0 1 -20 -20 v -80 a 20 20 0 0 1 20 -20 Z M 50 -10 h 10 v -10 h 80 v 10 h 10 v -20 a 10 10 0 0 0 -100 0 Z'
 
-                fill='#374146'
+                fill='#e8e8e8'
 
                 scaleX={0.3}
                 scaleY={0.3}
@@ -122,17 +122,17 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
                     {
                         if(userBooked)
                         {
-                            e.target.fill('#000000');
+                            e.target.fill('#e57dba');
                         }
                         else
                         {
-                            e.target.fill('#e8e8e8');
+                            e.target.fill('#374146');
                         }
                         
                     }
                     else if(!isSelected && !booked)
                     {
-                        e.target.fill('#374146');
+                        e.target.fill('#e8e8e8');
                     }
                 }}
             />

@@ -78,6 +78,7 @@ func dailyScheduler(writer http.ResponseWriter, request *http.Request) {
 	bookings := overseer.DailyOverseer(schedulerData, config)
 
 	utils.JSONResponse(writer, request, bookings)
+	logger.Debug.Println("AAAAAMMMM IIIII HEEEEERRRREEEEEEE")
 }
 
 // Loads the schedulers config file
