@@ -79,6 +79,11 @@ Smart Hybrid Workforce Manager aims to provide companies an easy to use system t
   ➛ Permission Flow Guide v1.0<br>
 </a> 
 
+<a href="https://drive.google.com/file/d/1H3V7ZLA5QRPPLsAG00W0m2gr1Z1LiL39/view?usp=sharing" target="_blank">
+  ➛ AI Schedulers<br>
+</a> 
+
+
 <br>
 
 <!--Demo Information -->
