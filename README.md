@@ -67,7 +67,13 @@ Smart Hybrid Workforce Manager aims to provide companies an easy to use system t
   ➛ Technical Installation Manual v1.0<br>
 </a> 
 
-### Permission Flow Guide
+### Non-Functional Requirement Testing
+
+<a href="https://drive.google.com/file/d/1__oU-XB6vR1ckhwLw3mupfjM0jAcRs82/view?usp=sharing" target="_blank">
+  ➛ Security Testing<br>
+</a> 
+
+### Other Documents
 
 <a href="https://drive.google.com/file/d/1eiyuevQBveD41sLYmI3Sp1Gdl3zlBqpx/view?usp=sharing" target="_blank">
   ➛ Permission Flow Guide v1.0<br>
