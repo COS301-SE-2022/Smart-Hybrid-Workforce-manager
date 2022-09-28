@@ -243,12 +243,12 @@ const StatisticsComponent = () => {
                                     Bookings by Type
                                 </Card.Title>
                                 <Chart 
-                                    series={[automated.automated, automated.manual]}
+                                    series={[automated.manual, automated.automated]}
                                     options= {{
                                         chart: {
                                             type: 'donut',
                                         },
-                                        labels: ['Automated', 'Manual'],
+                                        labels: ['Manual', 'Automated'],
                                         dataLabels: {
                                             enabled: false
                                         },
