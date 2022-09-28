@@ -18,6 +18,19 @@ jobs:
         working-directory: ./go/api
         run: go build -v ./...
 
+      - name: Start containers
+        working-directory: ./
+        run: docker-compose -f docker-compose.integration-test.yml up --build
+
+      - name: Sleep for 60 seconds and wait for containers to start
+        uses: jakejarvis/wait-action@master
+        with:
+         time: '60s'
+
+      # - name: Wait for containers startup
+      #   run: sleep 1m
+      #   shell: bash
+
       - name: Test
         working-directory: ./go/api
         run: go test -cover -v ./...
