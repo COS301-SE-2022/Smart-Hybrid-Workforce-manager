@@ -2,7 +2,8 @@
 Base code from https://developers.google.com/calendar/api/quickstart/go
 */
 /*
-https://developers.google.com/calendar/api/guides/create-events#go
+Usefull link:
+			https://developers.google.com/calendar/api/guides/create-events#go
 */
 
 ////TO DO////
@@ -21,7 +22,6 @@ import (
 	"path/filepath"
 	"time"
 
-	// "time"
 	"api/data"
 	"api/redis"
 	"lib/logger"
@@ -30,7 +30,6 @@ import (
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/calendar/v3"
 	"google.golang.org/api/option"
-	// "google.golang.org/genproto/googleapis/apps/script/type/calendar"
 )
 
 func getClient(config *oauth2.Config) *http.Client {
@@ -104,7 +103,6 @@ func createEvent(summary string, location *string, desc *string, starttime time.
 			DateTime: endtime.Format(time.RFC3339),
 			TimeZone: "Africa/Harare",
 		},
-		// Recurrence: []string{"RRULE:FREQ=DAILY;COUNT=2"},
 		Attendees: []*calendar.EventAttendee{
 		        &calendar.EventAttendee{Email:attendee},
 		},
@@ -115,7 +113,6 @@ func createEvent(summary string, location *string, desc *string, starttime time.
 	if desc != nil {
 		event.Description = *desc;
 	}
-    //Add Attendees
 
 	return event
 }
@@ -137,15 +134,6 @@ func createEventByBooking(user *data.User ,booking *data.Booking) *calendar.Even
 		},
 	}
 
-	// if booking. != nil {
-	// 	event.Location = *location;
-	// }
-	// if desc != nil {
-	// 	event.Description = *desc;
-	// }
-	
-    //Add Attendees
-
 	return event
 }
 
@@ -158,7 +146,6 @@ func CreateBooking(user *data.User ,booking *data.Booking) error{
 		return err
 	}
 
-	// If modifying these scopes, delete your previously saved token.json.
 	config, err := google.ConfigFromJSON(b, calendar.CalendarScope)
 	if err != nil {
 		logger.Error.Printf("Unable to parse client secret file to config: %v\n", err)
@@ -204,7 +191,6 @@ func UpdateBooking(user *data.User ,booking *data.Booking) error{
 		return err
 	}
 
-	// If modifying these scopes, delete your previously saved token.json.
 	config, err := google.ConfigFromJSON(b, calendar.CalendarScope)
 	if err != nil {
 		logger.Error.Printf("Unable to parse client secret file to config: %v\n", err)
