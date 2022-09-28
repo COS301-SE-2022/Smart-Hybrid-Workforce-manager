@@ -32,6 +32,7 @@ const Map = () =>
     const [allUsers, setAllUsers] = useState({});
     const [currUsers, setCurrUsers] = useState({});
     const [user, setUser] = useState({});
+    const prefRef = useRef(null);
 
     //Desk and meeting room prop arrays
     const [deskProps, SetDeskProps] = useState([]);
@@ -657,6 +658,15 @@ const Map = () =>
                     {
                         preferenceRef.current.checked = true;
                     }
+
+                    if(resource.resource_type === 'DESK' && prefRef.current)
+                    {
+                        prefRef.current.style.display = 'block';
+                    }
+                    else if(prefRef.current)
+                    {
+                        prefRef.current.style.display = 'none';
+                    }
                 }
             })
         }
@@ -691,11 +701,6 @@ const Map = () =>
         }
     },[currResource, currBookings, allUsers]);
 
-    useEffect(() =>
-    {
-        console.log(deskProps);
-    },[deskProps]);
-
     return (
         <Fragment>
             <div className={styles.mapHeadingContainer}>
@@ -711,7 +716,7 @@ const Map = () =>
                     Type: {currResource ? currResource.resource_type : 'Default type'}
                 </div>
 
-                <div className={styles.resourcePreference}>
+                <div ref={prefRef} className={styles.resourcePreference}>
                     <input ref={preferenceRef} type='checkbox' onChange={() => setPreference()}></input>
                     <label>Set as preferred desk</label>
                 </div>
@@ -769,9 +774,7 @@ const Map = () =>
                                 
                                 onChange = {(newProps) => 
                                 {
-                                    const newDeskProps = deskProps.slice();
-                                    newDeskProps[i] = newProps;
-                                    SetDeskProps(newDeskProps);
+
                                 }}
 
                                 draggable = {false}
@@ -844,7 +847,7 @@ const Map = () =>
                         <option value='' disabled selected id='RoomDefault'>--Select the room--</option>
                             {rooms.length > 0 && (
                                 rooms.map(room => (
-                                    <option key={room.id} value={room.id}>{room.name + ' (' + room.location + ')'}</option>
+                                    <option key={room.id} value={room.id}>{room.name + ' (Floor ' + room.zcoord + ')'}</option>
                                 ))
                             )}
                     </select>

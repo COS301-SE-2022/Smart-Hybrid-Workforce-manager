@@ -120,7 +120,7 @@ const MeetingRoomBooking = (props, ref) =>
             <Form className='form' onSubmit={handleSubmit}>
 
                 <Form.Group className='form-group' controlId="formBasicTeam">
-                    <Form.Label className='form-label'>Team<br></br></Form.Label>
+                    <div className='form-label'>Team<br></br></div>
                     <select className='combo-box' name='teamId' value={teamSelectedId} onChange={(e) => SetTeamSelectedId(e.target.value)}>
                         <option value="null">--none--</option>
                         {teams.length > 0 && (
@@ -132,7 +132,7 @@ const MeetingRoomBooking = (props, ref) =>
                 </Form.Group>
 
                 <Form.Group className='form-group' controlId="formBasicRole">
-                    <Form.Label className='form-label'>Role<br></br></Form.Label>
+                    <div className='form-label'>Role<br></br></div>
                     <select className='combo-box' name='roleId' value={roleSelectedId} onChange={(e) => SetRoleSelectedId(e.target.value)}>
                         <option value="null">--none--</option>
                         {roles.length > 0 && (
@@ -144,42 +144,43 @@ const MeetingRoomBooking = (props, ref) =>
                 </Form.Group>
 
                 <Form.Group className='form-group' controlId="formBasicName">
-                    <Form.Label className='form-label'>Aditional Attendees Count<br></br></Form.Label>
-                    <Form.Control name="sAttendees" className='form-input' type="number" placeholder="0" min="0" value={aditionalAttendees} onChange={(e) => SetAditionalAttendees(e.target.value)} />
+                    <div className='form-label'>Aditional Attendees Count<br></br></div>
+                    <input name="sAttendees" className='form-input' type="number" placeholder="0" min="0" value={aditionalAttendees} onChange={(e) => SetAditionalAttendees(e.target.value)} />
                 </Form.Group>
 
                 <Form.Group className='form-group' controlId="formBasicName">
-                    <label className="container">
-                        Book Desks for attendees  
+                    <div className="container">
+                        {'  Book Desks for attendees'}  
                         <input className='checkbox' type="checkbox" checked={attendeesDesks} onChange={(e) => SetAttendeesDesks(e.target.checked)}/>
                         <span className="checkmark"></span>
-                    </label>
+                    </div>
                 </Form.Group>
                 
                 <Form.Group className='form-group' controlId="formBasicName">
-                    <label className="container">
-                        Book Desks for additional attendees  
+                    <div className="container">
+                        
                         <input className='checkbox' type="checkbox" checked={aditionalAttendeesDesks} onChange={(e) => SetAditionalAttendeesDesks(e.target.checked)}/>
+                        {'  Book Desks for additional attendees'} 
                         <span className="checkmark"></span>
-                    </label>
+                    </div>
                 </Form.Group>
                 
                 <Form.Group className='form-group' controlId="formBasicName">
-                    <Form.Label className='form-label'>Date<br></br></Form.Label>
-                    <Form.Control className='form-input' type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                    <div className='form-label'>Date<br></br></div>
+                    <input className='form-input' type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
                 </Form.Group>
 
                 <Form.Group className='form-group' controlId="formBasicName">
-                    <Form.Label className='form-label'>Start Time<br></br></Form.Label>
-                    <Form.Control className='form-input' type="time" placeholder="hh:mm" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+                    <div className='form-label'>Start Time<br></br></div>
+                    <input className='form-input' type="time" placeholder="hh:mm" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
                 </Form.Group>
                 
                 <Form.Group className='form-group' controlId="formBasicName">
-                    <Form.Label className='form-label'>End Time<br></br></Form.Label>
-                    <Form.Control className='form-input' type="time" placeholder="hh:mm" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+                    <div className='form-label'>End Time<br></br></div>
+                    <input className='form-input' type="time" placeholder="hh:mm" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
                 </Form.Group>
 
-                <Button className='button-submit' variant='primary' type='submit'>Create Booking</Button>
+                <button className='button-submit' variant='primary' type='submit'>Create Booking</button>
             </Form>
         </div>
     )

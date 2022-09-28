@@ -151,7 +151,7 @@ const NavbarAdmin = (props, ref) =>
     return (
         <div ref={ref} className={styles.navbarContainer}>
             <div className={styles.logoContainer}>
-                S.H.W.M
+                deskflow
             </div>
             <div className={styles.navlinkContainer}>
                 <div ref={homeRef} className={styles.navlink} onClick={NavigateHome}>
