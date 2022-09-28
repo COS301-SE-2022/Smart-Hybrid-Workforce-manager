@@ -19,11 +19,11 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, draggable, tr
 
         if(!isSelected && booked)
         {
-            shapeRef.current.fill('#e8e8e8');
+            shapeRef.current.fill('#7780e4');
         }
         else if(!isSelected && !booked)
         {
-            shapeRef.current.fill('#374146');
+            shapeRef.current.fill('#e8e8e8');
         }
     }, [isSelected, transform, booked]);
 
@@ -31,11 +31,11 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, draggable, tr
     {
         if(booked)
         {
-            shapeRef.current.fill('#e8e8e8');
+            shapeRef.current.fill('#7780e4');
         }
         else
         {
-            shapeRef.current.fill('#374146');
+            shapeRef.current.fill('#e8e8e8');
         }
     },[booked])
 
@@ -52,7 +52,7 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, draggable, tr
 
                 data = 'M 0 0 h 600 a 20 20 0 0 1 20 20 v 80 a 20 20 0 0 1 -20 20 h -600 a 20 20 0 0 1 -20 -20 v -80 a 20 20 0 0 1 20 -20 Z M 50 -10 h 10 v -10 h 80 v 10 h 10 v -20 a 10 10 0 0 0 -100 0 Z m 133 0 h 10 v -10 h 80 v 10 h 10 v -20 a 10 10 0 0 0 -100 0 Z m 133 0 h 10 v -10 h 80 v 10 h 10 v -20 a 10 10 0 0 0 -100 0 Z m 133 0 h 10 v -10 h 80 v 10 h 10 v -20 a 10 10 0 0 0 -100 0 Z M 50 130 h 10 v 10 h 80 v -10 h 10 v 20 a 10 10 0 0 1 -100 0 Z m 133 0 h 10 v 10 h 80 v -10 h 10 v 20 a 10 10 0 0 1 -100 0 Z m 133 0 h 10 v 10 h 80 v -10 h 10 v 20 a 10 10 0 0 1 -100 0 Z m 133 0 h 10 v 10 h 80 v -10 h 10 v 20 a 10 10 0 0 1 -100 0 Z M -30 10 v 10 h -10 v 80 h 10 v 10 h -20 a 10 10 0 0 1 0 -100 Z M 630 10 v 10 h 10 v 80 h -10 v 10 h 20 a 10 10 0 0 0 0 -100 Z'
 
-                fill='#374146'
+                fill='#e8e8e8'
 
                 scaleX={0.3}
                 scaleY={0.3}
@@ -102,11 +102,11 @@ const MeetingRoom = ({ shapeProps, isSelected, onSelect, onChange, draggable, tr
                     }
                     else if(!isSelected && booked)
                     {
-                        e.target.fill('#e8e8e8');
+                        e.target.fill('#7780e4');
                     }
                     else if(!isSelected && !booked)
                     {
-                        e.target.fill('#374146');
+                        e.target.fill('#e8e8e8');
                     }
                 }}
             />

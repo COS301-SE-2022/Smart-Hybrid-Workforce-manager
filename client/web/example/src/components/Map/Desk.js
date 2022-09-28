@@ -24,7 +24,7 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
             }
             else
             {
-                shapeRef.current.fill('#374146');
+                shapeRef.current.fill('#7780e4');
             }
         }
         else if(!isSelected && !booked)
@@ -43,7 +43,7 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
             }
             else
             {
-                shapeRef.current.fill('#374146');
+                shapeRef.current.fill('#7780e4');
             }
         }
         else
@@ -126,7 +126,7 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
                         }
                         else
                         {
-                            e.target.fill('#374146');
+                            e.target.fill('#7780e4');
                         }
                         
                     }
