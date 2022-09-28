@@ -6,7 +6,7 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
     const shapeRef = useRef(null);
     const transformRef = useRef(null);
     const [booked, setBooked] = useState(shapeProps.booked);
-    const [userBooked, setUser] = useState(shapeProps.user);
+    const [userBooked, setUser] = useState(user);
 
     useEffect(() =>
     {
@@ -18,11 +18,13 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
 
         if(!isSelected && booked)
         {
-            shapeRef.current.fill('#e8e8e8');
-
             if(userBooked)
             {
                 shapeRef.current.fill('#000000');
+            }
+            else
+            {
+                shapeRef.current.fill('#e8e8e8');
             }
         }
         else if(!isSelected && !booked)
@@ -33,13 +35,16 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
 
     useEffect(() =>
     {
-        if(booked && userBooked)
+        if(booked)
         {
-            shapeRef.current.fill('#000000');
-        }
-        else if(booked)
-        {
-            shapeRef.current.fill('#e8e8e8');
+            if(userBooked)
+            {
+                shapeRef.current.fill('#000000');
+            }
+            else
+            {
+                shapeRef.current.fill('#e8e8e8');
+            }
         }
         else
         {
@@ -54,8 +59,8 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
 
     useEffect(() =>
     {
-        setUser(shapeProps.user);
-    },[shapeProps.user]);
+        setUser(user);
+    },[user]);
 
     return (
         <Fragment> 
@@ -115,7 +120,15 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
                     }
                     else if(!isSelected && booked)
                     {
-                        e.target.fill('#e8e8e8');
+                        if(userBooked)
+                        {
+                            e.target.fill('#000000');
+                        }
+                        else
+                        {
+                            e.target.fill('#e8e8e8');
+                        }
+                        
                     }
                     else if(!isSelected && !booked)
                     {
