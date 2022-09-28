@@ -234,32 +234,27 @@ func UserLogin(user_id string, user_identifier string, user_name string, user_su
 }
 
 func CreateBooking(booking_id string, calendar_id string, user_id string,end_time time.Time) bool{
-	logger.Access.Println("\nHERE10\n")
 	client := getCalendarClient()
 	data := CalendarBookings{
 		Calendar_id: calendar_id,
 		User_id: user_id,
 	}
-	logger.Access.Println("\nHERE6\n")
 	rdata,err := json.Marshal(data)
 	if err != nil{
 		logger.Error.Println(err)
 		return false
 	}
-	logger.Access.Println("\nHERE7\n")
 	end_time.Add(time.Hour * 24)
 	err = client.Set(ctx, booking_id, rdata, time.Until(end_time)).Err();
 	if err != nil{
 		logger.Error.Println(err)
 		return false
 	}
-	logger.Access.Println("\nHERE8\n")
 	val, err := client.Get(ctx, booking_id).Result();
 	if err != nil {
 		logger.Error.Println(err)
 		return false;
 	}
-	logger.Access.Println("\nHERE9\n")
 	_ = val;
 	return true
 }
