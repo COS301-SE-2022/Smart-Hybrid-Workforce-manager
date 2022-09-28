@@ -2,50 +2,28 @@ package endpoints
 
 import (
 	"api/data"
-	"api/db"
-	"lib/utils"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	ts "lib/test_setup"
 	"lib/testutils"
+	"lib/utils"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"strings"
 	"testing"
 )
 
 func TestCreateBookingHandler(t *testing.T) {
-	t.SkipNow() // skip until test is updated todo @JonathanEnslin
-	dbDsnEnv := os.Getenv("DATABASE_DSN")
-	dbMaxIdleEnv := os.Getenv("DATABASE_MAX_IDLE_CONNECTIONS")
-	dbMaxOpenEnv := os.Getenv("DATABASE_MAX_OPENCONNECTIONS")
-
-	// Check if all environment variables could be read
-	if dbDsnEnv == "" {
-		// DB must be running locally in order for this test to work
-		// Set environment variables
-		dbDsnEnv = "host=localhost port=5432 user=admin dbname=arche sslmode=disable"
-		fmt.Println(testutils.Scolourf(testutils.CYAN, "DATABASE_DSN environmet var could not be read, using %s", dbDsnEnv))
-		t.Setenv("DATABASE_DSN", dbDsnEnv)
+	t.SkipNow()
+	err := ts.ConnectDB(t)
+	if err != nil {
+		t.Fatal(err)
 	}
-
-	if dbMaxIdleEnv == "" {
-		// DB must be running locally in order for this test to work
-		dbMaxIdleEnv = "5"
-		fmt.Println(testutils.Scolourf(testutils.CYAN, "DATABASE_MAX_IDLE_CONNECTIONS environmet var could not be read, using %s", dbMaxIdleEnv))
-		t.Setenv("DATABASE_MAX_IDLE_CONNECTIONS", "5")
-	}
-
-	if dbMaxOpenEnv == "" {
-		dbMaxOpenEnv = "5"
-		fmt.Println(testutils.Scolourf(testutils.CYAN, "DATABASE_MAX_OPEN_CONNECTIONS environmet var could not be read, using %s", dbMaxOpenEnv))
-		t.Setenv("DATABASE_MAX_OPEN_CONNECTIONS", "5")
-	}
+	defer ts.DisconnectDB(t)
 
 	writer1 := httptest.NewRecorder()
 	request1 := httptest.NewRequest(http.MethodPost, `http://localhost:8100/api/booking/information`, strings.NewReader(`{}`))
-	err := db.RegisterAccess()
 	if err != nil {
 		t.Logf(testutils.Scolour(testutils.PURPLE, "Error while connecting to DB: %v, skipping test"), err)
 		fmt.Printf(testutils.Scolour(testutils.PURPLE, "Error while connecting to DB: %v, skipping test"), err)

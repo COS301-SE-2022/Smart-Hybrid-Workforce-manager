@@ -16,16 +16,12 @@ import (
 )
 
 var (
-	HTTPClient  restclient.HTTPClient
-	Clock       clock.Clock   = &clock.RealClock{}
-	timeout     time.Duration = 1800 * time.Second
-	endpointURL string
+	HTTPClient restclient.HTTPClient
+	Clock      clock.Clock   = &clock.RealClock{}
+	timeout    time.Duration = 1800 * time.Second
 )
 
 func init() {
-	// get env vars here
-	endpointURL = os.Getenv("SCHEDULER_ADDR")
-
 	HTTPClient = &http.Client{
 		Timeout: timeout,
 	}
