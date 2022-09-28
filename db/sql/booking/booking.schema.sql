@@ -51,10 +51,12 @@ $$
   BEGIN
     SELECT COUNT(*) INTO numMatches FROM booking.identifier AS i
 	  WHERE (_booking).user_id=i.user_id
-	  AND (booking.timeInInterval((_booking).start, i.start, i.end) OR booking.timeInInterval((_booking).end, i.start, i.end));
+	  AND (booking.timeInInterval((_booking).start, i.start, i.end) OR booking.timeInInterval((_booking).end, i.start, i.end))
+	  AND (_booking).resource_type='DESK';
 	RETURN numMatches > 1;
   END;
 $$ LANGUAGE plpgsql;
+
 
 
 CREATE OR REPLACE FUNCTION booking.checkForNoConflicts()
