@@ -106,7 +106,7 @@ const Map = () =>
     }
 
     //Load desks from the database
-    const LoadDesk = useCallback((id, name, x, y, width, height, rotation, booked) =>
+    const LoadDesk = useCallback((id, name, x, y, width, height, rotation, booked, user) =>
     {
         //Uses a reference array to prevent state dependency and infinite loop
         if(stageRef.current !== null)
@@ -124,7 +124,8 @@ const Map = () =>
                     height : height,
                     rotation : rotation,
                     edited : false,
-                    booked : booked
+                    booked : booked,
+                    user: user
                 }
             ];
 
@@ -489,7 +490,7 @@ const Map = () =>
         {
             if(resources[i].resource_type === "DESK")
             {
-                LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, false);
+                LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, false, false);
             }
             else if(resources[i].resource_type === "MEETINGROOM")
             {
@@ -609,6 +610,7 @@ const Map = () =>
             currBookings.forEach((booking) =>
             {
                 bookedIDs.push(booking.resource_id);
+                console.log(booking)
             });
 
             deskPropsRef.current = [];
@@ -616,28 +618,41 @@ const Map = () =>
 
             for(let i = 0; i < resources.length; i++)
             {
-                if(bookedIDs.includes(resources[i].id))
+                var booked = false;
+                for(let j = 0; j < currBookings.length; j++)
                 {
-                    if(resources[i].resource_type === 'DESK')
+                    if(currBookings[j].resource_id === resources[i].id)
                     {
-                        LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, true);
-                    }
-                    else if(resources[i].resource_type === 'MEETINGROOM')
-                    {
-                        LoadMeetingRoom(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, JSON.parse(resources[i].decorations).capacity, true);
+                        if(resources[i].resource_type === 'DESK' && currBookings[j].user_id === userData.user_id)
+                        {
+                            LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, true, true);
+                        }
+                        else if(resources[i].resource_type === 'DESK')
+                        {
+                            LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, true, false);
+                        }
+                        else if(resources[i].resource_type === 'MEETINGROOM')
+                        {
+                            LoadMeetingRoom(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, JSON.parse(resources[i].decorations).capacity, true);
+                        }
+
+                        booked = true;
+                        break;
                     }
                 }
-                else
+
+                if(!booked)
                 {
                     if(resources[i].resource_type === 'DESK')
                     {
-                        LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, false);
+                        LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, false, false);
                     }
                     else if(resources[i].resource_type === 'MEETINGROOM')
                     {
                         LoadMeetingRoom(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, JSON.parse(resources[i].decorations).capacity, false);
                     }
                 }
+                
             }            
         }
     },[currBookings, allUsers, resources, LoadDesk, LoadMeetingRoom, LoadWall]);
