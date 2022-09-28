@@ -1,6 +1,10 @@
 CREATE SCHEMA IF NOT EXISTS booking;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- TRIGGER USED TO LOWER CHANCES OF DOUBLE BOOKINGS BEING MADE
+
+DROP TRIGGER IF EXISTS checkForConflictingBookings ON "booking".identifier;
+
 CREATE TABLE IF NOT EXISTS booking.identifier (
     id uuid DEFAULT uuid_generate_v4(),
     user_id uuid NOT NULL REFERENCES "user".identifier(id) ON DELETE CASCADE,
@@ -28,3 +32,45 @@ CREATE TABLE IF NOT EXISTS booking.meeting_room (
     
     PRIMARY KEY (id)
 );
+
+
+CREATE OR REPLACE FUNCTION booking.timeInInterval(_check timestamp, _start timestamp, _end timestamp)
+RETURNS boolean AS
+$$
+  BEGIN
+    RETURN (_check >= _start AND _check <= _end);
+  END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION booking.conflictingBooking(_booking booking.identifier)
+RETURNS boolean AS
+$$
+  DECLARE
+    numMatches int;
+  BEGIN
+    SELECT COUNT(*) INTO numMatches FROM booking.identifier AS i
+	  WHERE (_booking).user_id=i.user_id
+	  AND (booking.timeInInterval((_booking).start, i.start, i.end) OR booking.timeInInterval((_booking).end, i.start, i.end));
+	RETURN numMatches > 1;
+  END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION booking.checkForNoConflicts()
+RETURNS TRIGGER AS
+$$
+  BEGIN
+    IF booking.conflictingBooking(new) THEN
+	  RAISE EXCEPTION 'conflicting_bookings';
+	END IF;
+	RETURN new;
+  END
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE CONSTRAINT TRIGGER checkForConflictingBookings
+AFTER INSERT OR UPDATE ON booking.identifier
+DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW EXECUTE PROCEDURE booking.checkForNoConflicts();
