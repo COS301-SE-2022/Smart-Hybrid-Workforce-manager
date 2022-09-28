@@ -16,7 +16,7 @@
 
 <a href = "https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/COS301-SE-2022/Smart-Hybrid-Workforce-manager"></a>
 [![Docker Image CI](https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/actions/workflows/deploy.yml/badge.svg)](https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/actions/workflows/deploy.yml)
-[![codecov](https://codecov.io/gh/COS301-SE-2022/Smart-Hybrid-Workforce-manager/branch/master/graph/badge.svg?token=FP6940JI0D)](https://codecov.io/gh/COS301-SE-2022/Smart-Hybrid-Workforce-manager)
+[![codecov](https://codecov.io/gh/COS301-SE-2022/Smart-Hybrid-Workforce-manager/branch/develop/graph/badge.svg?token=FP6940JI0D)](https://codecov.io/gh/COS301-SE-2022/Smart-Hybrid-Workforce-manager)
 [![Requirements Status](https://requires.io/github/InThePipeFiveByFive/Smart-Hybrid-Workforce-manager/requirements.svg?branch=master)](https://requires.io/github/InThePipeFiveByFive/Smart-Hybrid-Workforce-manager/requirements/?branch=master) 
 <img alt="Uptime Robot status" src="https://img.shields.io/uptimerobot/status/m791728122-d14beed6408606d9175acebf">
 
@@ -67,7 +67,13 @@ Smart Hybrid Workforce Manager aims to provide companies an easy to use system t
   ➛ Technical Installation Manual v1.0<br>
 </a> 
 
-### Permission Flow Guide
+### Non-Functional Requirement Testing
+
+<a href="https://drive.google.com/file/d/1__oU-XB6vR1ckhwLw3mupfjM0jAcRs82/view?usp=sharing" target="_blank">
+  ➛ Security Testing<br>
+</a> 
+
+### Other Documents
 
 <a href="https://drive.google.com/file/d/1eiyuevQBveD41sLYmI3Sp1Gdl3zlBqpx/view?usp=sharing" target="_blank">
   ➛ Permission Flow Guide v1.0<br>

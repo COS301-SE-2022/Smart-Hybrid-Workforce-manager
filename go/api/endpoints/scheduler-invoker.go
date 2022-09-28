@@ -50,7 +50,8 @@ func SchedulerInvoker(writer http.ResponseWriter, request *http.Request) {
 	}
 	nextMonday := scheduler.TimeOfNextWeekDay(now, "Monday")            // Start of next week
 	nextSaturday := scheduler.TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
-	schedulerData, err := scheduler.GetSchedulerData(nextMonday, nextSaturday)
+	deskType := "DESK"
+	schedulerData, err := scheduler.GetSchedulerData(nextMonday, nextSaturday, &deskType)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
@@ -84,7 +85,7 @@ func SchedulerInvoker(writer http.ResponseWriter, request *http.Request) {
 			defer wg.Done()
 			startDate := time.Date(yyyy, mm, dd+_i, 0, 0, 0, 0, now.Location())
 			endDate := startDate.AddDate(0, 0, 1) // Add one day
-			schedulerData, err := scheduler.GetSchedulerData(startDate, endDate)
+			schedulerData, err := scheduler.GetSchedulerData(startDate, endDate, &deskType)
 			buildingGroups := scheduler.GroupByBuilding(schedulerData)
 			dailyBuildingWg := sync.WaitGroup{}
 			for _, data := range buildingGroups {
@@ -144,10 +145,10 @@ func WeeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 		now = now.AddDate(0, 0, -7)
 		// Set start to previous day, so that scheduler is called for the requested day
 	}
-
+	deskType := "DESK"
 	nextMonday := scheduler.TimeOfNextWeekDay(now, "Monday")            // Start of next week
 	nextSaturday := scheduler.TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
-	schedulerData, err := scheduler.GetSchedulerData(nextMonday, nextSaturday)
+	schedulerData, err := scheduler.GetSchedulerData(nextMonday, nextSaturday, &deskType)
 	buildingGroups := scheduler.GroupByBuilding(schedulerData)
 	weeklyBuildingWg := sync.WaitGroup{}
 	for _, data := range buildingGroups {
@@ -189,11 +190,12 @@ func DailyScheduler(writer http.ResponseWriter, request *http.Request) {
 		// Set start to previous day, so that scheduler is called for the requested day
 		now = now.AddDate(0, 0, -1)
 	}
+	deskType := "DESK"
 	yyyy, mm, dd := now.Date()
 	startDate := time.Date(yyyy, mm, dd+1, 0, 0, 0, 0, now.Location())
 	endDate := startDate.AddDate(0, 0, 1) // Add one day
 	// Get data between start and end of date
-	schedulerData, err := scheduler.GetSchedulerData(startDate, endDate)
+	schedulerData, err := scheduler.GetSchedulerData(startDate, endDate, &deskType)
 	buildingGroups := scheduler.GroupByBuilding(schedulerData)
 	dailyBuildingWg := sync.WaitGroup{}
 	for _, data := range buildingGroups {
