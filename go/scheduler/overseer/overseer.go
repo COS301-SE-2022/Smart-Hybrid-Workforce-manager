@@ -184,6 +184,45 @@ func DailyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sched
 	)
 	// go ga.GA(domain, ga.WeeklyStubCrossOver, ga.WeeklyStubFitness, ga.DailyMutate, ga.WeeklyTournamentSelection, ga.DailyPopulationGenerator, c, &s)
 
+	// go ga.GA(
+	// 	domain,
+	// 	func(domain *ga.Domain, individuals ga.Individuals, selectionFunc ga.Selection, offspring int) ga.Individuals {
+	// 		return ga.CrossoverCaller(ga.CycleXWithAdjustment, domain, individuals, selectionFunc, offspring)
+	// 	},
+	// 	ga.DailyFitness,
+	// 	ga.DailyMutateValid,
+	// 	ga.WeeklyTournamentSelectionFitness,
+	// 	ga.DailyPopulationGeneratorValid,
+	// 	c,
+	// 	&s,
+	// )
+
+	// go ga.GA(
+	// 	domain,
+	// 	func(domain *ga.Domain, individuals ga.Individuals, selectionFunc ga.Selection, offspring int) ga.Individuals {
+	// 		return ga.CrossoverCaller(ga.TwoPointCrossover, domain, individuals, selectionFunc, offspring)
+	// 	},
+	// 	ga.DailyFitness,
+	// 	ga.DailyMutateValid,
+	// 	ga.WeeklyTournamentSelectionFitness,
+	// 	ga.DailyPopulationGeneratorValid,
+	// 	c,
+	// 	&s,
+	// )
+
+	// go ga.GA(
+	// 	domain,
+	// 	func(domain *ga.Domain, individuals ga.Individuals, selectionFunc ga.Selection, offspring int) ga.Individuals {
+	// 		return ga.CrossoverCaller(ga.OnePointCrossover, domain, individuals, selectionFunc, offspring)
+	// 	},
+	// 	ga.DailyFitness,
+	// 	ga.DailyMutateValid,
+	// 	ga.WeeklyTournamentSelectionFitness,
+	// 	ga.DailyPopulationGeneratorValid,
+	// 	c,
+	// 	&s,
+	// )
+
 	// Listen on channel for best individual for x seconds
 	var best ga.Individual
 	best.Fitness = -1
@@ -209,7 +248,7 @@ func DailyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sched
 				return bookings
 			}
 			count++
-			if candidate.Fitness > best.Fitness {
+			if candidate.CheckIfValidDaily() && candidate.Fitness > best.Fitness {
 				logger.Debug.Println(testutils.Scolourf(testutils.PURPLE, "IMPROVEMENT RECIEVED: %v, %v, %v", count, improvements, candidate.Fitness))
 				improvements++
 				best = candidate

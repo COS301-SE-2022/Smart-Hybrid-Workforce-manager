@@ -4,11 +4,13 @@ import (
 	"fmt"
 	cu "lib/collectionutils"
 	"lib/utils"
+	"math"
 	"strconv"
 )
 
 // Function of this type gets passed into CrossoverCaller
 type CrossoverOperator func(domain *Domain, individuals Individuals, numOffspring int) Individuals
+type Operator func(parent1, parent2 []string, xPoint1, xPoint2 int) ([]string, []string)
 
 // CrossoverCaller gets passed to the GA, it uses the specified operator to perform crossover
 func CrossoverCaller(crossoverOperator CrossoverOperator, domain *Domain, individuals Individuals, selectionFunc Selection, offspring int) Individuals {
@@ -77,9 +79,7 @@ func WeeklyDayVResourceCrossover(domain *Domain, individuals Individuals, offspr
 // Partially mapped crossover
 //////////////////////
 
-// A valid (daily) crossover, that works similarly to PMX 2-point crossover
-// It initially flattens an individual, and then performs pmx crossover on the flattened crossover
-func PartiallyMappedFlattenCrossoverValid(domain *Domain, individuals Individuals, numOffspring int) Individuals {
+func ApplyFlattenCrossover(domain *Domain, individuals Individuals, numOffspring int, op Operator) Individuals {
 	// Flatten the parents
 	flatParent1, flatParent2 := cu.Flatten2DArr(individuals[0].Gene), cu.Flatten2DArr(individuals[1].Gene)
 
@@ -96,7 +96,7 @@ func PartiallyMappedFlattenCrossoverValid(domain *Domain, individuals Individual
 		xPoint1, xPoint2 = xPoint2, xPoint1
 	}
 
-	offspring1, offspring2 := PMX(flatParent1, flatParent2, xPoint1, xPoint2)
+	offspring1, offspring2 := op(flatParent1, flatParent2, xPoint1, xPoint2)
 
 	// Calculate the original dimensions of the individuals
 	sizes := make([]int, len(individuals[0].Gene))
@@ -107,6 +107,12 @@ func PartiallyMappedFlattenCrossoverValid(domain *Domain, individuals Individual
 	// child1 and child2 are the de-flattened offspring
 	child1, child2 := cu.PartitionArray(offspring1, sizes), cu.PartitionArray(offspring2, sizes)
 	return []*Individual{{child1, 0.0}, {child2, 0.0}}
+}
+
+// A valid (daily) crossover, that works similarly to PMX 2-point crossover
+// It initially flattens an individual, and then performs pmx crossover on the flattened crossover
+func PartiallyMappedFlattenCrossoverValid(domain *Domain, individuals Individuals, numOffspring int) Individuals {
+	return ApplyFlattenCrossover(domain, individuals, numOffspring, PMX[string])
 }
 
 // twoPointSwap swaps the elements from xP1 up and to excluding xP2 between arr1 and arr2
@@ -175,30 +181,11 @@ func FindValid[T comparable](index int, parent []T, otherParentMap map[T]int) T 
 
 // OnePointCrossover is an invalid crossover that selects a random crossover point and crossovers everything to the right
 func OnePointCrossover(domain *Domain, individuals Individuals, numOffspring int) Individuals {
-	// Flatten the parents
-	flatParent1, flatParent2 := cu.Flatten2DArr(individuals[0].Gene), cu.Flatten2DArr(individuals[1].Gene)
-
-	// Get the crossover points
-	xPoint := utils.RandInt(0, len(flatParent1))
-
-	// Crossover
-	offspring1, offspring2 := onePointCrossover(flatParent1, flatParent2, xPoint)
-
-	// Calculate the original dimensions of the individuals
-	sizes := make([]int, len(individuals[0].Gene))
-	for i, col := range individuals[0].Gene {
-		sizes[i] = len(col)
-	}
-
-	// child1 and child2 are the de-flattened offspring
-	child1, child2 := cu.PartitionArray(offspring1, sizes), cu.PartitionArray(offspring2, sizes)
-	return []*Individual{{child1, 0.0}, {child2, 0.0}}
+	return ApplyFlattenCrossover(domain, individuals, numOffspring, onePointCrossover[string])
 }
 
-func onePointCrossover[T comparable](p1, p2 []T, xP int) ([]T, []T) {
-	if xP < 0 {
-		xP = 0
-	}
+func onePointCrossover[T comparable](p1, p2 []T, xPoint1, xPoint2 int) ([]T, []T) {
+	xP := int(math.Max(float64(xPoint1), float64(xPoint2)))
 	// Make offspring arrays
 	offspring1, offspring2 := make([]T, len(p1)), make([]T, len(p2))
 
@@ -224,29 +211,7 @@ func onePointCrossover[T comparable](p1, p2 []T, xP int) ([]T, []T) {
 
 // TwoPointCrossover is an invalid crossover that crossovers everything between two crossover points
 func TwoPointCrossover(domain *Domain, individuals Individuals, numOffspring int) Individuals {
-	// Flatten the parents
-	flatParent1, flatParent2 := cu.Flatten2DArr(individuals[0].Gene), cu.Flatten2DArr(individuals[1].Gene)
-
-	// Get the crossover points
-	xPoint1, xPoint2 := utils.RandInt(0, len(flatParent1)), utils.RandInt(0, len(flatParent1))
-
-	// Ensure that the first crossover point is not larger than the second
-	if xPoint1 > xPoint2 {
-		xPoint1, xPoint2 = xPoint2, xPoint1
-	}
-
-	// Crossover
-	offspring1, offspring2 := twoPointCrossover(flatParent1, flatParent2, xPoint1, xPoint2)
-
-	// Calculate the original dimensions of the individuals
-	sizes := make([]int, len(individuals[0].Gene))
-	for i, col := range individuals[0].Gene {
-		sizes[i] = len(col)
-	}
-
-	// child1 and child2 are the de-flattened offspring
-	child1, child2 := cu.PartitionArray(offspring1, sizes), cu.PartitionArray(offspring2, sizes)
-	return []*Individual{{child1, 0.0}, {child2, 0.0}}
+	return ApplyFlattenCrossover(domain, individuals, numOffspring, twoPointCrossover[string])
 }
 
 func twoPointCrossover[T comparable](p1, p2 []T, xP1, xP2 int) ([]T, []T) {
@@ -284,9 +249,26 @@ func twoPointCrossover[T comparable](p1, p2 []T, xP1, xP2 int) ([]T, []T) {
 //////////////////////
 // Cycle Crossover
 //////////////////////
+
 // https://www.researchgate.net/figure/Cycle-crossover-CX_fig2_226665831#:~:text=Cycle%20crossover%20(CX)%20The%20cycle,from%20one%20of%20the%20parents.
 // The cycle crossover operator(Figure 3) was proposed by Oliver et al. (1987)
 // Can only be used in daily scheduler
+
+// CycleCrossover is a valid crossover method
+func CycleXWithAdjustment(domain *Domain, individuals Individuals, numOffSpring int) Individuals {
+	adjusted := Individuals{}
+	for _, indiv := range individuals {
+		adjusted = append(adjusted, indiv)
+		unusedResources := cu.SliceDifference(domain.Terminals, indiv.Gene[0])
+		indiv.Gene[0] = append(indiv.Gene[0], unusedResources...)
+	}
+	crossovered := CycleCrossover(domain, adjusted, numOffSpring)
+	// Deaadjust
+	for i, indiv := range crossovered {
+		indiv.Gene[0] = indiv.Gene[0][:len(individuals[i].Gene[0])]
+	}
+	return crossovered
+}
 
 // CycleCrossover is a valid crossover method
 func CycleCrossover(domain *Domain, individuals Individuals, numOffspring int) Individuals {
