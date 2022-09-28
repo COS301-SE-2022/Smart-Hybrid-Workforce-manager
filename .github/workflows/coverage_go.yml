@@ -1,8 +1,6 @@
 name: 'Test Coverage Backend'
 
-on: 
-  push:
-    branches: [ci/cd]
+on: pull_request
 
 jobs:
   build_and_test:
@@ -23,6 +21,6 @@ jobs:
       - name: Get Coverage
         working-directory: ./go/api
         run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
-        
+
       - name: Upload Coverage
         uses: codecov/codecov-action@v2
