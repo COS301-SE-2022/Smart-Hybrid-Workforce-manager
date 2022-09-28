@@ -52,7 +52,7 @@ function Roles()
           {roles.length > 0 && (
             roles.map(role => 
             {
-              return <RoleListItem id={role.id} name={'Role ' + role.role_name} lead={ role.role_lead_id } />
+              return <RoleListItem id={role.id} name={'Role ' + role.name} lead={ role.role_lead_id } />
             }
           )
           )}
