@@ -89,3 +89,34 @@ func ValidateIndividual(domain *Domain, indiv *Individual) {
 
 ///////////////////////////////////////////////////
 // DAILY
+
+func (individual *Individual) CheckIfValidDaily() bool {
+	gene := individual.Gene
+	// Will be used to check if any resources are assigned twice
+	_, resourceIdGroups := collectionutils.GroupBy(gene[0], func(id string) string { return id })
+	for _, group := range resourceIdGroups {
+		if len(group) > 1 {
+			return false
+		}
+	}
+	return true
+}
+
+func (individual *Individual) ValidateIndividual(domain *Domain) {
+	gene := individual.Gene
+	// Will be used to check if any resources are assigned twice
+	_, resourceIdGroups := collectionutils.GroupBy(gene[0], func(id string) string { return id })
+	availableTerminals := collectionutils.SliceDifference(domain.Terminals, gene[0])
+	if len(availableTerminals) == 0 {
+		return
+	}
+	for i, id := range gene[0] {
+		if len(resourceIdGroups[id]) > 1 {
+			randi := utils.RandInt(0, len(availableTerminals))
+			newId := availableTerminals[randi]
+			availableTerminals = collectionutils.RemElemenAtI(availableTerminals, randi)
+			resourceIdGroups[id] = collectionutils.RemElemenAtI(resourceIdGroups[id], 0)
+			gene[0][i] = newId
+		}
+	}
+}
