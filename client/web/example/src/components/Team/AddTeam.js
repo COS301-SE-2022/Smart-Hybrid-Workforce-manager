@@ -4,7 +4,7 @@ import styles from './team.module.css';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { UserContext } from '../../App';
 
-const AddTeam = ({makeDefault}) =>
+const AddTeam = ({makeDefault, edited}) =>
 {
     const [name, setName] = useState('');
     const [color, setColor] = useState('#000000');
@@ -39,6 +39,7 @@ const AddTeam = ({makeDefault}) =>
             if(res.status === 200)
             {
                 alert("Team Successfully Created!");
+                edited(true);
             }
         });
     }
