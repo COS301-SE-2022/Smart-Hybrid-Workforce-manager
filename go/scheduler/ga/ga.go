@@ -148,7 +148,9 @@ func (population Individuals) getBestI() int {
 }
 
 // GA is a generic configurable genetic algorithm that produces multiple solutions to the domain problem
-func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate, selection Selection, populationGenerator PopulationGenerator, solutionChannel chan Individual, forceStop *context.Context) {
+func GA(domain Domain, crossover Crossover, fitness Fitness, mutate Mutate,
+	selection Selection, populationGenerator PopulationGenerator,
+	solutionChannel chan Individual, forceStop *context.Context) {
 	// Seed
 	rand.Seed(int64(domain.Config.Seed))
 	//start := time.Now()
