@@ -81,7 +81,7 @@ const StatisticsComponent = () => {
             <div style={{overflowY: 'scroll', height: '80vh'}}>
                 <div class="row mx-2">
                     <div class="col-auto mr-2 mt-4 ">
-                        <Card  style={{width: '750px', height: 'auto', textAlign: 'center'}} >
+                        <Card  style={{width: '1245px', height: 'auto', textAlign: 'center'}} >
                             <Card.Body>
                                 <Card.Title style={{fontSize: '1.5rem', fontWeight: 'bold'}}>
                                     Average Monthly Utilisation
@@ -131,8 +131,8 @@ const StatisticsComponent = () => {
                     </div>
 
                     <div class="col-auto mr-2 mt-4">
-                        <Card style={{textAlign: 'center'}} >
-                            <Card.Body>
+                        <Card style={{textAlign: 'center', width: '400px', paddingBottom: '-50px'}} >
+                            <Card.Body style={{paddingBottom: '0px'}}>
                                 <Card.Title style={{fontSize: '1.5rem', fontWeight: 'bold'}}>
                                     Average Resource Utilisation
                                 </Card.Title>
@@ -141,7 +141,7 @@ const StatisticsComponent = () => {
                                     options= {{
                                         chart: {
                                             type: 'radialBar',
-                                            offsetY: -20,
+                                            offsetY: -40,
                                         },
                                         labels: ['Occupied', 'Empty'],
                                         dataLabels: {
@@ -149,14 +149,17 @@ const StatisticsComponent = () => {
                                         },
                                         plotOptions: {
                                             radialBar: {
-                                                startAngle: -135,
-                                                endAngle: 135,
+                                                startAngle: -120,
+                                                endAngle: 120,
+                                                track: {
+                                                    background: '#f0f0f0',
+                                                },
                                                 dataLabels: {
                                                     name: {
                                                         show: false,
                                                     },
                                                     value: {
-                                                        fontSize: '1.2rem',
+                                                        fontSize: '2rem',
                                                         offsetY: -5,
                                                     }
                                                 }
@@ -165,12 +168,15 @@ const StatisticsComponent = () => {
                                         colors: [getColour(averageUtil)],
                                         grid: {
                                             padding: {
-                                                top: -10,
-                                                bottom: -100,
+                                                top: -15,
+                                                bottom: 0,
                                             }
                                         },
                                     }}     
-                                    type='radialBar'      
+                                    type='radialBar'    
+                                    height='500px'  
+                                    paddingBottom='-50px'
+                                    // width='300px'
                                 />
                             </Card.Body>
                         </Card>
@@ -178,7 +184,7 @@ const StatisticsComponent = () => {
 
                     <div class="col-auto mr-2 mt-4">
                         {/* <Card style={{width: '18rem'}} > */}
-                        <Card style={{width: '500px', height: '400px'}} >
+                        <Card style={{width: '400px', height: 'auto'}} >
                         {/* <Card> */}
                             <Card.Body>
                                 <Card.Title style={{fontSize: '1.5rem', fontWeight: 'bold', textAlign: 'center'}}>
@@ -202,7 +208,7 @@ const StatisticsComponent = () => {
                                                         total: {
                                                             showAlways: false,
                                                             show: true,
-                                                        }
+                                                        },
                                                     }
                                                 }
                                             }
@@ -210,9 +216,19 @@ const StatisticsComponent = () => {
                                         theme: {
                                             mode: 'light', 
                                             palette: 'palette3', 
-                                        }
+                                        },
+                                        legend: {
+                                            show: true,
+                                            offsetX: 25,
+                                        },
+                                        grid: {
+                                            padding: {
+                                                bottom: 7,
+                                            }
+                                        },
                                     }}     
                                     type='donut'      
+                                    width='425'
                                 />
                             </Card.Body>
                         </Card>
@@ -220,7 +236,7 @@ const StatisticsComponent = () => {
 
                     <div class="col-auto mr-2 mt-4">
                         {/* <Card style={{width: '18rem'}} > */}
-                        <Card style={{width: '500px', height: '400px'}} >
+                        <Card style={{width: '400px', height: 'auto', marginBottom: 25}} >
                         {/* <Card> */}
                             <Card.Body>
                                 <Card.Title style={{fontSize: '1.5rem', fontWeight: 'bold', textAlign: 'center'}}>
@@ -252,9 +268,19 @@ const StatisticsComponent = () => {
                                         theme: {
                                             mode: 'light', 
                                             palette: 'palette7',
-                                        }
+                                        },
+                                        legend: {
+                                            show: true,
+                                            offsetX: 25,
+                                        },
+                                        grid: {
+                                            padding: {
+                                                bottom: 14,
+                                            }
+                                        },
                                     }}     
-                                    type='donut'      
+                                    type='donut'          
+                                    width='425'  
                                 />
                             </Card.Body>
                         </Card>
