@@ -255,6 +255,22 @@ func twoPointCrossover[T comparable](p1, p2 []T, xP1, xP2 int) ([]T, []T) {
 // Can only be used in daily scheduler
 
 // CycleCrossover is a valid crossover method
+func CycleXWithAdjustment(domain *Domain, individuals Individuals, numOffSpring int) Individuals {
+	adjusted := Individuals{}
+	for _, indiv := range individuals {
+		adjusted = append(adjusted, indiv)
+		unusedResources := cu.SliceDifference(domain.Terminals, indiv.Gene[0])
+		indiv.Gene[0] = append(indiv.Gene[0], unusedResources...)
+	}
+	crossovered := CycleCrossover(domain, adjusted, numOffSpring)
+	// Deaadjust
+	for i, indiv := range crossovered {
+		indiv.Gene[0] = indiv.Gene[0][:len(individuals[i].Gene[0])]
+	}
+	return crossovered
+}
+
+// CycleCrossover is a valid crossover method
 func CycleCrossover(domain *Domain, individuals Individuals, numOffspring int) Individuals {
 	// Flatten the parents
 	flatParent1, flatParent2 := cu.Flatten2DArr(individuals[0].Gene), cu.Flatten2DArr(individuals[1].Gene)
