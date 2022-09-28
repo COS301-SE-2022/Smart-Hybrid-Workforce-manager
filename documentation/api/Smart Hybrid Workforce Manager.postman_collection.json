@@ -1,22 +1,118 @@
 {
 	"info": {
-		"_postman_id": "a72041b1-fd8b-4977-8868-c51a51a2ca72",
+		"_postman_id": "f4660dd0-44f4-4b3d-a4fa-a9e1dc66fe13",
 		"name": "Smart Hybrid Workforce Manager",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "15560435"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "User",
+			"name": "Login",
 			"item": [
 				{
-					"name": "Information",
+					"name": "Login - Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var token = jsonData.token\r",
+									"var user = jsonData.user_id\r",
+									"\r",
+									"pm.environment.set(\"TOKEN\", token)\r",
+									"pm.environment.set(\"USER\", user)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"secret\": \"admin\",\r\n    \"identifier\": \"admin@admin.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_BASE_URL}}/user/login",
+							"host": [
+								"{{REST_BASE_URL}}"
+							],
+							"path": [
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Standard",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var token = jsonData.token\r",
+									"var user = jsonData.user_id\r",
+									"\r",
+									"pm.environment.set(\"TOKEN\", token)\r",
+									"pm.environment.set(\"USER\", user)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"secret\": \"P@ssword123\",\r\n    \"identifier\": \"kristopher.domniney5@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_BASE_URL}}/user/login",
+							"host": [
+								"{{REST_BASE_URL}}"
+							],
+							"path": [
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "View Users",
 					"item": [
 						{
-							"name": "All",
+							"name": "View all users",
 							"request": {
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{TOKEN}}",
+										"type": "default"
+									}
+								],
 								"body": {
 									"mode": "raw",
 									"raw": "{}",
@@ -27,14 +123,39 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8100/api/user/information",
-									"protocol": "http",
+									"raw": "{{REST_BASE_URL}}/user/information",
 									"host": [
-										"localhost"
+										"{{REST_BASE_URL}}"
 									],
-									"port": "8100",
 									"path": [
-										"api",
+										"user",
+										"information"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "View current user",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{TOKEN}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"{{USER}}\"\r\n}"
+								},
+								"url": {
+									"raw": "{{REST_BASE_URL}}/user/information",
+									"host": [
+										"{{REST_BASE_URL}}"
+									],
+									"path": [
 										"user",
 										"information"
 									]
@@ -45,28 +166,36 @@
 					]
 				},
 				{
-					"name": "Credential",
+					"name": "Credentials",
 					"item": [
 						{
-							"name": "Login",
+							"name": "Reset password",
 							"request": {
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{TOKEN}}",
+										"type": "default"
+									}
+								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"id\":null,\r\n    \"secret\":null,\r\n    \"active\":null,\r\n    \"FailedAttempts\":null,\r\n    \"LastAccessed\":null,\r\n    \"Identifier\":null\r\n}"
+									"raw": "{\r\n    \"user_id\" : \"{{USER}}\",\r\n    \"password\" : \"admin\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
 								},
 								"url": {
-									"raw": "http://localhost:8100/api/user/login",
-									"protocol": "http",
+									"raw": "{{REST_BASE_URL}}/user/resetpassword",
 									"host": [
-										"localhost"
+										"{{REST_BASE_URL}}"
 									],
-									"port": "8100",
 									"path": [
-										"api",
 										"user",
-										"login"
+										"resetpassword"
 									]
 								}
 							},
@@ -75,10 +204,17 @@
 					]
 				},
 				{
-					"name": "Register User",
+					"name": "Register user",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{TOKEN}}",
+								"type": "default",
+								"disabled": true
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"first_name\": \"anonymous\",\r\n    \"last_name\": \"anonymous\",\r\n    \"email\": \"asd@test.com\",\r\n    \"password\" : \"password\"\r\n}",
@@ -89,16 +225,46 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8100/api/user/register",
-							"protocol": "http",
+							"raw": "{{REST_BASE_URL}}/user/register",
 							"host": [
-								"localhost"
+								"{{REST_BASE_URL}}"
 							],
-							"port": "8100",
 							"path": [
-								"api",
 								"user",
 								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update current user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"{{USER}}\",\r\n    \"first_name\": \"CHANGED NAME\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_BASE_URL}}/user/update",
+							"host": [
+								"{{REST_BASE_URL}}"
+							],
+							"path": [
+								"user",
+								"update"
 							]
 						}
 					},
@@ -107,19 +273,25 @@
 			]
 		},
 		{
-			"name": "Team",
+			"name": "Teams",
 			"item": [
 				{
-					"name": "Information",
+					"name": "View Teams",
 					"item": [
 						{
-							"name": "All",
+							"name": "View all teams",
 							"request": {
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{TOKEN}}",
+										"type": "default"
+									}
+								],
 								"body": {
 									"mode": "raw",
-									"raw": "{}",
+									"raw": "{\r\n    \r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -127,15 +299,46 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8100/api/team/information",
-									"protocol": "http",
+									"raw": "{{REST_BASE_URL}}/team/information",
 									"host": [
-										"localhost"
+										"{{REST_BASE_URL}}"
 									],
-									"port": "8100",
 									"path": [
-										"api",
 										"team",
+										"information"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "View current user teams",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{TOKEN}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user_id\": \"{{USER}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{REST_BASE_URL}}/team/user/information",
+									"host": [
+										"{{REST_BASE_URL}}"
+									],
+									"path": [
+										"team",
+										"user",
 										"information"
 									]
 								}
@@ -145,216 +348,84 @@
 					]
 				},
 				{
-					"name": "User",
-					"item": [
-						{
-							"name": "Information",
-							"item": [
-								{
-									"name": "All",
-									"request": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "http://localhost:8100/api/team/user/information",
-											"protocol": "http",
-											"host": [
-												"localhost"
-											],
-											"port": "8100",
-											"path": [
-												"api",
-												"team",
-												"user",
-												"information"
-											]
-										}
-									},
-									"response": []
+					"name": "Add current user to team",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"team_id\":\"12121212-dc08-4a06-9983-8b374586e459\",\r\n    \"user_id\": \"{{USER}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_BASE_URL}}/team/user/create",
+							"host": [
+								"{{REST_BASE_URL}}"
+							],
+							"path": [
+								"team",
+								"user",
+								"create"
 							]
-						},
-						{
-							"name": "Add User Team",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"team_id\":\"12121212-dc08-4a06-9983-8b374586e459\",\r\n    \"user_id\": \"11111111-dc08-4a06-9983-8b374586e459\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8100/api/team/user/create",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8100",
-									"path": [
-										"api",
-										"team",
-										"user",
-										"create"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Remove User Team",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"team_id\":\"12121212-dc08-4a06-9983-8b374586e459\",\r\n    \"user_id\": \"11111111-dc08-4a06-9983-8b374586e459\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8100/api/team/user/remove",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8100",
-									"path": [
-										"api",
-										"team",
-										"user",
-										"remove"
-									]
-								}
-							},
-							"response": []
 						}
-					]
+					},
+					"response": []
 				},
 				{
-					"name": "Association",
-					"item": [
-						{
-							"name": "Information",
-							"item": [
-								{
-									"name": "All",
-									"request": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "http://localhost:8100/api/team/association/information",
-											"protocol": "http",
-											"host": [
-												"localhost"
-											],
-											"port": "8100",
-											"path": [
-												"api",
-												"team",
-												"association",
-												"information"
-											]
-										}
-									},
-									"response": []
+					"name": "Remove current user from team",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"team_id\":\"12121212-dc08-4a06-9983-8b374586e459\",\r\n    \"user_id\": \"{{USER}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_BASE_URL}}/team/user/remove",
+							"host": [
+								"{{REST_BASE_URL}}"
+							],
+							"path": [
+								"team",
+								"user",
+								"remove"
 							]
-						},
-						{
-							"name": "Create Team Association",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"team_id\":\"12121212-dc08-4a06-9983-8b374586e459\",\r\n    \"team_id_association\": \"47474747-dc08-4a06-9983-8b374586e459\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8100/api/team/association/create",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8100",
-									"path": [
-										"api",
-										"team",
-										"association",
-										"create"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Remove Team Association",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"team_id\":\"12121212-dc08-4a06-9983-8b374586e459\",\r\n    \"team_id_association\": \"47474747-dc08-4a06-9983-8b374586e459\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8100/api/team/association/remove",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8100",
-									"path": [
-										"api",
-										"team",
-										"association",
-										"remove"
-									]
-								}
-							},
-							"response": []
 						}
-					]
+					},
+					"response": []
 				},
 				{
 					"name": "Create Team",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{TOKEN}}",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"id\":\"12121213-dc08-4a06-9983-8b374586e459\",\r\n    \"name\": \"aTeam\",\r\n    \"description\": \"a description\",\r\n    \"capacity\": 5,\r\n    \"picture\": \"picture\",\r\n    \"priority\": 1,\r\n    \"team_lead_id\": \"11111111-1111-4a06-9983-8b374586e459\"\r\n}",
@@ -365,14 +436,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8100/api/team/create",
-							"protocol": "http",
+							"raw": "{{REST_BASE_URL}}/team/create",
 							"host": [
-								"localhost"
+								"{{REST_BASE_URL}}"
 							],
-							"port": "8100",
 							"path": [
-								"api",
 								"team",
 								"create"
 							]
@@ -384,10 +452,16 @@
 					"name": "Delete Team",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{TOKEN}}",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"12121212-dc08-4a06-9983-8b374586e459\"\r\n}",
+							"raw": "{\r\n    \"id\":\"12121213-dc08-4a06-9983-8b374586e459\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -395,14 +469,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8100/api/team/remove",
-							"protocol": "http",
+							"raw": "{{REST_BASE_URL}}/team/remove",
 							"host": [
-								"localhost"
+								"{{REST_BASE_URL}}"
 							],
-							"port": "8100",
 							"path": [
-								"api",
 								"team",
 								"remove"
 							]
@@ -416,16 +487,22 @@
 			"name": "Booking",
 			"item": [
 				{
-					"name": "Information",
+					"name": "View Bookings",
 					"item": [
 						{
-							"name": "All",
+							"name": "View all bookings",
 							"request": {
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{TOKEN}}",
+										"type": "default"
+									}
+								],
 								"body": {
 									"mode": "raw",
-									"raw": "{}",
+									"raw": "{\r\n    \r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -433,14 +510,11 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8100/api/booking/information",
-									"protocol": "http",
+									"raw": "{{REST_BASE_URL}}/booking/information",
 									"host": [
-										"localhost"
+										"{{REST_BASE_URL}}"
 									],
-									"port": "8100",
 									"path": [
-										"api",
 										"booking",
 										"information"
 									]
@@ -449,13 +523,19 @@
 							"response": []
 						},
 						{
-							"name": "Booking Id",
+							"name": "View current user bookings",
 							"request": {
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{TOKEN}}",
+										"type": "default"
+									}
+								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"id\": \"33333333-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"raw": "{\r\n    \"user_id\": \"{{USER}}\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -463,44 +543,11 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8100/api/booking/information",
-									"protocol": "http",
+									"raw": "{{REST_BASE_URL}}/booking/information",
 									"host": [
-										"localhost"
+										"{{REST_BASE_URL}}"
 									],
-									"port": "8100",
 									"path": [
-										"api",
-										"booking",
-										"information"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "User Id",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"id\": null,\r\n    \"user_id\" : \"11111111-dc08-4a06-9983-8b374586e459\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8100/api/booking/information",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8100",
-									"path": [
-										"api",
 										"booking",
 										"information"
 									]
@@ -511,85 +558,19 @@
 					]
 				},
 				{
-					"name": "MeetingRoom",
-					"item": [
-						{
-							"name": "Information",
-							"item": [
-								{
-									"name": "All",
-									"request": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "http://localhost:8100/api/booking/meetingroom/information",
-											"protocol": "http",
-											"host": [
-												"localhost"
-											],
-											"port": "8100",
-											"path": [
-												"api",
-												"booking",
-												"meetingroom",
-												"information"
-											]
-										}
-									},
-									"response": []
-								}
-							]
-						},
-						{
-							"name": "Create Meetingroom Booking",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"booking\": {\r\n        \"user_id\": \"11111111-3333-4a06-9983-8b374586e459\",\r\n        \"resource_type\": \"MEETINGROOM\",\r\n        \"resource_preference_id\": null,\r\n        \"start\": \"2012-04-23T18:25:43.511Z\",\r\n        \"end\": \"2012-04-23T18:25:43.511Z\",\r\n        \"booked\": false\r\n    },\r\n    \"team_id\": \"12121212-dc08-4a06-9983-8b374586e459\",\r\n    \"additional_attendees\": 2,\r\n    \"desks_attendees\": true,\r\n    \"desks_additional_attendees\": false\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8100/api/booking/meetingroom/create",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8100",
-									"path": [
-										"api",
-										"booking",
-										"meetingroom",
-										"create"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Create Booking",
+					"name": "Make booking for current user",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{TOKEN}}",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"33333333-2c08-4a06-9983-8b374586e459\",\r\n    \"user_id\": \"11111111-3333-4a06-9983-8b374586e459\",\r\n    \"resource_type\": \"DESK\",\r\n    \"resource_preference_id\": null,\r\n    \"start\": \"2012-04-23T18:25:43.511Z\",\r\n    \"end\": \"2012-04-23T18:25:43.511Z\",\r\n    \"booked\": false\r\n}",
+							"raw": "{\r\n    \"id\": \"33333333-2c08-4a06-9983-8b374586e459\",\r\n    \"user_id\": \"{{USER}}\",\r\n    \"resource_type\": \"DESK\",\r\n    \"resource_preference_id\": null,\r\n    \"start\": \"2012-04-23T18:25:43.511Z\",\r\n    \"end\": \"2012-04-23T18:25:43.511Z\",\r\n    \"booked\": false\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -597,14 +578,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8100/api/booking/create",
-							"protocol": "http",
+							"raw": "{{REST_BASE_URL}}/booking/create",
 							"host": [
-								"localhost"
+								"{{REST_BASE_URL}}"
 							],
-							"port": "8100",
 							"path": [
-								"api",
 								"booking",
 								"create"
 							]
@@ -613,10 +591,16 @@
 					"response": []
 				},
 				{
-					"name": "Delete Booking",
+					"name": "Remove booking for  current user",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{TOKEN}}",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"id\": \"33333333-2c08-4a06-9983-8b374586e459\"\r\n}",
@@ -627,14 +611,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8100/api/booking/remove",
-							"protocol": "http",
+							"raw": "{{REST_BASE_URL}}/booking/remove",
 							"host": [
-								"localhost"
+								"{{REST_BASE_URL}}"
 							],
-							"port": "8100",
 							"path": [
-								"api",
 								"booking",
 								"remove"
 							]
@@ -648,52 +629,22 @@
 			"name": "Permission",
 			"item": [
 				{
-					"name": "Role",
+					"name": "View Permissions",
 					"item": [
 						{
-							"name": "Information",
-							"item": [
-								{
-									"name": "All",
-									"request": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "http://localhost:8100/api/permission/role/information",
-											"protocol": "http",
-											"host": [
-												"localhost"
-											],
-											"port": "8100",
-											"path": [
-												"api",
-												"permission",
-												"role",
-												"information"
-											]
-										}
-									},
-									"response": []
-								}
-							]
-						},
-						{
-							"name": "Create Permission",
+							"name": "View all permissions",
 							"request": {
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{TOKEN}}",
+										"type": "default"
+									}
+								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"id\": \"45454545-dc08-4a06-9983-8b374586e459\",\r\n    \"permission_type\": \"VIEW\",\r\n    \"permission_category\": \"BOOKING\",\r\n    \"permission_tenant\": \"ROLE\",\r\n    \"permission_tenant_id\": \"45454545-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"raw": "{\r\n    \r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -701,30 +652,32 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8100/api/permission/role/create",
-									"protocol": "http",
+									"raw": "{{REST_BASE_URL}}/permission/information",
 									"host": [
-										"localhost"
+										"{{REST_BASE_URL}}"
 									],
-									"port": "8100",
 									"path": [
-										"api",
 										"permission",
-										"role",
-										"create"
+										"information"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "Remove Permission",
+							"name": "View permisisons for current user",
 							"request": {
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{TOKEN}}",
+										"type": "default"
+									}
+								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"id\": \"45454545-dc08-4a06-9983-8b374586e459\",\r\n    \"permission_type\": \"VIEW\",\r\n    \"permission_category\": \"BOOKING\",\r\n    \"permission_tenant\": \"ROLE\",\r\n    \"permission_tenant_id\": \"45454545-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"raw": "{\r\n    \"permission_id\": \"{{USER}}\",\r\n    \"permission_id_type\": \"USER\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -732,17 +685,13 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8100/api/permission/role/remove",
-									"protocol": "http",
+									"raw": "{{REST_BASE_URL}}/permission/information",
 									"host": [
-										"localhost"
+										"{{REST_BASE_URL}}"
 									],
-									"port": "8100",
 									"path": [
-										"api",
 										"permission",
-										"role",
-										"remove"
+										"information"
 									]
 								}
 							},
@@ -751,121 +700,90 @@
 					]
 				},
 				{
-					"name": "User",
-					"item": [
-						{
-							"name": "Information",
-							"item": [
-								{
-									"name": "All",
-									"request": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "http://localhost:8100/api/permission/user/information",
-											"protocol": "http",
-											"host": [
-												"localhost"
-											],
-											"port": "8100",
-											"path": [
-												"api",
-												"permission",
-												"user",
-												"information"
-											]
-										}
-									},
-									"response": []
+					"name": "Make permission for current user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"45454545-dc08-4a06-9983-8b374586e459\",\r\n    \"permission_id\": \"00000000-0000-0000-0000-000000000000\",\r\n    \"permission_id_type\": \"USER\",\r\n    \"permission_type\": \"VIEW\",\r\n    \"permission_category\": \"BOOKING\",\r\n    \"permission_tenant\": \"ROLE\",\r\n    \"permission_tenant_id\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_BASE_URL}}/permission/create",
+							"host": [
+								"{{REST_BASE_URL}}"
+							],
+							"path": [
+								"permission",
+								"create"
 							]
-						},
-						{
-							"name": "Create Permission",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"id\": \"11111111-3333-4a06-9983-8b374586e459\",\r\n    \"permission_type\": \"CREATE\",\r\n    \"permission_category\": \"BOOKING\",\r\n    \"permission_tenant\": \"USER\",\r\n    \"permission_tenant_id\": \"11111111-3333-4a06-9983-8b374586e459\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8100/api/permission/user/create",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8100",
-									"path": [
-										"api",
-										"permission",
-										"user",
-										"create"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Remove Permission",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"id\": \"11111111-2222-4a06-9983-8b374586e459\",\r\n    \"permission_type\": \"VIEW\",\r\n    \"permission_category\": \"BOOKING\",\r\n    \"permission_tenant\": \"USER\",\r\n    \"permission_tenant_id\": \"11111111-2222-4a06-9983-8b374586e459\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8100/api/permission/user/remove",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8100",
-									"path": [
-										"api",
-										"permission",
-										"user",
-										"remove"
-									]
-								}
-							},
-							"response": []
 						}
-					]
+					},
+					"response": []
+				},
+				{
+					"name": "Remove permission for current user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"45454545-dc08-4a06-9983-8b374586e459\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_BASE_URL}}/permission/remove",
+							"host": [
+								"{{REST_BASE_URL}}"
+							],
+							"path": [
+								"permission",
+								"remove"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
 		{
-			"name": "Resource",
+			"name": "Resources",
 			"item": [
 				{
-					"name": "Information",
+					"name": "View Resources",
 					"item": [
 						{
-							"name": "All",
+							"name": "View all resources",
 							"request": {
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{TOKEN}}",
+										"type": "default"
+									}
+								],
 								"body": {
 									"mode": "raw",
 									"raw": "{}",
@@ -876,14 +794,11 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8100/api/resource/information",
-									"protocol": "http",
+									"raw": "{{REST_BASE_URL}}/resource/information",
 									"host": [
-										"localhost"
+										"{{REST_BASE_URL}}"
 									],
-									"port": "8100",
 									"path": [
-										"api",
 										"resource",
 										"information"
 									]
@@ -897,13 +812,19 @@
 					"name": "Building",
 					"item": [
 						{
-							"name": "Information",
+							"name": "View Buildings",
 							"item": [
 								{
-									"name": "All",
+									"name": "View all builidngs",
 									"request": {
 										"method": "POST",
-										"header": [],
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "bearer {{TOKEN}}",
+												"type": "default"
+											}
+										],
 										"body": {
 											"mode": "raw",
 											"raw": "{}",
@@ -914,14 +835,11 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8100/api/resource/building/information",
-											"protocol": "http",
+											"raw": "{{REST_BASE_URL}}/resource/building/information",
 											"host": [
-												"localhost"
+												"{{REST_BASE_URL}}"
 											],
-											"port": "8100",
 											"path": [
-												"api",
 												"resource",
 												"building",
 												"information"
@@ -936,10 +854,16 @@
 							"name": "Delete Building",
 							"request": {
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{TOKEN}}",
+										"type": "default"
+									}
+								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"id\": \"98989898-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"raw": "{\r\n    \"id\": \"98989899-dc08-4a06-9983-8b374586e459\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -947,14 +871,11 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8100/api/resource/building/remove",
-									"protocol": "http",
+									"raw": "{{REST_BASE_URL}}/resource/building/remove",
 									"host": [
-										"localhost"
+										"{{REST_BASE_URL}}"
 									],
-									"port": "8100",
 									"path": [
-										"api",
 										"resource",
 										"building",
 										"remove"
@@ -967,10 +888,16 @@
 							"name": "Create Building",
 							"request": {
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{TOKEN}}",
+										"type": "default"
+									}
+								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"id\": \"98989898-dc08-4a06-9983-8b374586e459\",\r\n    \"name\": \"aName\",\r\n    \"location\": \"ALocation\",\r\n    \"dimension\": \"5x5\"\r\n}",
+									"raw": "{\r\n    \"id\": \"98989899-dc08-4a06-9983-8b374586e459\",\r\n    \"name\": \"aName\",\r\n    \"location\": \"ALocation\",\r\n    \"dimension\": \"5x5\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -978,14 +905,11 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8100/api/resource/building/create",
-									"protocol": "http",
+									"raw": "{{REST_BASE_URL}}/resource/building/create",
 									"host": [
-										"localhost"
+										"{{REST_BASE_URL}}"
 									],
-									"port": "8100",
 									"path": [
-										"api",
 										"resource",
 										"building",
 										"create"
@@ -1000,13 +924,19 @@
 					"name": "Room",
 					"item": [
 						{
-							"name": "Information",
+							"name": "View Rooms",
 							"item": [
 								{
-									"name": "All",
+									"name": "View all rooms",
 									"request": {
 										"method": "POST",
-										"header": [],
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "bearer {{TOKEN}}",
+												"type": "default"
+											}
+										],
 										"body": {
 											"mode": "raw",
 											"raw": "{}",
@@ -1017,14 +947,11 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8100/api/resource/room/information",
-											"protocol": "http",
+											"raw": "{{REST_BASE_URL}}/resource/room/information",
 											"host": [
-												"localhost"
+												"{{REST_BASE_URL}}"
 											],
-											"port": "8100",
 											"path": [
-												"api",
 												"resource",
 												"room",
 												"information"
@@ -1039,10 +966,16 @@
 							"name": "Delete Room",
 							"request": {
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{TOKEN}}",
+										"type": "default"
+									}
+								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"id\": \"14141414-dc08-4a06-9983-8b374586e459\"\r\n}",
+									"raw": "{\r\n    \"id\": \"14141414-dc08-4a06-9983-8b374586e450\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1050,14 +983,11 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8100/api/resource/room/remove",
-									"protocol": "http",
+									"raw": "{{REST_BASE_URL}}/resource/room/remove",
 									"host": [
-										"localhost"
+										"{{REST_BASE_URL}}"
 									],
-									"port": "8100",
 									"path": [
-										"api",
 										"resource",
 										"room",
 										"remove"
@@ -1070,10 +1000,16 @@
 							"name": "Create Room",
 							"request": {
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{TOKEN}}",
+										"type": "default"
+									}
+								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"id\": \"14141414-dc08-4a06-9983-8b374586e459\",\r\n    \"building_id\": \"98989898-dc08-4a06-9983-8b374586e459\",\r\n    \"name\": \"aName\",\r\n    \"location\": \"ALocation\",\r\n    \"dimension\": \"5x5\"\r\n}",
+									"raw": "{\r\n    \"id\": \"14141414-dc08-4a06-9983-8b374586e450\",\r\n    \"building_id\": \"98989898-dc08-4a06-9983-8b374586e459\",\r\n    \"name\": \"aName\",\r\n    \"location\": \"ALocation\",\r\n    \"dimension\": \"5x5\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1081,122 +1017,13 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8100/api/resource/room/create",
-									"protocol": "http",
+									"raw": "{{REST_BASE_URL}}/resource/room/create",
 									"host": [
-										"localhost"
+										"{{REST_BASE_URL}}"
 									],
-									"port": "8100",
 									"path": [
-										"api",
 										"resource",
 										"room",
-										"create"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "RoomAssociation",
-					"item": [
-						{
-							"name": "Information",
-							"item": [
-								{
-									"name": "All",
-									"request": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "http://localhost:8100/api/resource/room/association/information",
-											"protocol": "http",
-											"host": [
-												"localhost"
-											],
-											"port": "8100",
-											"path": [
-												"api",
-												"resource",
-												"room",
-												"association",
-												"information"
-											]
-										}
-									},
-									"response": []
-								}
-							]
-						},
-						{
-							"name": "Delete RoomAssociation",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"room_id\": \"15151515-dc08-4a06-9983-8b374586e459\",\r\n    \"room_id_association\": \"14141414-dc08-4a06-9983-8b374586e459\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8100/api/resource/room/association/remove",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8100",
-									"path": [
-										"api",
-										"resource",
-										"room",
-										"association",
-										"remove"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Create RoomAssociation",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"room_id\": \"15151515-dc08-4a06-9983-8b374586e459\",\r\n    \"room_id_association\": \"14141414-dc08-4a06-9983-8b374586e459\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8100/api/resource/room/association/create",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8100",
-									"path": [
-										"api",
-										"resource",
-										"room",
-										"association",
 										"create"
 									]
 								}
@@ -1209,10 +1036,16 @@
 					"name": "Delete Resource",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{TOKEN}}",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"22222222-dc08-4a06-9983-8b374586e459\"\r\n}",
+							"raw": "{\r\n    \"id\": \"22222222-dc08-4a06-9983-8b374586e450\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1220,14 +1053,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8100/api/resource/remove",
-							"protocol": "http",
+							"raw": "{{REST_BASE_URL}}/resource/remove",
 							"host": [
-								"localhost"
+								"{{REST_BASE_URL}}"
 							],
-							"port": "8100",
 							"path": [
-								"api",
 								"resource",
 								"remove"
 							]
@@ -1239,10 +1069,16 @@
 					"name": "Create Resource",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{TOKEN}}",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"22222222-dc08-4a06-9983-8b374586e459\",\r\n    \"room_id\": \"14141414-dc08-4a06-9983-8b374586e459\",\r\n    \"name\": \"aName\",\r\n    \"location\": \"ALocation\",\r\n    \"role_id\": null,\r\n    \"resource_type\": \"MEETINGROOM\"\r\n}",
+							"raw": "{\r\n    \"id\": \"22222222-dc08-4a06-9983-8b374586e450\",\r\n    \"room_id\": \"14141414-dc08-4a06-9983-8b374586e459\",\r\n    \"name\": \"aName\",\r\n    \"location\": \"ALocation\",\r\n    \"role_id\": null,\r\n    \"resource_type\": \"MEETINGROOM\",\r\n    \"decorations\" : \"{}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1250,14 +1086,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8100/api/resource/create",
-							"protocol": "http",
+							"raw": "{{REST_BASE_URL}}/resource/create",
 							"host": [
-								"localhost"
+								"{{REST_BASE_URL}}"
 							],
-							"port": "8100",
 							"path": [
-								"api",
 								"resource",
 								"create"
 							]
@@ -1271,13 +1104,19 @@
 			"name": "Role",
 			"item": [
 				{
-					"name": "Information",
+					"name": "View Roles",
 					"item": [
 						{
-							"name": "All",
+							"name": "View all roles",
 							"request": {
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{TOKEN}}",
+										"type": "default"
+									}
+								],
 								"body": {
 									"mode": "raw",
 									"raw": "{}",
@@ -1288,15 +1127,46 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8100/api/role/information",
-									"protocol": "http",
+									"raw": "{{REST_BASE_URL}}/role/information",
 									"host": [
-										"localhost"
+										"{{REST_BASE_URL}}"
 									],
-									"port": "8100",
 									"path": [
-										"api",
 										"role",
+										"information"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "View current user roles",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{TOKEN}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user_id\": \"{{USER}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{REST_BASE_URL}}/role/user/information",
+									"host": [
+										"{{REST_BASE_URL}}"
+									],
+									"path": [
+										"role",
+										"user",
 										"information"
 									]
 								}
@@ -1306,113 +1176,84 @@
 					]
 				},
 				{
-					"name": "User",
-					"item": [
-						{
-							"name": "Information",
-							"item": [
-								{
-									"name": "All",
-									"request": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "http://localhost:8100/api/role/user/information",
-											"protocol": "http",
-											"host": [
-												"localhost"
-											],
-											"port": "8100",
-											"path": [
-												"api",
-												"role",
-												"user",
-												"information"
-											]
-										}
-									},
-									"response": []
+					"name": "Add current user to role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"role_id\": \"45454545-1111-4a06-9983-8b374586e459\",\r\n    \"user_id\": \"{{USER}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_BASE_URL}}/role/user/create",
+							"host": [
+								"{{REST_BASE_URL}}"
+							],
+							"path": [
+								"role",
+								"user",
+								"create"
 							]
-						},
-						{
-							"name": "Delete User Role",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"role_id\": \"45454545-dc08-4a06-9983-8b374586e459\",\r\n    \"user_id\": \"11111111-dc08-4a06-9983-8b374586e459\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8100/api/role/user/remove",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8100",
-									"path": [
-										"api",
-										"role",
-										"user",
-										"remove"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Create User Role",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"role_id\": \"45454545-dc08-4a06-9983-8b374586e459\",\r\n    \"user_id\": \"11111111-dc08-4a06-9983-8b374586e459\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8100/api/role/user/create",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8100",
-									"path": [
-										"api",
-										"role",
-										"user",
-										"create"
-									]
-								}
-							},
-							"response": []
 						}
-					]
+					},
+					"response": []
+				},
+				{
+					"name": "Remove current user from role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{TOKEN}}",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"role_id\": \"45454545-1111-4a06-9983-8b374586e459\",\r\n    \"user_id\": \"{{USER}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_BASE_URL}}/role/user/remove",
+							"host": [
+								"{{REST_BASE_URL}}"
+							],
+							"path": [
+								"role",
+								"user",
+								"remove"
+							]
+						}
+					},
+					"response": []
 				},
 				{
 					"name": "Delete Role",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{TOKEN}}",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"id\": \"45454545-dc08-4a06-9983-8b374586e459\"\r\n}",
@@ -1423,14 +1264,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8100/api/role/remove",
-							"protocol": "http",
+							"raw": "{{REST_BASE_URL}}/role/remove",
 							"host": [
-								"localhost"
+								"{{REST_BASE_URL}}"
 							],
-							"port": "8100",
 							"path": [
-								"api",
 								"role",
 								"remove"
 							]
@@ -1442,10 +1280,16 @@
 					"name": "Create Role",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{TOKEN}}",
+								"type": "default"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"45454545-dc08-4a06-9983-8b374586e459\",\r\n    \"role_name\": \"aRole\"\r\n}",
+							"raw": "{\r\n    \"id\": \"45454545-dc08-4a06-9983-8b374586e459\",\r\n    \"name\": \"aRole\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1453,14 +1297,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8100/api/role/create",
-							"protocol": "http",
+							"raw": "{{REST_BASE_URL}}/role/create",
 							"host": [
-								"localhost"
+								"{{REST_BASE_URL}}"
 							],
-							"port": "8100",
 							"path": [
-								"api",
 								"role",
 								"create"
 							]
@@ -1471,102 +1312,117 @@
 			]
 		},
 		{
-			"name": "BatchBooking",
-			"item": [
-				{
-					"name": "Create Batch Booking",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"user_id\": \"00000000-0000-0000-0000-000000000000\",\r\n    \"bookings\": [\r\n        {\r\n            \"user_id\": \"11111111-1111-4a06-9983-8b374586e459\",\r\n            \"resource_type\": \"DESK\",\r\n            \"resource_preference_id\": null,\r\n            \"start\": \"2012-06-05T18:25:43.511Z\",\r\n            \"end\": \"2012-06-05T19:25:43.511Z\",\r\n            \"booked\": false\r\n        },\r\n        {\r\n            \"user_id\": \"11111111-1111-4a06-9983-8b374586e459\",\r\n            \"resource_type\": \"DESK\",\r\n            \"resource_preference_id\": null,\r\n            \"start\": \"2012-06-05T18:25:43.511Z\",\r\n            \"end\": \"2012-06-05T19:25:43.511Z\",\r\n            \"booked\": false\r\n        },\r\n        {\r\n            \"user_id\": \"00000000-0000-0000-0000-000000000000\",\r\n            \"resource_type\": \"DESK\",\r\n            \"resource_preference_id\": null,\r\n            \"start\": \"2012-06-05T18:25:43.511Z\",\r\n            \"end\": \"2012-06-05T19:25:43.511Z\",\r\n            \"booked\": false\r\n        },\r\n        {\r\n            \"user_id\": \"11111111-2222-4a06-9983-8b374586e459\",\r\n            \"resource_type\": \"DESK\",\r\n            \"resource_preference_id\": null,\r\n            \"start\": \"2012-06-05T18:25:43.511Z\",\r\n            \"end\": \"2012-08-05T19:25:43.511Z\",\r\n            \"booked\": false\r\n        },\r\n        {\r\n            \"id\" : \"74a1b0b8-0fc1-4d9e-a17b-b26aab3c632a\",\r\n            \"user_id\": \"11111111-3333-4a06-9983-8b374586e459\",\r\n            \"resource_type\": \"DESK\",\r\n            \"resource_preference_id\": null,\r\n            \"start\": \"2012-06-05T18:25:43.511Z\",\r\n            \"end\": \"2012-07-05T19:25:43.511Z\",\r\n            \"booked\": false\r\n        },\r\n        {\r\n            \"id\" : \"3f63400e-d7c0-49a9-ad80-af7abd80b057\",\r\n            \"user_id\": \"11111111-3333-4a06-9983-8b374586e459\",\r\n            \"resource_type\": \"DESK\",\r\n            \"resource_preference_id\": null,\r\n            \"start\": \"2012-06-05T18:25:43.511Z\",\r\n            \"end\": \"2012-07-05T19:25:43.511Z\",\r\n            \"booked\": false\r\n        },\r\n        {\r\n            \"id\" : \"425400a9-5aaf-483c-b543-74a1b3acf9df\",\r\n            \"user_id\": \"11111111-3333-4a06-9983-8b374586e459\",\r\n            \"resource_type\": \"DESK\",\r\n            \"resource_preference_id\": null,\r\n            \"start\": \"2012-06-05T18:25:43.511Z\",\r\n            \"end\": \"2012-07-05T19:25:43.511Z\",\r\n            \"booked\": false\r\n        }\r\n    ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8100/api/batch-booking/create",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8100",
-							"path": [
-								"api",
-								"batch-booking",
-								"create"
-							]
-						},
-						"description": "\"user_id\" Is the id if the user making the request and creating the bookings, this user requires permissions to create bookings for all the users that bookings are being created for.\n\nThe operation is atomic, and either all bookings are created or none, if an error occurs.\n\n\"bookings\" is an array of bookings that are to be created."
-					},
-					"response": []
+			"name": "Weekly Scheduler",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
-				{
-					"name": "Information Batch Booking",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"user_id\": \"00000000-0000-0000-0000-000000000000\",\r\n    \"bookings\": [\r\n        {\r\n            \"id\": \"33333333-dc08-4a06-9983-8b374586e459\"\r\n        },\r\n                {\r\n            \"id\": \"33333333-dc08-4a06-9983-8b374586e459\"\r\n        },\r\n        {\r\n            \"user_id\" : \"00000000-0000-0000-0000-000000000000\"\r\n        },\r\n        {\r\n            \"user_id\": \"11111111-2222-4a06-9983-8b374586e459\"\r\n        }\r\n    ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8100/api/batch-booking/information",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8100",
-							"path": [
-								"api",
-								"batch-booking",
-								"information"
-							]
-						},
-						"description": "\"user_id\" is the id of the user that is requesting the bookings' information, this user requires permissions to view the bookings that it requests to view.\n\n\"bookings\" is a list of identifiers that are used to specify the bookings that are searched for, this array can contain objects in the same way that one would do for the BookingInformation endpoint.\n\nThis operation is atomic, and either all bookings that are requested for are returned if they exist or none, if some error occurs.\n\nNo duplicates will be returned in a single request."
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Batch Booking",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"user_id\": \"00000000-0000-0000-0000-000000000000\",\r\n    \"bookings\": [\r\n        {\r\n            \"id\": \"3f63400e-d7c0-49a9-ad80-af7abd80b057\"\r\n        },\r\n        {\r\n            \"id\": \"425400a9-5aaf-483c-b543-74a1b3acf9df\",\r\n            \"user_id\": \"11111111-3333-4a06-9983-8b374586e459\",\r\n            \"resource_type\": \"DESK\",\r\n            \"resource_preference_id\": null,\r\n            \"start\": \"2012-06-05T18:25:43.511Z\",\r\n            \"end\": \"2012-07-05T19:25:43.511Z\",\r\n            \"booked\": false\r\n        }\r\n    ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8100/api/batch-booking/remove",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8100",
-							"path": [
-								"api",
-								"batch-booking",
-								"remove"
-							]
-						},
-						"description": "StartFragment\n\n\"user_id\" is the id of the user that is requesting the deletion of bookings, this user requires permissions to delete the bookings that it requests to view.\n\n\"bookings\" is a list of identifiers that are used to specify the bookings that are to be deleted, this array can contain objects in the same way that one would do for the DeleteBooking endpoint.\n\nThis operation is atomic, and either all the bookings are deleted as requested, or none, if some error occurs.\n\nEndFragment\n\nOnly a booking id need be supplied in the array, although the other fields of the booking can also be added, although they will have no effect."
-					},
-					"response": []
+				"url": {
+					"raw": "{{REST_BASE_URL}}/scheduler/execute/weekly",
+					"host": [
+						"{{REST_BASE_URL}}"
+					],
+					"path": [
+						"scheduler",
+						"execute",
+						"weekly"
+					]
 				}
-			]
+			},
+			"response": []
+		},
+		{
+			"name": "Daily Scheduler",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer d6f22a01ef87a01fe5e92127a564d2df1a9f1310eeecc9452c79c3be507877b05f0c7c65c56c9468a381efa1749babac06047dfd82d739c4014ea3248c53a257",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"start_date\" : \"2022-09-23T00:00:00.000Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{REST_BASE_URL}}/scheduler/execute/daily",
+					"host": [
+						"{{REST_BASE_URL}}"
+					],
+					"path": [
+						"scheduler",
+						"execute",
+						"daily"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Both Schedulers",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer d6f22a01ef87a01fe5e92127a564d2df1a9f1310eeecc9452c79c3be507877b05f0c7c65c56c9468a381efa1749babac06047dfd82d739c4014ea3248c53a257",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{REST_BASE_URL}}/scheduler/execute",
+					"host": [
+						"{{REST_BASE_URL}}"
+					],
+					"path": [
+						"scheduler",
+						"execute"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove All Automated Bookings",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{REST_BASE_URL}}/scheduler/delete",
+					"host": [
+						"{{REST_BASE_URL}}"
+					],
+					"path": [
+						"scheduler",
+						"delete"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

@@ -19,10 +19,14 @@ const Kanban = () =>
 
     const [columns, setColumns] = useState({});
 
-    const [editTeam, setEditTeam] = useState(null);
+    const teamMenuRef = useRef(null);
+    const [teamMenuDisplay, setTeamMenuDisplay] = useState('none');
+    const [currTeam, setCurrTeam] = useState(null);
     const [teamEdited, setTeamEdited] = useState(true);
     const [addTeam, setAddTeam] = useState(0);
 
+    const userMenuRef = useRef(null);
+    const [userMenuDisplay, setUserMenuDisplay] = useState('none');
     const [currUser, setCurrUser] = useState({id: '', name: '', picture: ''});
     const [userPanelLeft, setUserPanelLeft] = useState(0.85*window.innerWidth);
 
@@ -43,16 +47,16 @@ const Kanban = () =>
     //Teams
     const ShowTeamMenu = (col) =>
     {
-        if(document.getElementById('TeamMenu').style.display === 'none')
+        if(teamMenuDisplay === 'none')
         {
-            document.getElementById('TeamMenu').style.display = 'block';
-            document.getElementById('TeamMenu').style.left = document.getElementById(col.id + 'ColumnActions').getBoundingClientRect().left - 0.22*window.innerWidth + 'px';
-            document.getElementById('TeamMenu').style.top = document.getElementById(col.id + 'ColumnActions').getBoundingClientRect().top - 0.10*window.innerHeight + 'px';
-            setEditTeam(col);
+            setTeamMenuDisplay('block');
+            teamMenuRef.current.style.left = document.getElementById(col.id + 'ColumnActions').getBoundingClientRect().left - 0.22*window.innerWidth + 'px';
+            teamMenuRef.current.style.top = document.getElementById(col.id + 'ColumnActions').getBoundingClientRect().top - 0.10*window.innerHeight + 'px';
+            setCurrTeam(col);
         }
-        else
+        else   
         {
-            document.getElementById('TeamMenu').style.display = 'none';
+            setTeamMenuDisplay('none');
         }
     }
 
@@ -66,6 +70,25 @@ const Kanban = () =>
     {
         document.getElementById('BackgroundDimmer').style.display = 'none';
         document.getElementById('EditTeam').style.display = 'none';
+    }
+
+    const DeleteTeam = () =>
+    {
+        fetch("http://localhost:8080/api/team/remove", 
+        {
+            method: "POST",
+            mode: "cors",
+            body: JSON.stringify({
+                id: currTeam.id
+            }),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}`
+            }
+        }).then((res) =>
+        {
+            setTeamEdited(true);
+        }); 
     }
 
     const AddTeam = () =>
@@ -133,16 +156,16 @@ const Kanban = () =>
     //Users
     const ShowUserMenu = (user) =>
     {
-        if(document.getElementById('UserMenu').style.display === 'none')
+        if(userMenuDisplay === 'none')
         {
-            document.getElementById('UserMenu').style.display = 'block';
-            document.getElementById('UserMenu').style.left = document.getElementById(user.id + 'UserActions').getBoundingClientRect().left - 0.23*window.innerWidth + 'px';
-            document.getElementById('UserMenu').style.top = document.getElementById(user.id + 'UserActions').getBoundingClientRect().top - 0.10*window.innerHeight + 'px';
+            setUserMenuDisplay('block');
+            userMenuRef.current.style.left = document.getElementById(user.id + 'UserActions').getBoundingClientRect().left - 0.23*window.innerWidth + 'px';
+            userMenuRef.current.style.top = document.getElementById(user.id + 'UserActions').getBoundingClientRect().top - 0.10*window.innerHeight + 'px';
             setCurrUser(user);
         }
-        else
+        else   
         {
-            document.getElementById('UserMenu').style.display = 'none';
+            setUserMenuDisplay('none');
         }
     }
 
@@ -166,14 +189,14 @@ const Kanban = () =>
 
     document.addEventListener('mousedown', function ClickOutside(event)
     {
-        if(document.getElementById('TeamMenu').style.display === 'block')
+        if(teamMenuDisplay === 'block')
         {
-            document.getElementById('TeamMenu').style.display = 'none';
+            setTeamMenuDisplay('none');
         }
 
-        if(document.getElementById('UserMenu').style.display === 'block')
+        if(userMenuDisplay === 'block')
         {
-            document.getElementById('UserMenu').style.display = 'none';
+            setUserMenuDisplay('none');
         }
     });
 
@@ -545,15 +568,15 @@ const Kanban = () =>
             <div className={styles.saveIcon} onMouseEnter={ShowSaveHint} onMouseLeave={HideSaveHint}><FaSave /></div>
             <div id='SaveHint' className={styles.saveHint}>Save</div>
 
-            <div className={styles.leftArrow} onMouseDown={StartScrollLeft} onMouseUp={StopScrollLeft} onMouseLeave={StopScrollLeft}><IoIosArrowBack /></div>
-            <div className={styles.rightArrow} onMouseDown={StartScrollRight} onMouseUp={StopScrollRight} onMouseLeave={StopScrollRight}><IoIosArrowForward /></div>
+            <div className={styles.leftArrow} onMouseDown={StartScrollLeft} onMouseUp={StopScrollLeft} onMouseLeave={StopScrollLeft}><IoIosArrowBack style={{verticalAlign: 'baseline'}} /></div>
+            <div className={styles.rightArrow} onMouseDown={StartScrollRight} onMouseUp={StopScrollRight} onMouseLeave={StopScrollRight}><IoIosArrowForward style={{verticalAlign: 'baseline'}} /></div>
 
-            <div id='TeamMenu' className={styles.teamMenu}>
+            <div ref={teamMenuRef} className={styles.teamMenu} style={{display: teamMenuDisplay}}>
                 <div className={styles.editTeam} onMouseDown={EditTeam.bind(this)}>Edit team</div>
-                <div className={styles.deleteTeam}>Delete team</div>
+                <div className={styles.deleteTeam} onMouseDown={DeleteTeam.bind(this)}>Delete team</div>
             </div>
 
-            <div id='UserMenu' className={styles.userMenu}>
+            <div ref={userMenuRef} className={styles.userMenu} style={{display: userMenuDisplay}}>
                 <div className={styles.editUser} onMouseDown={EditUser.bind(this, currUser)}>Edit user</div>
                 <div className={styles.deleteUser}>Remove user</div>
             </div>
@@ -567,12 +590,12 @@ const Kanban = () =>
 
             <div id='EditTeam' className={styles.formContainer}>
                 <div className={styles.formClose} onClick={CloseEditTeam}><MdClose /></div>
-                <EditTeamForm team={editTeam} edited={setTeamEdited} />
+                <EditTeamForm team={currTeam} edited={setTeamEdited} />
             </div>
 
             <div id='EditUser' className={styles.userPanel} style={{left: userPanelLeft}}>
                 <div className={styles.userPanelClose} onClick={CloseUserPanel}><MdClose /></div>
-                <EditUserPanel userName={currUser.name} userPicture={currUser.picture} userRoles={currUser.roles} allRoles={roles} />
+                <EditUserPanel userID={currUser.id} userName={currUser.name} userPicture={currUser.picture} userRoles={currUser.roles} allRoles={roles} />
             </div>
             
 
@@ -595,7 +618,7 @@ const Kanban = () =>
                                                     </div>
 
                                                     <div id={id + 'ColumnActions'} className={styles.columnActions}>
-                                                        <BsThreeDotsVertical className={styles.menu} onMouseUp={ShowTeamMenu.bind(this, col)} />
+                                                        <BsThreeDotsVertical className={styles.menu} onMouseUp={() => ShowTeamMenu(col)} />
                                                     </div>
                                                 </div>
                                                 

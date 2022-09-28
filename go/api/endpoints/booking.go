@@ -178,7 +178,6 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 		utils.InternalServerError(writer, request, err)
 		return
 	}
-
 	// Create Google Calendar Event
 	booking.Id = booking_id
 	err = google_api.CreateBooking(user,&booking)
@@ -289,7 +288,6 @@ func DeleteBookingHandler(writer http.ResponseWriter, request *http.Request, per
 	utils.JSONResponse(writer, request, bookingRemoved)
 }
 
-// TODO: @JonathanEnslin create bookings for role and team members
 // CreateMeetingRoomBookingHandler creates or updates a booking
 func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.Request, permissions *data.Permissions) {
 	// Unmarshall MeetingRoomBooking
@@ -358,7 +356,6 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 	da := data.NewBookingDA(access)
 
 	var bookingId *string
-	// TODO: @JonathanEnslin check if booking exists first
 	if meetingRoomBooking.Booking != nil {
 		bookingId, err = da.StoreIdentifier(meetingRoomBooking.Booking)
 		if err != nil {
@@ -471,7 +468,6 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 	logger.Access.Printf("%v meeting room booking created\n", bookingId)
 }
 
-// TODO: @JonathanEnslin determine if unnecessary because db has on delete cascade
 // DeleteMeetingRoomBookingHandler deletes a meeting room booking
 // func DeleteMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.Request, permissions *data.Permissions) {
 // 	// Unmarshall MeetingRoomBooking

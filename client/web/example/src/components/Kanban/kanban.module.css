@@ -374,8 +374,13 @@
     position: absolute;
     display: none;
 
+    overflow-y: scroll;
+    overflow-x: hidden;
+
     width: 30vw;
     height: 76vh;
+
+    padding-bottom: 2vh;
 
     margin-left: 27.5vw;
     margin-top: 1vh;
@@ -410,7 +415,7 @@
 {
     position: absolute;
 
-    left: 28vw;
+    left: 27vw;
     top: 0.5vh;
 
     font-size: 1.5vw;

@@ -1,7 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS resource;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TYPE resource.type AS ENUM ('PARKING', 'DESK', 'MEETINGROOM');
+CREATE TYPE resource.type AS ENUM ('PARKING', 'DESK', 'MEETINGROOM', 'WALL');
 
 CREATE TABLE IF NOT EXISTS resource.building (
     id uuid DEFAULT uuid_generate_v4(),
