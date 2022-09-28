@@ -179,18 +179,18 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 		return
 	}
 	user := users.FindHead()
-	logger.Access.Println("\nHERE1\n")
+	logger.Access.Println("\nHERE1")
 	logger.Access.Printf("\nData5: %v", booking)
 	logger.Access.Printf("\nData5: %v", booking.Id)
 	err = google_api.CreateBooking(user, &booking)
 	if err != nil {
 		logger.Error.Printf("Error occured while creating google calendar event: %v", err)
 	}
-	logger.Access.Println("\nWE GOT TILL HERE BEFORE IT FUCKED UP\n")
+	logger.Access.Println("\nWE GOT TILL HERE BEFORE IT ... UP")
 
-	logger.Access.Println("\nHERE2\n")
+	logger.Access.Println("\nHERE2")
 	logger.Access.Printf("%v created\n", booking.Id) // TODO [KP]: Be more descriptive
-	logger.Access.Println("\nHERE3\n")
+	logger.Access.Println("\nHERE3")
 	utils.Ok(writer, request)
 }
 
