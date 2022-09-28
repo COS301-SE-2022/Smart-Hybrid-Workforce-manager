@@ -1,3 +1,4 @@
+import ProfileBar from '../components/Navbar/ProfileBar.js';
 import Navbar from '../components/Navbar/Navbar.js';
 import NavbarAdmin from '../components/Navbar/NavbarAdmin.js';
 import { useContext } from 'react';
@@ -23,6 +24,7 @@ const Statistics = () =>
     return (
         <div className='page-container'>
             <div className='content'>
+                <ProfileBar />
                 {showNavbar()} 
 
                 <div className='main-container'>
