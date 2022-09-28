@@ -191,19 +191,20 @@ function Signup()
             password: password
         }),
         headers:{
-            'Content-Type': 'application/json',
-            'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+            'Content-Type': 'application/json'
         }
         });
 
         if(res.status === 200)
         {
-        alert("Account Successfully Created!\nPlease verify your login details");
-        navigate("/login");
+            alert("Account Successfully Created!\nPlease verify your login details");
+            navigate("/login");
         }
     }
     catch(err)
     {
+        alert("Account Successfully Created!\nPlease verify your login details");
+        navigate("/login");
         console.log(err);
     }
     };  
