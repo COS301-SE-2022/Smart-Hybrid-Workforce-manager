@@ -120,7 +120,6 @@ func GetUsers() (data.Users, error) {
 	if err != nil {
 		return nil, err
 	}
-	// TODO: @JonathanEnslin remove unnecessary fields from users
 	return users, nil
 }
 
@@ -351,7 +350,6 @@ func GetBuildings() (data.Buildings, error) {
 
 // IMPORTANT: It is assumed at this point that rooms are flat
 
-// TODO: @JonathanEnslin Get funcs for resources and rooms, similar to teams/users
 // GetRooms retrieves all the rooms from the database
 func GetRooms() (data.Rooms, error) {
 	// Create a database connection
@@ -378,7 +376,7 @@ func GetRooms() (data.Rooms, error) {
 }
 
 // GetResourceIdentifiers retrieves all the Resources from the database
-func GetResourceIdentifiers() (data.Resources, error) {
+func GetResourceIdentifiers(resourceType *string) (data.Resources, error) {
 	// Create db connection
 	access, err := db.Open()
 	if err != nil {
@@ -387,7 +385,9 @@ func GetResourceIdentifiers() (data.Resources, error) {
 	defer access.Close()
 
 	da := data.NewResourceDA(access)
-	identifier := data.Resource{}
+	identifier := data.Resource{
+		ResourceType: resourceType,
+	}
 	permissions := &data.Permissions{data.CreateGenericPermission("VIEW", "RESOURCE", "IDENTIFIER")}
 	identifiers, err := da.FindIdentifier(&identifier, permissions)
 	if err != nil {
@@ -402,7 +402,7 @@ func GetResourceIdentifiers() (data.Resources, error) {
 }
 
 // GetCompiledResourceInfo maps room ids to buildings, and resource ids to rooms
-func GetCompileResourceInfo() ([]*BuildingInfo, []*RoomInfo, data.Resources, error) {
+func GetCompileResourceInfo(resourceType *string) ([]*BuildingInfo, []*RoomInfo, data.Resources, error) {
 	buildings, err := GetBuildings()
 	if err != nil {
 		return nil, nil, nil, err
@@ -411,7 +411,7 @@ func GetCompileResourceInfo() ([]*BuildingInfo, []*RoomInfo, data.Resources, err
 	if err != nil {
 		return nil, nil, nil, err
 	}
-	identifiers, err := GetResourceIdentifiers()
+	identifiers, err := GetResourceIdentifiers(resourceType)
 	if err != nil {
 		return nil, nil, nil, err
 	}
@@ -448,7 +448,7 @@ func GetCompileResourceInfo() ([]*BuildingInfo, []*RoomInfo, data.Resources, err
 }
 
 // GetSchedulerData retrieves all the data needed by the scheduler
-func GetSchedulerData(from time.Time, to time.Time) (*SchedulerData, error) {
+func GetSchedulerData(from time.Time, to time.Time, resourceType *string) (*SchedulerData, error) {
 	// Get the users
 	users, err := GetUsers()
 	if err != nil {
@@ -468,7 +468,7 @@ func GetSchedulerData(from time.Time, to time.Time) (*SchedulerData, error) {
 	}
 
 	// Get the buildings, rooms, resources
-	buildings, rooms, resources, err := GetCompileResourceInfo()
+	buildings, rooms, resources, err := GetCompileResourceInfo(resourceType)
 	if err != nil {
 		return nil, err
 	}

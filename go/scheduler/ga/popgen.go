@@ -100,7 +100,7 @@ func getSlotInfo(domain *Domain, numDaysInWeek int) (slotSizes []int, openSlots 
 	schedulerData := domain.SchedulerData
 	// Get slot sizes/day
 	slotSizes = []int{}
-	for i := 0; i < numDaysInWeek; i++ { // TODO: @JonathanEnslin find out if we want to include all 7 days of week
+	for i := 0; i < numDaysInWeek; i++ {
 		slotSizes = append(slotSizes, len(domain.SchedulerData.Resources)) // Initially assume all slots would be open
 	}
 
@@ -148,7 +148,7 @@ func getUserAvailabilityInfo(domain *Domain, numDaysInWeek int) (daysAvailable m
 	for _, user := range domain.SchedulerData.Users {
 		daysAvailable[*user.Id] = cu.SequentialSequence(0, numDaysInWeek)
 		// Add them times they have to come in - days they already come in
-		for i := 0; i < *user.OfficeDays-timesAlreadyComingIn[*user.Id]; i++ { // TODO: @JonathanEnslin find out what do if no office days?
+		for i := 0; i < *user.OfficeDays-timesAlreadyComingIn[*user.Id]; i++ {
 			usersToAdd = append(usersToAdd, *user.Id)
 		}
 	}

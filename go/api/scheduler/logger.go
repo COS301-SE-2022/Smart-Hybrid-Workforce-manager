@@ -63,7 +63,6 @@ func Parse(str string) (*LogEntry, error) {
 // WriteLog Writes the entry to the passed file
 func (entry LogEntry) WriteLog() error {
 	// func (entry LogEntry) WriteLog(path string) error {
-	// TODO: @JonathanEnslin investigate why 0644 perms aren't allowed
 	f, err := os.OpenFile(logPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600) // rw-------
 	if err != nil {
 		return err
@@ -95,6 +94,6 @@ func ReadLastEntry() (*LogEntry, error) {
 	if lastLine == "" {
 		return nil, nil
 	}
-	_ = f.Close() // TODO: @JonathanEnslin handle error
+	_ = f.Close()
 	return Parse(lastLine)
 }

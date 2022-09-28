@@ -17,7 +17,7 @@ import (
 
 var (
 	HTTPClient  restclient.HTTPClient
-	Clock       clock.Clock   = &clock.RealClock{} // TODO: @JonathanEnslin make sure this is not a bad way of doing it
+	Clock       clock.Clock   = &clock.RealClock{}
 	timeout     time.Duration = 1800 * time.Second
 	endpointURL string
 )
@@ -67,26 +67,26 @@ func TimeOfNextWeekDay(now time.Time, weekday string) time.Time {
 
 // CheckAndCall will access the logs, and then call the scheduler if the info log
 // entry permits it
-func checkAndCall(now time.Time, scheduledDay string) error {
-	// scheduledDay := "Friday" // TODO: @JonathanEnslin Make env var
-	if mayCall(scheduledDay, now) {
-		// TODO: @JonathanEnslin move this into a seperate function that uses exponential backoff
-		nextMonday := TimeOfNextWeekDay(now, "Monday")            // Start of next week
-		nextSaturday := TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
-		schedulerData, err := GetSchedulerData(nextMonday, nextSaturday)
-		if err != nil {
-			return err
-		}
-		err = Call(schedulerData, endpointURL) // TODO: @JonathanEnslin handle the return data
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
+// func checkAndCall(now time.Time, scheduledDay string) error {
+// 	deskType :=
+// 	// scheduledDay := "Friday"
+// 	if mayCall(scheduledDay, now) {
+// 		nextMonday := TimeOfNextWeekDay(now, "Monday")            // Start of next week
+// 		nextSaturday := TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
+// 		schedulerData, err := GetSchedulerData(nextMonday, nextSaturday)
+// 		if err != nil {
+// 			return err
+// 		}
+// 		err = Call(schedulerData, endpointURL)
+// 		if err != nil {
+// 			return err
+// 		}
+// 	}
+// 	return nil
+// }
 
 // Call Calls a scheduler endpoint and passes it the data
-func Call(data *SchedulerData, endpoint string) error { // TODO: @JonathanEnslin improve this function
+func Call(data *SchedulerData, endpoint string) error {
 	body, _ := json.Marshal(data)
 	bodyBytesBuff := bytes.NewBuffer(body)
 
@@ -98,7 +98,7 @@ func Call(data *SchedulerData, endpoint string) error { // TODO: @JonathanEnslin
 	if err != nil {
 		return err
 	}
-	response, err := HTTPClient.Do(request) // TODO: @JonathanEnslin URL env param
+	response, err := HTTPClient.Do(request)
 	if err != nil {
 		return err
 	}
@@ -116,13 +116,14 @@ func Call(data *SchedulerData, endpoint string) error { // TODO: @JonathanEnslin
 }
 
 func CallWeeklyScheduler() error {
+	deskType := "DESK"
 	weeklyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/weekly"
 
 	now := time.Now()
 
 	nextMonday := TimeOfNextWeekDay(now, "Monday")            // Start of next week
 	nextSaturday := TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
-	schedulerData, err := GetSchedulerData(nextMonday, nextSaturday)
+	schedulerData, err := GetSchedulerData(nextMonday, nextSaturday, &deskType)
 	buildingGroups := GroupByBuilding(schedulerData)
 	for _, data := range buildingGroups {
 		schedulerData = data
@@ -141,6 +142,7 @@ func CallWeeklyScheduler() error {
 }
 
 func CallDailyScheduler() error {
+	deskType := "DESK"
 	dailyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/daily"
 
 	daysInAdvance := 2
@@ -151,7 +153,7 @@ func CallDailyScheduler() error {
 	endDate := startDate.AddDate(0, 0, 1) // Add one day
 
 	// Get data between start and end of date
-	schedulerData, err := GetSchedulerData(startDate, endDate)
+	schedulerData, err := GetSchedulerData(startDate, endDate, &deskType)
 
 	buildingGroups := GroupByBuilding(schedulerData)
 	for _, data := range buildingGroups {
@@ -175,12 +177,13 @@ func CallMeetingRoomScheduler(daysInAdvance int, now time.Time) error {
 	dailyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/meeting_room"
 	// dailyEndpointURL := "https://d9e52598-1b55-4872-8fdd-1bef288323ac.mock.pstmn.io/localhost:81012/"
 
+	meetingRoomType := "MEETINGROOM"
 	yyyy, mm, dd := now.Date()
 	startDate := time.Date(yyyy, mm, dd+daysInAdvance, 0, 0, 0, 0, now.Location())
 	endDate := startDate.AddDate(0, 0, 1) // Add one day
 
 	// Get data between start and end of date
-	schedulerData, err := GetSchedulerData(startDate, endDate)
+	schedulerData, err := GetSchedulerData(startDate, endDate, &meetingRoomType)
 	if err != nil {
 		logger.Error.Println(err)
 		return err
@@ -272,20 +275,20 @@ func StartDailyCalling() (chrono.ScheduledTask, error) {
 
 // callOnDay will call checkAndCall() on each recurring certain day of the week,
 // the method can be cancelled using the passed in context
-func callOnDay(ctx context.Context, scheduledDay string) {
-	// Initial call, for when the function initially gets called
-	_ = checkAndCall(time.Now(), scheduledDay)
-	// periodic calls
-	stopLoop := false
-	for !stopLoop {
-		nextDay := TimeOfNextWeekDay(time.Now(), scheduledDay) // TODO: @JonathanEnslin, allow scheduled day to be changed
-		timer := time.NewTimer(time.Until(nextDay))
-		defer timer.Stop()
-		select {
-		case <-timer.C:
-			_ = checkAndCall(time.Now(), scheduledDay)
-		case <-ctx.Done():
-			stopLoop = true
-		}
-	}
-}
+// func callOnDay(ctx context.Context, scheduledDay string) {
+// 	// Initial call, for when the function initially gets called
+// 	_ = checkAndCall(time.Now(), scheduledDay)
+// 	// periodic calls
+// 	stopLoop := false
+// 	for !stopLoop {
+// 		nextDay := TimeOfNextWeekDay(time.Now(), scheduledDay)
+// 		timer := time.NewTimer(time.Until(nextDay))
+// 		defer timer.Stop()
+// 		select {
+// 		case <-timer.C:
+// 			_ = checkAndCall(time.Now(), scheduledDay)
+// 		case <-ctx.Done():
+// 			stopLoop = true
+// 		}
+// 	}
+// }

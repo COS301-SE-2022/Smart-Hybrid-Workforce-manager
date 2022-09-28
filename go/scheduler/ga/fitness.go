@@ -285,11 +285,10 @@ type teamRoomProximity struct {
 }
 
 // teamProximityScore calculates a score that indicates the proximity of members
-// of a team, scales with team priority (TODO: @JonathanEnslin remember this)
+// of a team, scales with team priority
 func (individual *Individual) teamProximityScore(domain *Domain) float64 {
 	teamRoomProximities := individual.getTeamRoomProximities(domain)
 	scores := make([]float64, len(teamRoomProximities))
-	// TODO: @JonathanEnslin filter out empties and stuff if necessary
 	for i, teamRoomProx := range teamRoomProximities {
 		// Use reciprocal, since if the teams have a larger avg distance from the centroid
 		// the fitness should be smaller
@@ -366,7 +365,6 @@ func individualTeamProximityScore(teamRoomProx teamRoomProximity) float64 {
 	for _, prox := range teamRoomProx.roomProximities {
 		sum += prox
 	}
-	// TODO: @JonathanEnslin add penalty for teams split over rooms
 	return sum
 }
 
@@ -416,7 +414,6 @@ func (individual *Individual) getTeamsGroupedByRooms(domain *Domain) []teamRoomG
 	schedulerData := domain.SchedulerData
 	gene := individual.Gene
 	// =================================================================
-	// TODO: @JonathanEnslin look at moving this piece of code into the domain as well since it is common across individuals
 	// A map that contains the user indices per team
 	teamUserIndices := domain.GetTeamUserIndices()
 	// =================================================================

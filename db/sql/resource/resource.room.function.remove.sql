@@ -5,7 +5,9 @@ RETURNS TABLE (
     id uuid,
 	building_id uuid,
     name VARCHAR(256),
-	location VARCHAR(256),
+    xcoord float,
+    ycoord float,
+    zcoord float,
 	dimension VARCHAR(256)
 ) AS 
 $$

@@ -234,7 +234,7 @@ func ExtractUserIdsDuplicates(schedulerData *SchedulerData) []string {
 	usersToAdd := []string{}
 	for _, user := range schedulerData.Users {
 		// Add them times they have to come in - days they already come in
-		for i := 0; i < *user.OfficeDays-timesAlreadyComingIn[*user.Id]; i++ { // TODO: @JonathanEnslin find out what do if no office days?
+		for i := 0; i < *user.OfficeDays-timesAlreadyComingIn[*user.Id]; i++ {
 			usersToAdd = append(usersToAdd, *user.Id)
 		}
 	}

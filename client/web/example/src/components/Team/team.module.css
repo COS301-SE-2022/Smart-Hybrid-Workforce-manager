@@ -129,6 +129,24 @@
     font-size: 0.8vw;
 }
 
+.checkboxContainer
+{
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    height: 8vh;
+
+    font-size: 0.8vw;
+
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+}
+
+.checkbox
+{
+    margin-right: 1vw;
+}
+
 .submit
 {
     width: 10vw;
