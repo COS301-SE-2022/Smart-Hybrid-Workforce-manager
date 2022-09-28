@@ -188,7 +188,8 @@ function Signup()
             first_name: firstName,
             last_name: lastName,
             email: email,
-            password: password
+            password: password,
+            picture: 'https://firebasestorage.googleapis.com/v0/b/arche-6bd39.appspot.com/o/users%2FUserDefault.png?alt=media&token=57d786ce-78a8-4ee6-89b8-4d17bb0fe55e'
         }),
         headers:{
             'Content-Type': 'application/json'

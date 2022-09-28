@@ -458,8 +458,8 @@
     padding-bottom: 1vh;
     width: 25vw;
 
-    background-color: #252525;
-    color: #aaaaaa;
+    background-color: rgba(255, 255, 255, 0.3);
+    color: #374146;
 
     border-style: solid;
     border-radius: 1.5vh;
