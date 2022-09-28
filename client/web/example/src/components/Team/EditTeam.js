@@ -18,6 +18,21 @@ const EditTeam = ({team, edited}) =>
     const [pictureUpload, setPictureUpload] = useState(null);
     const [members, setMembers] = useState([{name: '', id: ''}]);
     const [lead, setLead] = useState(null);
+    const [permissions, setPermissions] = useState(null);
+
+    //Permission states
+    const viewTeamRef = useRef(null);
+    const [viewTeam, setViewTeam] = useState(false);
+    const updateTeamRef = useRef(null);
+    const [updateTeam, setUpdateTeam] = useState(false);
+    const deleteTeamRef = useRef(null);
+    const [deleteTeam, setDeleteTeam] = useState(false);
+    const viewTeamMemberRef = useRef(null);
+    const [viewTeamMember, setViewTeamMember] = useState(false);
+    const updateTeamMemberRef = useRef(null);
+    const [updateTeamMember, setUpdateTeamMember] = useState(false);
+    const deleteTeamMemberRef = useRef(null);
+    const [deleteTeamMember, setDeleteTeamMember] = useState(false);
 
     const priority0Ref = useRef(null);
     const priority1Ref = useRef(null);
@@ -150,8 +165,24 @@ const EditTeam = ({team, edited}) =>
             {
                 setCapacity('2');
             }
+
+            fetch("http://localhost:8080/api/permission/information", 
+            {
+                method: "POST",
+                mode: 'cors',
+                body: JSON.stringify({
+                    permission_id: team.id
+                }),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}`
+            }
+            }).then((res) => res.json()).then(data => 
+            {
+                setPermissions(data);
+            });
         }
-    }, [team]);
+    }, [team, userData.token]);
 
     useEffect(() =>
     {
@@ -171,6 +202,11 @@ const EditTeam = ({team, edited}) =>
             }
         }
     }, [priority]);
+
+    useEffect(() =>
+    {
+
+    },[userData.token])
 
     return (
         <div className={styles.form}>
@@ -215,13 +251,52 @@ const EditTeam = ({team, edited}) =>
 
             <Form.Group className={styles.formGroup} controlId="formBasicName">
                 <div className={styles.formLabel}>Lead</div>
-                <select className={styles.lead} name='lead' onChange={(e) => setLead(e.target.value)}>
+                <select className={styles.lead} name='lead' onFocus={size=3} onChange={(e) => setLead(e.target.value)}>
                     {members && (
                         members.map(member => (
                             <option key={member.id} value={member.id}>{member.name}</option>
                         ))
                     )}
                 </select>
+            </Form.Group>
+
+            <Form.Group className={styles.formGroup} controlId="formBasicName">
+                <div className={styles.formLabel}>Team permissions</div>
+
+                <div className={styles.checkboxContainer}>
+                    <input className={styles.checkbox} ref={viewTeamRef} type='checkbox' checked={viewTeam} onChange={(e) => setViewTeam(e.target.checked)}></input>
+                    <label>View team information</label><br></br>
+                    
+                    <input className={styles.checkbox} ref={updateTeamRef} type='checkbox' checked={updateTeam} onChange={(e) => setUpdateTeam(e.target.checked)}></input>
+                    <label>Update team information</label><br></br>
+
+                    <input className={styles.checkbox} ref={deleteTeamRef} type='checkbox' checked={deleteTeam} onChange={(e) => setDeleteTeam(e.target.checked)}></input>
+                    <label>Delete team information</label><br></br>
+
+                    <input className={styles.checkbox} ref={viewTeamMemberRef} type='checkbox' checked={viewTeamMember} onChange={(e) => setViewTeamMember(e.target.checked)}></input>
+                    <label>View team members</label><br></br>
+                    
+                    <input className={styles.checkbox} ref={updateTeamMemberRef} type='checkbox' checked={updateTeamMember} onChange={(e) => setUpdateTeamMember(e.target.checked)}></input>
+                    <label>Update team members</label><br></br>
+
+                    <input className={styles.checkbox} ref={deleteTeamMemberRef} type='checkbox' checked={deleteTeamMember} onChange={(e) => setDeleteTeamMember(e.target.checked)}></input>
+                    <label>Delete team members</label><br></br>
+                </div>
+            </Form.Group>
+
+            <Form.Group className={styles.formGroup} controlId="formBasicName">
+                <form>
+                    <div className={styles.formLabel}>Team priority</div>
+
+                    <input ref={priority0Ref} type='radio' name='priority' value={0} onChange={(e) => setPriority(e.target.value)}></input>
+                    <label className={styles.radioLabel}>0</label>
+
+                    <input ref={priority1Ref} type='radio' name='priority' value={1} onChange={(e) => setPriority(e.target.value)}></input>
+                    <label className={styles.radioLabel}>1</label>
+
+                    <input ref={priority2Ref} type='radio' name='priority' value={2} onChange={(e) => setPriority(e.target.value)}></input>
+                    <label className={styles.radioLabel}>2</label>
+                </form>
             </Form.Group>
 
 

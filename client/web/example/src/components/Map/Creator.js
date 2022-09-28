@@ -98,21 +98,21 @@ const Creator = () =>
     const UpdateResources = (id) =>
     {
         fetch("http://localhost:8080/api/resource/information", 
-            {
+        {
             method: "POST",
             mode: 'cors',
             body: JSON.stringify({
                 room_id: id
             }),
-            headers:{
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${userData.token}`
-            }
-            }).then((res) => res.json()).then(data => 
-            {
-                SetResources(data);
-                SetCurrRoom(id);
-            });
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userData.token}`
+        }
+        }).then((res) => res.json()).then(data => 
+        {
+            SetResources(data);
+            SetCurrRoom(id);
+        });
     }
 
     //Canvas functions

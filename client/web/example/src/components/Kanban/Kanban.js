@@ -19,7 +19,9 @@ const Kanban = () =>
 
     const [columns, setColumns] = useState({});
 
-    const [editTeam, setEditTeam] = useState(null);
+    const teamMenuRef = useRef(null);
+    const [teamMenuDisplay, setTeamMenuDisplay] = useState('none');
+    const [currTeam, setCurrTeam] = useState(null);
     const [teamEdited, setTeamEdited] = useState(true);
     const [addTeam, setAddTeam] = useState(0);
 
@@ -43,16 +45,16 @@ const Kanban = () =>
     //Teams
     const ShowTeamMenu = (col) =>
     {
-        if(document.getElementById('TeamMenu').style.display === 'none')
+        if(teamMenuDisplay === 'none')
         {
-            document.getElementById('TeamMenu').style.display = 'block';
-            document.getElementById('TeamMenu').style.left = document.getElementById(col.id + 'ColumnActions').getBoundingClientRect().left - 0.22*window.innerWidth + 'px';
-            document.getElementById('TeamMenu').style.top = document.getElementById(col.id + 'ColumnActions').getBoundingClientRect().top - 0.10*window.innerHeight + 'px';
-            setEditTeam(col);
+            setTeamMenuDisplay('block');
+            teamMenuRef.current.style.left = document.getElementById(col.id + 'ColumnActions').getBoundingClientRect().left - 0.22*window.innerWidth + 'px';
+            teamMenuRef.current.style.top = document.getElementById(col.id + 'ColumnActions').getBoundingClientRect().top - 0.10*window.innerHeight + 'px';
+            setCurrTeam(col);
         }
-        else
+        else   
         {
-            document.getElementById('TeamMenu').style.display = 'none';
+            setTeamMenuDisplay('none');
         }
     }
 
@@ -66,6 +68,25 @@ const Kanban = () =>
     {
         document.getElementById('BackgroundDimmer').style.display = 'none';
         document.getElementById('EditTeam').style.display = 'none';
+    }
+
+    const DeleteTeam = () =>
+    {
+        fetch("http://localhost:8080/api/team/remove", 
+        {
+            method: "POST",
+            mode: "cors",
+            body: JSON.stringify({
+                id: currTeam.id
+            }),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}`
+            }
+        }).then((res) =>
+        {
+            setTeamEdited(true);
+        }); 
     }
 
     const AddTeam = () =>
@@ -166,9 +187,9 @@ const Kanban = () =>
 
     document.addEventListener('mousedown', function ClickOutside(event)
     {
-        if(document.getElementById('TeamMenu').style.display === 'block')
+        if(teamMenuDisplay === 'block')
         {
-            document.getElementById('TeamMenu').style.display = 'none';
+            setTeamMenuDisplay('none');
         }
 
         if(document.getElementById('UserMenu').style.display === 'block')
@@ -545,12 +566,12 @@ const Kanban = () =>
             <div className={styles.saveIcon} onMouseEnter={ShowSaveHint} onMouseLeave={HideSaveHint}><FaSave /></div>
             <div id='SaveHint' className={styles.saveHint}>Save</div>
 
-            <div className={styles.leftArrow} onMouseDown={StartScrollLeft} onMouseUp={StopScrollLeft} onMouseLeave={StopScrollLeft}><IoIosArrowBack /></div>
-            <div className={styles.rightArrow} onMouseDown={StartScrollRight} onMouseUp={StopScrollRight} onMouseLeave={StopScrollRight}><IoIosArrowForward /></div>
+            <div className={styles.leftArrow} onMouseDown={StartScrollLeft} onMouseUp={StopScrollLeft} onMouseLeave={StopScrollLeft}><IoIosArrowBack style={{verticalAlign: 'baseline'}} /></div>
+            <div className={styles.rightArrow} onMouseDown={StartScrollRight} onMouseUp={StopScrollRight} onMouseLeave={StopScrollRight}><IoIosArrowForward style={{verticalAlign: 'baseline'}} /></div>
 
-            <div id='TeamMenu' className={styles.teamMenu}>
+            <div ref={teamMenuRef} className={styles.teamMenu} style={{display: teamMenuDisplay}}>
                 <div className={styles.editTeam} onMouseDown={EditTeam.bind(this)}>Edit team</div>
-                <div className={styles.deleteTeam}>Delete team</div>
+                <div className={styles.deleteTeam} onMouseDown={DeleteTeam.bind(this)}>Delete team</div>
             </div>
 
             <div id='UserMenu' className={styles.userMenu}>
@@ -567,7 +588,7 @@ const Kanban = () =>
 
             <div id='EditTeam' className={styles.formContainer}>
                 <div className={styles.formClose} onClick={CloseEditTeam}><MdClose /></div>
-                <EditTeamForm team={editTeam} edited={setTeamEdited} />
+                <EditTeamForm team={currTeam} edited={setTeamEdited} />
             </div>
 
             <div id='EditUser' className={styles.userPanel} style={{left: userPanelLeft}}>
@@ -595,7 +616,7 @@ const Kanban = () =>
                                                     </div>
 
                                                     <div id={id + 'ColumnActions'} className={styles.columnActions}>
-                                                        <BsThreeDotsVertical className={styles.menu} onMouseUp={ShowTeamMenu.bind(this, col)} />
+                                                        <BsThreeDotsVertical className={styles.menu} onMouseUp={() => ShowTeamMenu(col)} />
                                                     </div>
                                                 </div>
                                                 
