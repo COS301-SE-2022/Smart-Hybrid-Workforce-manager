@@ -4,6 +4,7 @@ import (
 	"api/db"
 	"database/sql"
 	"encoding/json"
+	"lib/collectionutils"
 	// "database/sql"
 )
 
@@ -46,17 +47,47 @@ type RoomAssociations []*RoomAssociation
 
 // Resource identifies a Resource via common attributes
 type Resource struct {
-	Id           *string  `json:"id,omitempty"`
-	RoomId       *string  `json:"room_id,omitempty"`
-	Name         *string  `json:"name,omitempty"`
-	XCoord       *float64 `json:"xcoord,omitempty"`
-	YCoord       *float64 `json:"ycoord,omitempty"`
-	Width        *float64 `json:"width,omitempty"`
-	Height       *float64 `json:"height,omitempty"`
-	Rotation     *float64 `json:"rotation,omitempty"`
-	ResourceType *string  `json:"resource_type,omitempty"`
-	Decorations  *string  `json:"decorations,omitempty"`
-	DateCreated  *string  `json:"date_created,omitempty"`
+	Id                      *string  `json:"id,omitempty"`
+	RoomId                  *string  `json:"room_id,omitempty"`
+	Name                    *string  `json:"name,omitempty"`
+	XCoord                  *float64 `json:"xcoord,omitempty"`
+	YCoord                  *float64 `json:"ycoord,omitempty"`
+	Width                   *float64 `json:"width,omitempty"`
+	Height                  *float64 `json:"height,omitempty"`
+	Rotation                *float64 `json:"rotation,omitempty"`
+	ResourceType            *string  `json:"resource_type,omitempty"`
+	Decorations             *string  `json:"decorations,omitempty"`
+	DateCreated             *string  `json:"date_created,omitempty"`
+	cachedParsedDecorations *map[string]any
+	atCachedDecorationsPtr  *string
+}
+
+// Parses resource decorations
+func (r *Resource) GetDecorations() map[string]any {
+	if r.cachedParsedDecorations != nil && r.atCachedDecorationsPtr == r.Decorations {
+		return *r.cachedParsedDecorations
+	}
+	r.atCachedDecorationsPtr = r.Decorations
+	parsed := map[string]any{}
+	if r.Decorations == nil {
+		return parsed
+	}
+	err := json.Unmarshal([]byte(*r.Decorations), &parsed)
+	if err != nil {
+		return map[string]any{}
+	}
+	r.cachedParsedDecorations = &parsed
+	return parsed
+}
+
+// Gets the capacity (most likely of meeting rooms)
+func (r *Resource) GetCapacity() int {
+	if collectionutils.MapHasKey(r.GetDecorations(), "capacity") {
+		if num, ok := r.GetDecorations()["capacity"].(float64); ok {
+			return int(num)
+		}
+	}
+	return -1
 }
 
 // Resources represent a splice of Resource
@@ -401,6 +432,20 @@ func (access *ResourceDA) DeleteIdentifier(identifier *Resource) (*Resource, err
 		}
 	}
 	return tmp.FindHead(), nil
+}
+
+// BatchDeleteIdentifier deletes many Resource Identifiers
+func (access *ResourceDA) BatchDeleteIdentifier(identifiers []*Resource) error {
+	for i := 0; i < len(identifiers); i++ {
+		identifier := identifiers[i]
+		_, err := access.access.Query(
+			`SELECT * FROM resource.identifier_remove($1)`, mapResource,
+			identifier.Id)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 //FindHead returns the first Resource Identifier

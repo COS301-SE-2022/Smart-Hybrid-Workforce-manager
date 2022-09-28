@@ -2,7 +2,6 @@ package overseer
 
 import (
 	"context"
-	"fmt"
 	"lib/logger"
 	"lib/testutils"
 	"lib/utils"
@@ -161,7 +160,6 @@ func DailyOverseer(schedulerData data.SchedulerData, schedulerConfig *data.Sched
 	domain.Config = &config
 	domain.SchedulerData = &schedulerData
 	domain.Map = data.ExtractNecessaryUserMap(&schedulerData)
-	fmt.Println(testutils.Scolourf(testutils.BLUE, "%v", domain.Map))
 	// domain.Map = data.ExtractUserIdMap(&schedulerData)
 	domain.InverseMap = data.ExtractInverseUserIdMap(domain.Map)
 	domain.Reschedule = false

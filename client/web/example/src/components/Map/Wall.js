@@ -1,11 +1,10 @@
-import { Path, Transformer } from 'react-konva';
+import { Path, Rect, Transformer } from 'react-konva';
 import { useRef, useEffect, useState, Fragment } from 'react';
 
-const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform}) =>
+const Wall = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform}) =>
 {
     const shapeRef = useRef(null);
     const transformRef = useRef(null);
-    const [booked, setBooked] = useState(shapeProps.booked);
 
     useEffect(() =>
     {
@@ -14,46 +13,22 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
             transformRef.current.nodes([shapeRef.current]);
             transformRef.current.getLayer().batchDraw();
         }
-
-        if(!isSelected && booked)
-        {
-            shapeRef.current.fill('#e8e8e8');
-        }
-        else if(!isSelected && !booked)
+        else if(!isSelected)
         {
             shapeRef.current.fill('#374146');
         }
-    }, [isSelected, transform, booked]);
+    }, [isSelected, transform]);
 
-    useEffect(() =>
-    {
-        if(booked)
-        {
-            shapeRef.current.fill('#e8e8e8');
-        }
-        else
-        {
-            shapeRef.current.fill('#374146');
-        }
-    },[booked])
-
-    useEffect(() =>
-    {
-        setBooked(shapeProps.booked);
-    },[shapeProps.booked]);
 
     return (
         <Fragment> 
-            <Path 
+            <Rect 
                 {...shapeProps}
                 ref={shapeRef}
 
-                data='h 200 a 20 20 0 0 1 20 20 v 80 a 20 20 0 0 1 -20 20 h -200 a 20 20 0 0 1 -20 -20 v -80 a 20 20 0 0 1 20 -20 Z M 50 -10 h 10 v -10 h 80 v 10 h 10 v -20 a 10 10 0 0 0 -100 0 Z'
+                //data='h 200 a 20 20 0 0 1 20 20 v 80 a 20 20 0 0 1 -20 20 h -200 a 20 20 0 0 1 -20 -20 v -80 a 20 20 0 0 1 20 -20 Z M 50 -10 h 10 v -10 h 80 v 10 h 10 v -20 a 10 10 0 0 0 -100 0 Z'
 
                 fill='#374146'
-
-                scaleX={0.3}
-                scaleY={0.3}
 
                 draggable={draggable}
 
@@ -76,10 +51,17 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
 
                 onTransformEnd={(e) =>
                 {
+                    const scaleX = e.target.scaleX();
+                    const scaleY = e.target.scaleY();
+
+                    e.target.scaleX(1);
+                    e.target.scaleY(1);
+
                     onChange({
                         ...shapeProps,
                         x : e.target.x(),
                         y : e.target.y(),
+                        width: e.target.width() * scaleX,
                         rotation : e.target.rotation(),
                         edited : true
                     });
@@ -98,11 +80,7 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
                     {
                         e.target.fill('#09a2fb');
                     }
-                    else if(!isSelected && booked)
-                    {
-                        e.target.fill('#e8e8e8');
-                    }
-                    else if(!isSelected && !booked)
+                    else
                     {
                         e.target.fill('#374146');
                     }
@@ -113,12 +91,12 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
                 <Transformer 
                     ref = {transformRef}
                     rotationSnaps = {[0, 90, 180, 270]}
-                    resizeEnabled = {false}
-                    centeredScaling = {true}
+                    resizeEnabled = {true}
+                    centeredScaling = {false}
                 />
             )}
         </Fragment>
     );
 }
 
-export default Desk
+export default Wall

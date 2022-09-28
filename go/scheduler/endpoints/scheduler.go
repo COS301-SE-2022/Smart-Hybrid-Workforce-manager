@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"scheduler/data"
+	meetingroom "scheduler/meeting_room"
 	"scheduler/overseer"
 
 	"github.com/gorilla/mux"
@@ -25,6 +26,7 @@ func SchedulerHandlers(router *mux.Router) error {
 	router.HandleFunc("/test", TEST).Methods("POST") // TODO [KP]: REMOVE THIS
 	router.HandleFunc("/weekly", weeklyScheduler).Methods("POST")
 	router.HandleFunc("/daily", dailyScheduler).Methods("POST")
+	router.HandleFunc("/meeting_room", meetingRoomScheduler).Methods("POST")
 
 	return nil
 }
@@ -44,6 +46,21 @@ func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 	}
 	schedulerData.ApplyMapping()
 	bookings := overseer.WeeklyOverseer(schedulerData, config)
+
+	utils.JSONResponse(writer, request, bookings)
+}
+
+func meetingRoomScheduler(writer http.ResponseWriter, request *http.Request) {
+	// config, _ := parseConfig("/run/secrets/config.json")
+	var schedulerData data.SchedulerData
+
+	err := utils.UnmarshalJSON(writer, request, &schedulerData)
+	if err != nil {
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+	schedulerData.ApplyMapping()
+	bookings := meetingroom.AssignMeetingRoomsToBookings(&schedulerData)
 
 	utils.JSONResponse(writer, request, bookings)
 }

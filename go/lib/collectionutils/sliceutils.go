@@ -160,3 +160,11 @@ func Sum[N float64 | float32 | int64 | int32](vals []N) N {
 	}
 	return sum
 }
+
+// Removes the element at index, if index is out of bounds the function is a no-op
+func RemElementAtIPreseveOrder[T any](slice []T, index int) []T {
+	if index >= len(slice) || index < 0 {
+		return slice
+	}
+	return append(slice[:index], slice[index+1:]...)
+}

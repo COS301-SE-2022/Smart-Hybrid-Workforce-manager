@@ -9,14 +9,16 @@ import (
 )
 
 type SchedulerData struct {
-	Users           data.Users      `json:"users"`
-	Teams           []*TeamInfo     `json:"teams"`
-	Buildings       []*BuildingInfo `json:"buildings"`
-	Rooms           []*RoomInfo     `json:"rooms"`
-	Resources       data.Resources  `json:"resources"`
-	CurrentBookings *data.Bookings  `json:"current_bookings"`
-	PastBookings    *data.Bookings  `json:"past_bookings"`
-	StartDate       *time.Time      `json:"start_date"`
+	Users               data.Users               `json:"users"`
+	Teams               []*TeamInfo              `json:"teams"`
+	Roles               []*RoleInfo              `json:"roles"`
+	Buildings           []*BuildingInfo          `json:"buildings"`
+	Rooms               []*RoomInfo              `json:"rooms"`
+	Resources           data.Resources           `json:"resources"`
+	CurrentBookings     *data.Bookings           `json:"current_bookings"`
+	PastBookings        *data.Bookings           `json:"past_bookings"`
+	StartDate           *time.Time               `json:"start_date"`
+	MeetingRoomBookings data.MeetingRoomBookings `json:"meeting_room_bookings"`
 }
 
 type BookingInfo struct {
@@ -30,6 +32,11 @@ type TeamInfo struct {
 	UserIds []string `json:"user_ids"`
 }
 
+type RoleInfo struct {
+	*data.Role
+	UserIds []string `json:"user_ids"`
+}
+
 type BuildingInfo struct {
 	*data.Building
 	RoomIds []string `json:"room_ids"`
@@ -38,6 +45,59 @@ type BuildingInfo struct {
 type RoomInfo struct {
 	*data.Room
 	ResourceIds []string `json:"resource_ids"`
+}
+
+func AddMeetingRoomBookings(buildingGroups map[string]*SchedulerData) error {
+	for _, group := range buildingGroups {
+		bookings, err := GetMeetingRoomBookings(*group.CurrentBookings)
+		if err != nil {
+			return err
+		}
+		group.MeetingRoomBookings = bookings
+	}
+	return nil
+}
+
+func GetMeetingRoomBookings(bookings data.Bookings) (data.MeetingRoomBookings, error) {
+	// Craete map of the existing bookings
+	bookingMap := map[string]struct{}{}
+	for _, booking := range bookings {
+		bookingMap[*booking.Id] = struct{}{}
+	}
+
+	permissions := &data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "USER")}
+	// Unmarshal MeetingRoomBooking
+	var meetingRoomBooking data.MeetingRoomBooking
+
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		return data.MeetingRoomBookings{}, err
+	}
+	defer access.Close()
+
+	// TODO: null checks etc.
+
+	da := data.NewBookingDA(access)
+	meetingRoomBookings, err := da.FindMeeetingRoomBooking(&meetingRoomBooking, security.RemoveRolePermissions(permissions))
+	if err != nil {
+		return data.MeetingRoomBookings{}, err
+	}
+
+	// Filter meeting room bookings to only select relevant ones
+	filtered := data.MeetingRoomBookings{}
+	for _, mBooking := range meetingRoomBookings {
+		if cu.MapHasKey(bookingMap, *mBooking.BookingId) {
+			filtered = append(filtered, mBooking)
+		}
+	}
+
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		return data.MeetingRoomBookings{}, err
+	}
+	return filtered, nil
 }
 
 // GetUsers Retrieves all the users from the database
@@ -124,6 +184,32 @@ func GetTeams() (data.Teams, error) {
 	return teams, nil
 }
 
+// GetTeams retrieves all the teams from the database
+// IMPORTANT: At this point teams are assumed to be flat
+func GetRoles() (data.Roles, error) {
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		return nil, err
+	}
+	defer access.Close()
+
+	da := data.NewRoleDA(access)
+	role := data.Role{}
+	permissions := &data.Permissions{data.CreateGenericPermission("VIEW", "ROLE", "IDENTIFIER")}
+	roles, err := da.FindIdentifier(&role, permissions)
+	if err != nil {
+		return nil, err
+	}
+
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		return nil, err
+	}
+	return roles, nil
+}
+
 // GetUserTeams will return all the userteam pairs
 func GetUserTeams() (data.UserTeams, error) {
 	// Create a database connection
@@ -179,6 +265,63 @@ func GetCompiledTeamInfo() ([]*TeamInfo, error) {
 	// final result would be for example:
 	// [{"team_id": "122-122", "team": {team_info...}, "user_ids": ["123-123", "321-123"]},...]
 	return teamInfos, nil
+}
+
+// GetUserRole will return all the userteam pairs
+func GetUserRoles() (data.UserRoles, error) {
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		return nil, err
+	}
+	defer access.Close()
+	da := data.NewRoleDA(access)
+
+	userRole := data.UserRole{}
+	permissions := &data.Permissions{data.CreateGenericPermission("VIEW", "ROLE", "USER"),
+		data.CreateGenericPermission("VIEW", "USER", "ROLE")}
+	userRoles, err := da.FindUserRole(&userRole, permissions)
+	if err != nil {
+		return nil, err
+	}
+
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		return nil, err
+	}
+	return userRoles, nil
+}
+
+// GetCompiledTeamInfo will return an array, with team_id as keys
+// this map will contain the info of the team, as well as all the users belonging to
+// that team
+func GetCompiledRoleInfo() ([]*RoleInfo, error) {
+	roles, err := GetRoles()
+	if err != nil {
+		return nil, err
+	}
+	userRoles, err := GetUserRoles()
+	if err != nil {
+		return nil, err
+	}
+	roleInfosMap := make(map[string]*RoleInfo)
+	for _, role := range roles {
+		roleInfosMap[*role.Id] = &RoleInfo{role, []string{}}
+	}
+	for _, userRole := range userRoles {
+		roleInfosMap[*userRole.RoleId].UserIds = append(roleInfosMap[*userRole.RoleId].UserIds, *userRole.UserId)
+	}
+	roleInfos := make([]*RoleInfo, len(roleInfosMap))
+	i := 0
+	for _, v := range roleInfosMap {
+		roleInfos[i] = v
+		i++
+	}
+
+	// final result would be for example:
+	// [{"team_id": "122-122", "team": {team_info...}, "user_ids": ["123-123", "321-123"]},...]
+	return roleInfos, nil
 }
 
 // GetBuildings retrieves all the buildings from the database
@@ -318,6 +461,12 @@ func GetSchedulerData(from time.Time, to time.Time) (*SchedulerData, error) {
 		return nil, err
 	}
 
+	// Get the roles
+	roles, err := GetCompiledRoleInfo()
+	if err != nil {
+		return nil, err
+	}
+
 	// Get the buildings, rooms, resources
 	buildings, rooms, resources, err := GetCompileResourceInfo()
 	if err != nil {
@@ -350,6 +499,7 @@ func GetSchedulerData(from time.Time, to time.Time) (*SchedulerData, error) {
 	schedulerData := SchedulerData{
 		Users:           users,
 		Teams:           teams,
+		Roles:           roles,
 		Buildings:       buildings,
 		Rooms:           rooms,
 		Resources:       resources,
@@ -449,6 +599,13 @@ func GroupByBuilding(schedulerData *SchedulerData) map[string]*SchedulerData { /
 		})
 	}
 
+	groupedRoleUserIds := make(map[string](map[string][]string))
+	for _, role := range schedulerData.Roles {
+		_, groupedRoleUserIds[*role.Id] = cu.GroupBy(role.UserIds, func(userId string) string {
+			return groupUser(usersMap[userId])
+		})
+	}
+
 	groupedBuildingRoomIds := make(map[string](map[string][]string))
 	for _, building := range schedulerData.Buildings {
 		_, groupedBuildingRoomIds[*building.Id] = cu.GroupBy(building.RoomIds, func(roomId string) string {
@@ -502,6 +659,18 @@ func GroupByBuilding(schedulerData *SchedulerData) map[string]*SchedulerData { /
 			}
 		}
 		groupedData[buildingId].Teams = newTeams
+
+		newRoles := []*RoleInfo{}
+		for index, roleInfo := range schedulerData.Roles {
+			newRoles = append(newRoles, &RoleInfo{
+				roleInfo.Role,
+				groupedRoleUserIds[*roleInfo.Id][buildingId],
+			})
+			if groupedRoleUserIds[*roleInfo.Id][buildingId] == nil {
+				newRoles[index].UserIds = []string{}
+			}
+		}
+		groupedData[buildingId].Roles = newRoles
 
 		groupedData[buildingId].Users = groupedUsers[buildingId]
 		if groupedUsers[buildingId] == nil {

@@ -1,6 +1,7 @@
 package data
 
 import (
+	"encoding/json"
 	"lib/collectionutils"
 	"lib/utils"
 	"time"
@@ -22,17 +23,21 @@ type Config struct {
 }
 
 type SchedulerData struct {
-	Users           Users           `json:"users"`
-	Teams           []*TeamInfo     `json:"teams"`
-	Buildings       []*BuildingInfo `json:"buildings"`
-	Rooms           []*RoomInfo     `json:"rooms"`
-	Resources       Resources       `json:"resources"`
-	CurrentBookings *Bookings       `json:"current_bookings"`
-	PastBookings    *Bookings       `json:"past_bookings"`
-	StartDate       *time.Time      `json:"start_date"`
-
+	Users               Users               `json:"users"`
+	Teams               []*TeamInfo         `json:"teams"`
+	Roles               []*RoleInfo         `json:"roles"`
+	Buildings           []*BuildingInfo     `json:"buildings"`
+	Rooms               []*RoomInfo         `json:"rooms"`
+	Resources           Resources           `json:"resources"`
+	CurrentBookings     *Bookings           `json:"current_bookings"`
+	PastBookings        *Bookings           `json:"past_bookings"`
+	StartDate           *time.Time          `json:"start_date"`
+	MeetingRoomBookings MeetingRoomBookings `json:"meeting_room_bookings"`
 	// map[teamId]*TeamInfo
 	TeamsMap map[string]*TeamInfo `json:"-"`
+
+	// map[roleId]*RoleInfo
+	RolesMap map[string]*RoleInfo `json:"-"`
 
 	// map[roomId]*RoomInfo
 	RoomsMap map[string]*RoomInfo `json:"-"`
@@ -42,6 +47,11 @@ type SchedulerData struct {
 
 	// map[UserId]*User
 	UserMap map[string]*User `json:"-"`
+}
+
+type RoleInfo struct {
+	*Role
+	UserIds []string `json:"user_ids"`
 }
 
 type BookingInfo struct {
@@ -87,18 +97,20 @@ type Users []*User
 
 // Resource identifies a Resource via common attributes
 type Resource struct {
-	Id           *string  `json:"id,omitempty"`
-	RoomId       *string  `json:"room_id,omitempty"`
-	Name         *string  `json:"name,omitempty"`
-	XCoord       *float64 `json:"xcoord,omitempty"`
-	YCoord       *float64 `json:"ycoord,omitempty"`
-	Width        *float64 `json:"width,omitempty"`
-	Height       *float64 `json:"height,omitempty"`
-	Rotation     *float64 `json:"rotation,omitempty"`
-	RoleId       *string  `json:"role_id,omitempty"`
-	ResourceType *string  `json:"resource_type,omitempty"`
-	Decorations  *string  `json:"decorations,omitempty"`
-	DateCreated  *string  `json:"date_created,omitempty"`
+	Id                      *string  `json:"id,omitempty"`
+	RoomId                  *string  `json:"room_id,omitempty"`
+	Name                    *string  `json:"name,omitempty"`
+	XCoord                  *float64 `json:"xcoord,omitempty"`
+	YCoord                  *float64 `json:"ycoord,omitempty"`
+	Width                   *float64 `json:"width,omitempty"`
+	Height                  *float64 `json:"height,omitempty"`
+	Rotation                *float64 `json:"rotation,omitempty"`
+	RoleId                  *string  `json:"role_id,omitempty"`
+	ResourceType            *string  `json:"resource_type,omitempty"`
+	Decorations             *string  `json:"decorations,omitempty"`
+	DateCreated             *string  `json:"date_created,omitempty"`
+	cachedParsedDecorations *map[string]any
+	atCachedDecorationsPtr  *string
 }
 
 // Resources represent a splice of Resource
@@ -119,6 +131,20 @@ type Booking struct {
 	DateCreated          *time.Time `json:"date_created,omitempty"`
 }
 
+// MeetingRoomBooking identifies a meeting room booking
+type MeetingRoomBooking struct {
+	Booking                  *Booking `json:"booking,omitempty"` // Consider removing, two api calls for meeting bookings
+	Id                       *string  `json:"id,omitempty"`
+	BookingId                *string  `json:"booking_id,omitempty"`
+	TeamId                   *string  `json:"team_id,omitempty"`
+	RoleId                   *string  `json:"role_id,omitempty"`
+	AdditionalAttendees      *int     `json:"additional_attendees,omitempty"`
+	DesksAttendees           *bool    `json:"desks_attendees,omitempty"`
+	DesksAdditionalAttendees *bool    `json:"desks_additional_attendees,omitempty"`
+}
+
+type MeetingRoomBookings []*MeetingRoomBooking
+
 // Bookings represent a splice of Booking
 type Bookings []*Booking
 
@@ -132,6 +158,14 @@ type Team struct {
 	Priority    *int       `json:"priority,omitempty"`
 	TeamLeadId  *string    `json:"team_lead_id,omitempty"`
 	DateCreated *time.Time `json:"date_created,omitempty"`
+}
+
+type Role struct {
+	Id        *string    `json:"id,omitempty"`
+	Name      *string    `json:"name,omitempty"`
+	Color     *string    `json:"color,omitempty"`
+	LeadId    *string    `json:"lead_id,omitempty"`
+	DateAdded *time.Time `json:"date_added,omitempty"`
 }
 
 // Building identifies a Building Resource via common attributes
@@ -151,6 +185,34 @@ type Room struct {
 	YCoord     *float64 `json:"ycoord,omitempty"`
 	ZCoord     *float64 `json:"zcoord,omitempty"`
 	Dimension  *string  `json:"dimension,omitempty"`
+}
+
+// Parses resource decorations
+func (r *Resource) GetDecorations() map[string]any {
+	if r.cachedParsedDecorations != nil && r.atCachedDecorationsPtr == r.Decorations {
+		return *r.cachedParsedDecorations
+	}
+	r.atCachedDecorationsPtr = r.Decorations
+	parsed := map[string]any{}
+	if r.Decorations == nil {
+		return parsed
+	}
+	err := json.Unmarshal([]byte(*r.Decorations), &parsed)
+	if err != nil {
+		return map[string]any{}
+	}
+	r.cachedParsedDecorations = &parsed
+	return parsed
+}
+
+// Gets the capacity (most likely of meeting rooms)
+func (r *Resource) GetCapacity() int {
+	if collectionutils.MapHasKey(r.GetDecorations(), "capacity") {
+		if num, ok := r.GetDecorations()["capacity"].(float64); ok {
+			return int(num)
+		}
+	}
+	return -1
 }
 
 // =======================
@@ -307,9 +369,19 @@ func (data *SchedulerData) MapTeams() {
 	}
 }
 
+func (data *SchedulerData) MapRoles() {
+	data.RolesMap = map[string]*RoleInfo{}
+	if data.Roles != nil && len(data.Roles) == 0 {
+		for _, roleInfo := range data.Roles {
+			data.RolesMap[*roleInfo.Id] = roleInfo
+		}
+	}
+}
+
 func (data *SchedulerData) ApplyMapping() {
 	data.MapRooms()
 	data.MapResources()
 	data.MapTeams()
 	data.MapUsers()
+	data.MapRoles()
 }

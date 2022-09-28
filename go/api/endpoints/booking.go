@@ -164,17 +164,34 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 		return
 	}
 
-	// Create Google Calendar Event
-	results := google_api.TestingFunc()
-	logger.Access.Printf("%v created\n", results)
-
 	// Commit transaction
 	err = access.Commit()
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
+
+	// Create Google Calendar Event
+	du := data.NewUserDA(access)
+	users, err := du.FindIdentifier(&data.User{Id: booking.UserId})
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	user := users.FindHead()
+	logger.Access.Println("\nHERE1\n")
+	logger.Access.Printf("\nData5: %v",booking)
+	logger.Access.Printf("\nData5: %v",booking.Id)
+	err = google_api.CreateBooking(user,&booking)
+	if err != nil{
+		logger.Error.Printf("Error occured while creating google calendar event: %v",err)
+	}
+	logger.Access.Println("\nWE GOT TILL HERE BEFORE IT FUCKED UP\n")
+
+
+	logger.Access.Println("\nHERE2\n")
 	logger.Access.Printf("%v created\n", booking.Id) // TODO [KP]: Be more descriptive
+	logger.Access.Println("\nHERE3\n")
 	utils.Ok(writer, request)
 }
 
@@ -290,7 +307,6 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 	}
 
 	// Check if the user has permission to create or update a booking for the incoming meeting room
-	// TODO: @JonathanEnslin fix these permissions, add perms for creating bookings for certain teams, roles etc... Or leave it up to the scheduler
 	authorized := false
 	if meetingRoomBooking.Booking.UserId != nil {
 		for _, permission := range *permissions {
