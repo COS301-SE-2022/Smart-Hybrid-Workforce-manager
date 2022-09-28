@@ -4,7 +4,6 @@ import (
 	"api/data"
 	"encoding/json"
 	"io/ioutil"
-	dtdb "lib/dockertest_db"
 	ts "lib/test_setup"
 	tu "lib/testutils"
 	"net/http"
@@ -14,8 +13,11 @@ import (
 )
 
 func TestCreateRoleHandler(t *testing.T) {
-	testdb := ts.SetupTest(t)
-	defer dtdb.StopTestDbWithTest(testdb, t, false)
+	err := ts.ConnectDB(t)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ts.DisconnectDB(t)
 
 	// ==================
 	// Perform tests ====
@@ -228,9 +230,11 @@ func TestCreateRoleHandler(t *testing.T) {
 }
 
 func TestInformationRolesHandler(t *testing.T) {
-	testdb := ts.SetupTest(t)
-	defer dtdb.StopTestDbWithTest(testdb, t, false)
-
+	err := ts.ConnectDB(t)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ts.DisconnectDB(t)
 	// ==================
 	// Perform tests ====
 	// ==================
@@ -326,8 +330,11 @@ func TestInformationRolesHandler(t *testing.T) {
 }
 
 func TestDeleteRoleHandler(t *testing.T) {
-	testdb := ts.SetupTest(t)
-	defer dtdb.StopTestDbWithTest(testdb, t, false)
+	err := ts.ConnectDB(t)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ts.DisconnectDB(t)
 
 	// ==================
 	// Perform tests ====

@@ -180,10 +180,10 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 	}
 	// Create Google Calendar Event
 	booking.Id = booking_id
-	err = google_api.CreateBooking(user,&booking)
-	if err != nil{
-		logger.Error.Printf("Error occured while creating google calendar event: %v\n",err)
-	}else{
+	err = google_api.CreateBooking(user, &booking)
+	if err != nil {
+		logger.Error.Printf("Error occured while creating google calendar event: %v\n", err)
+	} else {
 		logger.Access.Println("Google Calendar Event Created")
 	}
 	utils.Ok(writer, request)
@@ -436,7 +436,7 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 	bookings = data.Bookings{}
 
 	// Add desks bookings
-	if meetingRoomBooking.DesksAttendees != nil && *meetingRoomBooking.DesksAttendees == true {
+	if meetingRoomBooking.DesksAttendees != nil && *meetingRoomBooking.DesksAttendees {
 		// // Add desks for role/team members in meeting
 		// Make the actual bookings
 		deskResourceType = "DESK"
