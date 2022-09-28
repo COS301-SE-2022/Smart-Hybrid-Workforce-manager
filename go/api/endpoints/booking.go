@@ -182,9 +182,10 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 	booking.Id = booking_id
 	err = google_api.CreateBooking(user,&booking)
 	if err != nil{
-		logger.Error.Printf("Error occured while creating google calendar event: %v",err)
+		logger.Error.Printf("Error occured while creating google calendar event: %v\n",err)
+	}else{
+		logger.Access.Println("Google Calendar Event Created")
 	}
-
 	utils.Ok(writer, request)
 }
 
