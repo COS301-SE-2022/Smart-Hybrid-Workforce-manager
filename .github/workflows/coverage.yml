@@ -16,6 +16,7 @@ jobs:
     steps:
       - name: Checkout 
         uses: actions/checkout@v3
+          token: ${{ secrets.MY_PAT }}
 
       - name: Set up Node.js 17.x
         uses: actions/setup-node@v3.1.1
