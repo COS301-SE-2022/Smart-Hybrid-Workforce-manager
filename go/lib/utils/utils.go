@@ -39,7 +39,6 @@ func UnmarshalJSON(writer http.ResponseWriter, request *http.Request, input inte
 // jsonResponse
 func jsonResponse(writer http.ResponseWriter, request *http.Request, status int, payload interface{}) {
 	writer.Header().Set("Content-Type", "application/json")
-	writer.Header().Set("Access-Control-Allow-Origin", "*")
 	writer.WriteHeader(status)
 	encoder := json.NewEncoder(writer)
 	err := encoder.Encode(payload)
@@ -84,7 +83,6 @@ func InternalServerError(writer http.ResponseWriter, request *http.Request, err 
 // Ok responds with ok response 200
 func Ok(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Set("Content-Type", "text/plain")
-	writer.Header().Set("Access-Control-Allow-Origin", "*")
 	writer.WriteHeader(http.StatusOK)
 	logger.HTTP.Printf("INFO %v %v [200]\n", request.RemoteAddr, request.RequestURI)
 }
@@ -92,7 +90,6 @@ func Ok(writer http.ResponseWriter, request *http.Request) {
 // AccessDenied provides the access denied (401) response
 func AccessDenied(writer http.ResponseWriter, request *http.Request, accessError error) {
 	writer.Header().Set("Content-Type", "text/plain")
-	writer.Header().Set("Access-Control-Allow-Origin", "*")
 	writer.WriteHeader(http.StatusUnauthorized)
 	logger.HTTP.Printf("INFO %v %v [401] access_denied %v\n", request.RemoteAddr, request.RequestURI, accessError)
 
