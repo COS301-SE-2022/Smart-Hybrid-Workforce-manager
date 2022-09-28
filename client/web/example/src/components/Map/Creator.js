@@ -698,7 +698,7 @@ const Creator = () =>
                     height: currWall.height,
                     rotation: currWall.rotation,
                     resource_type: 'WALL',
-                    decorations: '',
+                    decorations: '{}',
                 })
             }
         }
