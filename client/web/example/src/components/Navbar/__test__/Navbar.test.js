@@ -61,22 +61,22 @@ describe('When clicking on Bookings', () => {
     render(<MockNavbar/> );
 
     expect(screen.getByText(/Bookings/i)).toBeInTheDocument();
-    expect(screen.getByText(/Desk/i)).not.toBeVisible();
+    expect(screen.getByText(/Desk$/i)).not.toBeVisible();
     expect(screen.getByText(/Meeting Room/i)).not.toBeVisible();
 
     fireEvent.click(screen.getByText(/Bookings/i));
-    expect(screen.getByText(/Desk/i)).toBeVisible();
+    expect(screen.getByText(/Desk$/i)).toBeVisible();
     expect(screen.getByText(/Meeting Room/i)).toBeVisible();
 
     fireEvent.click(screen.getByText(/Bookings/i));
-    expect(screen.getByText(/Desk/i)).not.toBeVisible();
+    expect(screen.getByText(/Desk$/i)).not.toBeVisible();
     expect(screen.getByText(/Meeting Room/i)).not.toBeVisible();
   });
 
   it('should navigate to /bookings-desk', () => {
     render(<MockNavbar/> );
 
-    fireEvent.click(screen.getByText(/Desk/i));
+    fireEvent.click(screen.getByText(/Desk$/i));
     expect(navigate).toHaveBeenCalledWith('/bookings-desk');
   });
 
