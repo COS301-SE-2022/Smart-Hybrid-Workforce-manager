@@ -4,9 +4,9 @@ import (
 	"api/data"
 	"api/db"
 	"api/security"
-	"lib/utils"
 	"fmt"
 	"lib/logger"
+	"lib/utils"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -35,6 +35,8 @@ func ResourceHandlers(router *mux.Router) error {
 	router.HandleFunc("/information", security.Validate(InformationIdentifiersHandler,
 		&data.Permissions{data.CreateGenericPermission("VIEW", "RESOURCE", "IDENTIFIER")})).Methods("POST")
 	router.HandleFunc("/remove", security.Validate(DeleteIdentifierHandler,
+		&data.Permissions{data.CreateGenericPermission("DELETE", "RESOURCE", "IDENTIFIER")})).Methods("POST")
+	router.HandleFunc("/batch-remove", security.Validate(BatchDeleteIdentifierHandler,
 		&data.Permissions{data.CreateGenericPermission("DELETE", "RESOURCE", "IDENTIFIER")})).Methods("POST")
 
 	// Resource room
@@ -232,6 +234,43 @@ func DeleteIdentifierHandler(writer http.ResponseWriter, request *http.Request, 
 	}
 	logger.Access.Printf("%v Identifier removed\n", identifier.RoomId) // TODO [KP]: Be more descriptive
 	utils.JSONResponse(writer, request, identifierRemoved)
+}
+
+func BatchDeleteIdentifierHandler(writer http.ResponseWriter, request *http.Request, permissions *data.Permissions) {
+	// Unmarshal Resource
+	var identifiers []*data.Resource
+	err := utils.UnmarshalJSON(writer, request, &identifiers)
+	if err != nil {
+		fmt.Println(err)
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
+	// Create a database connection
+	access, err := db.Open()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	defer access.Close()
+
+	// TODO [KP]: Do more checks like if there exists a Identifier already etc
+
+	da := data.NewResourceDA(access)
+	err = da.BatchDeleteIdentifier(identifiers)
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	logger.Access.Printf("Resource deleted.")
+	utils.Ok(writer, request)
 }
 
 ////////////////
