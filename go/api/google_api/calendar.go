@@ -178,13 +178,7 @@ func CreateBooking(user *data.User ,booking *data.Booking) error{
 		logger.Error.Printf("Unable to create event. %v\n", err)
 		return err
 	}
-	logger.Access.Println("\nHERE4\n")
-	logger.Access.Printf("\nData1: %v",*booking.Id)
-	logger.Access.Printf("\nData2: %v",event.Id)
-	logger.Access.Printf("\nData3: %v",*booking.UserId)
-	logger.Access.Printf("\nData4: %v",*booking.End)
 	redis.CreateBooking(*booking.Id, event.Id, *booking.UserId, *booking.End)
-	logger.Access.Println("\nHERE5\n")
 	return nil
 }
 
