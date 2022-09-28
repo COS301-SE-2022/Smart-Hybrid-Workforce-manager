@@ -120,7 +120,6 @@ func GetUsers() (data.Users, error) {
 	if err != nil {
 		return nil, err
 	}
-	// TODO: @JonathanEnslin remove unnecessary fields from users
 	return users, nil
 }
 
@@ -351,7 +350,6 @@ func GetBuildings() (data.Buildings, error) {
 
 // IMPORTANT: It is assumed at this point that rooms are flat
 
-// TODO: @JonathanEnslin Get funcs for resources and rooms, similar to teams/users
 // GetRooms retrieves all the rooms from the database
 func GetRooms() (data.Rooms, error) {
 	// Create a database connection

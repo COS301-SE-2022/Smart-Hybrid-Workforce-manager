@@ -75,7 +75,7 @@ func ValidateIndividual(domain *Domain, indiv *Individual) {
 					randDay = maxIndex
 				}
 				if len(openSlots[randDay]) <= 0 {
-					continue // no space to fix // TODO: @JonathanEnslin, this could possibly lead to invalid individuals, need to look into it
+					continue // no space to fix
 				}
 				randSloti := utils.RandInt(0, len(openSlots[randDay]))
 				// add user to select slot
