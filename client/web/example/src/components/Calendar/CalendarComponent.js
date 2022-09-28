@@ -509,7 +509,7 @@ const CalendarComponent = () =>
     {
         if(!booked)
         {
-            if(window.confirm('Would you like to delete this booking?'))
+            /*if(window.confirm('Would you like to delete this booking?'))
             {
                 fetch("http://localhost:8080/api/booking/remove", 
                 {
@@ -545,8 +545,10 @@ const CalendarComponent = () =>
                         });
                     }
                 });
-            }
+            }*/
+           
         }
+        alert(id);
     }
 
     useEffect(() =>
@@ -687,7 +689,7 @@ const CalendarComponent = () =>
                         {bookings.length > 0 && (
                             bookings.map((booking, i) =>
                             (
-                                <BookingTicket key={booking.id} id={booking.id} startDate={booking.start.substring(0,10)} startTime={booking.start.substring(11,16)} endTime={booking.end.substring(11,16)} confirmed={booking.booked} type={booking.resource_type} days={days} ticketClick={ShowBookingPopup.bind(this, booking.id, booking.booked)} />
+                                <BookingTicket key={booking.id} id={booking.id} startDate={booking.start.substring(0,10)} startTime={booking.start.substring(11,16)} endTime={booking.end.substring(11,16)} confirmed={booking.booked} type={booking.resource_type} days={days} ticketClick={ShowBookingPopup.bind(this, booking.resource_type, booking.booked)} />
                             ))
                         )}
                     </div>

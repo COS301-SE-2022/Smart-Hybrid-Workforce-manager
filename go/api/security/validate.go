@@ -36,7 +36,6 @@ func Validate(function HandlerFunc, permissionRequired *data.Permissions) Handle
 		}
 		user_id := redisUserData.User_id
 		// user_id := "00000000-0000-0000-0000-000000000000"
-		// logger.Error.Printf("user_id: %v", user_id)
 		permissions, err := GetUserPermissions(&user_id, access)
 		if err != nil {
 			utils.InternalServerError(writer, request, err)
