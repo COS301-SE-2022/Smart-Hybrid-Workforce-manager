@@ -2,83 +2,20 @@ package scheduler
 
 import (
 	"api/data"
-	"api/db"
 	"encoding/json"
 	"fmt"
-	dbm "lib/dbmigrate"
-	dtdb "lib/dockertest_db"
+	ts "lib/test_setup"
 	tu "lib/testutils"
-	"reflect"
 	"testing"
 	"time"
 )
 
-func SetupTest(t *testing.T) dtdb.TestDb {
-	// SETUP =============
-	config := dtdb.TestDbConfig{
-		Verbose:  true,
-		HostPort: "5434",
-		HostAdrr: "127.0.0.1",
-	}
-	testdb, err := dtdb.StartTestDb(config) // Start DB
-	if err != nil {
-		t.Error(tu.Scolourf(tu.RED, "Could not start testDb, err: %v", err))
-		t.FailNow()
-	}
-	// Perform migration
-	migrator := dbm.AutoMigrate{
-		MigratePath: "../../../db/sql",
-		PathPatterns: []string{
-			`*.schema.*sql`,   // schema files first
-			`*.function.*sql`, // function files second
-			`*mock.sql`,
-		},
-	}
-	err = migrator.Migrate(testdb.Db)
-	if err != nil {
-		t.Error(tu.Scolourf(tu.RED, "Could not performed migration, err: %v", err))
-		t.FailNow()
-	}
-	// update env vars for db connection
-	t.Setenv("DATABASE_DSN", testdb.Dsn)
-
-	dbMaxIdleEnv := "5"
-	t.Setenv("DATABASE_MAX_IDLE_CONNECTIONS", dbMaxIdleEnv)
-
-	dbMaxOpenEnv := "5"
-	t.Setenv("DATABASE_MAX_OPEN_CONNECTIONS", dbMaxOpenEnv)
-
-	err = db.RegisterAccess()
-	if err != nil {
-		t.Logf(tu.Scolour(tu.PURPLE, "Error while connecting to DB: %v, skipping test"), err)
-		t.FailNow()
-	} else {
-		fmt.Println(tu.Scolour(tu.GREEN, "DB connected"))
-	}
-
-	return testdb
-	// ==================
-}
-
 func TestGetSchedulerData(t *testing.T) {
-	// t.Setenv("DATABASE_DSN", "host=127.0.0.1 port=5432 user=admin dbname=arche sslmode=disable")
-	// t.Setenv("DATABASE_MAX_IDLE_CONNECTIONS", "5")
-	// t.Setenv("DATABASE_MAX_OPEN_CONNECTIONS", "25")
-	// t.Setenv("DATABASE_URL", "postgresql://admin:admin@localhost:5432/db?schema=public")
-	testdb := SetupTest(t)
-	defer dtdb.StopTestDbWithTest(testdb, t, false)
-	// err := db.RegisterAccess()
-	// if err != nil {
-	// 	t.Fatal("Could not access db")
-	// }
-	// err := db.RegisterAccess()
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
-	// _, err = db.Open()
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
+	err := ts.ConnectDB(t)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ts.DisconnectDB(t)
 	type args struct {
 		from time.Time
 		to   time.Time
@@ -208,9 +145,7 @@ func TestGroupByBuilding(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GroupByBuilding(tt.args.schedulerData); !reflect.DeepEqual(got, tt.want) {
-				// t.Errorf("GroupByBuilding() = %v, want %v", got, tt.want)
-			}
+			GroupByBuilding(tt.args.schedulerData)
 		})
 	}
 }
