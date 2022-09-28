@@ -76,21 +76,21 @@ const DeskBooking = (props, ref) =>
             
             <Form className='form' onSubmit={handleSubmit}>
                 <Form.Group className='form-group' controlId="formBasicName">
-                <Form.Label className='form-label'>Date<br></br></Form.Label>
-                <Form.Control className='form-input' type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                <div className='form-label'>Date<br></br></div>
+                <input className='form-input' type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} ></input>
                 </Form.Group>
 
                 <Form.Group className='form-group' controlId="formBasicName">
-                <Form.Label className='form-label'>Start Time<br></br></Form.Label>
-                <Form.Control className='form-input' type="time" placeholder="hh:mm" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+                <div className='form-label'>Start Time<br></br></div>
+                <input className='form-input' type="time" placeholder="hh:mm" value={startTime} onChange={(e) => setStartTime(e.target.value)}></input>
                 </Form.Group>
                 
                 <Form.Group className='form-group' controlId="formBasicName">
-                <Form.Label className='form-label'>End Time<br></br></Form.Label>
-                <Form.Control className='form-input' type="time" placeholder="hh:mm" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+                <div className='form-label'>End Time<br></br></div>
+                <input className='form-input' type="time" placeholder="hh:mm" value={endTime} onChange={(e) => setEndTime(e.target.value)}></input>
                 </Form.Group>
 
-                <Button className='button-submit' variant='primary' type='submit'>Create Booking</Button>
+                <button className='button-submit' variant='primary' type='submit'>Create Booking</button>
             </Form>
         </div>
     )

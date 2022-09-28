@@ -304,6 +304,11 @@ func LoginUserHandler(writer http.ResponseWriter, request *http.Request) { // TO
 
 	da := data.NewUserDA(access)
 
+	if userCred.Identifier == nil || userCred.Secret == nil {
+		utils.BadRequest(writer, request, "invalid_request")
+		return
+	}
+
 	credentials, err := da.FindCredential(&userCred)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
@@ -478,7 +483,7 @@ func ResetPasswordHandler(writer http.ResponseWriter, request *http.Request, per
 		authorized := false
 		for _, permission := range *permissions {
 			// A permission tenant id of nil means the user is allowed to perform the action on all tenants of the type
-			if *permission.PermissionTenantId == *resetPasswordRequest.UserId {
+			if permission.PermissionTenantId == nil || *permission.PermissionTenantId == *resetPasswordRequest.UserId {
 				authorized = true
 			}
 		}

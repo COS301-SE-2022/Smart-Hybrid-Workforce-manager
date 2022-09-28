@@ -158,20 +158,12 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 	}
 
 	// Create Booking
-	_, err = da.StoreIdentifier(&booking)
+	booking_id, err := da.StoreIdentifier(&booking)
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
 	}
-
-	// Commit transaction
-	err = access.Commit()
-	if err != nil {
-		utils.InternalServerError(writer, request, err)
-		return
-	}
-
-	// Create Google Calendar Event
+	// Getting User for Calendar Event
 	du := data.NewUserDA(access)
 	users, err := du.FindIdentifier(&data.User{Id: booking.UserId})
 	if err != nil {
@@ -179,18 +171,21 @@ func CreateBookingHandler(writer http.ResponseWriter, request *http.Request, per
 		return
 	}
 	user := users.FindHead()
-	logger.Access.Println("\nHERE1")
-	logger.Access.Printf("\nData5: %v", booking)
-	logger.Access.Printf("\nData5: %v", booking.Id)
+
+	// Commit transaction
+	err = access.Commit()
+	if err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+	// Create Google Calendar Event
+	booking.Id = booking_id
 	err = google_api.CreateBooking(user, &booking)
 	if err != nil {
-		logger.Error.Printf("Error occured while creating google calendar event: %v", err)
+		logger.Error.Printf("Error occured while creating google calendar event: %v\n", err)
+	} else {
+		logger.Access.Println("Google Calendar Event Created")
 	}
-	logger.Access.Println("\nWE GOT TILL HERE BEFORE IT ... UP")
-
-	logger.Access.Println("\nHERE2")
-	logger.Access.Printf("%v created\n", booking.Id) // TODO [KP]: Be more descriptive
-	logger.Access.Println("\nHERE3")
 	utils.Ok(writer, request)
 }
 
@@ -441,7 +436,7 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 	bookings = data.Bookings{}
 
 	// Add desks bookings
-	if meetingRoomBooking.DesksAttendees != nil && *meetingRoomBooking.DesksAttendees == true {
+	if meetingRoomBooking.DesksAttendees != nil && *meetingRoomBooking.DesksAttendees {
 		// // Add desks for role/team members in meeting
 		// Make the actual bookings
 		deskResourceType = "DESK"

@@ -34,7 +34,7 @@ BEGIN
     SELECT i.team_id, i.team_id_association
     FROM team.association as i
     WHERE (EXISTS(SELECT 1 FROM permitted_teams WHERE permission_tenant_id is null) OR i.team_id = ANY(SELECT * FROM permitted_teams))
-    AND (EXISTS(SELECT 1 FROM permitted_teams WHERE permission_tenant_id is null) OR i._team_id_association = ANY(SELECT * FROM permitted_teams))
+    AND (EXISTS(SELECT 1 FROM permitted_teams WHERE permission_tenant_id is null) OR i.team_id_association = ANY(SELECT * FROM permitted_teams))
     AND (_team_id IS NULL OR i.team_id = _team_id)
     AND (_team_id_association IS NULL OR i.team_id_association = _team_id_association);
 

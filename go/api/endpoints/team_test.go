@@ -4,7 +4,6 @@ import (
 	"api/data"
 	"encoding/json"
 	"io/ioutil"
-	dtdb "lib/dockertest_db"
 	ts "lib/test_setup"
 	tu "lib/testutils"
 	"net/http"
@@ -38,8 +37,11 @@ func createTeamAssociation(teamId string, teamAssociationId string) data.TeamAss
 }
 
 func TestInformationTeamHandler(t *testing.T) {
-	testdb := ts.SetupTest(t)
-	defer dtdb.StopTestDbWithTest(testdb, t, false)
+	err := ts.ConnectDB(t)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ts.DisconnectDB(t)
 
 	// ==================
 	// Perform tests ====
@@ -133,8 +135,11 @@ func TestInformationTeamHandler(t *testing.T) {
 }
 
 func TestCreateTeamHandler(t *testing.T) {
-	testdb := ts.SetupTest(t)
-	defer dtdb.StopTestDbWithTest(testdb, t, false)
+	err := ts.ConnectDB(t)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ts.DisconnectDB(t)
 
 	// ==================
 	// Perform tests ====
@@ -228,8 +233,11 @@ func TestCreateTeamHandler(t *testing.T) {
 }
 
 func TestDeleteTeamHandler(t *testing.T) {
-	testdb := ts.SetupTest(t)
-	defer dtdb.StopTestDbWithTest(testdb, t, false)
+	err := ts.ConnectDB(t)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ts.DisconnectDB(t)
 
 	// ==================
 	// Perform tests ====
@@ -324,9 +332,11 @@ func TestDeleteTeamHandler(t *testing.T) {
 
 //Team user
 func TestInformationUserTeamHandler(t *testing.T) {
-	testdb := ts.SetupTest(t)
-	defer dtdb.StopTestDbWithTest(testdb, t, false)
-
+	err := ts.ConnectDB(t)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ts.DisconnectDB(t)
 	// ==================
 	// Perform tests ====
 	// ==================
@@ -413,8 +423,11 @@ func TestInformationUserTeamHandler(t *testing.T) {
 }
 
 func TestCreateUserTeamHandler(t *testing.T) {
-	testdb := ts.SetupTest(t)
-	defer dtdb.StopTestDbWithTest(testdb, t, false)
+	err := ts.ConnectDB(t)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ts.DisconnectDB(t)
 
 	// ==================
 	// Perform tests ====
@@ -502,8 +515,11 @@ func TestCreateUserTeamHandler(t *testing.T) {
 }
 
 func TestDeleteUserTeamHandler(t *testing.T) {
-	testdb := ts.SetupTest(t)
-	defer dtdb.StopTestDbWithTest(testdb, t, false)
+	err := ts.ConnectDB(t)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ts.DisconnectDB(t)
 
 	// ==================
 	// Perform tests ====
@@ -592,8 +608,11 @@ func TestDeleteUserTeamHandler(t *testing.T) {
 
 //Team association
 func TestInformationTeamAssociationHandler(t *testing.T) {
-	testdb := ts.SetupTest(t)
-	defer dtdb.StopTestDbWithTest(testdb, t, false)
+	err := ts.ConnectDB(t)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ts.DisconnectDB(t)
 
 	// ==================
 	// Perform tests ====
@@ -681,8 +700,11 @@ func TestInformationTeamAssociationHandler(t *testing.T) {
 }
 
 func TestCreateTeamAssociationHandler(t *testing.T) {
-	testdb := ts.SetupTest(t)
-	defer dtdb.StopTestDbWithTest(testdb, t, false)
+	err := ts.ConnectDB(t)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ts.DisconnectDB(t)
 
 	// ==================
 	// Perform tests ====
@@ -770,8 +792,11 @@ func TestCreateTeamAssociationHandler(t *testing.T) {
 }
 
 func TestDeleteTeamAssociationHandler(t *testing.T) {
-	testdb := ts.SetupTest(t)
-	defer dtdb.StopTestDbWithTest(testdb, t, false)
+	err := ts.ConnectDB(t)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ts.DisconnectDB(t)
 
 	// ==================
 	// Perform tests ====

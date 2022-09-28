@@ -1,11 +1,12 @@
 import { Path, Transformer } from 'react-konva';
 import { useRef, useEffect, useState, Fragment } from 'react';
 
-const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform}) =>
+const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform, user}) =>
 {
     const shapeRef = useRef(null);
     const transformRef = useRef(null);
     const [booked, setBooked] = useState(shapeProps.booked);
+    const [userBooked, setUser] = useState(user);
 
     useEffect(() =>
     {
@@ -17,30 +18,49 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
 
         if(!isSelected && booked)
         {
-            shapeRef.current.fill('#e8e8e8');
+            if(userBooked)
+            {
+                shapeRef.current.fill('#000000');
+            }
+            else
+            {
+                shapeRef.current.fill('#e8e8e8');
+            }
         }
         else if(!isSelected && !booked)
         {
             shapeRef.current.fill('#374146');
         }
-    }, [isSelected, transform, booked]);
+    }, [isSelected, transform, booked, userBooked]);
 
     useEffect(() =>
     {
         if(booked)
         {
-            shapeRef.current.fill('#e8e8e8');
+            if(userBooked)
+            {
+                shapeRef.current.fill('#000000');
+            }
+            else
+            {
+                shapeRef.current.fill('#e8e8e8');
+            }
         }
         else
         {
             shapeRef.current.fill('#374146');
         }
-    },[booked])
+    },[booked, userBooked])
 
     useEffect(() =>
     {
         setBooked(shapeProps.booked);
     },[shapeProps.booked]);
+
+    useEffect(() =>
+    {
+        setUser(user);
+    },[user]);
 
     return (
         <Fragment> 
@@ -100,7 +120,15 @@ const Desk = ({ shapeProps, isSelected, onSelect, onChange, draggable, transform
                     }
                     else if(!isSelected && booked)
                     {
-                        e.target.fill('#e8e8e8');
+                        if(userBooked)
+                        {
+                            e.target.fill('#000000');
+                        }
+                        else
+                        {
+                            e.target.fill('#e8e8e8');
+                        }
+                        
                     }
                     else if(!isSelected && !booked)
                     {

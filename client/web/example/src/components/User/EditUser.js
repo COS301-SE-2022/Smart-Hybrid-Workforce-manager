@@ -3,12 +3,12 @@ import styles from './user.module.css';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../App';
 
-const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
+const EditUser = ({userID, userName, userPicture, userRoles, allRoles, edited}) =>
 {
     const [id, setID] = useState(userID);
     const [name, setName] = useState(userName);
     const [picture, setPicture] = useState(userPicture);
-    const [activeRoles, setActiveRoles] = useState(userRoles);
+    const [activeRoles, setActiveRoles] = useState({});
 
     const {userData} = useContext(UserContext);
 
@@ -79,21 +79,71 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
 
     const EditActiveRoles = (role) =>
     {
-        if(activeRoles.includes(role))
+        if(document.getElementById(role.id).checked)
         {
-            setActiveRoles(activeRoles.filter((curr, _) =>
-                curr !== role
-            ));
-        }
+            fetch("http://localhost:8080/api/role/user/create", 
+            {
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify({
+                    role_id: role.id,
+                    user_id: userID
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}`
+                }
+            }).then((res) =>
+            {
+                if(res.status === 200)
+                {
+                    setActiveRoles({
+                        ...activeRoles,
+                        [role.id]:
+                        {
+                            id: role.id
+                        }
+                    });
+
+                    edited(true);
+                }
+
+                if(res.status !== 200)
+                {
+                    alert('An error occured when updating the team');
+                }
+            });
+        }   
         else
         {
-            setActiveRoles([...activeRoles, role]);
+            fetch("http://localhost:8080/api/role/user/remove", 
+            {
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify({
+                    role_id: role.id,
+                    user_id: userID
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}`
+                }
+            }).then((res) =>
+            {
+                if(res.status === 200)
+                {
+                    const newRoles = activeRoles;
+                    delete newRoles[role.id];
+                    setActiveRoles(newRoles);
+                    edited(true);
+                }
+
+                if(res.status !== 200)
+                {
+                    alert('An error occured when updating the team');
+                }
+            });
         }
-    }
-
-    const UpdateRoles = () =>
-    {
-
     }
 
     async function AddPermission(id, idType, type, category, tenant, tenant_id) 
@@ -131,29 +181,32 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
     
     async function RemovePermission(id) 
     {
-        try
+        if(id !== '')
         {
-            let res = await fetch("http://localhost:8080/api/permission/remove",
+            try
             {
-                method: "POST",
-                mode: "cors",
-                body: JSON.stringify({
-                    id: id,
-                }),
-                headers:{
-                    'Content-Type': 'application/json',
-                    'Authorization': `bearer ${userData.token}`
+                let res = await fetch("http://localhost:8080/api/permission/remove",
+                {
+                    method: "POST",
+                    mode: "cors",
+                    body: JSON.stringify({
+                        id: id,
+                    }),
+                    headers:{
+                        'Content-Type': 'application/json',
+                        'Authorization': `bearer ${userData.token}`
+                    }
+                });
+            
+                if (res.status === 401)
+                {
+                    alert("Unauthorized")
                 }
-            });
-        
-            if (res.status === 401)
-            {
-                alert("Unauthorized")
             }
-        }
-        catch (err)
-        {
-            console.log(err);
+            catch (err)
+            {
+                console.log(err);
+            }
         }
     };
 
@@ -165,7 +218,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "CREATE", "BOOKING", "USER", id);
         }
-        if (!createBookingIdentifierUser && createBookingIdentifierUserId != null) 
+        if (!createBookingIdentifierUser && createBookingIdentifierUserId !== null) 
         {
             RemovePermission(createBookingIdentifierUserId);
         }
@@ -174,7 +227,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "VIEW", "BOOKING", "USER", id);
         }
-        if (!viewBookingIdentifierUser && viewBookingIdentifierUserId != null) 
+        if (!viewBookingIdentifierUser && viewBookingIdentifierUserId !== null) 
         {
             RemovePermission(viewBookingIdentifierUserId);
         }
@@ -183,7 +236,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "DELETE", "BOOKING", "USER", id);
         }
-        if (!deleteBookingIdentifierUser && deleteBookingIdentifierUserId != null) 
+        if (!deleteBookingIdentifierUser && deleteBookingIdentifierUserId !== null) 
         {
             RemovePermission(deleteBookingIdentifierUserId);
         }
@@ -192,7 +245,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "CREATE", "BOOKING", "USER", null);
         }
-        if (!createBookingIdentifier && createBookingIdentifierId != null) 
+        if (!createBookingIdentifier && createBookingIdentifierId !== null) 
         {
             RemovePermission(createBookingIdentifierId);
         }
@@ -201,7 +254,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "VIEW", "BOOKING", "USER", null);
         }
-        if (!viewBookingIdentifier && viewBookingIdentifierId != null) 
+        if (!viewBookingIdentifier && viewBookingIdentifierId !== null) 
         {
             RemovePermission(viewBookingIdentifierId);
         }
@@ -210,7 +263,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "DELETE", "BOOKING", "USER", null);
         }
-        if (!deleteBookingIdentifier && deleteBookingIdentifierId != null) 
+        if (!deleteBookingIdentifier && deleteBookingIdentifierId !== null) 
         {
             RemovePermission(deleteBookingIdentifierId);
         }
@@ -220,7 +273,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "CREATE", "PERMISSION", "IDENTIFIER", null);
         }
-        if (!createPermissionIdentifier && createPermissionIdentifierId != null) 
+        if (!createPermissionIdentifier && createPermissionIdentifierId !== null) 
         {
             RemovePermission(createPermissionIdentifierId);
         }
@@ -229,7 +282,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "VIEW", "PERMISSION", "IDENTIFIER", null);
         }
-        if (!viewPermissionIdentifier && viewPermissionIdentifierId != null) 
+        if (!viewPermissionIdentifier && viewPermissionIdentifierId !== null) 
         {
             RemovePermission(viewPermissionIdentifierId);
         }
@@ -238,7 +291,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "DELETE", "PERMISSION", "IDENTIFIER", null);
         }
-        if (!deletePermissionIdentifier && deletePermissionIdentifierId != null) 
+        if (!deletePermissionIdentifier && deletePermissionIdentifierId !== null) 
         {
             RemovePermission(deletePermissionIdentifierId);
         }
@@ -248,7 +301,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "CREATE", "ROLE", "IDENTIFIER", null);
         }
-        if (!createRoleIdentifier && createRoleIdentifierId != null) 
+        if (!createRoleIdentifier && createRoleIdentifierId !== null) 
         {
             RemovePermission(createRoleIdentifierId);
         }
@@ -257,7 +310,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "VIEW", "ROLE", "IDENTIFIER", null);
         }
-        if (!viewRoleIdentifier && viewRoleIdentifierId != null) 
+        if (!viewRoleIdentifier && viewRoleIdentifierId !== null) 
         {
             RemovePermission(viewRoleIdentifierId);
         }
@@ -266,7 +319,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "DELETE", "ROLE", "IDENTIFIER", null);
         }
-        if (!deleteRoleIdentifier && deleteRoleIdentifierId != null) 
+        if (!deleteRoleIdentifier && deleteRoleIdentifierId !== null) 
         {
             RemovePermission(deleteRoleIdentifierId);
         }
@@ -276,7 +329,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "CREATE", "TEAM", "IDENTIFIER", null);
         }
-        if (!createTeamIdentifier && createTeamIdentifierId != null) 
+        if (!createTeamIdentifier && createTeamIdentifierId !== null) 
         {
             RemovePermission(createTeamIdentifierId);
         }
@@ -285,7 +338,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "VIEW", "TEAM", "IDENTIFIER", null);
         }
-        if (!viewTeamIdentifier && viewTeamIdentifierId != null) 
+        if (!viewTeamIdentifier && viewTeamIdentifierId !== null) 
         {
             RemovePermission(viewTeamIdentifierId);
         }
@@ -294,7 +347,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "DELETE", "TEAM", "IDENTIFIER", null);
         }
-        if (!deleteTeamIdentifier && deleteTeamIdentifierId != null) 
+        if (!deleteTeamIdentifier && deleteTeamIdentifierId !== null) 
         {
             RemovePermission(deleteTeamIdentifierId);
         }
@@ -304,7 +357,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "CREATE", "RESOURCE", "IDENTIFIER", null);
         }
-        if (!createResourceIdentifier && createResourceIdentifierId != null) 
+        if (!createResourceIdentifier && createResourceIdentifierId !== null) 
         {
             RemovePermission(createResourceIdentifierId);
         }
@@ -313,7 +366,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "VIEW", "RESOURCE", "IDENTIFIER", null);
         }
-        if (!viewResourceIdentifier && viewResourceIdentifierId != null) 
+        if (!viewResourceIdentifier && viewResourceIdentifierId !== null) 
         {
             RemovePermission(viewResourceIdentifierId);
         }
@@ -322,7 +375,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "DELETE", "RESOURCE", "IDENTIFIER", null);
         }
-        if (!deleteResourceIdentifier && deleteResourceIdentifierId != null) 
+        if (!deleteResourceIdentifier && deleteResourceIdentifierId !== null) 
         {
             RemovePermission(deleteResourceIdentifierId);
         }
@@ -332,7 +385,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "CREATE", "RESOURCE", "ROOM", null);
         }
-        if (!createRoomIdentifier && createRoomIdentifierId != null) 
+        if (!createRoomIdentifier && createRoomIdentifierId !== null) 
         {
             RemovePermission(createRoomIdentifierId);
         }
@@ -341,7 +394,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "VIEW", "RESOURCE", "ROOM", null);
         }
-        if (!viewRoomIdentifier && viewRoomIdentifierId != null) 
+        if (!viewRoomIdentifier && viewRoomIdentifierId !== null) 
         {
             RemovePermission(viewRoomIdentifierId);
         }
@@ -350,7 +403,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "DELETE", "RESOURCE", "ROOM", null);
         }
-        if (!deleteRoomIdentifier && deleteRoomIdentifierId != null) 
+        if (!deleteRoomIdentifier && deleteRoomIdentifierId !== null) 
         {
             RemovePermission(deleteRoomIdentifierId);
         }
@@ -360,7 +413,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "CREATE", "RESOURCE", "BUILDING", null);
         }
-        if (!createBuildingIdentifier && createBuildingIdentifierId != null) 
+        if (!createBuildingIdentifier && createBuildingIdentifierId !== null) 
         {
             RemovePermission(createBuildingIdentifierId);
         }
@@ -369,7 +422,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "VIEW", "RESOURCE", "BUILDING", null);
         }
-        if (!viewBuildingIdentifier && viewBuildingIdentifierId != null) 
+        if (!viewBuildingIdentifier && viewBuildingIdentifierId !== null) 
         {
             RemovePermission(viewBuildingIdentifierId);
         }
@@ -378,7 +431,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         {
             AddPermission(id, "USER", "DELETE", "RESOURCE", "BUILDING", null);
         }
-        if (!deleteBuildingIdentifier && deleteBuildingIdentifierId != null) 
+        if (!deleteBuildingIdentifier && deleteBuildingIdentifierId !== null) 
         {
             RemovePermission(deleteBuildingIdentifierId);
         }
@@ -396,13 +449,47 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
 
     useEffect(() =>
     {
-        setActiveRoles(userRoles);
+        if(userRoles)
+        {
+            var roles = {};
+            for(let i = 0; i < userRoles.length; i++)
+            {
+                roles = 
+                {
+                    ...roles,
+                    [userRoles[i].id]:
+                    {
+                        id: userRoles[i].id
+                    }
+                }
+            }
+
+            setActiveRoles(roles);
+        }        
     }, [userRoles]);
 
     useEffect(() =>
     {
         setRoles(allRoles);
     }, [allRoles]);
+
+    useEffect(() =>
+    {
+        if(activeRoles && roles)
+        {
+            for(let i = 0; i < roles.length; i++)
+            {
+                if(activeRoles[roles[i].id])
+                {
+                    document.getElementById(roles[i].id).checked = true;
+                }
+                else
+                {
+                    document.getElementById(roles[i].id).checked = false;
+                }
+            }
+        }
+    }, [roles, activeRoles]);
 
     useEffect(() =>
     {
@@ -640,22 +727,25 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
         }
 
         setID(userID);
-        fetch("http://localhost:8080/api/permission/information", 
+        if(userID !== '')
         {
-            method: "POST",
-            mode: 'cors',
-            body: JSON.stringify({
-                permission_id: userID,
-                permission_id_type: 'USER'
-            }),
-            headers:{
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${userData.token}`
-            }
-        }).then((res) => res.json()).then(data => 
-        {
-            data.forEach(setPermissionStates);
-        });
+            fetch("http://localhost:8080/api/permission/information", 
+            {
+                method: "POST",
+                mode: 'cors',
+                body: JSON.stringify({
+                    permission_id: userID,
+                    permission_id_type: 'USER'
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}`
+                }
+            }).then((res) => res.json()).then(data => 
+            {
+                data.forEach(setPermissionStates);
+            });
+        }
     }, [userID, userData.token]);
 
     return (
@@ -673,14 +763,13 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles}) =>
                 {roles.map((role) =>
                 {
                     return (
-                        <div key={role}>
-                            <input type='checkbox' id={role} name={role} value={role} checked={activeRoles && activeRoles.includes(role) ? true : false} onChange={EditActiveRoles.bind(this, role)}></input>
-                            <label className={styles.roleLabel} htmlFor={role}>{role}</label>
+                        <div key={role.id}>
+                            <input type='checkbox' id={role.id} onChange={() => EditActiveRoles(role)}></input>
+                            <label className={styles.roleLabel}>{role.name}</label>
                         </div>
                     );
                 })}
             </div>
-            <button className={styles.submit} onClick={() => UpdateRoles()}>Update</button>
 
             <div className={styles.rolesContainer}>
                 Permissions

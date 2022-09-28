@@ -52,6 +52,7 @@ export default function Login()
         navigate("/");
       }
     }).catch((err) => {
+      alert("Failed login, please try again in 3 seconds");
       console.error(err);
     })
   };

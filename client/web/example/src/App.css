@@ -1030,6 +1030,11 @@
     width: 0;
 }
 
+.checkbox
+{
+    margin-right: 1vw;
+}
+
 /* Create a custom checkbox */
 .checkmark {
     position: absolute;
