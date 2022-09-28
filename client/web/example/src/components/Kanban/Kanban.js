@@ -25,6 +25,8 @@ const Kanban = () =>
     const [teamEdited, setTeamEdited] = useState(true);
     const [addTeam, setAddTeam] = useState(0);
 
+    const userMenuRef = useRef(null);
+    const [userMenuDisplay, setUserMenuDisplay] = useState('none');
     const [currUser, setCurrUser] = useState({id: '', name: '', picture: ''});
     const [userPanelLeft, setUserPanelLeft] = useState(0.85*window.innerWidth);
 
@@ -154,16 +156,16 @@ const Kanban = () =>
     //Users
     const ShowUserMenu = (user) =>
     {
-        if(document.getElementById('UserMenu').style.display === 'none')
+        if(userMenuDisplay === 'none')
         {
-            document.getElementById('UserMenu').style.display = 'block';
-            document.getElementById('UserMenu').style.left = document.getElementById(user.id + 'UserActions').getBoundingClientRect().left - 0.23*window.innerWidth + 'px';
-            document.getElementById('UserMenu').style.top = document.getElementById(user.id + 'UserActions').getBoundingClientRect().top - 0.10*window.innerHeight + 'px';
+            setUserMenuDisplay('block');
+            userMenuRef.current.style.left = document.getElementById(user.id + 'UserActions').getBoundingClientRect().left - 0.23*window.innerWidth + 'px';
+            userMenuRef.current.style.top = document.getElementById(user.id + 'UserActions').getBoundingClientRect().top - 0.10*window.innerHeight + 'px';
             setCurrUser(user);
         }
-        else
+        else   
         {
-            document.getElementById('UserMenu').style.display = 'none';
+            setUserMenuDisplay('none');
         }
     }
 
@@ -192,9 +194,9 @@ const Kanban = () =>
             setTeamMenuDisplay('none');
         }
 
-        if(document.getElementById('UserMenu').style.display === 'block')
+        if(userMenuDisplay === 'block')
         {
-            document.getElementById('UserMenu').style.display = 'none';
+            setUserMenuDisplay('none');
         }
     });
 
@@ -574,7 +576,7 @@ const Kanban = () =>
                 <div className={styles.deleteTeam} onMouseDown={DeleteTeam.bind(this)}>Delete team</div>
             </div>
 
-            <div id='UserMenu' className={styles.userMenu}>
+            <div ref={userMenuRef} className={styles.userMenu} style={{display: userMenuDisplay}}>
                 <div className={styles.editUser} onMouseDown={EditUser.bind(this, currUser)}>Edit user</div>
                 <div className={styles.deleteUser}>Remove user</div>
             </div>
@@ -593,7 +595,7 @@ const Kanban = () =>
 
             <div id='EditUser' className={styles.userPanel} style={{left: userPanelLeft}}>
                 <div className={styles.userPanelClose} onClick={CloseUserPanel}><MdClose /></div>
-                <EditUserPanel userName={currUser.name} userPicture={currUser.picture} userRoles={currUser.roles} allRoles={roles} />
+                <EditUserPanel userID={currUser.id} userName={currUser.name} userPicture={currUser.picture} userRoles={currUser.roles} allRoles={roles} />
             </div>
             
 

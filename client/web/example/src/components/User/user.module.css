@@ -1,8 +1,5 @@
 .editUserContainer
 {
-    display: grid;
-    grid-template-rows: 22vh 58vh;
-
     color: #374146;
 }
 
@@ -37,15 +34,48 @@
 
 .rolesContainer
 {
+    overflow-x: hidden;
+    overflow-y: scroll;
+
     width: 18vw;
 
+    height: 20vh;
+
     margin-left: 1vw;
+    margin-bottom: 2vh;
     padding-top: 1vh;
 
     border-top: 2px solid #374146;
+
+    font-size: 1.5vw;
 }
 
 .roleLabel
 {
-    margin-left: 1vw;
+    margin-left: 0.5vw;
+
+    font-size: 0.6vw;
+}
+
+.submit
+{
+    width: 10vw;
+    height: 4vh;
+
+    margin-left: 5vw;
+    margin-bottom: 2vh;
+
+    border-radius: 1vh;
+    border-style: none;
+
+    font-size: 1vw;
+
+    background-color: #09a2fb;
+    color: white;
+}
+
+.submit:hover
+{
+    cursor: pointer;
+    background-color: #03639b;
 }

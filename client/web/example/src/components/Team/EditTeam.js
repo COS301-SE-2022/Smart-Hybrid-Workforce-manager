@@ -3,7 +3,6 @@ import Button from 'react-bootstrap/Button';
 import styles from './team.module.css';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { UserContext } from '../../App';
-import { useNavigate } from 'react-router-dom';
 import { storage } from '../../firebase';
 import { ref, uploadBytes, listAll, getDownloadURL } from 'firebase/storage';
 
@@ -18,21 +17,31 @@ const EditTeam = ({team, edited}) =>
     const [pictureUpload, setPictureUpload] = useState(null);
     const [members, setMembers] = useState([{name: '', id: ''}]);
     const [lead, setLead] = useState(null);
-    const [permissions, setPermissions] = useState(null);
 
     //Permission states
     const viewTeamRef = useRef(null);
     const [viewTeam, setViewTeam] = useState(false);
+    const [viewTeamID, setViewTeamID] = useState('');
+
     const updateTeamRef = useRef(null);
     const [updateTeam, setUpdateTeam] = useState(false);
+    const [updateTeamID, setUpdateTeamID] = useState('');
+
     const deleteTeamRef = useRef(null);
     const [deleteTeam, setDeleteTeam] = useState(false);
+    const [deleteTeamID, setDeleteTeamID] = useState('');
+
     const viewTeamMemberRef = useRef(null);
     const [viewTeamMember, setViewTeamMember] = useState(false);
+    const [viewTeamMemberID, setViewTeamMemberID] = useState('');
+
     const updateTeamMemberRef = useRef(null);
     const [updateTeamMember, setUpdateTeamMember] = useState(false);
+    const [updateTeamMemberID, setUpdateTeamMemberID] = useState('');
+
     const deleteTeamMemberRef = useRef(null);
     const [deleteTeamMember, setDeleteTeamMember] = useState(false);
+    const [deleteTeamMemberID, setDeleteTeamMemberID] = useState('');
 
     const priority0Ref = useRef(null);
     const priority1Ref = useRef(null);
@@ -105,6 +114,62 @@ const EditTeam = ({team, edited}) =>
                                 {
                                     if(res.status === 200)
                                     {
+                                        //Team
+                                        if(viewTeam && viewTeamID === '')
+                                        {
+                                            AddPermission(id, 'VIEW', 'TEAM', 'IDENTIFIER');
+                                        }
+                                        else if(!viewTeam && viewTeamID !== '')
+                                        {
+                                            RemovePermission(viewTeamID);
+                                        }
+
+                                        if(updateTeam && updateTeamID === '')
+                                        {
+                                            AddPermission(id, 'CREATE', 'TEAM', 'IDENTIFIER');
+                                        }
+                                        else if(!updateTeam && updateTeamID !== '')
+                                        {
+                                            RemovePermission(updateTeamID);
+                                        }
+
+                                        if(deleteTeam && deleteTeamID === '')
+                                        {
+                                            AddPermission(id, 'DELETE', 'TEAM', 'IDENTIFIER');
+                                        }
+                                        else if(!deleteTeam && deleteTeamID !== '')
+                                        {
+                                            RemovePermission(deleteTeamID);
+                                        }
+
+                                        //Team member
+                                        if(viewTeamMember && viewTeamMemberID === '')
+                                        {
+                                            AddPermission(id, 'VIEW', 'TEAM', 'USER');
+                                        }
+                                        else if(!viewTeamMember && viewTeamMemberID !== '')
+                                        {
+                                            RemovePermission(viewTeamMemberID);
+                                        }
+
+                                        if(updateTeamMember && updateTeamMemberID === '')
+                                        {
+                                            AddPermission(id, 'CREATE', 'TEAM', 'USER');
+                                        }
+                                        else if(!updateTeamMember && updateTeamMemberID !== '')
+                                        {
+                                            RemovePermission(updateTeamMemberID);
+                                        }
+
+                                        if(deleteTeamMember && deleteTeamMemberID === '')
+                                        {
+                                            AddPermission(id, 'DELETE', 'TEAM', 'USER');
+                                        }
+                                        else if(!deleteTeamMember && deleteTeamMemberID !== '')
+                                        {
+                                            RemovePermission(deleteTeamMemberID);
+                                        }
+
                                         alert("Team Successfully Updated!");
                                         edited(true);
                                     }
@@ -138,11 +203,105 @@ const EditTeam = ({team, edited}) =>
             {
                 if(res.status === 200)
                 {
+                    //Team
+                    if(viewTeam && viewTeamID === '')
+                    {
+                        AddPermission(id, 'VIEW', 'TEAM', 'IDENTIFIER');
+                    }
+                    else if(!viewTeam && viewTeamID !== '')
+                    {
+                        RemovePermission(viewTeamID);
+                    }
+
+                    if(updateTeam && updateTeamID === '')
+                    {
+                        AddPermission(id, 'CREATE', 'TEAM', 'IDENTIFIER');
+                    }
+                    else if(!updateTeam && updateTeamID !== '')
+                    {
+                        RemovePermission(updateTeamID);
+                    }
+
+                    if(deleteTeam && deleteTeamID === '')
+                    {
+                        AddPermission(id, 'DELETE', 'TEAM', 'IDENTIFIER');
+                    }
+                    else if(!deleteTeam && deleteTeamID !== '')
+                    {
+                        RemovePermission(deleteTeamID);
+                    }
+
+                    //Team member
+                    if(viewTeamMember && viewTeamMemberID === '')
+                    {
+                        AddPermission(id, 'VIEW', 'TEAM', 'USER');
+                    }
+                    else if(!viewTeamMember && viewTeamMemberID !== '')
+                    {
+                        RemovePermission(viewTeamMemberID);
+                    }
+
+                    if(updateTeamMember && updateTeamMemberID === '')
+                    {
+                        AddPermission(id, 'CREATE', 'TEAM', 'USER');
+                    }
+                    else if(!updateTeamMember && updateTeamMemberID !== '')
+                    {
+                        RemovePermission(updateTeamMemberID);
+                    }
+
+                    if(deleteTeamMember && deleteTeamMemberID === '')
+                    {
+                        AddPermission(id, 'DELETE', 'TEAM', 'USER');
+                    }
+                    else if(!deleteTeamMember && deleteTeamMemberID !== '')
+                    {
+                        RemovePermission(deleteTeamMemberID);
+                    }
+
                     alert("Team Successfully Updated!");
                     edited(true);
                 }
             });
         }
+    }
+
+    const AddPermission = (id, type, category, tenant) =>
+    {
+        console.log(`${id}\n${type}\n${category}\n${tenant}`)
+        fetch("http://localhost:8080/api/permission/create", 
+        {
+            method: "POST",
+            mode: "cors",
+            body: JSON.stringify({
+                permission_id: id,
+                permission_id_type: "TEAM",
+                permission_type: type,
+                permission_category: category,
+                permission_tenant: tenant
+            }),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}`
+            }
+        })
+    }
+
+    const RemovePermission = (id) =>
+    {
+        console.log(`${id}`)
+        fetch("http://localhost:8080/api/permission/remove", 
+        {
+            method: "POST",
+            mode: "cors",
+            body: JSON.stringify({
+                id: id,
+            }),
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+            }
+        });
     }
 
     useEffect(() =>
@@ -171,7 +330,8 @@ const EditTeam = ({team, edited}) =>
                 method: "POST",
                 mode: 'cors',
                 body: JSON.stringify({
-                    permission_id: team.id
+                    permission_id: team.id,
+                    permission_id_type: 'TEAM'
                 }),
             headers:{
                 'Content-Type': 'application/json',
@@ -179,7 +339,64 @@ const EditTeam = ({team, edited}) =>
             }
             }).then((res) => res.json()).then(data => 
             {
-                setPermissions(data);
+                setViewTeam(false);
+                setUpdateTeam(false);
+                setDeleteTeam(false);
+                setViewTeamMember(false);
+                setUpdateTeamMember(false);
+                setDeleteTeamMember(false);
+
+                data.forEach((permission) =>
+                {
+                    if(permission.permission_type === 'VIEW')
+                    {
+                        if(permission.permission_category === 'TEAM')
+                        {
+                            if(permission.permission_tenant === 'IDENTIFIER')
+                            {
+                                setViewTeam(true);
+                                setViewTeamID(permission.id);
+                            }
+                            else if(permission.permission_tenant === 'USER')
+                            {
+                                setViewTeamMember(true);
+                                setViewTeamMemberID(permission.id);
+                            }
+                        }
+                    }
+                    else if(permission.permission_type === 'CREATE')
+                    {
+                        if(permission.permission_category === 'TEAM')
+                        {
+                            if(permission.permission_tenant === 'IDENTIFIER')
+                            {
+                                setUpdateTeam(true);
+                                setUpdateTeamID(permission.id);
+                            }
+                            else if(permission.permission_tenant === 'USER')
+                            {
+                                setUpdateTeamMember(true);
+                                setUpdateTeamMemberID(permission.id);
+                            }
+                        }
+                    }
+                    else if(permission.permission_type === 'DELETE')
+                    {
+                        if(permission.permission_category === 'TEAM')
+                        {
+                            if(permission.permission_tenant === 'IDENTIFIER')
+                            {
+                                setDeleteTeam(true);
+                                setDeleteTeamID(permission.id);
+                            }
+                            else if(permission.permission_tenant === 'USER')
+                            {
+                                setDeleteTeamMember(true);
+                                setDeleteTeamMemberID(permission.id);
+                            }
+                        }
+                    }
+                });
             });
         }
     }, [team, userData.token]);
@@ -251,7 +468,7 @@ const EditTeam = ({team, edited}) =>
 
             <Form.Group className={styles.formGroup} controlId="formBasicName">
                 <div className={styles.formLabel}>Lead</div>
-                <select className={styles.lead} name='lead' onFocus={size=3} onChange={(e) => setLead(e.target.value)}>
+                <select className={styles.lead} name='lead' onChange={(e) => setLead(e.target.value)}>
                     {members && (
                         members.map(member => (
                             <option key={member.id} value={member.id}>{member.name}</option>
@@ -300,7 +517,7 @@ const EditTeam = ({team, edited}) =>
             </Form.Group>
 
 
-            <Button className={styles.submit} onClick={EditTeamSubmit}>Save</Button>
+            <Button className={styles.submit} onClick={() => EditTeamSubmit()}>Save</Button>
         </div>
     );
 
