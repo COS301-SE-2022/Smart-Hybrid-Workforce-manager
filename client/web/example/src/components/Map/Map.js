@@ -15,6 +15,7 @@ const Map = () =>
     const meetingRoomPropsRef = useRef([]);
     const wallPropsRef = useRef([]);
     const dateRef = useRef(null);
+    const scaleFactor = 1.3;
 
     //Selector refs
     const buildingRef = useRef(null);
@@ -202,6 +203,49 @@ const Map = () =>
     }
 
     window.addEventListener('resize', HandleResize);
+
+    //Ensures that the zooming in/out is oriented with the center of viewable canvas
+    const ZoomInOut = (event) =>
+    {
+        if(stageRef.current !== null)
+        {
+            const stage = stageRef.current;
+            const oldScale = stage.scaleX();
+
+            const stageCenter =
+            {
+                x : stage.width() / 2.0,
+                y : stage.height() / 2.0
+            }
+
+            const newStageCenter = 
+            {
+                x : (stageCenter.x - stage.x()) / oldScale,
+                y : (stageCenter.y - stage.y()) / oldScale,
+            }
+
+            var newScale;
+            if(event.evt.deltaY < 0)
+            {
+                newScale = oldScale * scaleFactor;
+            }
+            else
+            {
+                newScale = oldScale / scaleFactor;
+            }
+
+            stage.scale({x : newScale, y : newScale});
+
+            const newPos = 
+            {
+                x : stageCenter.x - newStageCenter.x * newScale,
+                y : stageCenter.y - newStageCenter.y * newScale,
+            }
+
+            stage.position(newPos);
+            stage.batchDraw();
+        }        
+    }
 
     const setPreference = () =>
     {
@@ -569,26 +613,26 @@ const Map = () =>
             deskPropsRef.current = [];
             SetDeskProps(deskPropsRef.current);
 
-            for(var i = 0; i < resources.length; i++)
+            for(let i = 0; i < resources.length; i++)
             {
                 if(bookedIDs.includes(resources[i].id))
                 {
-                    if(resources[i].type === 'DESK')
+                    if(resources[i].resource_type === 'DESK')
                     {
                         LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, true);
                     }
-                    else if(resources[i].type === 'MEETINGROOM')
+                    else if(resources[i].resource_type === 'MEETINGROOM')
                     {
                         LoadMeetingRoom(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, JSON.parse(resources[i].decorations).capacity, true);
                     }
                 }
                 else
                 {
-                    if(resources[i].type === 'DESK')
+                    if(resources[i].resource_type === 'DESK')
                     {
                         LoadDesk(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, false);
                     }
-                    else if(resources[i].type === 'MEETINGROOM')
+                    else if(resources[i].resource_type === 'MEETINGROOM')
                     {
                         LoadMeetingRoom(resources[i].id, resources[i].name, resources[i].xcoord, resources[i].ycoord, resources[i].width, resources[i].height, resources[i].rotation, JSON.parse(resources[i].decorations).capacity, false);
                     }
@@ -647,6 +691,11 @@ const Map = () =>
         }
     },[currResource, currBookings, allUsers]);
 
+    useEffect(() =>
+    {
+        console.log(deskProps);
+    },[deskProps]);
+
     return (
         <Fragment>
             <div className={styles.mapHeadingContainer}>
@@ -703,9 +752,10 @@ const Map = () =>
             </div>
 
             <div ref={canvasRef} className={styles.canvasContainer}>
-                <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onMouseUp={(e) => e.target.getStage().container().style.cursor = 'grab'} onTouchStart={CheckDeselect} draggable ref={stageRef}>
+                <Stage width={stage.width} height={stage.height} onMouseDown={CheckDeselect} onMouseUp={(e) => e.target.getStage().container().style.cursor = 'grab'} onTouchStart={CheckDeselect} draggable onWheel={ZoomInOut} ref={stageRef}>
                     <Layer>
-                        {deskProps.map((desk, i) => (
+                        {deskProps.map((desk, i) =>
+                        (
                             <Desk
                                 key = {desk.key}
                                 shapeProps = {desk}
@@ -719,7 +769,9 @@ const Map = () =>
                                 
                                 onChange = {(newProps) => 
                                 {
-                                    
+                                    const newDeskProps = deskProps.slice();
+                                    newDeskProps[i] = newProps;
+                                    SetDeskProps(newDeskProps);
                                 }}
 
                                 draggable = {false}
