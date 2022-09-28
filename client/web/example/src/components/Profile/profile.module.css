@@ -211,6 +211,8 @@
 
 .formContainer
 {
+    overflow-x: hidden;
+    overflow-y: scroll;
     position: absolute;
     display: none;
 
