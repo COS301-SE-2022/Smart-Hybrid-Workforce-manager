@@ -23,6 +23,7 @@ type Config struct {
 }
 
 type SchedulerData struct {
+	Config              *SchedulerConfig    `json:"config"`
 	Users               Users               `json:"users"`
 	Teams               []*TeamInfo         `json:"teams"`
 	Roles               []*RoleInfo         `json:"roles"`
