@@ -24,7 +24,7 @@ const EditRole = () =>
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8080/api/role/create", 
+      let res = await fetch("http://deskflow.co.za:8080/api/role/create", 
       {
         method: "POST",
         mode: "cors",
@@ -54,7 +54,7 @@ const EditRole = () =>
     //POST request
   const FetchRoleUsers = () =>
   {
-    fetch("http://localhost:8080/api/role/user/information", 
+    fetch("http://deskflow.co.za:8080/api/role/user/information", 
         {
           method: "POST",
           mode: "cors",

@@ -8,7 +8,7 @@ const RoleLeadOption = ({id, roleLeadId}) =>
   //POST request
   const getName = useCallback(() =>
   {
-    fetch("http://localhost:8080/api/user/information", 
+    fetch("http://deskflow.co.za:8080/api/user/information", 
         {
           method: "POST",
           mode: "cors",

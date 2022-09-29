@@ -472,7 +472,7 @@ const CalendarComponent = () =>
         const fetchData = () =>
         {
 
-            fetch("http://localhost:8080/api/booking/information", 
+            fetch("http://deskflow.co.za:8080/api/booking/information", 
             {
             method: "POST",
             mode: "cors",
@@ -509,7 +509,7 @@ const CalendarComponent = () =>
     {
         if(window.confirm('Would you like to delete this booking?'))
         {
-            fetch("http://localhost:8080/api/booking/remove", 
+            fetch("http://deskflow.co.za:8080/api/booking/remove", 
             {
                 method: "POST",
                 mode: "cors",
@@ -526,7 +526,7 @@ const CalendarComponent = () =>
                 {
                     alert('Booking deleted');
 
-                    fetch("http://localhost:8080/api/booking/information", 
+                    fetch("http://deskflow.co.za:8080/api/booking/information", 
                     {
                     method: "POST",
                     mode: "cors",

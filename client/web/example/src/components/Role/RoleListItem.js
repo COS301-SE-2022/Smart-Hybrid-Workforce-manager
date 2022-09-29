@@ -26,7 +26,7 @@ const RoleListItem = ({id, name, color, lead}) =>
         {
             try
             {
-                let res = await fetch("http://localhost:8080/api/role/remove", 
+                let res = await fetch("http://deskflow.co.za:8080/api/role/remove", 
                 {
                     method: "POST",
                     mode: "cors",

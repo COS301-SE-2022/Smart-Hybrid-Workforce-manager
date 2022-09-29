@@ -13,7 +13,7 @@ const AddBuilding = ({makeDefault, edited}) =>
 
     const AddBuildingSubmit = async () =>
     {
-        fetch("http://localhost:8080/api/resource/building/create", 
+        fetch("http://deskflow.co.za:8080/api/resource/building/create", 
         {
             method: "POST",
             mode: "cors",

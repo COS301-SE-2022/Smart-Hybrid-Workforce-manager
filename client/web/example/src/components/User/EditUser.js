@@ -81,7 +81,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles, edited}) 
     {
         if(document.getElementById(role.id).checked)
         {
-            fetch("http://localhost:8080/api/role/user/create", 
+            fetch("http://deskflow.co.za:8080/api/role/user/create", 
             {
                 method: "POST",
                 mode: "cors",
@@ -116,7 +116,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles, edited}) 
         }   
         else
         {
-            fetch("http://localhost:8080/api/role/user/remove", 
+            fetch("http://deskflow.co.za:8080/api/role/user/remove", 
             {
                 method: "POST",
                 mode: "cors",
@@ -150,7 +150,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles, edited}) 
     {
         try 
         {
-            let res = await fetch("http://localhost:8080/api/permission/create",
+            let res = await fetch("http://deskflow.co.za:8080/api/permission/create",
             {
                 method: "POST",
                 mode: "cors",
@@ -185,7 +185,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles, edited}) 
         {
             try
             {
-                let res = await fetch("http://localhost:8080/api/permission/remove",
+                let res = await fetch("http://deskflow.co.za:8080/api/permission/remove",
                 {
                     method: "POST",
                     mode: "cors",
@@ -729,7 +729,7 @@ const EditUser = ({userID, userName, userPicture, userRoles, allRoles, edited}) 
         setID(userID);
         if(userID !== '')
         {
-            fetch("http://localhost:8080/api/permission/information", 
+            fetch("http://deskflow.co.za:8080/api/permission/information", 
             {
                 method: "POST",
                 mode: 'cors',

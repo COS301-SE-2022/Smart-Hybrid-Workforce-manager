@@ -74,7 +74,7 @@ const Creator = () =>
     //POST requests
     const UpdateRooms = (id) =>
     {
-        fetch("http://localhost:8080/api/resource/room/information", 
+        fetch("http://deskflow.co.za:8080/api/resource/room/information", 
         {
             method: "POST",
             mode: 'cors',
@@ -97,7 +97,7 @@ const Creator = () =>
 
     const UpdateResources = (id) =>
     {
-        fetch("http://localhost:8080/api/resource/information", 
+        fetch("http://deskflow.co.za:8080/api/resource/information", 
         {
             method: "POST",
             mode: 'cors',
@@ -192,7 +192,7 @@ const Creator = () =>
         {
             buildingMenuRef.current.style.display = 'none';
 
-            fetch("http://localhost:8080/api/resource/building/remove", 
+            fetch("http://deskflow.co.za:8080/api/resource/building/remove", 
             {
                 method: "POST",
                 mode: "cors",
@@ -266,7 +266,7 @@ const Creator = () =>
             console.log(currRoom);
             roomMenuRef.current.style.display = 'none';
 
-            fetch("http://localhost:8080/api/resource/room/remove", 
+            fetch("http://deskflow.co.za:8080/api/resource/room/remove", 
             {
                 method: "POST",
                 mode: "cors",
@@ -705,7 +705,7 @@ const Creator = () =>
 
         try
         {
-            let res = await fetch("http://localhost:8080/api/resource/batch-create", 
+            let res = await fetch("http://deskflow.co.za:8080/api/resource/batch-create", 
             {
                 method: "POST",
                 mode: 'cors',
@@ -731,7 +731,7 @@ const Creator = () =>
                         });
                     }
 
-                    let res = await fetch("http://localhost:8080/api/resource/batch-remove", 
+                    let res = await fetch("http://deskflow.co.za:8080/api/resource/batch-remove", 
                     {
                         method: "POST",
                         mode: 'cors',
@@ -769,7 +769,7 @@ const Creator = () =>
 
         if(buildingEdited)
         {
-            fetch("http://localhost:8080/api/resource/building/information", 
+            fetch("http://deskflow.co.za:8080/api/resource/building/information", 
             {
                 method: "POST",
                 mode: 'cors',
@@ -792,7 +792,7 @@ const Creator = () =>
     {
         if(roomEdited && currBuilding !== '')
         {
-            fetch("http://localhost:8080/api/resource/room/information", 
+            fetch("http://deskflow.co.za:8080/api/resource/room/information", 
             {
                 method: "POST",
                 mode: 'cors',

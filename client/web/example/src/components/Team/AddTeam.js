@@ -19,7 +19,7 @@ const AddTeam = ({makeDefault, edited}) =>
 
     const AddTeamSubmit = async () =>
     {
-        fetch("http://localhost:8080/api/team/create", 
+        fetch("http://deskflow.co.za:8080/api/team/create", 
         {
             method: "POST",
             mode: "cors",

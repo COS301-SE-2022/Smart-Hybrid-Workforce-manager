@@ -54,7 +54,7 @@ const Map = () =>
     const UpdateRooms = (e) =>
     {
         SelectShape(null);
-        fetch("http://localhost:8080/api/resource/room/information", 
+        fetch("http://deskflow.co.za:8080/api/resource/room/information", 
             {
             method: "POST",
             mode: "cors",
@@ -76,7 +76,7 @@ const Map = () =>
     const UpdateResources = (e) =>
     {
         SelectShape(null);
-        fetch("http://localhost:8080/api/resource/information", 
+        fetch("http://deskflow.co.za:8080/api/resource/information", 
             {
             method: "POST",
             mode: "cors",
@@ -253,7 +253,7 @@ const Map = () =>
     {
         if(preferenceRef.current)
         {
-            fetch("http://localhost:8080/api/user/update", 
+            fetch("http://deskflow.co.za:8080/api/user/update", 
             {
                 method: "POST",
                 mode: "cors",
@@ -272,7 +272,7 @@ const Map = () =>
                     alert("Preferred Desk Set");
                 }
 
-                fetch("http://localhost:8080/api/user/information", 
+                fetch("http://deskflow.co.za:8080/api/user/information", 
                 {
                     method: "POST",
                     mode: "cors",
@@ -296,7 +296,7 @@ const Map = () =>
     {
         SetStage({width : canvasRef.current.offsetWidth, height : canvasRef.current.offsetHeight});
 
-        fetch("http://localhost:8080/api/resource/building/information", 
+        fetch("http://deskflow.co.za:8080/api/resource/building/information", 
         {
             method: "POST",
             mode: "cors",
@@ -311,7 +311,7 @@ const Map = () =>
             SetBuildings(data);
         });
 
-        fetch("http://localhost:8080/api/booking/information", 
+        fetch("http://deskflow.co.za:8080/api/booking/information", 
         {
             method: "POST",
             mode: "cors",
@@ -326,7 +326,7 @@ const Map = () =>
             setBookings(data);
         });
 
-        fetch("http://localhost:8080/api/user/information", 
+        fetch("http://deskflow.co.za:8080/api/user/information", 
         {
             method: "POST",
             mode: "cors",
@@ -357,7 +357,7 @@ const Map = () =>
             });
 
             //Get info for all roles
-            fetch("http://localhost:8080/api/role/information", 
+            fetch("http://deskflow.co.za:8080/api/role/information", 
             {
                 method: "POST",
                 mode: "cors",
@@ -385,7 +385,7 @@ const Map = () =>
                 });
 
                 //Add role to user based on role association
-                fetch("http://localhost:8080/api/role/user/information", 
+                fetch("http://deskflow.co.za:8080/api/role/user/information", 
                 {
                     method: "POST",
                     mode: "cors",
@@ -404,7 +404,7 @@ const Map = () =>
                 });
 
                 //Get info for all teams
-                fetch("http://localhost:8080/api/team/information", 
+                fetch("http://deskflow.co.za:8080/api/team/information", 
                 {
                     method: "POST",
                     mode: "cors",
@@ -432,7 +432,7 @@ const Map = () =>
                     });
 
                     //Add team to user based on team association
-                    fetch("http://localhost:8080/api/team/user/information", 
+                    fetch("http://deskflow.co.za:8080/api/team/user/information", 
                     {
                         method: "POST",
                         mode: "cors",
@@ -455,7 +455,7 @@ const Map = () =>
             });
         });
 
-        fetch("http://localhost:8080/api/user/information", 
+        fetch("http://deskflow.co.za:8080/api/user/information", 
         {
             method: "POST",
             mode: "cors",
@@ -510,7 +510,7 @@ const Map = () =>
         if(buildings.length > 0 && buildingRef.current)
         {
             buildingRef.current.value = buildings[0].id;
-            fetch("http://localhost:8080/api/resource/room/information", 
+            fetch("http://deskflow.co.za:8080/api/resource/room/information", 
             {
                 method: "POST",
                 mode: "cors",
@@ -535,7 +535,7 @@ const Map = () =>
         {
             roomRef.current.value = rooms[0].id;
 
-            fetch("http://localhost:8080/api/resource/information", 
+            fetch("http://deskflow.co.za:8080/api/resource/information", 
             {
                 method: "POST",
                 mode: "cors",

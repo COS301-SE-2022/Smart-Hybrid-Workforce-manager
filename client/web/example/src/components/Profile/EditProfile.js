@@ -71,7 +71,7 @@ const EditProfile = ({user, edited}) =>
                         {
                             if(url.includes(newName))
                             {
-                                fetch("http://localhost:8080/api/user/update", 
+                                fetch("http://deskflow.co.za:8080/api/user/update", 
                                 {
                                     method: "POST",
                                     mode: "cors",
@@ -105,7 +105,7 @@ const EditProfile = ({user, edited}) =>
         }
         else
         {
-            fetch("http://localhost:8080/api/user/update", 
+            fetch("http://deskflow.co.za:8080/api/user/update", 
             {
                 method: "POST",
                 mode: "cors",
@@ -179,7 +179,7 @@ const EditProfile = ({user, edited}) =>
     }, [workFromHome]);
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/resource/building/information",
+        fetch("http://deskflow.co.za:8080/api/resource/building/information",
             {
                 method: "POST",
                 mode: "cors",

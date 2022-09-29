@@ -33,7 +33,7 @@ const BookingTicket = ({id, startDate, startTime, endTime, confirmed, type, days
         {
             try
             {
-                let res = await fetch("http://localhost:8080/api/booking/remove", 
+                let res = await fetch("http://deskflow.co.za:8080/api/booking/remove", 
                 {
                     method: "POST",
                     mode: "cors",

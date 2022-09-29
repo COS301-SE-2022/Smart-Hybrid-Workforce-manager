@@ -22,7 +22,7 @@ export default function Login()
     // **** here's the timeout ****
     setTimeout(() => setIsButtonDisabled(false), 5000);
 
-    fetch("http://localhost:8080/api/user/login", 
+    fetch("http://deskflow.co.za:8080/api/user/login", 
     {
       method: "POST",
       mode: "cors",

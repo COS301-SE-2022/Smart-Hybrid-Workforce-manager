@@ -32,7 +32,7 @@ const ProfileComponent = () =>
             //POST requests
             const FetchUser = () =>
             {
-                fetch("http://localhost:8080/api/user/information", 
+                fetch("http://deskflow.co.za:8080/api/user/information", 
                 {
                     method: "POST",
                     mode: "cors",
@@ -52,7 +52,7 @@ const ProfileComponent = () =>
 
             const FetchUserRoles = () =>
             {
-                fetch("http://localhost:8080/api/role/user/information", 
+                fetch("http://deskflow.co.za:8080/api/role/user/information", 
                 {
                     method: "POST",
                     mode: "cors",
@@ -69,7 +69,7 @@ const ProfileComponent = () =>
                     setRoles([]);
                     userRoles.forEach((association) =>
                     {
-                        fetch("http://localhost:8080/api/role/information", 
+                        fetch("http://deskflow.co.za:8080/api/role/information", 
                         {
                             method: "POST",
                             mode: "cors",
@@ -96,7 +96,7 @@ const ProfileComponent = () =>
 
             const FetchUserTeams = () =>
             {
-                fetch("http://localhost:8080/api/team/user/information", 
+                fetch("http://deskflow.co.za:8080/api/team/user/information", 
                 {
                     method: "POST",
                     mode: "cors",
@@ -112,7 +112,7 @@ const ProfileComponent = () =>
                     setTeams([]);
                     data.forEach((association) =>
                     {
-                        fetch("http://localhost:8080/api/team/information", 
+                        fetch("http://deskflow.co.za:8080/api/team/information", 
                         {
                             method: "POST",
                             mode: "cors",

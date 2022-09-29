@@ -10,7 +10,7 @@ const RoleUserList = ({id}) =>
     const {userData} = useContext(UserContext);
     useEffect(() =>
     {
-        fetch("http://localhost:8080/api/role/information", 
+        fetch("http://deskflow.co.za:8080/api/role/information", 
         {
         method: "POST",
         mode: "cors",
@@ -34,7 +34,7 @@ const RoleUserList = ({id}) =>
         {
             try
             {
-                let res = await fetch("http://localhost:8080/api/role/user/remove", 
+                let res = await fetch("http://deskflow.co.za:8080/api/role/user/remove", 
                 {
                     method: "POST",
                     mode: "cors",

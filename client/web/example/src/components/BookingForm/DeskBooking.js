@@ -19,7 +19,7 @@ const DeskBooking = (props, ref) =>
         e.preventDefault();
         try
         {
-            let res = await fetch("http://localhost:8080/api/booking/create", 
+            let res = await fetch("http://deskflow.co.za:8080/api/booking/create", 
             {
                 method: "POST",
                 mode: "cors",
@@ -46,7 +46,7 @@ const DeskBooking = (props, ref) =>
                 alert("Booking Successfully Created!");
                 navigate("/");
 
-                await fetch("http://localhost:8080/api/notification/send", 
+                await fetch("http://deskflow.co.za:8080/api/notification/send", 
                 {
                     method: "POST",
                     mode: "cors",

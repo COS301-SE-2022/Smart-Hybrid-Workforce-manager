@@ -13,7 +13,7 @@ const EditBuilding = ({id, edited}) =>
 
     const EditBuildingSubmit = async () =>
     {
-        fetch("http://localhost:8080/api/resource/building/create", 
+        fetch("http://deskflow.co.za:8080/api/resource/building/create", 
         {
             method: "POST",
             mode: "cors",
@@ -38,7 +38,7 @@ const EditBuilding = ({id, edited}) =>
     {
         if(id)
         {
-            fetch("http://localhost:8080/api/resource/building/information", 
+            fetch("http://deskflow.co.za:8080/api/resource/building/information", 
             {
                 method: "POST",
                 mode: "cors",

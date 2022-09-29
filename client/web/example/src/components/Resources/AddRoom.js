@@ -13,7 +13,7 @@ const AddRoom = ({makeDefault, edited, buildingID}) =>
 
     const AddRoomSubmit = async () =>
     {
-        fetch("http://localhost:8080/api/resource/room/create", 
+        fetch("http://deskflow.co.za:8080/api/resource/room/create", 
         {
             method: "POST",
             mode: "cors",

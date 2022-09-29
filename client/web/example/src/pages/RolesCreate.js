@@ -19,7 +19,7 @@ const CreateRole = () =>
     e.preventDefault();
     try
     {
-      let res = await fetch("http://localhost:8080/api/role/create", 
+      let res = await fetch("http://deskflow.co.za:8080/api/role/create", 
       {
         method: "POST",
         mode: "cors",
