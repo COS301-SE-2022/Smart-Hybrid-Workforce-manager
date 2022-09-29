@@ -77,6 +77,10 @@ Smart Hybrid Workforce Manager aims to provide companies an easy to use system t
   ➛ Security Testing<br>
 </a> 
 
+<a href="https://docs.google.com/document/d/1v25vV2jcMBk-UB9tiKm9c_3-Wf4KJc61-EWFp-ICsiY/edit#" target="_blank">
+  ➛ Performance Testing<br>
+</a> 
+
 ### Other Documents
 
 <a href="https://drive.google.com/file/d/1eiyuevQBveD41sLYmI3Sp1Gdl3zlBqpx/view?usp=sharing" target="_blank">
