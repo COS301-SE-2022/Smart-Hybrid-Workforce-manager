@@ -1,14 +1,14 @@
 {
-    "building_id": "98989898-dc08-4a06-9983-8b374586e459",
+    "building_id": "3cfb9800-c8ec-4dcc-b746-39518457ca49",
     "create_user": {
-        "num_users": 6,
+        "num_users": 12,
         "password_override": "P@ssword123",
-        "email_domains": ["@gmail.com"],
+        "email_domains": ["@geemail.com"],
         "lowest_preferred_start_time": "2022-08-24T09:00:00.000Z",
         "highest_preferred_end_time": "2022-08-24T17:00:00.000Z",
         "preferred_time_step_minutes": 180,
         "work_from_home_probability": 0.8,
-        "teams_override": ["7e7af99a-372b-4d3b-80c4-19464dd244eb"],
+        "teams_override": null, 
         "team_probabilities": [0.00, 0.3, 0.4, 0.2],
         "role_probabilities": [0.1, 0.2, 0.3, 0.3, 0.1],
         "office_days_options": [1, 2, 3, 4, 5],

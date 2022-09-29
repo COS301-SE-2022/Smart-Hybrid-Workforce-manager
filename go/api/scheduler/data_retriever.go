@@ -4,7 +4,10 @@ import (
 	"api/data"
 	"api/db"
 	"api/security"
+	"encoding/json"
+	"fmt"
 	cu "lib/collectionutils"
+	"lib/logger"
 	"time"
 )
 
@@ -124,7 +127,7 @@ func GetUsers() (data.Users, error) {
 }
 
 // GetBookings Retrieves all the bookings from the database between from from to to
-func GetBookings(from time.Time, to time.Time) (*BookingInfo, error) {
+func GetBookings(from time.Time, to time.Time, bookingResourceType *string) (*BookingInfo, error) {
 	permissions := &data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "USER")}
 	// Connect to db
 	access, err := db.Open()
@@ -134,8 +137,9 @@ func GetBookings(from time.Time, to time.Time) (*BookingInfo, error) {
 	defer access.Close()
 
 	bookingFilter := data.Booking{
-		Start: &from,
-		End:   &to,
+		Start:        &from,
+		End:          &to,
+		ResourceType: bookingResourceType,
 	}
 
 	da := data.NewBookingDA(access)
@@ -448,7 +452,7 @@ func GetCompileResourceInfo(resourceType *string) ([]*BuildingInfo, []*RoomInfo,
 }
 
 // GetSchedulerData retrieves all the data needed by the scheduler
-func GetSchedulerData(from time.Time, to time.Time, resourceType *string) (*SchedulerData, error) {
+func GetSchedulerData(from time.Time, to time.Time, resourceType *string, bookingResourceType *string) (*SchedulerData, error) {
 	// Get the users
 	users, err := GetUsers()
 	if err != nil {
@@ -474,7 +478,7 @@ func GetSchedulerData(from time.Time, to time.Time, resourceType *string) (*Sche
 	}
 
 	// Get the existing bookings
-	bookingsInfo, err := GetBookings(from, to)
+	bookingsInfo, err := GetBookings(from, to, bookingResourceType)
 	if err != nil {
 		return nil, err
 	}
@@ -482,7 +486,7 @@ func GetSchedulerData(from time.Time, to time.Time, resourceType *string) (*Sche
 	// Get past weeks bookings
 	weekAgoFrom := from.Add(-1 * time.Hour * 24 * 7) // subtract a week
 	weekAgoTo := to.Add(-1 * time.Hour * 24 * 7)     // subtract a week
-	pastBookingsInfo, err := GetBookings(weekAgoFrom, weekAgoTo)
+	pastBookingsInfo, err := GetBookings(weekAgoFrom, weekAgoTo, bookingResourceType)
 	if err != nil {
 		return nil, err
 	}
@@ -567,6 +571,11 @@ func GroupByBuilding(schedulerData *SchedulerData) map[string]*SchedulerData { /
 	_, groupedRooms := cu.GroupBy(schedulerData.Rooms, groupRoom)
 
 	groupResource := func(resource *data.Resource) string {
+		if resource == nil {
+			fmt.Println("RESOURCE IS NIL WOOOW GREAT")
+		}
+		bytes, _ := json.MarshalIndent(resource, " ", "  ")
+		logger.Access.Printf("BOOOOOOKING: %v\n", string(bytes))
 		if roomsMap[*resource.RoomId].BuildingId == nil {
 			return ""
 		}
@@ -579,6 +588,8 @@ func GroupByBuilding(schedulerData *SchedulerData) map[string]*SchedulerData { /
 	// If bookings already had a resource assigned, group them by that resource,
 	// otherwise, group them by the assigned users group
 	groupBooking := func(booking *data.Booking) string {
+		bytes, _ := json.MarshalIndent(booking, " ", "  ")
+		logger.Access.Printf("BOOOOOOKING: %v\n", string(bytes))
 		if booking.ResourceId != nil {
 			return groupResource(resourcesMap[*booking.ResourceId])
 		}

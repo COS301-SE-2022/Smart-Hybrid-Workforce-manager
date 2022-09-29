@@ -25,11 +25,11 @@ def login_get_token(call_count: List, email: str = None, password: str = None) -
     call_count[0] += 1
     body: dict[str] = {
         "id": None,
-        "secret": None,
+        "secret": "admin",
         "active": None,
         "FailedAttempts": None,
         "LastAccessed": None,
-        "Identifier": None
+        "Identifier": "admin@admin.com"
     }
     resp = requests.post("http://localhost:8100/api/user/login", json=body)
     return "bearer " + str(resp.json()["token"])

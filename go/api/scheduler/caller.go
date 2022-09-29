@@ -119,7 +119,7 @@ func CallWeeklyScheduler() error {
 
 	nextMonday := TimeOfNextWeekDay(now, "Monday")            // Start of next week
 	nextSaturday := TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
-	schedulerData, err := GetSchedulerData(nextMonday, nextSaturday, &deskType)
+	schedulerData, err := GetSchedulerData(nextMonday, nextSaturday, &deskType, &deskType)
 	buildingGroups := GroupByBuilding(schedulerData)
 	for _, data := range buildingGroups {
 		schedulerData = data
@@ -149,7 +149,7 @@ func CallDailyScheduler() error {
 	endDate := startDate.AddDate(0, 0, 1) // Add one day
 
 	// Get data between start and end of date
-	schedulerData, err := GetSchedulerData(startDate, endDate, &deskType)
+	schedulerData, err := GetSchedulerData(startDate, endDate, &deskType, &deskType)
 
 	buildingGroups := GroupByBuilding(schedulerData)
 	for _, data := range buildingGroups {
@@ -179,7 +179,7 @@ func CallMeetingRoomScheduler(daysInAdvance int, now time.Time) error {
 	endDate := startDate.AddDate(0, 0, 1) // Add one day
 
 	// Get data between start and end of date
-	schedulerData, err := GetSchedulerData(startDate, endDate, &meetingRoomType)
+	schedulerData, err := GetSchedulerData(startDate, endDate, &meetingRoomType, &meetingRoomType)
 	if err != nil {
 		logger.Error.Println(err)
 		return err

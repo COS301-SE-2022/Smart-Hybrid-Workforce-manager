@@ -61,7 +61,6 @@ func meetingRoomScheduler(writer http.ResponseWriter, request *http.Request) {
 	}
 	schedulerData.ApplyMapping()
 	bookings := meetingroom.AssignMeetingRoomsToBookings(&schedulerData)
-
 	utils.JSONResponse(writer, request, bookings)
 }
 
@@ -81,7 +80,7 @@ func dailyScheduler(writer http.ResponseWriter, request *http.Request) {
 	logger.Debug.Println("AAAAAMMMM IIIII HEEEEERRRREEEEEEE")
 }
 
-// Loads the schedulers config file
+// Loads the schedulers config file uwu
 func parseConfig(filePath string) (*data.SchedulerConfig, error) {
 	if _, err := os.Stat(filepath.Join("", filepath.Clean(filePath))); errors.Is(err, os.ErrNotExist) {
 		logger.Info.Println("Could not find scheduler config file")

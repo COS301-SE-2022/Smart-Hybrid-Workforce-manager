@@ -377,6 +377,13 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 		utils.InternalServerError(writer, request, err)
 		return
 	}
+
+	// Commit meeting room boooking transaction
+	if err = da.Commit(); err != nil {
+		utils.InternalServerError(writer, request, err)
+		return
+	}
+
 	// // Add desks for role/team members in meeting
 	teamUsers := data.UserTeams{}
 	roleUsers := data.UserRoles{}
@@ -408,11 +415,11 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 		}
 	}
 
-	bookings := data.Bookings{}
+	mBookings := data.Bookings{}
 	// Make the actual bookings
 	deskResourceType := "MEETINGROOM"
-	for key, _ := range roleTeamUsersMap {
-		bookings = append(bookings, &data.Booking{
+	for key := range roleTeamUsersMap {
+		mBookings = append(mBookings, &data.Booking{
 			UserId:       &key,
 			ResourceType: &deskResourceType,
 			Start:        meetingRoomBooking.Booking.Start,
@@ -422,25 +429,29 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 	}
 
 	// Store the bookings
-	batchBooking := data.BatchBooking{
-		UserId:   nil,
-		Bookings: bookings,
+	// batchBooking := data.BatchBooking{
+	// 	UserId:   nil,
+	// 	Bookings: bookings,
+	// }
+
+	for _, booking := range mBookings {
+		_, err := da.StoreIdentifier(booking)
+		if err != nil {
+			logger.Info.Print(err)
+		}
+		if err := da.Commit(); err != nil {
+			logger.Info.Print(err)
+		}
 	}
 
-	batchBookingDa := data.NewBatchBookingDA(access)
-	err = batchBookingDa.StoreIdentifiers(&batchBooking)
-	if err != nil {
-		utils.InternalServerError(writer, request, err)
-	}
-
-	bookings = data.Bookings{}
+	bookings := data.Bookings{}
 
 	// Add desks bookings
 	if meetingRoomBooking.DesksAttendees != nil && *meetingRoomBooking.DesksAttendees {
 		// // Add desks for role/team members in meeting
 		// Make the actual bookings
 		deskResourceType = "DESK"
-		for key, _ := range roleTeamUsersMap {
+		for key := range roleTeamUsersMap {
 			bookings = append(bookings, &data.Booking{
 				UserId:       &key,
 				ResourceType: &deskResourceType,
@@ -450,15 +461,14 @@ func CreateMeetingRoomBookingHandler(writer http.ResponseWriter, request *http.R
 			})
 		}
 
-		// Store the bookings
-		batchBooking = data.BatchBooking{
-			UserId:   nil,
-			Bookings: bookings,
-		}
-
-		err = batchBookingDa.StoreIdentifiers(&batchBooking)
-		if err != nil {
-			utils.InternalServerError(writer, request, err)
+		for _, booking := range bookings {
+			_, err := da.StoreIdentifier(booking)
+			if err != nil {
+				logger.Info.Print(err)
+			}
+			if err := da.Commit(); err != nil {
+				logger.Info.Print(err)
+			}
 		}
 	}
 	err = access.Commit()
