@@ -4,14 +4,27 @@ import (
 	"api/data"
 	"api/db"
 	"api/security"
-	"encoding/json"
-	"fmt"
 	cu "lib/collectionutils"
-	"lib/logger"
 	"time"
 )
 
+type SchedulerConfig struct {
+	DailyConfig  *Config `json:"daily_config"`
+	WeeklyConfig *Config `json:"weekly_config"`
+}
+
+type Config struct {
+	Seed             int     `json:"seed"`
+	PopulationSize   int     `json:"populationSize"`
+	Generations      int     `json:"generations"`
+	MutationRate     float64 `json:"mutationRate"`
+	CrossOverRate    float64 `json:"crossOverRate"`
+	TournamentSize   int     `json:"tournamentSize"`
+	TimeLimitSeconds int     `json:"time_limit_seconds"`
+}
+
 type SchedulerData struct {
+	Config              *SchedulerConfig         `json:"config,omitempty"`
 	Users               data.Users               `json:"users"`
 	Teams               []*TeamInfo              `json:"teams"`
 	Roles               []*RoleInfo              `json:"roles"`
@@ -571,11 +584,6 @@ func GroupByBuilding(schedulerData *SchedulerData) map[string]*SchedulerData { /
 	_, groupedRooms := cu.GroupBy(schedulerData.Rooms, groupRoom)
 
 	groupResource := func(resource *data.Resource) string {
-		if resource == nil {
-			fmt.Println("RESOURCE IS NIL WOOOW GREAT")
-		}
-		bytes, _ := json.MarshalIndent(resource, " ", "  ")
-		logger.Access.Printf("BOOOOOOKING: %v\n", string(bytes))
 		if roomsMap[*resource.RoomId].BuildingId == nil {
 			return ""
 		}
@@ -588,8 +596,6 @@ func GroupByBuilding(schedulerData *SchedulerData) map[string]*SchedulerData { /
 	// If bookings already had a resource assigned, group them by that resource,
 	// otherwise, group them by the assigned users group
 	groupBooking := func(booking *data.Booking) string {
-		bytes, _ := json.MarshalIndent(booking, " ", "  ")
-		logger.Access.Printf("BOOOOOOKING: %v\n", string(bytes))
 		if booking.ResourceId != nil {
 			return groupResource(resourcesMap[*booking.ResourceId])
 		}
@@ -637,6 +643,7 @@ func GroupByBuilding(schedulerData *SchedulerData) map[string]*SchedulerData { /
 	// Assign buildings
 	for buildingId, buildings := range groupedBuildings {
 		groupedData[buildingId] = &SchedulerData{
+			Config:          schedulerData.Config,
 			Buildings:       buildings,
 			Users:           data.Users{},
 			Teams:           []*TeamInfo{},
