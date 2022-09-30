@@ -92,6 +92,12 @@ You can visit our production server at: http://deskflow.co.za
   ➛ Performance Testing<br>
 </a> 
 
+### Testing Policy
+<a href="https://drive.google.com/file/d/1MDX0dPL9CasjTJ_5W89CX_taZ8ZNuoE5/view?usp=sharing" target="_blank">
+  ➛ Testing Policy<br>
+</a> 
+
+
 ### Other Documents
 
 <a href="https://drive.google.com/file/d/1eiyuevQBveD41sLYmI3Sp1Gdl3zlBqpx/view?usp=sharing" target="_blank">
