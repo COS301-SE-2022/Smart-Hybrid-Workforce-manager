@@ -56,6 +56,10 @@ You can visit our production server at: http://deskflow.co.za
   ➛ User Manual v1.0<br>
 </a> 
 
+<a href="https://drive.google.com/file/d/1dKSyngPCegO82VzoGe3-MrsrvJzWZ3Pw/view?usp=sharing">
+  ➛ User Manual v2.0<br>
+</a> 
+
 ### Architecture
 
 <a href="https://drive.google.com/file/d/1_2_nVj66BKjmjlVeKUnX7H8g3KSUlAAj/view?usp=sharing" target="_blank">
