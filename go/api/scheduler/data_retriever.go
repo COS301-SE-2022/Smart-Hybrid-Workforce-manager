@@ -8,7 +8,23 @@ import (
 	"time"
 )
 
+type SchedulerConfig struct {
+	DailyConfig  *Config `json:"daily_config"`
+	WeeklyConfig *Config `json:"weekly_config"`
+}
+
+type Config struct {
+	Seed             int     `json:"seed"`
+	PopulationSize   int     `json:"populationSize"`
+	Generations      int     `json:"generations"`
+	MutationRate     float64 `json:"mutationRate"`
+	CrossOverRate    float64 `json:"crossOverRate"`
+	TournamentSize   int     `json:"tournamentSize"`
+	TimeLimitSeconds int     `json:"time_limit_seconds"`
+}
+
 type SchedulerData struct {
+	Config              *SchedulerConfig         `json:"config,omitempty"`
 	Users               data.Users               `json:"users"`
 	Teams               []*TeamInfo              `json:"teams"`
 	Roles               []*RoleInfo              `json:"roles"`
@@ -124,7 +140,7 @@ func GetUsers() (data.Users, error) {
 }
 
 // GetBookings Retrieves all the bookings from the database between from from to to
-func GetBookings(from time.Time, to time.Time) (*BookingInfo, error) {
+func GetBookings(from time.Time, to time.Time, bookingResourceType *string) (*BookingInfo, error) {
 	permissions := &data.Permissions{data.CreateGenericPermission("VIEW", "BOOKING", "USER")}
 	// Connect to db
 	access, err := db.Open()
@@ -134,8 +150,9 @@ func GetBookings(from time.Time, to time.Time) (*BookingInfo, error) {
 	defer access.Close()
 
 	bookingFilter := data.Booking{
-		Start: &from,
-		End:   &to,
+		Start:        &from,
+		End:          &to,
+		ResourceType: bookingResourceType,
 	}
 
 	da := data.NewBookingDA(access)
@@ -448,7 +465,7 @@ func GetCompileResourceInfo(resourceType *string) ([]*BuildingInfo, []*RoomInfo,
 }
 
 // GetSchedulerData retrieves all the data needed by the scheduler
-func GetSchedulerData(from time.Time, to time.Time, resourceType *string) (*SchedulerData, error) {
+func GetSchedulerData(from time.Time, to time.Time, resourceType *string, bookingResourceType *string) (*SchedulerData, error) {
 	// Get the users
 	users, err := GetUsers()
 	if err != nil {
@@ -474,7 +491,7 @@ func GetSchedulerData(from time.Time, to time.Time, resourceType *string) (*Sche
 	}
 
 	// Get the existing bookings
-	bookingsInfo, err := GetBookings(from, to)
+	bookingsInfo, err := GetBookings(from, to, bookingResourceType)
 	if err != nil {
 		return nil, err
 	}
@@ -482,7 +499,7 @@ func GetSchedulerData(from time.Time, to time.Time, resourceType *string) (*Sche
 	// Get past weeks bookings
 	weekAgoFrom := from.Add(-1 * time.Hour * 24 * 7) // subtract a week
 	weekAgoTo := to.Add(-1 * time.Hour * 24 * 7)     // subtract a week
-	pastBookingsInfo, err := GetBookings(weekAgoFrom, weekAgoTo)
+	pastBookingsInfo, err := GetBookings(weekAgoFrom, weekAgoTo, bookingResourceType)
 	if err != nil {
 		return nil, err
 	}
@@ -626,6 +643,7 @@ func GroupByBuilding(schedulerData *SchedulerData) map[string]*SchedulerData { /
 	// Assign buildings
 	for buildingId, buildings := range groupedBuildings {
 		groupedData[buildingId] = &SchedulerData{
+			Config:          schedulerData.Config,
 			Buildings:       buildings,
 			Users:           data.Users{},
 			Teams:           []*TeamInfo{},

@@ -38,12 +38,15 @@ func TEST(writer http.ResponseWriter, request *http.Request) {
 func weeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 	config, _ := parseConfig("/run/secrets/config.json")
 	var schedulerData data.SchedulerData
-
 	err := utils.UnmarshalJSON(writer, request, &schedulerData)
 	if err != nil {
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
+	if schedulerData.Config != nil {
+		config = schedulerData.Config
+	}
+
 	schedulerData.ApplyMapping()
 	bookings := overseer.WeeklyOverseer(schedulerData, config)
 
@@ -59,9 +62,9 @@ func meetingRoomScheduler(writer http.ResponseWriter, request *http.Request) {
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
+
 	schedulerData.ApplyMapping()
 	bookings := meetingroom.AssignMeetingRoomsToBookings(&schedulerData)
-
 	utils.JSONResponse(writer, request, bookings)
 }
 
@@ -74,20 +77,22 @@ func dailyScheduler(writer http.ResponseWriter, request *http.Request) {
 		utils.BadRequest(writer, request, "invalid_request")
 		return
 	}
+	if schedulerData.Config != nil {
+		config = schedulerData.Config
+	}
+
 	schedulerData.ApplyMapping()
 	bookings := overseer.DailyOverseer(schedulerData, config)
 
 	utils.JSONResponse(writer, request, bookings)
-	logger.Debug.Println("AAAAAMMMM IIIII HEEEEERRRREEEEEEE")
 }
 
-// Loads the schedulers config file
+// Loads the schedulers config file uwu
 func parseConfig(filePath string) (*data.SchedulerConfig, error) {
 	if _, err := os.Stat(filepath.Join("", filepath.Clean(filePath))); errors.Is(err, os.ErrNotExist) {
 		logger.Info.Println("Could not find scheduler config file")
 		return nil, nil
 	} else {
-		logger.Info.Println("Loading scheduler config")
 		configJson, err := os.Open(filepath.Join("", filepath.Clean(filePath)))
 		if err != nil {
 			logger.Error.Println("Could not open scheduler config file")

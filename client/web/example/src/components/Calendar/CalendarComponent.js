@@ -507,48 +507,43 @@ const CalendarComponent = () =>
 
     const ShowBookingPopup = (id, booked) =>
     {
-        if(!booked)
+        if(window.confirm('Would you like to delete this booking?'))
         {
-            /*if(window.confirm('Would you like to delete this booking?'))
+            fetch("http://localhost:8080/api/booking/remove", 
             {
-                fetch("http://localhost:8080/api/booking/remove", 
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify({
+                    id: id
+                }),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                }
+            }).then((res) =>
+            {
+                if(res.status === 200)
                 {
+                    alert('Booking deleted');
+
+                    fetch("http://localhost:8080/api/booking/information", 
+                    {
                     method: "POST",
                     mode: "cors",
                     body: JSON.stringify({
-                        id: id
+                        user_id: userData.user_id
                     }),
                     headers:{
                         'Content-Type': 'application/json',
-                        'Authorization': `bearer ${userData.token}` //Changed for frontend editing .token
+                        'Authorization': `bearer ${userData.token}`
                     }
-                }).then((res) =>
-                {
-                    if(res.status === 200)
+                    }).then((res) => res.json()).then(data => 
                     {
-                        alert('Booking deleted');
-
-                        fetch("http://localhost:8080/api/booking/information", 
-                        {
-                        method: "POST",
-                        mode: "cors",
-                        body: JSON.stringify({
-                            user_id: userData.user_id
-                        }),
-                        headers:{
-                            'Content-Type': 'application/json',
-                            'Authorization': `bearer ${userData.token}`
-                        }
-                        }).then((res) => res.json()).then(data => 
-                        {
-                            setBookings(data);
-                        });
-                    }
-                });
-            }*/
-           
+                        setBookings(data);
+                    });
+                }
+            });
         }
-        alert(id);
     }
 
     useEffect(() =>
@@ -689,7 +684,7 @@ const CalendarComponent = () =>
                         {bookings.length > 0 && (
                             bookings.map((booking, i) =>
                             (
-                                <BookingTicket key={booking.id} id={booking.id} startDate={booking.start.substring(0,10)} startTime={booking.start.substring(11,16)} endTime={booking.end.substring(11,16)} confirmed={booking.booked} type={booking.resource_type} days={days} ticketClick={ShowBookingPopup.bind(this, booking.resource_type, booking.booked)} />
+                                <BookingTicket key={booking.id} id={booking.id} startDate={booking.start.substring(0,10)} startTime={booking.start.substring(11,16)} endTime={booking.end.substring(11,16)} confirmed={booking.booked} type={booking.resource_type} days={days} ticketClick={ShowBookingPopup.bind(this, booking.id, booking.booked)} />
                             ))
                         )}
                     </div>

@@ -12,9 +12,9 @@ def retrieve_rooms_in_building(start: datetime.datetime) -> int:
     return resp.status_code
 
 start_date: datetime.datetime = datetime.datetime.now()
-start_date = start_date - datetime.timedelta(days=365)
+start_date = start_date - datetime.timedelta(days=100)
 i = 0
-while start_date <= datetime.datetime.now():
+while start_date <= (datetime.datetime.now() - datetime.timedelta(days=40)):
     print(i, ": ", start_date)
     start_date += datetime.timedelta(days=7)
     resp = retrieve_rooms_in_building(start_date)

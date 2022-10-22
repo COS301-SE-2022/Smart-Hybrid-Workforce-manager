@@ -17,8 +17,9 @@ import (
 )
 
 type SchedulerRequest struct {
-	StartDate *time.Time `json:"start_date,omitempty"`
-	NumDays   *int       `json:"num_days,omitempty"` // Used for weekly scheduler, not necessarily daily scheduler
+	StartDate *time.Time                 `json:"start_date,omitempty"`
+	NumDays   *int                       `json:"num_days,omitempty"` // Used for weekly scheduler, not necessarily daily scheduler
+	Config    *scheduler.SchedulerConfig `json:"config,omitempty"`
 }
 
 //BookingHandlers handles booking requests
@@ -36,22 +37,23 @@ func SchedulerHandlers(router *mux.Router) error {
 func SchedulerInvoker(writer http.ResponseWriter, request *http.Request) {
 	weeklyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/weekly"
 	dailyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/daily"
-	var requestedDate SchedulerRequest
-	err := utils.UnmarshalJSON(writer, request, &requestedDate)
+	var requestedData SchedulerRequest
+	err := utils.UnmarshalJSON(writer, request, &requestedData)
 	if err != nil {
 		utils.BadRequest(writer, request, fmt.Sprintf("invalid_request: %v", err))
 		return
 	}
 	now := time.Now()
-	if requestedDate.StartDate != nil { // Use passed in date if a date was supplied
-		now = *requestedDate.StartDate
+	if requestedData.StartDate != nil { // Use passed in date if a date was supplied
+		now = *requestedData.StartDate
 		now = now.AddDate(0, 0, -7)
 		// Set start to previous day, so that scheduler is called for the requested day
 	}
 	nextMonday := scheduler.TimeOfNextWeekDay(now, "Monday")            // Start of next week
 	nextSaturday := scheduler.TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
 	deskType := "DESK"
-	schedulerData, err := scheduler.GetSchedulerData(nextMonday, nextSaturday, &deskType)
+	schedulerData, err := scheduler.GetSchedulerData(nextMonday, nextSaturday, &deskType, &deskType)
+	schedulerData.Config = requestedData.Config
 	if err != nil {
 		utils.InternalServerError(writer, request, err)
 		return
@@ -85,7 +87,8 @@ func SchedulerInvoker(writer http.ResponseWriter, request *http.Request) {
 			defer wg.Done()
 			startDate := time.Date(yyyy, mm, dd+_i, 0, 0, 0, 0, now.Location())
 			endDate := startDate.AddDate(0, 0, 1) // Add one day
-			schedulerData, err := scheduler.GetSchedulerData(startDate, endDate, &deskType)
+			schedulerData, err := scheduler.GetSchedulerData(startDate, endDate, &deskType, &deskType)
+			schedulerData.Config = requestedData.Config
 			buildingGroups := scheduler.GroupByBuilding(schedulerData)
 			dailyBuildingWg := sync.WaitGroup{}
 			for _, data := range buildingGroups {
@@ -133,22 +136,23 @@ func MeetingroomScheduler(writer http.ResponseWriter, request *http.Request) {
 func WeeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 	weeklyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/weekly"
 
-	var requestedDate SchedulerRequest
-	err := utils.UnmarshalJSON(writer, request, &requestedDate)
+	var requestedData SchedulerRequest
+	err := utils.UnmarshalJSON(writer, request, &requestedData)
 	if err != nil {
 		utils.BadRequest(writer, request, fmt.Sprintf("invalid_request: %v", err))
 		return
 	}
 	now := time.Now()
-	if requestedDate.StartDate != nil { // Use passed in date if a date was supplied
-		now = *requestedDate.StartDate
+	if requestedData.StartDate != nil { // Use passed in date if a date was supplied
+		now = *requestedData.StartDate
 		now = now.AddDate(0, 0, -7)
 		// Set start to previous day, so that scheduler is called for the requested day
 	}
 	deskType := "DESK"
 	nextMonday := scheduler.TimeOfNextWeekDay(now, "Monday")            // Start of next week
 	nextSaturday := scheduler.TimeOfNextWeekDay(nextMonday, "Saturday") // End of next work-week
-	schedulerData, err := scheduler.GetSchedulerData(nextMonday, nextSaturday, &deskType)
+	schedulerData, err := scheduler.GetSchedulerData(nextMonday, nextSaturday, &deskType, &deskType)
+	schedulerData.Config = requestedData.Config
 	buildingGroups := scheduler.GroupByBuilding(schedulerData)
 	weeklyBuildingWg := sync.WaitGroup{}
 	for _, data := range buildingGroups {
@@ -178,15 +182,15 @@ func WeeklyScheduler(writer http.ResponseWriter, request *http.Request) {
 func DailyScheduler(writer http.ResponseWriter, request *http.Request) {
 	dailyEndpointURL := os.Getenv("SCHEDULER_ADDR") + "/daily"
 
-	var requestedDate SchedulerRequest
-	err := utils.UnmarshalJSON(writer, request, &requestedDate)
+	var requestedData SchedulerRequest
+	err := utils.UnmarshalJSON(writer, request, &requestedData)
 	if err != nil {
 		utils.BadRequest(writer, request, fmt.Sprintf("invalid_request: %v", err))
 		return
 	}
 	now := time.Now()
-	if requestedDate.StartDate != nil { // Use passed in date if a date was supplied
-		now = *requestedDate.StartDate
+	if requestedData.StartDate != nil { // Use passed in date if a date was supplied
+		now = *requestedData.StartDate
 		// Set start to previous day, so that scheduler is called for the requested day
 		now = now.AddDate(0, 0, -1)
 	}
@@ -195,7 +199,8 @@ func DailyScheduler(writer http.ResponseWriter, request *http.Request) {
 	startDate := time.Date(yyyy, mm, dd+1, 0, 0, 0, 0, now.Location())
 	endDate := startDate.AddDate(0, 0, 1) // Add one day
 	// Get data between start and end of date
-	schedulerData, err := scheduler.GetSchedulerData(startDate, endDate, &deskType)
+	schedulerData, err := scheduler.GetSchedulerData(startDate, endDate, &deskType, &deskType)
+	schedulerData.Config = requestedData.Config
 	buildingGroups := scheduler.GroupByBuilding(schedulerData)
 	dailyBuildingWg := sync.WaitGroup{}
 	for _, data := range buildingGroups {

@@ -6,7 +6,7 @@
         "mutationRate": 0.40,
         "crossOverRate": 0.55,
         "tournamentSize": 20,
-        "time_limit_seconds": 10
+        "time_limit_seconds": 3
     },
     "weekly_config": {
         "seed" : 112,
@@ -15,6 +15,6 @@
         "mutationRate": 1.0,
         "crossOverRate": 0.0,
         "tournamentSize": 20,
-        "time_limit_seconds": 5
+        "time_limit_seconds": 2
     }
 }

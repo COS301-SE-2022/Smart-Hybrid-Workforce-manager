@@ -2,8 +2,6 @@ package meetingroom
 
 import (
 	cu "lib/collectionutils"
-	"lib/logger"
-	"lib/testutils"
 	"scheduler/data"
 	"sort"
 )
@@ -77,17 +75,15 @@ func GetNeededCapacity(schedulerData *data.SchedulerData, booking *data.MeetingR
 }
 
 func AssignResources(schedulerData *data.SchedulerData) (scheduledBookings data.Bookings) {
-	logger.Debug.Println("ASSIGNING RESOURCES TO MEETING ROOMS REEEEE")
 	scheduledBookings = data.Bookings{}
 	unscheduledBookings := extractUnscheduledMeetingRoomBookings(schedulerData)
 	independants, dependants := extractIndependantBookings(unscheduledBookings)
 	mappedBookings := MapMeetingRoomBookings(schedulerData)
 	meetingRooms := extractMeetingRooms(schedulerData)
-	logger.Debug.Println(testutils.Scolourf(testutils.PURPLE, "MEETING ROOMS %v", meetingRooms))
-	logger.Debug.Println(testutils.Scolourf(testutils.PURPLE, "INDEPENDANTS %v", independants))
-	logger.Debug.Println(testutils.Scolourf(testutils.PURPLE, "MEETING ROOMS %v", meetingRooms))
 	// Sort the resources
 	SortResources(meetingRooms)
+
+	trueVar := true
 
 	// For each independant booking, assign an available
 	for _, independant := range independants {
@@ -99,6 +95,7 @@ func AssignResources(schedulerData *data.SchedulerData) (scheduledBookings data.
 			if room.GetCapacity() >= capacityNeeded {
 				// Assign the room
 				independant.ResourceId = room.Id
+				independant.Booked = &trueVar
 				scheduledBookings = append(scheduledBookings, independant)
 				remIndex = i
 				break
@@ -110,6 +107,7 @@ func AssignResources(schedulerData *data.SchedulerData) (scheduledBookings data.
 				if room.GetCapacity() == -1 {
 					// Assign the room
 					independant.ResourceId = room.Id
+					independant.Booked = &trueVar
 					scheduledBookings = append(scheduledBookings, independant)
 					remIndex = i
 					break
@@ -126,6 +124,7 @@ func AssignResources(schedulerData *data.SchedulerData) (scheduledBookings data.
 	for _, scheduledIndependant := range scheduledBookings {
 		for _, dependant := range dependants[*scheduledIndependant.Id] {
 			dependant.ResourceId = scheduledIndependant.ResourceId
+			dependant.Booked = &trueVar
 			scheduledIndependants = append(scheduledIndependants, dependant)
 		}
 	}

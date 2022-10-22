@@ -34,6 +34,10 @@ Smart Hybrid Workforce Manager aims to provide companies an easy to use system t
   ➛ Project Board<br>
 </a> 
 
+### Hosting
+
+You can visit our production server at: http://deskflow.co.za
+
 ### SRS Requirements
 
 <a href="https://drive.google.com/file/d/1P8EYnATIvTuzI92zB5p3PX_Cp5whZi45/view?usp=sharing" target="_blank">
@@ -42,11 +46,18 @@ Smart Hybrid Workforce Manager aims to provide companies an easy to use system t
 <a href="https://drive.google.com/file/d/1nA5BDkb-0W2gQ5Xp25A9YvOM9bbOvX94/view?usp=sharing" target="_blank">
   ➛ SRS Requirements v2.0<br>
 </a> 
+<a href="https://drive.google.com/file/d/1xg7YXq269GNRxSAerf9RAe_bveQP_9KN/view?usp=sharing" target="_blank">
+  ➛ SRS Requirements v4.0<br>
+</a> 
 
 ### User Manual
 
 <a href="https://drive.google.com/file/d/1Nn8iWty2ChC2auBH4YT4mFuYyOf-awlo/view?usp=sharing" target="_blank">
   ➛ User Manual v1.0<br>
+</a> 
+
+<a href="https://drive.google.com/file/d/1dKSyngPCegO82VzoGe3-MrsrvJzWZ3Pw/view?usp=sharing">
+  ➛ User Manual v2.0<br>
 </a> 
 
 ### Architecture
@@ -76,6 +87,16 @@ Smart Hybrid Workforce Manager aims to provide companies an easy to use system t
 <a href="https://drive.google.com/file/d/1__oU-XB6vR1ckhwLw3mupfjM0jAcRs82/view?usp=sharing" target="_blank">
   ➛ Security Testing<br>
 </a> 
+
+<a href="https://docs.google.com/document/d/1v25vV2jcMBk-UB9tiKm9c_3-Wf4KJc61-EWFp-ICsiY/edit#" target="_blank">
+  ➛ Performance Testing<br>
+</a> 
+
+### Testing Policy
+<a href="https://drive.google.com/file/d/12WG9ZsBfygJYguR2NsNQ61RXVD08x7Wb/view?usp=sharing" target="_blank">
+  ➛ Testing Policy<br>
+</a> 
+
 
 ### Other Documents
 
@@ -114,8 +135,8 @@ Smart Hybrid Workforce Manager aims to provide companies an easy to use system t
 <a href="https://drive.google.com/file/d/16MVNC376IDKsWTVUmix485ZuWWRV_El2/view?usp=sharing" target="_blank">
   ➛ Demo 3 Presentation<br>
 </a> 
-<a href="#" target="_blank">
-  ➛ Demo 4<br>
+<a href="https://drive.google.com/file/d/198RAJN6RVDoyUYVrZluHj558YCNa4DS9/view?usp=sharing" target="_blank">
+  ➛ Demo 4 Video<br>
 </a> 
 
 <br>
