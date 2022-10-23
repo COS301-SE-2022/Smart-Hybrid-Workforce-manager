@@ -16,7 +16,7 @@ const EditRoom = ({id, edited}) =>
 
     const EditRoomSubmit = async () =>
     {
-        fetch("http://localhost:8080/api/resource/room/create", 
+        fetch("http://deskflow.co.za:8080/api/resource/room/create", 
         {
             method: "POST",
             mode: "cors",
@@ -44,7 +44,7 @@ const EditRoom = ({id, edited}) =>
     {
         if(id)
         {
-            fetch("http://localhost:8080/api/resource/room/information", 
+            fetch("http://deskflow.co.za:8080/api/resource/room/information", 
             {
                 method: "POST",
                 mode: "cors",

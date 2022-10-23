@@ -29,7 +29,7 @@ const MeetingRoomBooking = (props, ref) =>
         e.preventDefault();
         try
         {
-            let res = await fetch("http://localhost:8080/api/booking/meetingroom/create", 
+            let res = await fetch("http://deskflow.co.za:8080/api/booking/meetingroom/create", 
             {
                 method: "POST",
                 mode: "cors",
@@ -73,7 +73,7 @@ const MeetingRoomBooking = (props, ref) =>
     //POST request
     const FetchTeams = () =>
     {
-        fetch("http://localhost:8080/api/team/information", 
+        fetch("http://deskflow.co.za:8080/api/team/information", 
         {
             method: "POST",
             mode: "cors",
@@ -91,7 +91,7 @@ const MeetingRoomBooking = (props, ref) =>
     //POST request
     const FetchRoles = () =>
     {
-        fetch("http://localhost:8080/api/role/information", 
+        fetch("http://deskflow.co.za:8080/api/role/information", 
         {
             method: "POST",
             mode: "cors",

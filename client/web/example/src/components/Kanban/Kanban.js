@@ -77,7 +77,7 @@ const Kanban = () =>
 
     const DeleteTeam = () =>
     {
-        fetch("http://localhost:8080/api/team/remove", 
+        fetch("http://deskflow.co.za:8080/api/team/remove", 
         {
             method: "POST",
             mode: "cors",
@@ -205,7 +205,7 @@ const Kanban = () =>
             }
         });
 
-        fetch("http://localhost:8080/api/team/user/remove", 
+        fetch("http://deskflow.co.za:8080/api/team/user/remove", 
         {
             method: "POST",
             mode: "cors",
@@ -298,7 +298,7 @@ const Kanban = () =>
                 }
             });
 
-            fetch("http://localhost:8080/api/team/user/create", 
+            fetch("http://deskflow.co.za:8080/api/team/user/create", 
             {
                 method: "POST",
                 mode: "cors",
@@ -370,7 +370,7 @@ const Kanban = () =>
 
     const GetData = () =>
     {
-        fetch("http://localhost:8080/api/team/information", 
+        fetch("http://deskflow.co.za:8080/api/team/information", 
         {
             method: "POST",
             mode: "cors",
@@ -404,7 +404,7 @@ const Kanban = () =>
                 }
             })
 
-            fetch("http://localhost:8080/api/user/information", 
+            fetch("http://deskflow.co.za:8080/api/user/information", 
             {
                 method: "POST",
                 mode: "cors",
@@ -432,7 +432,7 @@ const Kanban = () =>
                     );
                 });
 
-                fetch("http://localhost:8080/api/role/information", 
+                fetch("http://deskflow.co.za:8080/api/role/information", 
                 {
                     method: "POST",
                     mode: "cors",
@@ -462,7 +462,7 @@ const Kanban = () =>
 
                     setRoles(rolesForEdit);
 
-                    fetch("http://localhost:8080/api/role/user/information", 
+                    fetch("http://deskflow.co.za:8080/api/role/user/information", 
                     {
                         method: "POST",
                         mode: "cors",
@@ -486,7 +486,7 @@ const Kanban = () =>
                             }
                         });
 
-                        fetch("http://localhost:8080/api/team/user/information", 
+                        fetch("http://deskflow.co.za:8080/api/team/user/information", 
                         {
                             method: "POST",
                             mode: "cors",
@@ -522,7 +522,7 @@ const Kanban = () =>
     {
         if(teamEdited)
         {
-            fetch("http://localhost:8080/api/team/information", 
+            fetch("http://deskflow.co.za:8080/api/team/information", 
             {
                 method: "POST",
                 mode: "cors",
@@ -557,7 +557,7 @@ const Kanban = () =>
                     }
                 })
 
-                fetch("http://localhost:8080/api/user/information", 
+                fetch("http://deskflow.co.za:8080/api/user/information", 
                 {
                     method: "POST",
                     mode: "cors",
@@ -585,7 +585,7 @@ const Kanban = () =>
                         );
                     });
 
-                    fetch("http://localhost:8080/api/role/information", 
+                    fetch("http://deskflow.co.za:8080/api/role/information", 
                     {
                         method: "POST",
                         mode: "cors",
@@ -616,7 +616,7 @@ const Kanban = () =>
 
                         setRoles(rolesForEdit);
 
-                        fetch("http://localhost:8080/api/role/user/information", 
+                        fetch("http://deskflow.co.za:8080/api/role/user/information", 
                         {
                             method: "POST",
                             mode: "cors",
@@ -640,7 +640,7 @@ const Kanban = () =>
                                 }
                             });
 
-                            fetch("http://localhost:8080/api/team/user/information", 
+                            fetch("http://deskflow.co.za:8080/api/team/user/information", 
                             {
                                 method: "POST",
                                 mode: "cors",
@@ -679,7 +679,7 @@ const Kanban = () =>
     {
         if(teamEdited)
         {
-            fetch("http://localhost:8080/api/user/information", 
+            fetch("http://deskflow.co.za:8080/api/user/information", 
             {
                 method: "POST",
                 mode: "cors",
@@ -694,7 +694,7 @@ const Kanban = () =>
                 var users = [];
                 data.forEach((user) =>
                 {
-                    fetch("http://localhost:8080/api/role/user/information", 
+                    fetch("http://deskflow.co.za:8080/api/role/user/information", 
                     {
                         method: "POST",
                         mode: "cors",
@@ -710,7 +710,7 @@ const Kanban = () =>
                         var roles = [];
                         data.forEach((role) =>
                         {
-                            fetch("http://localhost:8080/api/role/information", 
+                            fetch("http://deskflow.co.za:8080/api/role/information", 
                             {
                                 method: "POST",
                                 mode: "cors",

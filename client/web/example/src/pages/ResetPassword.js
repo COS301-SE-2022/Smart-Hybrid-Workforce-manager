@@ -32,7 +32,7 @@ function ResetPassword()
       }
     try
     {
-      let res = await fetch("http://localhost:8080/api/user/resetpassword", 
+      let res = await fetch("http://deskflow.co.za:8080/api/user/resetpassword", 
       {
         method: "POST",
         mode: 'cors',

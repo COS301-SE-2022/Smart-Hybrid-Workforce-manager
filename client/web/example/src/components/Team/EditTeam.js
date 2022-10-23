@@ -93,7 +93,7 @@ const EditTeam = ({team, edited}) =>
                         {
                             if(url.includes(newName))
                             {
-                                fetch("http://localhost:8080/api/team/create", 
+                                fetch("http://deskflow.co.za:8080/api/team/create", 
                                 {
                                     method: "POST",
                                     mode: "cors",
@@ -182,7 +182,7 @@ const EditTeam = ({team, edited}) =>
         }
         else
         {
-            fetch("http://localhost:8080/api/team/create", 
+            fetch("http://deskflow.co.za:8080/api/team/create", 
             {
                 method: "POST",
                 mode: "cors",
@@ -269,7 +269,7 @@ const EditTeam = ({team, edited}) =>
     const AddPermission = (id, type, category, tenant) =>
     {
         console.log(`${id}\n${type}\n${category}\n${tenant}`)
-        fetch("http://localhost:8080/api/permission/create", 
+        fetch("http://deskflow.co.za:8080/api/permission/create", 
         {
             method: "POST",
             mode: "cors",
@@ -290,7 +290,7 @@ const EditTeam = ({team, edited}) =>
     const RemovePermission = (id) =>
     {
         console.log(`${id}`)
-        fetch("http://localhost:8080/api/permission/remove", 
+        fetch("http://deskflow.co.za:8080/api/permission/remove", 
         {
             method: "POST",
             mode: "cors",
@@ -325,7 +325,7 @@ const EditTeam = ({team, edited}) =>
                 setCapacity('2');
             }
 
-            fetch("http://localhost:8080/api/permission/information", 
+            fetch("http://deskflow.co.za:8080/api/permission/information", 
             {
                 method: "POST",
                 mode: 'cors',

@@ -54,7 +54,7 @@ const StatisticsComponent = () => {
 
     useEffect(() =>
     {
-        fetch("http://localhost:8080/api/statistics/all", 
+        fetch("http://deskflow.co.za:8080/api/statistics/all", 
         {
             method: "POST",
             mode: "cors",
