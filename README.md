@@ -50,6 +50,17 @@ You can visit our production server at: http://deskflow.co.za
   ➛ SRS Requirements v4.0<br>
 </a> 
 
+### Coding Standards
+
+<a href="https://drive.google.com/file/d/1E5KiVsls6vi4VURzq8LbePat-SF3VYyv/view?usp=sharing" target="_blank">
+  ➛ Coding Standards v1.0<br>
+</a> 
+
+### Testing Policy
+<a href="https://drive.google.com/file/d/12WG9ZsBfygJYguR2NsNQ61RXVD08x7Wb/view?usp=sharing" target="_blank">
+  ➛ Testing Policy<br>
+</a> 
+
 ### User Manual
 
 <a href="https://drive.google.com/file/d/1Nn8iWty2ChC2auBH4YT4mFuYyOf-awlo/view?usp=sharing" target="_blank">
@@ -66,11 +77,6 @@ You can visit our production server at: http://deskflow.co.za
   ➛ Architecture v1.0<br>
 </a> 
 
-### Coding Standards
-
-<a href="https://drive.google.com/file/d/1E5KiVsls6vi4VURzq8LbePat-SF3VYyv/view?usp=sharing" target="_blank">
-  ➛ Coding Standards v1.0<br>
-</a> 
 
 ### Technical Installation Manual
 
@@ -92,12 +98,6 @@ You can visit our production server at: http://deskflow.co.za
   ➛ Performance Testing<br>
 </a> 
 
-### Testing Policy
-<a href="https://drive.google.com/file/d/12WG9ZsBfygJYguR2NsNQ61RXVD08x7Wb/view?usp=sharing" target="_blank">
-  ➛ Testing Policy<br>
-</a> 
-
-
 ### Other Documents
 
 <a href="https://drive.google.com/file/d/1eiyuevQBveD41sLYmI3Sp1Gdl3zlBqpx/view?usp=sharing" target="_blank">
@@ -117,27 +117,9 @@ You can visit our production server at: http://deskflow.co.za
 <!-- Dark Mode -->
 <img src="https://user-images.githubusercontent.com/53088824/167414102-bf02aafc-c50c-40db-88bf-671a0e7a345d.png#gh-dark-mode-only" height=35/>
 
-<a href="https://drive.google.com/file/d/1Ie_8NZNK5KYC1meSEZ1z6F-E5rxnZH6L/view?usp=sharing" target="_blank">
-  ➛ Demo 1 Video<br>
+<a href="https://github.com/COS301-SE-2022/Smart-Hybrid-Workforce-manager/wiki/Demo's" target="_blank">
+  ➛ Demo's<br>
 </a>
-<a href="https://drive.google.com/file/d/19aGbydlYjP7VNsrecyodfphOxQlFE_kn/view?usp=sharing" target="_blank">
-  ➛ Demo 1 Presentation<br>
-</a> 
-<a href="https://drive.google.com/file/d/1tdKq7UG-QFVdbF707Krwku3s3XBLsHHU/view?usp=sharing" target="_blank">
-  ➛ Demo 2 Video<br>
-</a>
-<a href="https://drive.google.com/file/d/1AmSAFxEOtFoHWTqlOaQfrDKmoL14LMdL/view?usp=sharing" target="_blank">
-  ➛ Demo 2 Presentation<br>
-</a> 
-<a href="https://drive.google.com/file/d/14GtmmR7CfU4cjkP7pQLsYBsmp1_XCl79/view?usp=sharing" target="_blank">
-  ➛ Demo 3 Video<br>
-</a> 
-<a href="https://drive.google.com/file/d/16MVNC376IDKsWTVUmix485ZuWWRV_El2/view?usp=sharing" target="_blank">
-  ➛ Demo 3 Presentation<br>
-</a> 
-<a href="https://drive.google.com/file/d/198RAJN6RVDoyUYVrZluHj558YCNa4DS9/view?usp=sharing" target="_blank">
-  ➛ Demo 4 Video<br>
-</a> 
 
 <br>
 
