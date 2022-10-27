@@ -1,6 +1,8 @@
 
 <!-- Logo  -->
 <p align="center">
+  <img src="https://user-images.githubusercontent.com/92671133/198320155-677ff035-22ca-4605-9d43-9cda7dd54714.gif" height = 470>
+  <br>
   <!-- Light Mode -->
   <img src="https://user-images.githubusercontent.com/84448921/166220712-adc6088e-7907-4689-8925-305a949aeee9.png#gh-light-mode-only" height=470/>
   <!-- Dark Mode -->
