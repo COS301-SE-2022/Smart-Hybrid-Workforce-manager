@@ -159,11 +159,9 @@ Please note that the first time `docker-compose up` is run the api will error ou
 
 <!-- Kaylee Posthumus -->
 <details><summary>Kaylee Posthumus (Team Lead) - u19061359</summary><br>
-  
-<img align="right" src="https://user-images.githubusercontent.com/53088824/167909265-faf15baa-b44c-41ab-8d15-671dd00576eb.jpg" width=150>
 
 <p>
-I am a 3rd year Computer Science Student at the University of Pretoria. I have worked on large web based applications as well as some network based system applications. I have been tutoring for the University for two years in the Computer Science Department.
+I am a 3rd year Computer Science Student at the University of Pretoria. I have worked on large web based applications as well as some network based system applications.
 </p>
 
 <a href="https://github.com/KayleePosthumus" target="_blank">
